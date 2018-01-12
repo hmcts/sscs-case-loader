@@ -1,17 +1,14 @@
-# Spring Boot application template
+# SSCS Case Loader Application
 
 [![Build Status](https://travis-ci.org/hmcts/spring-boot-template.svg?branch=master)](https://travis-ci.org/hmcts/spring-boot-template)
 
 ## Purpose
 
-The purpose of this template is to speed up the creation of new Spring applications within HMCTS
-and help keep the same standards across multpile teams. If you need to create a new app, you can
-simply use this one as a starting point and build on top of it.
+The purpose of this App is to take cases coming from the legacy Gaps2 and create/update them in the CCD app.
 
 ## What's inside
 
-The template is a working application with a minimal setup. It contains:
- * application skeleton
+It contains:
  * common plugins and libraries
  * docker setup
  * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
@@ -21,12 +18,12 @@ The template is a working application with a minimal setup. It contains:
  * Hystrix dashboard
  * MIT license and contribution information
 
-The application exposes health endpoint (http://localhost:4550/health) and metrics endpoint
-(http://localhost:4550/metrics).
+The application exposes health endpoint (http://localhost:8080/health) and metrics endpoint
+(http://localhost:8080/metrics).
 
 ## Plugins
 
-The template contains the following plugins:
+The project contains the following plugins:
 
   * checkstyle
 
