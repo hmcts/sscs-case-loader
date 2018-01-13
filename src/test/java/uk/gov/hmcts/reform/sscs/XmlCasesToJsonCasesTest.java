@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs;
 
-
 import org.json.JSONObject;
 import org.json.XML;
 import org.junit.Test;
