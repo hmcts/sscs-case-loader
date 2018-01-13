@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CaseLoaderServiceTest {
 
-    private CaseLoaderService caseLoaderService = new SftpCaseLoaderImpl();
+    private final CaseLoaderService caseLoaderService = new SftpCaseLoaderImpl();
 
     @Test
     public void shouldFetchXmlFilesWhenSentFromGaps2() {
@@ -19,9 +19,8 @@ public class CaseLoaderServiceTest {
 
     }
 
-//  TODO implement this test case based on the XmlCasesToJsonCasesTest class
-    @Test
-    public void shouldTransformXmlFilesToJsonFiles() {
-
-    }
+    //    @Test
+    //    public void shouldTransformXmlFilesToJsonFiles() {
+    //
+    //    }
 }
