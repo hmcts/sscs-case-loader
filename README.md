@@ -1,5 +1,6 @@
 # SSCS Case Loader Application
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/155199f4073c4809ba59a7c0f807106f)](https://www.codacy.com/app/iguannago/sscs-case-loader?utm_source=github.com&utm_medium=referral&utm_content=hmcts/sscs-case-loader&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/hmcts/spring-boot-template.svg?branch=master)](https://travis-ci.org/hmcts/spring-boot-template)
 
 ## Purpose
