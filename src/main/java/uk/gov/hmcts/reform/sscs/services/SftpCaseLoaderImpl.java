@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import org.json.JSONObject;
 import org.json.XML;
+import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
@@ -22,7 +23,9 @@ public class SftpCaseLoaderImpl implements CaseLoaderService {
     }
 
     @Override
-    public JSONObject transformXmlFilesToJson(XmlFiles xmlFiles) {
-        return XML.toJSONObject(FileUtils.getFileContentGivenFilePath(xmlFiles.getDelta()));
+    public JsonFiles transformXmlFilesToJsonFiles(XmlFiles xmlFiles) {
+        JSONObject jsonDelta = XML.toJSONObject(FileUtils.getFileContentGivenFilePath(xmlFiles.getDelta()));
+        JSONObject jsonRef = XML.toJSONObject(FileUtils.getFileContentGivenFilePath(xmlFiles.getRef()));
+        return JsonFiles.builder().delta(jsonDelta).ref(jsonRef).build();
     }
 }
