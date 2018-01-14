@@ -66,7 +66,8 @@ repositories {
 }
 
 def versions = [
-  springfoxSwagger: '2.7.0'
+  springfoxSwagger: '2.7.0',
+  javacrumbsJsonUnit : '1.28.1'
 ]
 
 dependencies {
@@ -84,6 +85,9 @@ dependencies {
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.0.RELEASE'
 
   compile group: 'org.json', name: 'json', version: '20171018'
+
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: versions.javacrumbsJsonUnit
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: versions.javacrumbsJsonUnit
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 }
