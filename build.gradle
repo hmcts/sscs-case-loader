@@ -7,6 +7,7 @@ plugins {
   id 'org.springframework.boot' version '1.5.9.RELEASE'
   id 'org.owasp.dependencycheck' version '3.1.0'
   id 'com.github.ben-manes.versions' version '0.17.0'
+  id 'net.ltgt.apt' version '0.10'
 }
 
 group = 'uk.gov.hmcts.reform'
@@ -85,6 +86,9 @@ dependencies {
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.0.RELEASE'
 
   compile group: 'org.json', name: 'json', version: '20171018'
+
+  compileOnly 'org.projectlombok:lombok:1.16.20'
+  apt "org.projectlombok:lombok:1.16.20"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: versions.javacrumbsJsonUnit
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: versions.javacrumbsJsonUnit
