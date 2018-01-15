@@ -11,7 +11,7 @@ public final class FileUtils {
 
     public static String getFileContentGivenFilePath(String filePath) {
         try {
-            return new String(Files.readAllBytes(Paths.get(filePath)));
+            return new String(Files.readAllBytes(Paths.get(filePath)), "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException("failed to read from file: " + filePath, e);
         }
