@@ -13,7 +13,9 @@ public class SftpCaseLoaderImpl implements CaseLoaderService {
     //TODO Implement once we know we can use SFTP
     @Override
     public Optional<XmlFiles> fetchXmlFilesFromGaps2() {
-        return Optional.empty();
+        String deltaXml = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
+        String refXml = "src/test/resources/SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
+        return Optional.of(XmlFiles.builder().delta(deltaXml).ref(refXml).build());
     }
 
     //TODO Implement once we know we can use SFTP

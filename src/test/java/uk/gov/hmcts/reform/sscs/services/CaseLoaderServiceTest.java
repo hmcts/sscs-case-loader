@@ -8,7 +8,6 @@ import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 import java.util.Optional;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class CaseLoaderServiceTest {
@@ -25,7 +24,7 @@ public class CaseLoaderServiceTest {
     @Test
     public void shouldFetchXmlFilesWhenSentFromGaps2() {
         Optional<XmlFiles> optionalXmlFiles = caseLoaderService.fetchXmlFilesFromGaps2();
-        assertFalse(optionalXmlFiles.isPresent());
+        assertTrue(optionalXmlFiles.isPresent());
     }
 
     @Test
