@@ -12,10 +12,18 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform'
-version = '0.0.1'
+version = '1.0.0  '
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+jar {
+  baseName 'sscs-case-loader'
+  manifest {
+    attributes 'Implementation-Title': project.name,
+      'Implementation-Version': project.version
+  }
+}
 
 checkstyle {
   maxWarnings = 0
