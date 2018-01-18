@@ -197,6 +197,22 @@ Here are some other functionalities it provides:
  * [Request caching](https://github.com/Netflix/Hystrix/wiki/How-it-Works#request-caching), allowing
  different code paths to execute Hystrix Commands without worrying about duplicating work
 
+## Troubleshooting
+
+### IDE Settings
+
+#### Project Lombok Plugin
+When building the project in your IDE (eclipse or IntelliJ), Lombok plugin will be required to compile.
+
+For IntelliJ IDEA, please add the Lombok IntelliJ plugin:
+* Go to `File > Settings > Plugins`
+* Click on `Browse repositories...`
+* Search for `Lombok Plugin`
+* Click on `Install plugin`
+* Restart IntelliJ IDEA
+
+Plugin setup for other IDE's are available on [https://projectlombok.org/setup/overview]
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
