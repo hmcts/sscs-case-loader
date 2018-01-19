@@ -22,18 +22,18 @@ public class CaseLoaderServiceTest {
     private final CaseLoaderService caseLoaderService = new SftpCaseLoaderImpl();
 
     @Test
-    public void shouldFetchXmlFilesWhenSentFromGaps2() {
+    public void givenXmlFilesUploadedInGaps_shouldFetchXmlFiles() {
         Optional<XmlFiles> optionalXmlFiles = caseLoaderService.fetchXmlFilesFromGaps2();
         assertTrue(optionalXmlFiles.isPresent());
     }
 
     @Test
-    public void shouldValidateXmlFiles() {
+    public void givenXmlFiles_shouldValidateXmlFiles() {
         assertTrue(caseLoaderService.validateXmlFiles(xmlFiles));
     }
 
     @Test
-    public void shouldTransformXmlFilesToJsonFiles() {
+    public void givenXmlFiles_shouldTransformToJsonFiles() {
         JsonFiles actualJsonFiles = caseLoaderService.transformXmlFilesToJsonFiles(xmlFiles);
 
         String expectedDeltaJson = FileUtils.getFileContentGivenFilePath(DELTA_JSON);
