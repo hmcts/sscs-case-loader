@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public class SftpCaseLoaderImpl implements CaseLoaderService {
 
-    //TODO Implement once we know we can use SFTP
     @Override
     public Optional<XmlFiles> fetchXmlFilesFromGaps2() {
         String deltaXml = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
@@ -18,7 +17,6 @@ public class SftpCaseLoaderImpl implements CaseLoaderService {
         return Optional.of(XmlFiles.builder().delta(deltaXml).ref(refXml).build());
     }
 
-    //TODO Implement once we know we can use SFTP
     @Override
     public boolean validateXmlFiles(XmlFiles xmlFiles) {
         return true;

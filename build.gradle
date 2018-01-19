@@ -51,8 +51,10 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn test
 sonarqube {
   properties {
-    property "sonar.projectName", "${project.name}"
+    property "sonar.projectName", "SSCS - Case loader"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
+
   }
 }
 

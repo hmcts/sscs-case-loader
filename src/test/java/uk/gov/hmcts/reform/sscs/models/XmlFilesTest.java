@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class XmlFilesTest {
     @Test
-    public void shouldCreateXmlFilesInstance() {
+    public void givenXmlPath_shouldCreateXmlFilesInstance() {
         XmlFiles xmlFiles = XmlFiles.builder().delta("delta.xml").ref("ref.xml").build();
         assertEquals("delta.xml", xmlFiles.getDelta());
         assertEquals("ref.xml", xmlFiles.getRef());
