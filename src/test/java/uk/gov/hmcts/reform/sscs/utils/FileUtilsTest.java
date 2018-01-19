@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class FileUtilsTest {
     @Test(expected = RuntimeException.class)
-    public void shouldGetFileContent() {
+    public void givenFilePath_shouldGetFileContent() {
         FileUtils.getFileContentGivenFilePath("noExistingFile.xml");
     }
 

@@ -7,7 +7,7 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 public class JsonFilesTest {
     @Test
-    public void shouldCreateJsonFilesInstance() {
+    public void givenJsonString_shouldCreateJsonFilesInstance() {
         String jsonStringTest = "{\n"
             + "   \"name\":\"John\",\n"
             + "   \"age\":30,\n"
