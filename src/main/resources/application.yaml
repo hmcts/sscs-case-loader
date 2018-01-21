@@ -1,0 +1,10 @@
+server:
+  port: ${PORT:8082}
+
+core_case_data:
+  api:
+    url: "http://localhost"
+
+management:
+  security:
+    enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
