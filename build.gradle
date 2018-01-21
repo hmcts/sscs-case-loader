@@ -87,7 +87,8 @@ repositories {
 
 def versions = [
   springfoxSwagger: '2.7.0',
-  javacrumbsJsonUnit : '1.28.1'
+  javacrumbsJsonUnit : '1.28.1',
+  javaLogging: '1.4.0'
 ]
 
 bootRun {
@@ -102,9 +103,10 @@ dependencies {
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
   compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
-  compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: '1.4.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: '1.4.0'
+  compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.javaLogging
+  compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.javaLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
+  compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '2.1.0'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.4.0.RELEASE'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.0.RELEASE'
 
