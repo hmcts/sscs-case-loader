@@ -5,7 +5,7 @@ import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 
 import java.util.Optional;
 
-@Service("sftp")
+@Service
 public class SftpFetchXmlFilesImpl implements FetchXmlFilesService {
 
     @Override
