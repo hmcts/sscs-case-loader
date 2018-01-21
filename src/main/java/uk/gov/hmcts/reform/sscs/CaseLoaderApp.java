@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +21,7 @@ import java.util.Optional;
 public class CaseLoaderApp {
 
     @Autowired
-    @Qualifier("sftp")
-    private FetchXmlFilesService fetchXmlFilesService;
+    private FetchXmlFilesService sftpFetchXmlFilesService;
     @Autowired
     private TransformXmlFilesToJsonFilesService transformXmlFilesToJsonFilesService;
     @Autowired
@@ -36,7 +34,7 @@ public class CaseLoaderApp {
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
-            Optional<XmlFiles> optionalXmlFiles = fetchXmlFilesService.fetch();
+            Optional<XmlFiles> optionalXmlFiles = sftpFetchXmlFilesService.fetch();
             if (optionalXmlFiles.isPresent()) {
                 XmlFiles xmlFiles = optionalXmlFiles.get();
                 boolean validateXmlFiles = validateXmlFilesService.validate(xmlFiles);

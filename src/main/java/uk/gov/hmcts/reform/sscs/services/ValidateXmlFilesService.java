@@ -6,6 +6,6 @@ import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 @Service
 public class ValidateXmlFilesService {
     public boolean validate(XmlFiles xmlFiles) {
-        return true;
+        return xmlFiles != null;
     }
 }
