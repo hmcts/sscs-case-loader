@@ -3,7 +3,11 @@ server:
 
 core_case_data:
   api:
-    url: "http://localhost"
+    url: ${CORE_CASE_DATA_API_URL:http://localhost:4551}
+  userId: ${CORE_CASE_DATA_USER_ID:userId}
+  jurisdictionId: ${CORE_CASE_DATA_JURISDICTION_ID:jurisdictionId}
+  caseTypeId: ${CORE_CASE_DATA_CASE_TYPE_ID:caseTypeId}
+  eventId: ${CORE_CASE_DATA_EVENT_ID:eventId}
 
 management:
   security:

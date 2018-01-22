@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.EventRequestData;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.CcdCase;
 
 @Service
@@ -16,10 +17,12 @@ import uk.gov.hmcts.reform.sscs.models.CcdCase;
 public class CoreCaseDataService {
 
     private final CoreCaseDataApi coreCaseDataApi;
+    private final CoreCaseDataProperties coreCaseDataProperties;
 
     @Autowired
-    public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi) {
+    public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties) {
         this.coreCaseDataApi = coreCaseDataApi;
+        this.coreCaseDataProperties = coreCaseDataProperties;
     }
 
     public CaseDetails startEventAndSaveGivenCase(CcdCase ccdCase) {
@@ -63,19 +66,13 @@ public class CoreCaseDataService {
     private EventRequestData getEventRequestData() {
         //TODO how to get/generate a userToken?
         String userToken = "1";
-
-        //TODO confirm this information with the team
-        String userId = "caseworker-sscs-systemupdate";
-        String jurisdictionId = "SSCS";
-        String caseTypeId = "Benefit";
-        String eventId = "AppealCreated";
-
+        //TODO confirm this information with the CCD
         return EventRequestData.builder()
             .userToken(userToken)
-            .userId(userId)
-            .jurisdictionId(jurisdictionId)
-            .caseTypeId(caseTypeId)
-            .eventId(eventId)
+            .userId(coreCaseDataProperties.getUserId())
+            .jurisdictionId(coreCaseDataProperties.getJurisdictionId())
+            .caseTypeId(coreCaseDataProperties.getCaseTypeId())
+            .eventId(coreCaseDataProperties.getEventId())
             .ignoreWarning(true)
             .build();
     }

@@ -8,4 +8,5 @@ module "sscs-case-loader" {
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
   }
+
 }
