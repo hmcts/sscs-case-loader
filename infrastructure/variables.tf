@@ -27,4 +27,23 @@ variable "management_security_enabled" {
   default = "true"
 }
 
+// CCD
+variable "ccd-url" {
+  default = "https://case-data-app.test.ccd.reform.hmcts.net:4481"
+}
 
+variable "ccd-userId" {
+  default = "caseworker-sscs-systemupdate"
+}
+
+variable "ccd-jurisdictionId" {
+  default = "SSCS"
+}
+
+variable "ccd-caseTypeId" {
+  default = "Benefit"
+}
+
+variable "ccd-eventId" {
+  default = "AppealCreated"
+}
