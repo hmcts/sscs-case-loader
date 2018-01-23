@@ -45,5 +45,5 @@ variable "ccd-caseTypeId" {
 }
 
 variable "ccd-eventId" {
-  default = "AppealCreated"
+  default = "appealCreated"
 }
