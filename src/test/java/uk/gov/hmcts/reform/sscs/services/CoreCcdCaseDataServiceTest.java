@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.CcdCase;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -55,7 +56,8 @@ public class CoreCcdCaseDataServiceTest {
 
     private void mockCaseDetails() {
         CcdCase ccdCase = CcdCase.builder().caseRef("SC0001").build();
-        Map<String,Object> caseData = Map.of("case-data", ccdCase);
+        Map<String, Object> caseData = new HashMap<>(1);
+        caseData.put("case-data", ccdCase);
         CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         when(coreCaseDataApiMock.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
