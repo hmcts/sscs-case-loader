@@ -12,6 +12,9 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.CcdCase;
 
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -35,18 +38,27 @@ public class CoreCcdCaseDataServiceTest {
 
     @Test
     public void givenACase_shouldSaveItIntoCcd() {
+        //Given
         mockCoreCaseDataProperties();
         mockStartEventResponse();
         mockCaseDetails();
         CcdCase ccdCase = CcdCase.builder().caseRef("SC0001").build();
+
+        //When
         CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(ccdCase);
+
+        //Then
         assertNotNull(caseDetails);
+        ccdCase = (CcdCase) caseDetails.getData().get("case-data");
+        assertEquals("SC0001", ccdCase.getCaseRef());
     }
 
     private void mockCaseDetails() {
-        CaseDetails caseDetailsMock = mock(CaseDetails.class);
+        CcdCase ccdCase = CcdCase.builder().caseRef("SC0001").build();
+        Map<String,Object> caseData = Map.of("case-data", ccdCase);
+        CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         when(coreCaseDataApiMock.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
-            eq(true), any(CaseDataContent.class))).thenReturn(caseDetailsMock);
+            eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
     }
 
     private void mockStartEventResponse() {

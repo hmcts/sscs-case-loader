@@ -66,7 +66,6 @@ public class CoreCaseDataService {
     private EventRequestData getEventRequestData() {
         //TODO how to get/generate a userToken?
         String userToken = "1";
-        //TODO confirm this information with the CCD
         return EventRequestData.builder()
             .userToken(userToken)
             .userId(coreCaseDataProperties.getUserId())
