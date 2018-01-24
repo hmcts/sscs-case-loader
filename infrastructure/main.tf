@@ -15,6 +15,10 @@ module "sscs-case-loader" {
     CORE_CASE_DATA_JURISDICTION_ID = "${var.ccd-jurisdictionId}"
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.ccd-caseTypeId}"
     CORE_CASE_DATA_EVENT_ID = "${var.ccd-eventId}"
+
+    //IDAM
+    IDAM.S2S-AUTH.TOTP_SECRET = "${var.idam-s2s-auth-totp_secret}"
+    IDAM.S2S-AUTH.MICROSERVICE = "${var.idam-s2s-auth-microservice}"
   }
 
 }

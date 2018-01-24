@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -18,16 +19,19 @@ public class CoreCaseDataService {
 
     private final CoreCaseDataApi coreCaseDataApi;
     private final CoreCaseDataProperties coreCaseDataProperties;
+    private final AuthTokenGenerator authTokenGenerator;
 
     @Autowired
-    public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties) {
+    public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
+                               AuthTokenGenerator authTokenGenerator) {
         this.coreCaseDataApi = coreCaseDataApi;
         this.coreCaseDataProperties = coreCaseDataProperties;
+        this.authTokenGenerator = authTokenGenerator;
     }
 
     public CaseDetails startEventAndSaveGivenCase(CcdCase ccdCase) {
         EventRequestData eventRequestData = getEventRequestData();
-        String serviceAuthorization = getServiceAuthorization();
+        String serviceAuthorization = generateServiceAuthorization();
         StartEventResponse startEventResponse = startEvent(eventRequestData, serviceAuthorization);
         CaseDataContent caseDataContent = getCaseDataContent(ccdCase, startEventResponse);
         return saveCase(eventRequestData, serviceAuthorization, caseDataContent);
@@ -58,13 +62,13 @@ public class CoreCaseDataService {
             eventRequestData.getEventId());
     }
 
-    private String getServiceAuthorization() {
-        //TODO Investigate how to generate this ??
-        return "12";
+    private String generateServiceAuthorization() {
+        return authTokenGenerator.generate();
     }
 
     private EventRequestData getEventRequestData() {
-        //TODO how to get/generate a userToken?
+        //TODO How to get the userToken? Address in this ticket here -> https://tools.hmcts.net/jira/browse/SSCS-2568
+        //Complete this method once the ticket above mentioned is done.
         String userToken = "1";
         return EventRequestData.builder()
             .userToken(userToken)

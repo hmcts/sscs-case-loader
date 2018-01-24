@@ -47,3 +47,14 @@ variable "ccd-caseTypeId" {
 variable "ccd-eventId" {
   default = "appealCreated"
 }
+
+// IDAM
+variable idam-s2s-auth-totp_secret {
+  type = "string"
+  default = "XXXXXX"
+}
+
+variable idam-s2s-auth-microservice {
+  type = "string"
+  default = "sscs"
+}
