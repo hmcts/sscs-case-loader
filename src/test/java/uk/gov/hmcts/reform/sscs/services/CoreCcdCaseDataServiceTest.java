@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -31,10 +32,13 @@ public class CoreCcdCaseDataServiceTest {
     private CoreCaseDataService coreCaseDataService;
     @Mock
     private CoreCaseDataProperties coreCaseDataPropertiesMock;
+    @Mock
+    private AuthTokenGenerator authTokenGenerator;
 
     @Before
     public void setUp() {
-        coreCaseDataService = new CoreCaseDataService(coreCaseDataApiMock, coreCaseDataPropertiesMock);
+        coreCaseDataService = new CoreCaseDataService(coreCaseDataApiMock, coreCaseDataPropertiesMock,
+            authTokenGenerator);
     }
 
     @Test
