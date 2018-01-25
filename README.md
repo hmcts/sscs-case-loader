@@ -20,8 +20,8 @@ It contains:
  * Hystrix dashboard
  * MIT license and contribution information
 
-The application exposes health endpoint (http://localhost:8080/health) and metrics endpoint
-(http://localhost:8080/metrics).
+The application exposes health endpoint (http://localhost:8082/health) and metrics endpoint
+(http://localhost:8082/metrics).
 
 ## Plugins
 
