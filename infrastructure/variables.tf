@@ -19,7 +19,7 @@ variable "infrastructure_env" {
 
 variable "sscs_case_loader_server_port" {
   type    = "string"
-  default = "8080"
+  default = "8082"
 }
 
 variable "management_security_enabled" {

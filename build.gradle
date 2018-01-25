@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform'
-version = '1.0.0  '
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -89,6 +89,10 @@ def versions = [
   springfoxSwagger: '2.7.0',
   javacrumbsJsonUnit : '1.28.1'
 ]
+
+bootRun {
+  systemProperty 'server.port', '8082'
+}
 
 dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
