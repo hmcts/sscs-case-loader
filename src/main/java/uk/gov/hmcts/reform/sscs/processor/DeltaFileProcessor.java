@@ -21,8 +21,7 @@ public class DeltaFileProcessor {
     public CcdCase process(JSONObject json) {
         JSONObject rootObject = json.getJSONObject("Appeal_Cases");
         JSONArray appealCases = rootObject.getJSONArray("Appeal_Case");
-        CcdCase ccdCase = appealCaseToCcdCaseTransformer.transform(appealCases.getJSONObject(0));
-        return ccdCase;
+        return appealCaseToCcdCaseTransformer.transform(appealCases.getJSONObject(0));
     }
 
 

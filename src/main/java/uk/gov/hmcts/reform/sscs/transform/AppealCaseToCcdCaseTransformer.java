@@ -24,10 +24,8 @@ public class AppealCaseToCcdCaseTransformer {
         
         Appellant appellant = Appellant.builder().name(name).identity(identity).build();
         Appeal appeal = Appeal.builder().appellant(appellant).build();
-        CcdCase ccdCase = CcdCase.builder().caseReference(valueOf(appealCase, "Appeal_Case_RefNum")).appeal(appeal)
+        return CcdCase.builder().caseReference(valueOf(appealCase, "Appeal_Case_RefNum")).appeal(appeal)
                 .build();
-
-        return ccdCase;
     }
 
     private Identity getIdentity() {
