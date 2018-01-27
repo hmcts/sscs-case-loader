@@ -17,7 +17,8 @@ public class SaveSimpleCaseIntoCcd {
     @Autowired
     private CoreCaseDataService coreCaseDataService;
 
-    @Test@Ignore
+    @Test
+    @Ignore
     public void givenACase_shouldBeSaveIntoCcd() {
         assertNotNull(coreCaseDataService);
         coreCaseDataService.startEventAndSaveGivenCase(AppealUtils.buildAppeal());
