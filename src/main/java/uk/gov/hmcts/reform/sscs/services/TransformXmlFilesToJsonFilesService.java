@@ -10,8 +10,10 @@ import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 @Service
 public class TransformXmlFilesToJsonFilesService {
     public JsonFiles transform(XmlFiles xmlFiles) {
-        JSONObject jsonDelta = XML.toJSONObject(FileUtils.getFileContentGivenFilePath(xmlFiles.getDelta()));
-        JSONObject jsonRef = XML.toJSONObject(FileUtils.getFileContentGivenFilePath(xmlFiles.getRef()));
+        JSONObject jsonDelta = XML.toJSONObject(
+            new FileUtils().getResourceContentGivenResourceName(xmlFiles.getDelta()));
+        JSONObject jsonRef = XML.toJSONObject(
+            new FileUtils().getResourceContentGivenResourceName(xmlFiles.getRef()));
         return JsonFiles.builder().delta(jsonDelta).ref(jsonRef).build();
     }
 }

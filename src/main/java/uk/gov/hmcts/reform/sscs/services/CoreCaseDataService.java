@@ -11,7 +11,8 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.EventRequestData;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.CcdCase;
+import uk.gov.hmcts.reform.sscs.models.Appeal;
+import uk.gov.hmcts.reform.sscs.models.CaseData;
 
 @Service
 @ConditionalOnProperty(prefix = "core_case_data", name = "api.url")
@@ -29,12 +30,11 @@ public class CoreCaseDataService {
         this.authTokenGenerator = authTokenGenerator;
     }
 
-    public CaseDetails startEventAndSaveGivenCase(CcdCase ccdCase) {
+    public CaseDetails startEventAndSaveGivenCase(Appeal appeal) {
         EventRequestData eventRequestData = getEventRequestData();
         String serviceAuthorization = generateServiceAuthorization();
         StartEventResponse startEventResponse = startEvent(eventRequestData, serviceAuthorization);
-        CaseDataContent caseDataContent = getCaseDataContent(ccdCase, startEventResponse);
-        return saveCase(eventRequestData, serviceAuthorization, caseDataContent);
+        return saveCase(eventRequestData, serviceAuthorization, getCaseDataContent(appeal, startEventResponse));
     }
 
     private CaseDetails saveCase(EventRequestData eventRequestData, String serviceAuthorization,
@@ -44,7 +44,7 @@ public class CoreCaseDataService {
             true, caseDataContent);
     }
 
-    private CaseDataContent getCaseDataContent(CcdCase ccdCase, StartEventResponse startEventResponse) {
+    private CaseDataContent getCaseDataContent(Appeal appeal, StartEventResponse startEventResponse) {
         return CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -52,7 +52,7 @@ public class CoreCaseDataService {
                 .summary("SSCS - appeal created event")
                 .description("Created SSCS case with token " + startEventResponse.getToken())
                 .build())
-            .data(ccdCase)
+            .data(new CaseData(appeal))
             .build();
     }
 
@@ -69,7 +69,7 @@ public class CoreCaseDataService {
     private EventRequestData getEventRequestData() {
         //TODO How to get the userToken? Address in this ticket here -> https://tools.hmcts.net/jira/browse/SSCS-2568
         //Complete this method once the ticket above mentioned is done.
-        String userToken = "1";
+        String userToken = "Bearer user token";
         return EventRequestData.builder()
             .userToken(userToken)
             .userId(coreCaseDataProperties.getUserId())
