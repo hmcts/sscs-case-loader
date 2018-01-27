@@ -33,7 +33,7 @@ variable "ccd-url" {
 }
 
 variable "ccd-userId" {
-  default = "caseworker-sscs-systemupdate"
+  default = "19"
 }
 
 variable "ccd-jurisdictionId" {
