@@ -10,8 +10,8 @@ public class SftpFetchXmlFilesImpl implements FetchXmlFilesService {
 
     @Override
     public Optional<XmlFiles> fetch() {
-        String deltaXml = "/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
-        String refXml = "/SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
+        String deltaXml = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
+        String refXml = "src/test/resources/SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         return Optional.of(XmlFiles.builder().delta(deltaXml).ref(refXml).build());
     }
 
