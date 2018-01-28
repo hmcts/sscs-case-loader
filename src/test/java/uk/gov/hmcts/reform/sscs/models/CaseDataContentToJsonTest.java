@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.sscs.AppealUtils;
+import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
@@ -38,9 +38,7 @@ public class CaseDataContentToJsonTest {
                 .summary("SSCS - appeal created event")
                 .description("Created SSCS case with token")
                 .build())
-            .data(CaseData.builder()
-                .appeal(AppealUtils.buildAppeal())
-                .build())
+            .data(CaseDataUtils.buildCaseData())
             .build();
     }
 }

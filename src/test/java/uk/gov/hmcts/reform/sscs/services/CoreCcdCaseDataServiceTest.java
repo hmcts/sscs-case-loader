@@ -10,9 +10,9 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.AppealUtils;
+import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.Appeal;
+import uk.gov.hmcts.reform.sscs.models.CaseData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,17 +50,17 @@ public class CoreCcdCaseDataServiceTest {
         mockCaseDetails();
 
         //When
-        CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(AppealUtils.buildAppeal());
+        CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
 
         //Then
         assertNotNull(caseDetails);
-        Appeal appeal = (Appeal) caseDetails.getData().get("case-data");
-        assertEquals("2017-10-08", appeal.getMrnDate());
+        CaseData caseData = (CaseData) caseDetails.getData().get("case-data");
+        assertEquals("2017-10-08", caseData.getAppeal().getMrnDate());
     }
 
     private void mockCaseDetails() {
         Map<String, Object> caseData = new HashMap<>(1);
-        caseData.put("case-data", AppealUtils.buildAppeal());
+        caseData.put("case-data", CaseDataUtils.buildCaseData());
         CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         when(coreCaseDataApiMock.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
