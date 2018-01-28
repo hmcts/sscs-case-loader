@@ -9,7 +9,14 @@ public final class AppealUtils {
     }
 
     public static Appeal buildAppeal() {
-        Appellant appellant = new Appellant(new Name("Mr", "User", "Test"));
+        Name name = Name.builder()
+            .title("Mr")
+            .firstName("User")
+            .lastName("Test")
+            .build();
+        Appellant appellant = Appellant.builder()
+            .name(name)
+            .build();
         return Appeal.builder()
             .mrnDate("2017-10-08")
             .mrnMissingReason("It was missing")

@@ -23,7 +23,6 @@ public class CaseDataContentToJsonTest {
 
         // when
         String actualCaseDataContentJson = mapper.writeValueAsString(caseDataContent);
-        System.out.println(actualCaseDataContentJson);
 
         // should
         String expectedCaseDataContentJson = new FileUtils()
