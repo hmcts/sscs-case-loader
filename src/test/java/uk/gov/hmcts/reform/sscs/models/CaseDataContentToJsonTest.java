@@ -25,8 +25,8 @@ public class CaseDataContentToJsonTest {
         String actualCaseDataContentJson = mapper.writeValueAsString(caseDataContent);
 
         // should
-        String expectedCaseDataContentJson = new FileUtils()
-            .getResourceContentGivenResourceName("/CaseDataContent.json");
+        String expectedCaseDataContentJson = FileUtils.getFileContentGivenFilePath(
+            "src/test/resources//CaseDataContent.json");
         assertJsonEquals(expectedCaseDataContentJson, actualCaseDataContentJson);
     }
 

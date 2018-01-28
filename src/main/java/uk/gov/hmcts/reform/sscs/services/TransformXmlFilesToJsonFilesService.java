@@ -11,9 +11,9 @@ import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 public class TransformXmlFilesToJsonFilesService {
     public JsonFiles transform(XmlFiles xmlFiles) {
         JSONObject jsonDelta = XML.toJSONObject(
-            new FileUtils().getResourceContentGivenResourceName(xmlFiles.getDelta()));
+            FileUtils.getFileContentGivenFilePath(xmlFiles.getDelta()));
         JSONObject jsonRef = XML.toJSONObject(
-            new FileUtils().getResourceContentGivenResourceName(xmlFiles.getRef()));
+            FileUtils.getFileContentGivenFilePath(xmlFiles.getRef()));
         return JsonFiles.builder().delta(jsonDelta).ref(jsonRef).build();
     }
 }
