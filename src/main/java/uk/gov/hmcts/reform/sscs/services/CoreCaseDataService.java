@@ -52,7 +52,10 @@ public class CoreCaseDataService {
                 .summary("SSCS - appeal created event")
                 .description("Created SSCS case with token " + startEventResponse.getToken())
                 .build())
-            .data(new CaseData(appeal))
+            .data(CaseData
+                .builder()
+                .appeal(appeal)
+                .build())
             .build();
     }
 

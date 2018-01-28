@@ -23,6 +23,7 @@ public class CaseDataContentToJsonTest {
 
         // when
         String actualCaseDataContentJson = mapper.writeValueAsString(caseDataContent);
+        System.out.println(actualCaseDataContentJson);
 
         // should
         String expectedCaseDataContentJson = new FileUtils()
@@ -38,7 +39,9 @@ public class CaseDataContentToJsonTest {
                 .summary("SSCS - appeal created event")
                 .description("Created SSCS case with token")
                 .build())
-            .data(new CaseData(AppealUtils.buildAppeal()))
+            .data(CaseData.builder()
+                .appeal(AppealUtils.buildAppeal())
+                .build())
             .build();
     }
 }
