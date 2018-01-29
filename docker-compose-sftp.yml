@@ -1,0 +1,11 @@
+version: '2.1'
+
+services:
+  gaps2-sftp:
+    image: docker.artifactory.reform.hmcts.net/sscs/sscs-sftp:${SSCS_TESTS_VERSION:-latest}
+    container_name: sscs-sftp
+    command: sftp:pass:1001
+    healthcheck:
+      retries: 40
+    volumes:
+      - ./docker/sftp/data/incoming:/home/sftp/incoming
