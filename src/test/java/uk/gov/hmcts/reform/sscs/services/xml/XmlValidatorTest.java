@@ -16,28 +16,28 @@ public class XmlValidatorTest {
     private XmlValidator validator;
 
     @Test
-    public void shouldPassValidatorForValidReferenceXmlFiles() throws Exception {
+    public void givenValidRefXmlFile_shouldPassValidator() throws Exception {
         String refFilePath = "src/test/resources/SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
 
         validator.validateXml(refFilePath);
     }
 
     @Test
-    public void shouldPassValidatorForValidDeltaXmlFiles() throws Exception {
+    public void givenValidDeltaXmlFile_shouldPassValidator() throws Exception {
         String deltaFilePath = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
 
         validator.validateXml(deltaFilePath);
     }
 
     @Test(expected = Gap2ValidationException.class)
-    public void shouldFailValidationForInvalidFileType() throws Exception {
+    public void givenInvalidFileType_shouldFileValidation() throws Exception {
         String deltaFilePath = "src/test/resources/invalid_file.txt";
 
         validator.validateXml(deltaFilePath);
     }
 
     @Test(expected = SAXException.class)
-    public void shouldFailValidatorForValidReferenceXmlFiles() throws Exception {
+    public void givenInvalidRefXmlFile_shouldFailValidator() throws Exception {
         String refFilePath = "src/test/resources/SSCS_ExtractInvalid_Delta_2017-06-30-09-25-56.xml";
 
         validator.validateXml(refFilePath);

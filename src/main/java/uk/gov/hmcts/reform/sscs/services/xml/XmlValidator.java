@@ -27,8 +27,7 @@ public class XmlValidator {
     @Value("${sscs.gaps2.schema.location.delta}")
     private String deltaSchemaPath;
 
-    public void validateXml(String fileName) throws IOException, SAXException, XMLStreamException,
-        Gap2ValidationException {
+    public void validateXml(String fileName) throws IOException, SAXException, XMLStreamException {
 
         String schemaPath;
         if (fileName.contains("Reference")) {
