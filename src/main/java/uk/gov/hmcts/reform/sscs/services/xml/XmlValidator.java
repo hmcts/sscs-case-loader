@@ -22,15 +22,15 @@ import static javax.xml.validation.SchemaFactory.newInstance;
 @Service
 public class XmlValidator {
 
-    @Value("${sscs.gaps2.reference.schema.location}")
+    @Value("${sscs.gaps2.schema.location.reference}")
     private String refSchemaPath;
-    @Value("${sscs.gaps2.delta.schema.location}")
+    @Value("${sscs.gaps2.schema.location.delta}")
     private String deltaSchemaPath;
 
     public void validateXml(String fileName) throws IOException, SAXException, XMLStreamException,
         Gap2ValidationException {
 
-        String schemaPath = null;
+        String schemaPath;
         if (fileName.contains("Reference")) {
             schemaPath = refSchemaPath;
         } else if (fileName.contains("Delta") || fileName.contains("Full")) {
