@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.sscs.transform.AppealCaseToCcdCaseTransformer;
 @Component
 public class DeltaFileProcessor {
 
-    private  AppealCaseToCcdCaseTransformer appealCaseToCcdCaseTransformer;
+    private final AppealCaseToCcdCaseTransformer appealCaseToCcdCaseTransformer;
     
     @Autowired
     public DeltaFileProcessor(AppealCaseToCcdCaseTransformer appealCaseToCcdCaseTransformer) {
