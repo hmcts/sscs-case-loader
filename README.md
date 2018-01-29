@@ -165,6 +165,38 @@ docker image rm <image-id>
 
 There is no need to remove postgres and java or similar core images.
 
+### Setting up a Dockerised env to test the CaseLoader against CDD and rest of apps such as IDAM 
+
+* Step 1: Clone the CCD docker env
+```bash
+git clone git@git.reform.hmcts.net:case-management/ccd-docker.git
+
+```
+* Step 2: to bring up the Dockerised CDD env
+```bash
+./compose-frontend.sh up -d
+```
+* Step 3: Create idam roles
+```bash
+./bin/idam-create-caseworker.sh caseworker-sscs,caseworker-sscs-systemupdate,caseworker-sscs-anonymouscitizen yourEmail@hmcts.net
+```
+* Step 4: Add those roles in CDD
+```bash
+./bin/ccd-add-role.sh caseworker-sscs
+```
+then
+```bash
+./bin/ccd-add-role.sh caseworker-sscs-systemupdate
+```
+and the last one
+```bash
+./bin/ccd-add-role.sh caseworker-sscs-anonymouscitizen
+```
+* Step 5: Finally import the XLS definition file
+```bash
+./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_V28.xlsx
+```
+
 ## Hystrix
 
 [Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
