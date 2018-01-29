@@ -17,14 +17,15 @@ variable "infrastructure_env" {
   description = "Infrastructure environment to point to"
 }
 
-variable "sscs_case_loader_server_port" {
-  type    = "string"
-  default = "8082"
-}
-
 variable "management_security_enabled" {
   type    = "string"
   default = "true"
 }
+
+variable "subscription" {
+  type = "string"
+}
+
+variable "ilbIp"{}
 
 
