@@ -197,6 +197,16 @@ and the last one
 ./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_V28.xlsx
 ```
 
+### Setting up a Dockerised SFTP server for developing purpose
+* To build both the case-loader and SFTP server services 
+```bash
+docker-compose rm -f && docker-compose build && docker-compose up
+```
+* To simply build the SFTP server
+```bash
+docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up ```
+```
+
 ## Hystrix
 
 [Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
