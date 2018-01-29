@@ -5,7 +5,7 @@ RUN apk add bash openssh-client
 RUN mkdir -p /opt/sscs/sscs-case-loader
 RUN mkdir /var/run/sshd
 
-COPY target/sscs-case-loader-*.jar /opt/sscs/sscs-case-loader/app.jar
+COPY build/install/sscs-case-loader /opt/app/
 
 RUN mkdir -p /var/tmp/gaps2
 RUN mkdir -p /var/tmp/gaps2archive
