@@ -1,0 +1,23 @@
+{
+  "event" : {
+    "id" : "appealCreated",
+    "summary" : "SSCS - appeal created event",
+    "description" : "Created SSCS case with token"
+  },
+  "data" : {
+    "appeal" : {
+      "mrnDate" : "2017-10-08",
+      "mrnMissingReason" : "It was missing",
+      "appellant" : {
+        "name" : {
+          "title" : "Mr",
+          "firstName" : "User",
+          "lastName" : "Test"
+        }
+      }
+    }
+  },
+  "security_classification" : null,
+  "event_token" : "user token",
+  "ignore_warning" : false
+}
