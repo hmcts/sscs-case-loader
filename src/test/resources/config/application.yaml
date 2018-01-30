@@ -1,0 +1,4 @@
+sscs.gaps2:
+  schema.location:
+    delta: /schema/SSCS_Extract_Schema_0.8.xsd
+    reference: /schema/SSCS_Extract_Schema_Reference_0.2.xsd
