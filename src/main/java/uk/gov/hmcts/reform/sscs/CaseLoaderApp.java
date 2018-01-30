@@ -7,8 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.annotation.Bean;
+
+import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 import uk.gov.hmcts.reform.sscs.services.FetchXmlFilesService;
+import uk.gov.hmcts.reform.sscs.services.TransformJsonToCcdCaseService;
 import uk.gov.hmcts.reform.sscs.services.TransformXmlFilesToJsonFilesService;
 import uk.gov.hmcts.reform.sscs.services.ValidateXmlFilesService;
 
@@ -26,6 +29,8 @@ public class CaseLoaderApp {
     private TransformXmlFilesToJsonFilesService transformXmlFilesToJsonFilesService;
     @Autowired
     private ValidateXmlFilesService validateXmlFilesService;
+    @Autowired
+    private TransformJsonToCcdCaseService transformJsonToCcdCaseService;
 
     public static void main(String[] args) {
         SpringApplication.run(CaseLoaderApp.class, args);
@@ -39,7 +44,8 @@ public class CaseLoaderApp {
                 XmlFiles xmlFiles = optionalXmlFiles.get();
                 boolean validateXmlFiles = validateXmlFilesService.validate(xmlFiles);
                 if (validateXmlFiles) {
-                    transformXmlFilesToJsonFilesService.transform(xmlFiles);
+                    JsonFiles jsonFiles = transformXmlFilesToJsonFilesService.transform(xmlFiles);
+                    transformJsonToCcdCaseService.process(jsonFiles.getDelta());                    
                 }
             }
         };

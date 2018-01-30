@@ -12,7 +12,12 @@
         "name" : {
           "title" : "Mr",
           "firstName" : "User",
+          "middleName" : "M",
           "lastName" : "Test"
+        },
+        "identity" : {
+           "dob" : "01-04-1985",
+           "nino" : "AB 22 55 66 B"
         }
       }
     }
