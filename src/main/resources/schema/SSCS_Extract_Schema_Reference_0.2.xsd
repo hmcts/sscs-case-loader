@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<xs:schema id="Reference_Tables" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element msdata:IsDataSet="true" msdata:UseCurrentLocale="true" name="Reference_Tables" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Case_Code">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="CASE_CODE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="CCD_KEY" type="xs:string" />
+              <xs:element minOccurs="0" name="CCD_ORALEXMN_TIME" type="xs:short" />
+              <xs:element minOccurs="0" name="CCD_PAPEREXMN_TIME" type="xs:short" />
+              <xs:element minOccurs="0" name="CCD_LEGN_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="CCD_PRE_TIME" type="xs:short" />
+              <xs:element minOccurs="0" name="CCD_POST_TIME" type="xs:short" />
+              <xs:element minOccurs="0" name="BEN_ASSESS_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="ISSUES_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="SESSION_CATEGORY_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="OFFICE_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="BUSINESS_RULES_GRP_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Business_Rules_Group">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="BUSINESS_RULES_GRP_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="BRG_SHORT_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="BRG_LONG_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+              <xs:element minOccurs="0" name="TRIBUNAL_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="JURISDICTION_ID" type="xs:short" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Tribunal">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="TRIBUNAL_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="TRIBUNAL_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="TRIBUNAL_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="TRIBUNAL_WWW_ADDRESS" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Tribunal_Type">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="TRIBUNAL_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="TBT_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="TBT_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Appeal_Status">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="APPEAL_STATUS_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="APS_MINOR" type="xs:short" />
+              <xs:element minOccurs="0" name="APS_BF_DAYS" type="xs:short" />
+              <xs:element minOccurs="0" name="APS_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="APS_DORMANT" type="xs:string" />
+              <xs:element minOccurs="0" name="APS_SEARCH" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Office">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="OFFICE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="OFF_REF" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_NAME" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_ADDRESS_1" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_ADDRESS_2" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_TOWN" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_COUNTY" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_POSTCODE" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_TEL_NO" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_FAX_NO" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_OPEN" type="xs:string" />
+              <xs:element minOccurs="0" name="OFF_EMAIL" type="xs:string" />
+              <xs:element minOccurs="0" name="OFFICE_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Ben_Assess_Type">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="BEN_ASSESS_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="BAT_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="BAT_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+              <xs:element minOccurs="0" name="BAT_REF_PREFIX" type="xs:string" />
+              <xs:element minOccurs="0" name="BAT_REF_PREFIX_UT" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Admin_Team">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="ADMIN_TEAM_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="ADM_NAME" type="xs:string" />
+              <xs:element minOccurs="0" name="ADM_CLOSURE_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="VENUE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+              <xs:element minOccurs="0" name="ADMIN_TEAM_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="ADMIN_TEAM_CODE_2" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Venue">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="VENUE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="VEN_NAME" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_LINE1" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_LINE2" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_TOWN" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_COUNTY" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_POSTCODE" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_TEL_NO" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_ADDRESS_FAX_NO" type="xs:string" />
+              <xs:element minOccurs="0" name="VEN_CLOSE_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="VEN_EMAIL" type="xs:string" />
+              <xs:element minOccurs="0" name="DISTRICT_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="District">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="DISTRICT_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="DST_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_CENTRE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+              <xs:element minOccurs="0" name="DST_DESC_BP" type="xs:string" />
+              <xs:element minOccurs="0" name="DISTRICT_ID_BP" type="xs:short" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ITS_Centre">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="ITS_CENTRE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="ITS_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_NAME" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_ADDR_1" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_ADDR_2" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_TOWN" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_COUNTY" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_POSTCDE" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_TEL_NO" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_FAX_NO" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_EMAIL" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_SERVICE" type="xs:string" />
+              <xs:element minOccurs="0" name="ITS_CDB_INCLUDE" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+              <xs:element minOccurs="0" name="TRIBUNAL_ID" type="xs:short" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="PTTP_Role">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="PTTP_ROLE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="PTR_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="PTR_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+              <xs:element minOccurs="0" name="PTTP_ROLE_ID_ALT" type="xs:short" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Separate_Correspondence">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="SEPARATE_CORRESPONDENCE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="SC_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="SC_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="SC_USER_SELECTABLE_FLAG" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Language_Type">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="LANGUAGE_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="LANGUAGE_TYPE_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Fur_Evid_Type">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="FUR_EVID_TYPE_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="FET_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="FET_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Hearing_Outcome">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="HEARING_OUTCOME_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="HOC_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="HOC_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="HOC_APPEAL_FLG" type="xs:string" />
+              <xs:element minOccurs="0" name="REFERENCE_ID_OUTCOME_TYPE" type="xs:int" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Postpone_Reason">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="POSTPONE_REASON_ID" type="xs:short" />
+              <xs:element minOccurs="0" name="PPR_CODE" type="xs:string" />
+              <xs:element minOccurs="0" name="PPR_DESC" type="xs:string" />
+              <xs:element minOccurs="0" name="ROW_IS_DELETED" type="xs:string" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_DATE" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="LAST_MODIFIED_BY" type="xs:string" />
+              <xs:element minOccurs="0" name="TIMESTAMP" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Schema_Version">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element msdata:DataType="System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" minOccurs="0" name="Version" type="xs:anyType" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

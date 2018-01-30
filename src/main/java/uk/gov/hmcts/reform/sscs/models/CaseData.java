@@ -5,9 +5,6 @@ import lombok.Value;
 
 @Value
 @Builder
-public class Appellant {
-
-    private Name name;
-    private Identity identity; 
-
+public class CaseData {
+    private Appeal appeal;
 }

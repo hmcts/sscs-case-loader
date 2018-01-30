@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<xs:schema id="Appeal_Cases" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element msdata:IsDataSet="true" msdata:UseCurrentLocale="true" name="Appeal_Cases" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Appeal_Case">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="Extract_Time_UTC" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="Appeal_Case_Id" type="xs:int" />
+              <xs:element minOccurs="0" name="Appeal_Case_RefNum" type="xs:string" />
+              <xs:element minOccurs="0" name="Appeal_Case_Confidential" type="xs:string" />
+              <xs:element minOccurs="0" name="Appeal_Case_Sensitive" type="xs:string" />
+              <xs:element minOccurs="0" name="Appeal_Case_Case_Code_Id" type="xs:short" />
+              <xs:element minOccurs="0" name="Tribunal_Type_Id" type="xs:short" />
+              <xs:element minOccurs="0" name="Appeal_Case_Date_Appeal_Received" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="Appeal_Case_Date_of_Decision" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="Appeal_Case_Date_Appeal_Made" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="Appeal_Case_Date_FTA_Response_Received" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="Appeal_Case_NINO" type="xs:string" />
+              <xs:element minOccurs="0" name="Appeal_Case_Major_Id" type="xs:short" />
+              <xs:element minOccurs="0" name="Appeal_Case_BF_Date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="Originating_Office_Id" type="xs:short" />
+              <xs:element minOccurs="0" name="Admin_Team_Id" type="xs:short" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Parties">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="relAC_Party" msdata:parent="Appeal_Case" msdata:child="Parties" msdata:parentkey="Appeal_Case_Id" msdata:childkey="Appeal_Case_Id" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="PTTP_ID" type="xs:int" />
+                    <xs:element minOccurs="0" name="Title" type="xs:string" />
+                    <xs:element minOccurs="0" name="INITIALS" type="xs:string" />
+                    <xs:element minOccurs="0" name="Surname" type="xs:string" />
+                    <xs:element minOccurs="0" name="Email" type="xs:string" />
+                    <xs:element minOccurs="0" name="Phone_1" type="xs:string" />
+                    <xs:element minOccurs="0" name="Phone_2" type="xs:string" />
+                    <xs:element minOccurs="0" name="Postcode" type="xs:string" />
+                    <xs:element minOccurs="0" name="Role_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Separate_Correspondence_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Attending" type="xs:string" />
+                    <xs:element minOccurs="0" name="Disability_Needs" type="xs:string" />
+                    <xs:element minOccurs="0" name="Interpreter_Signer_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="DOB" type="xs:dateTime" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Further_Evidence">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="relAC_FurtherEvidence" msdata:parent="Appeal_Case" msdata:child="Further_Evidence" msdata:parentkey="Appeal_Case_Id" msdata:childkey="Appeal_Case_Id" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="FUR_EVIDENCE_ID" type="xs:int" />
+                    <xs:element minOccurs="0" name="FE_Date_Received" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="FE_Date_Issued" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="FE_Type_of_Evidence_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="FE_Role_Id" type="xs:short" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Hearing">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="relAC_Hearing" msdata:parent="Appeal_Case" msdata:child="Hearing" msdata:parentkey="Appeal_Case_Id" msdata:childkey="Appeal_Case_Id" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="Hearing_Id" type="xs:int" />
+                    <xs:element minOccurs="0" name="Date_Hearing_Notification" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="Date_Outcome_Decision_Notification" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="Session_Date" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="Appeal_Time" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="Venue_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Outcome_Id" type="xs:short" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Minor_Status">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="relAC_MinorStatuses" msdata:parent="Appeal_Case" msdata:child="Minor_Status" msdata:parentkey="Appeal_Case_Id" msdata:childkey="Appeal_Case_Id" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="Status_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Date_Set" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="BF_Date" type="xs:dateTime" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Major_Status">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="relAC_MajorStatuses" msdata:parent="Appeal_Case" msdata:child="Major_Status" msdata:parentkey="Appeal_Case_Id" msdata:childkey="Appeal_Case_Id" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="Status_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Date_Set" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="Date_Closed" type="xs:dateTime" />
+                    <xs:element minOccurs="0" name="BF_Date" type="xs:dateTime" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Postponement_Requests">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="relAC_PostponementRequests_x0020_" msdata:parent="Appeal_Case" msdata:child="Postponement_Requests" msdata:parentkey="Appeal_Case_Id" msdata:childkey="Appeal_Case_Id" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" name="Appeal_Hearing_Id" type="xs:int" />
+                    <xs:element minOccurs="0" name="Role_Requested_By_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Postponement_Reason_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Postponement_Granted" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Num_Records">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="NumberOfCases" type="xs:int" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Schema_Version">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element msdata:DataType="System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" minOccurs="0" name="Version" type="xs:anyType" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

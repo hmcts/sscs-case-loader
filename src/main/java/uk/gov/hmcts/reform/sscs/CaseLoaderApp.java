@@ -6,9 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+import org.springframework.context.annotation.Bean;
+
 import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
-import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
+import uk.gov.hmcts.reform.sscs.services.FetchXmlFilesService;
+import uk.gov.hmcts.reform.sscs.services.TransformJsonToCcdCaseService;
+import uk.gov.hmcts.reform.sscs.services.TransformXmlFilesToJsonFilesService;
+import uk.gov.hmcts.reform.sscs.services.ValidateXmlFilesService;
 
 import java.util.Optional;
 
@@ -16,25 +21,34 @@ import java.util.Optional;
 @EnableCircuitBreaker
 @EnableHystrixDashboard
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
-public class CaseLoaderApp implements CommandLineRunner {
+public class CaseLoaderApp {
 
     @Autowired
-    private CaseLoaderService caseLoaderService;
+    private FetchXmlFilesService sftpFetchXmlFilesService;
+    @Autowired
+    private TransformXmlFilesToJsonFilesService transformXmlFilesToJsonFilesService;
+    @Autowired
+    private ValidateXmlFilesService validateXmlFilesService;
+    @Autowired
+    private TransformJsonToCcdCaseService transformJsonToCcdCaseService;
 
     public static void main(String[] args) {
         SpringApplication.run(CaseLoaderApp.class, args);
     }
 
-    @Override
-    public void run(String... args) {
-        Optional<XmlFiles> optionalXmlFiles = caseLoaderService.fetchXmlFilesFromGaps2();
-        if (optionalXmlFiles.isPresent()) {
-            XmlFiles xmlFiles = optionalXmlFiles.get();
-            boolean validateXmlFiles = caseLoaderService.validateXmlFiles(xmlFiles);
-            if (validateXmlFiles) {
-                JsonFiles jsonFiles = caseLoaderService.transformXmlFilesToJsonFiles(xmlFiles);
-                caseLoaderService.process(jsonFiles.getDelta());
+    @Bean
+    public CommandLineRunner commandLineRunner() {
+        return args -> {
+            Optional<XmlFiles> optionalXmlFiles = sftpFetchXmlFilesService.fetch();
+            if (optionalXmlFiles.isPresent()) {
+                XmlFiles xmlFiles = optionalXmlFiles.get();
+                boolean validateXmlFiles = validateXmlFilesService.validate(xmlFiles);
+                if (validateXmlFiles) {
+                    JsonFiles jsonFiles = transformXmlFilesToJsonFilesService.transform(xmlFiles);
+                    transformJsonToCcdCaseService.process(jsonFiles.getDelta());                    
+                }
             }
-        }
+        };
     }
+
 }
