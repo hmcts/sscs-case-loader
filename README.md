@@ -211,13 +211,24 @@ docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docke
 
 Place file to be transferred under `docker/sftp/data/incoming` then:
 
+To connect into sscs-case-loader container use command:
 ```bash
 docker exec -it sscs-case-loader bash
 ```
-
+To connect into sftp container from sscs-case-loader container use:
 ```bash
 sftp -P 22 -o StrictHostKeyChecking=no -i /home/webapp/sscs-sftp-key sftp@sscs-sftp:incoming
 ```
+
+To connect into sftp container from host (your computer):
+Before first use:
+```bash
+chmod 600 ./docker/sftp-docker
+```
+```bash
+sftp -P 2222 -o StrictHostKeyChecking=no -i ./docker/sftp-docker sftp@localhost:incoming
+```
+
 
 ```bash
 Connected to sscs-sftp.
