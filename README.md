@@ -204,7 +204,26 @@ docker-compose rm -f && docker-compose build && docker-compose up
 ```
 * To simply build the SFTP server
 ```bash
-docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up ```
+docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
+```
+
+* To login into a container which is currently running on your system and view transferred files
+
+Place file to be transferred under `docker/sftp/data/incoming` then:
+
+```bash
+docker exec -it sscs-case-loader bash
+```
+
+```bash
+sftp -P 22 -o StrictHostKeyChecking=no -i /home/webapp/sscs-sftp-key sftp@sscs-sftp:incoming
+```
+
+```bash
+Connected to sscs-sftp.
+Changing to: /incoming
+sftp> dir
+SSCS_Extract_Reference_2017-06-30-09-01-31.xml
 ```
 
 ## Hystrix
