@@ -44,5 +44,7 @@ services:
     command: sftp:pass:1001
     healthcheck:
       retries: 40
+    ports:
+      - "2222:22"
     volumes:
       - ./docker/sftp/data/incoming:/home/sftp/incoming
