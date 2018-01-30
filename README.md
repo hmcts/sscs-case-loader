@@ -197,6 +197,50 @@ and the last one
 ./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_V28.xlsx
 ```
 
+### Setting up a Dockerised SFTP server for developing purpose
+* To build both the case-loader and SFTP server services 
+```bash
+docker-compose rm -f && docker-compose build && docker-compose up
+```
+* To simply build the SFTP server
+```bash
+docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
+```
+
+* To login into a container which is currently running on your system and view transferred files
+
+Place file to be transferred under `docker/sftp/data/incoming` then:
+
+To connect into sscs-case-loader container use command:
+```bash
+docker exec -it sscs-case-loader bash
+```
+To connect into sftp container from sscs-case-loader container use:
+```bash
+sftp -P 22 -o StrictHostKeyChecking=no -i /home/webapp/sscs-sftp-key sftp@sscs-sftp:incoming
+```
+
+To connect into sftp container from host (your computer):
+Before first use
+```bash
+chmod 600 ./docker/sftp-docker
+```
+and put some files in here
+```bash
+./docker/sftp/data/incoming/
+```
+finally
+```bash
+sftp -P 2222 -o StrictHostKeyChecking=no -i ./docker/sftp-docker sftp@localhost:incoming
+```
+
+```bash
+Connected to sscs-sftp.
+Changing to: /incoming
+sftp> dir
+SSCS_Extract_Reference_2017-06-30-09-01-31.xml
+```
+
 ## Hystrix
 
 [Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
