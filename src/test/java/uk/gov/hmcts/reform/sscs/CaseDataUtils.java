@@ -14,7 +14,6 @@ public final class CaseDataUtils {
         Name name = Name.builder()
             .title("Mr")
             .firstName("User")
-            .middleName("M")
             .lastName("Test")
             .build();
         Identity identity = Identity.builder()

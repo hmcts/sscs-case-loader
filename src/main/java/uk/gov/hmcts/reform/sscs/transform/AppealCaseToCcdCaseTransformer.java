@@ -31,6 +31,7 @@ public class AppealCaseToCcdCaseTransformer {
 
     private Identity getIdentity() {
         return Identity.builder()
+                .dob(appealCase.getParties().getDob())
                 .nino(appealCase.getAppealCaseNino())
                 .build();
     }
