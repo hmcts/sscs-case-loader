@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.models;
+package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import lombok.Builder;
 import lombok.Value;
@@ -8,6 +8,6 @@ import lombok.Value;
 public class Appellant {
 
     private Name name;
-    private Identity identity; 
+    private Identity identity;
 
 }

@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
 import java.util.HashMap;
 import java.util.Map;

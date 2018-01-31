@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.models.gaps2;
+package uk.gov.hmcts.reform.sscs.models.deserialize.gaps2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
