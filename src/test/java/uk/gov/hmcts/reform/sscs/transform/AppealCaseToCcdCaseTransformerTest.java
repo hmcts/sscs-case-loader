@@ -54,12 +54,10 @@ public class AppealCaseToCcdCaseTransformerTest {
                 .appellant(appellant)
                 .build();
 
-        CcdCase ccdCase = CcdCase.builder()
+        return CcdCase.builder()
                 .caseReference("SC068/17/00013")
                 .appeal(appeal)
                 .build();
-
-        return ccdCase;
     }
 
 }
