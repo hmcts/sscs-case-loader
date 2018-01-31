@@ -7,15 +7,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.annotation.Bean;
-
+import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
-import uk.gov.hmcts.reform.sscs.services.FetchXmlFilesService;
-import uk.gov.hmcts.reform.sscs.services.TransformJsonToCcdCaseService;
-import uk.gov.hmcts.reform.sscs.services.TransformXmlFilesToJsonFilesService;
-import uk.gov.hmcts.reform.sscs.services.ValidateXmlFilesService;
+import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
+import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
+import uk.gov.hmcts.reform.sscs.services.xml.FetchXmlFilesService;
+import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
+import java.io.IOException;
 import java.util.Optional;
+import javax.xml.stream.XMLStreamException;
 
 @SpringBootApplication
 @EnableCircuitBreaker
@@ -26,11 +28,11 @@ public class CaseLoaderApp {
     @Autowired
     private FetchXmlFilesService sftpFetchXmlFilesService;
     @Autowired
-    private TransformXmlFilesToJsonFilesService transformXmlFilesToJsonFilesService;
+    private TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles;
     @Autowired
-    private ValidateXmlFilesService validateXmlFilesService;
+    private TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     @Autowired
-    private TransformJsonToCcdCaseService transformJsonToCcdCaseService;
+    private XmlValidator xmlValidator;
 
     public static void main(String[] args) {
         SpringApplication.run(CaseLoaderApp.class, args);
@@ -42,13 +44,16 @@ public class CaseLoaderApp {
             Optional<XmlFiles> optionalXmlFiles = sftpFetchXmlFilesService.fetch();
             if (optionalXmlFiles.isPresent()) {
                 XmlFiles xmlFiles = optionalXmlFiles.get();
-                boolean validateXmlFiles = validateXmlFilesService.validate(xmlFiles);
-                if (validateXmlFiles) {
-                    JsonFiles jsonFiles = transformXmlFilesToJsonFilesService.transform(xmlFiles);
-                    transformJsonToCcdCaseService.process(jsonFiles.getDelta().toString());                    
-                }
+                validateXmls(xmlFiles);
+                JsonFiles jsonFiles = transformXmlFilesToJsonFiles.transform(xmlFiles);
+                transformJsonCasesToCaseData.transform(jsonFiles.getDelta().toString());
             }
         };
+    }
+
+    private void validateXmls(XmlFiles xmlFiles) throws IOException, SAXException, XMLStreamException {
+        xmlValidator.validateXml(xmlFiles.getDelta());
+        xmlValidator.validateXml(xmlFiles.getRef());
     }
 
 }
