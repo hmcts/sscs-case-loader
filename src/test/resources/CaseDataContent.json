@@ -5,6 +5,7 @@
     "description" : "Created SSCS case with token"
   },
   "data" : {
+    "caseReference" : "SC068/17/00013",
     "appeal" : {
       "mrnDate" : "2017-10-08",
       "mrnMissingReason" : "It was missing",
@@ -13,6 +14,10 @@
           "title" : "Mr",
           "firstName" : "User",
           "lastName" : "Test"
+        },
+        "identity" : {
+           "dob" : "01-04-1985",
+           "nino" : "AB 22 55 66 B"
         }
       }
     }

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.models;
+package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import lombok.Builder;
 import lombok.Value;
@@ -6,5 +6,6 @@ import lombok.Value;
 @Value
 @Builder
 public class CaseData {
+    private String caseReference;
     private Appeal appeal;
 }

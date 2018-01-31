@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.sscs;
 
-import uk.gov.hmcts.reform.sscs.models.Appeal;
-import uk.gov.hmcts.reform.sscs.models.Appellant;
-import uk.gov.hmcts.reform.sscs.models.CaseData;
-import uk.gov.hmcts.reform.sscs.models.Name;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 
 public final class CaseDataUtils {
     private CaseDataUtils() {
@@ -15,8 +16,13 @@ public final class CaseDataUtils {
             .firstName("User")
             .lastName("Test")
             .build();
+        Identity identity = Identity.builder()
+            .dob("01-04-1985")
+            .nino("AB 22 55 66 B")
+            .build();
         Appellant appellant = Appellant.builder()
             .name(name)
+            .identity(identity)
             .build();
         Appeal appeal = Appeal.builder()
             .mrnDate("2017-10-08")
@@ -24,6 +30,7 @@ public final class CaseDataUtils {
             .appellant(appellant)
             .build();
         return CaseData.builder()
+            .caseReference("SC068/17/00013")
             .appeal(appeal).build();
     }
 }

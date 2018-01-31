@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services;
+package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CoreCcdCaseDataServiceTest {
+public class CoreCaseDataServiceTest {
 
     @Mock
     private CoreCaseDataApi coreCaseDataApiMock;

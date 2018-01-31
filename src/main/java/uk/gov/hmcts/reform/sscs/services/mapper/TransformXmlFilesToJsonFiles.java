@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services;
+package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import org.json.JSONObject;
 import org.json.XML;
@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
 @Service
-public class TransformXmlFilesToJsonFilesService {
+public class TransformXmlFilesToJsonFiles {
     public JsonFiles transform(XmlFiles xmlFiles) {
         JSONObject jsonDelta = XML.toJSONObject(
             FileUtils.getFileContentGivenFilePath(xmlFiles.getDelta()));
