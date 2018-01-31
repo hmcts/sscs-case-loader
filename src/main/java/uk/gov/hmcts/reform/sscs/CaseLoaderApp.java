@@ -45,7 +45,7 @@ public class CaseLoaderApp {
                 boolean validateXmlFiles = validateXmlFilesService.validate(xmlFiles);
                 if (validateXmlFiles) {
                     JsonFiles jsonFiles = transformXmlFilesToJsonFilesService.transform(xmlFiles);
-                    transformJsonToCcdCaseService.process(jsonFiles.getDelta());                    
+                    transformJsonToCcdCaseService.process(jsonFiles.getDelta().toString());                    
                 }
             }
         };

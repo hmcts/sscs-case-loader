@@ -1,15 +1,19 @@
 package uk.gov.hmcts.reform.sscs.processor;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import uk.gov.hmcts.reform.sscs.models.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.transform.AppealCaseToCcdCaseTransformer;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
+
+import java.io.IOException;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -30,15 +34,17 @@ public class DeltaFileProcessorTest {
     }
     
     @Test
-    public void shouldProcess() {
+    public void shouldProcess() throws IOException {
         
-        JSONObject rootObject = new JSONObject(FileUtils.getFileContentGivenFilePath(DELTA_JSON));
-        JSONObject appealCasesObject = rootObject.getJSONObject("Appeal_Cases");
-        JSONArray appealCasesArray = appealCasesObject.getJSONArray("Appeal_Case");
+        ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
+
+        String jsonExtract = FileUtils.getFileContentGivenFilePath(DELTA_JSON);
+
+        Gaps2Extract gaps2Extract = mapper.readerFor(Gaps2Extract.class).readValue(jsonExtract);
+
+        deltaFileProcessor.process(jsonExtract);
         
-        deltaFileProcessor.process(rootObject);
-        
-        verify(appealCaseToCcdCaseTransformer).transform(eq(appealCasesArray.getJSONObject(0)));
+        verify(appealCaseToCcdCaseTransformer).transform(eq(gaps2Extract.getAppealCases().getAppealCaseList().get(0)));
 
     }
 
