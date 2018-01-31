@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import uk.gov.hmcts.reform.sscs.models.Appeal;
 import uk.gov.hmcts.reform.sscs.models.Appellant;
-import uk.gov.hmcts.reform.sscs.models.CcdCase;
+import uk.gov.hmcts.reform.sscs.models.CaseData;
 import uk.gov.hmcts.reform.sscs.models.Identity;
 import uk.gov.hmcts.reform.sscs.models.Name;
 import uk.gov.hmcts.reform.sscs.models.gaps2.AppealCase;
@@ -15,7 +15,7 @@ public class AppealCaseToCcdCaseTransformer {
     
     private AppealCase appealCase;
 
-    public CcdCase transform(AppealCase appealCase) {
+    public CaseData transform(AppealCase appealCase) {
         this.appealCase = appealCase;
 
         Name name = getName();
@@ -23,7 +23,7 @@ public class AppealCaseToCcdCaseTransformer {
 
         Appellant appellant = Appellant.builder().name(name).identity(identity).build();
         Appeal appeal = Appeal.builder().appellant(appellant).build();
-        return CcdCase.builder()
+        return CaseData.builder()
                 .caseReference(appealCase.getAppealCaseRefNum())
                 .appeal(appeal)
                 .build();

@@ -7,7 +7,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import uk.gov.hmcts.reform.sscs.models.Appeal;
 import uk.gov.hmcts.reform.sscs.models.Appellant;
-import uk.gov.hmcts.reform.sscs.models.CcdCase;
+import uk.gov.hmcts.reform.sscs.models.CaseData;
 import uk.gov.hmcts.reform.sscs.models.Identity;
 import uk.gov.hmcts.reform.sscs.models.Name;
 import uk.gov.hmcts.reform.sscs.models.gaps2.Gaps2Extract;
@@ -30,13 +30,13 @@ public class AppealCaseToCcdCaseTransformerTest {
 
         Gaps2Extract gaps2Extract = mapper.readerFor(Gaps2Extract.class).readValue(jsonExtract);
 
-        CcdCase actualCcdCase = new AppealCaseToCcdCaseTransformer()
+        CaseData actualCcdCase = new AppealCaseToCcdCaseTransformer()
                 .transform(gaps2Extract.getAppealCases().getAppealCaseList().get(0));
 
         assertEquals(buildCcdCaseData(), actualCcdCase);
     }
 
-    private CcdCase buildCcdCaseData() {
+    private CaseData buildCcdCaseData() {
 
         Name name = Name.builder()
                 .title("Mrs.")
@@ -54,7 +54,7 @@ public class AppealCaseToCcdCaseTransformerTest {
                 .appellant(appellant)
                 .build();
 
-        return CcdCase.builder()
+        return CaseData.builder()
                 .caseReference("SC068/17/00013")
                 .appeal(appeal)
                 .build();

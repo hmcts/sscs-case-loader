@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
 
-import uk.gov.hmcts.reform.sscs.models.CcdCase;
+import uk.gov.hmcts.reform.sscs.models.CaseData;
 import uk.gov.hmcts.reform.sscs.models.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.transform.AppealCaseToCcdCaseTransformer;
 
@@ -22,7 +22,7 @@ public class DeltaFileProcessor {
         this.appealCaseToCcdCaseTransformer = appealCaseToCcdCaseTransformer;
     }
     
-    public CcdCase process(String json) throws IOException {
+    public CaseData process(String json) throws IOException {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
         Gaps2Extract gapsExtract = mapper.readerFor(Gaps2Extract.class).readValue(json);
         

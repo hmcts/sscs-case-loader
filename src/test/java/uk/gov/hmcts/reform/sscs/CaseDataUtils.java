@@ -30,6 +30,7 @@ public final class CaseDataUtils {
             .appellant(appellant)
             .build();
         return CaseData.builder()
+            .caseReference("SC068/17/00013")
             .appeal(appeal).build();
     }
 }

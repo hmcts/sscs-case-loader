@@ -6,5 +6,6 @@ import lombok.Value;
 @Value
 @Builder
 public class CaseData {
+    private String caseReference;
     private Appeal appeal;
 }

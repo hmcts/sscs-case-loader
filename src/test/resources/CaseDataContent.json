@@ -5,6 +5,7 @@
     "description" : "Created SSCS case with token"
   },
   "data" : {
+    "caseReference" : "SC068/17/00013",
     "appeal" : {
       "mrnDate" : "2017-10-08",
       "mrnMissingReason" : "It was missing",
