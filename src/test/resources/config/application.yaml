@@ -2,3 +2,12 @@ sscs.gaps2:
   schema.location:
     delta: /schema/SSCS_Extract_Schema_0.8.xsd
     reference: /schema/SSCS_Extract_Schema_Reference_0.2.xsd
+  dir: ${GAPS2_DATA_DIR:src/test/resources/extract}
+
+sftp:
+  key.location: ${GAPS2_KEY_LOCATION:./docker/sftp-docker}
+  host: ${GAPS2_SFTP_HOST:localhost}
+  port: ${GAPS2_SFTP_PORT:2222}
+  user: ${GAPS2_SFTP_USER:sftp}
+  sftpKeyContents: ${GAPS2_SFTP_KEY:key}
+  input.dir: ${GAPS2_SFTP_DIR:incoming}

@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * class for testing purpose.
+ * Class for testing purpose.
  * When running the CDD dockerized env we can use the method here to confirm
  * that we can save a Case into the CDD from the CaseLoader successfully.
  */
