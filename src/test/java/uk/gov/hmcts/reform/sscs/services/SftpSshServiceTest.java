@@ -55,7 +55,7 @@ public class SftpSshServiceTest {
 
         when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
         when(((ChannelSftp)channelSftp).ls(anyString())).thenReturn(rows);
-        when((row).getFilename()).thenReturn("Testing.xml");
+        when(row.getFilename()).thenReturn("Testing.xml");
 
         List<InputStream> result = service.getFilesAsInputStreams(sesConnection);
 
@@ -64,7 +64,7 @@ public class SftpSshServiceTest {
 
     @Test
     public void givenAConnectionRequest_shouldConnectToSftp() throws JSchException {
-        when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
+        when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
         doNothing().when(sesConnection).connect(anyInt());
 
         Session result = service.connect();
@@ -88,7 +88,7 @@ public class SftpSshServiceTest {
 
         when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
         when(((ChannelSftp)channelSftp).ls(anyString())).thenReturn(rows);
-        when((row).getFilename()).thenReturn("Testing.xml");
+        when(row.getFilename()).thenReturn("Testing.xml");
 
         List<InputStream> result = service.readExtractFiles();
 

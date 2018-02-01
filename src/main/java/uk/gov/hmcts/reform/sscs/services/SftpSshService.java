@@ -32,14 +32,8 @@ public class SftpSshService {
     @Value("${sftp.user}")
     private String username;
 
-    @Value("${sftp.sftpKeyContents}")
-    private String sftpKeyContents;
-
     @Value("${sftp.input.dir}")
     private String sftpInputDirectory;
-
-    @Value("${sscs.gaps2.dir}")
-    private String gapsInputDir;
 
     @Value("${sftp.key.location}")
     private String sftpKeyLocation;

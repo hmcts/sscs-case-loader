@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.gov.hmcts.reform.sscs.services.SftpSshService;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -31,6 +30,7 @@ public class RetrieveFileFromSftpService {
     private SftpSshService service;
 
     @Test
+    @Ignore
     public void givenAnSftpFile_shouldBeRetrievedAndConvertedToAnInputStream() throws Exception {
 
         List<InputStream> result = service.readExtractFiles();
