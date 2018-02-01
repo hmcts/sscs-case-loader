@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
+import com.jcraft.jsch.JSch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -33,6 +34,11 @@ public class CaseLoaderApp {
     private TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     @Autowired
     private XmlValidator xmlValidator;
+
+    @Bean
+    public JSch jschSshChannel() {
+        return new JSch();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(CaseLoaderApp.class, args);

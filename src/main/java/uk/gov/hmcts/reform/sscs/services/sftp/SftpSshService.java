@@ -8,6 +8,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,8 @@ public class SftpSshService {
     @Value("${sftp.key.location}")
     private String sftpKeyLocation;
 
-    private JSch jschSshChannel = new JSch();
+    @Autowired
+    private JSch jschSshChannel;
 
     public List<InputStream> readExtractFiles()  {
         try {

@@ -11,9 +11,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.InputStream;
 import java.util.List;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = SftpSshService.class)
 public class SftpSshServiceTest {
 
@@ -111,10 +111,6 @@ public class SftpSshServiceTest {
         when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
 
         Channel channelSftp = mock(ChannelSftp.class);
-
-        Vector<ChannelSftp.LsEntry> rows = new Vector<>();
-        ChannelSftp.LsEntry row = mock(ChannelSftp.LsEntry.class);
-        rows.add(row);
 
         when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
 
