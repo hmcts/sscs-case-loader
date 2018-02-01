@@ -19,7 +19,7 @@ import java.util.Vector;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -98,7 +98,7 @@ public class SftpSshServiceTest {
 
         doThrow(new JSchException()).when(sesConnection).connect(anyInt());
 
-        assertNull(service.readExtractFiles());
+        assertTrue(service.readExtractFiles().isEmpty());
     }
 
     @Test
@@ -111,6 +111,6 @@ public class SftpSshServiceTest {
 
         doThrow(new SftpException(4, "")).when((ChannelSftp)channelSftp).ls(anyString());
 
-        assertNull(service.readExtractFiles());
+        assertTrue(service.readExtractFiles().isEmpty());
     }
 }

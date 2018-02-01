@@ -88,13 +88,14 @@ repositories {
 configurations {
   integrationTestCompile.extendsFrom(testCompile)
   integrationTestRuntime.extendsFrom(testRuntime)
+  e2eRuntime.extendsFrom(testRuntime)
+  e2eCompile.extendsFrom(testCompile)
 }
 
-
 def versions = [
-  springfoxSwagger: '2.7.0',
-  javacrumbsJsonUnit : '1.28.1',
-  javaLogging: '1.4.0'
+  springfoxSwagger  : '2.7.0',
+  javacrumbsJsonUnit: '1.28.1',
+  javaLogging       : '1.4.0'
 ]
 
 bootRun {
@@ -142,6 +143,20 @@ sourceSets {
   }
 }
 
+sourceSets {
+  e2e {
+    java {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir('src/e2e/java')
+    }
+    resources {
+      srcDir('src/e2e/resources')
+    }
+  }
+}
+
 dependencies {
   integrationTestCompile(sourceSets.test.output)
+  e2eCompile(sourceSets.test.output)
 }

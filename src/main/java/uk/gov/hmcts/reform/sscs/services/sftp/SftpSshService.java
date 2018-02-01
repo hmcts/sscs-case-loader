@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,7 +45,7 @@ public class SftpSshService {
         } catch (JSchException | SftpException e) {
             log.error(e.getMessage());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public Session connect() throws JSchException {
