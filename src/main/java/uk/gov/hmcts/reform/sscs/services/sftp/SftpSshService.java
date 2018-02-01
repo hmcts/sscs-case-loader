@@ -35,8 +35,12 @@ public class SftpSshService {
     @Value("${sftp.key.location}")
     private String sftpKeyLocation;
 
-    @Autowired
     private JSch jschSshChannel;
+
+    @Autowired
+    public SftpSshService(JSch jschSshChannel) {
+        this.jschSshChannel = jschSshChannel;
+    }
 
     public List<InputStream> readExtractFiles()  {
         try {

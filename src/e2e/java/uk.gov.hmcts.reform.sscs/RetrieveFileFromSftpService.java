@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 
 import java.io.BufferedReader;
@@ -23,8 +23,8 @@ import static org.junit.Assert.assertEquals;
  * that we can read files from SFTP successfully.
  */
 //TODO: Move this class to our End to End tests project
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = SftpSshService.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class RetrieveFileFromSftpService {
 
     @Autowired
