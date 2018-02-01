@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.sscs;
 
 import com.jcraft.jsch.JSch;
+import java.io.IOException;
+import java.util.Optional;
+import javax.xml.stream.XMLStreamException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,10 +18,6 @@ import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.xml.FetchXmlFilesService;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
-
-import java.io.IOException;
-import java.util.Optional;
-import javax.xml.stream.XMLStreamException;
 
 @SpringBootApplication
 @EnableCircuitBreaker

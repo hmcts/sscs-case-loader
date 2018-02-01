@@ -1,10 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 
 public final class CaseDataUtils {
     private CaseDataUtils() {

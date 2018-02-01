@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
-
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 public class TransformXmlFilesToJsonFilesTest {
 

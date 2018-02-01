@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.xml;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import static org.junit.Assert.assertTrue;
 
 public class XmlErrorHandlerTest {
 

@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +13,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
-
-import java.io.IOException;
-
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

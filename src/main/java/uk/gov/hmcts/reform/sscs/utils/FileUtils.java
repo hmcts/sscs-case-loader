@@ -1,12 +1,11 @@
 package uk.gov.hmcts.reform.sscs.utils;
 
-import uk.gov.hmcts.reform.sscs.exceptions.FailedToReadFromFileException;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import uk.gov.hmcts.reform.sscs.exceptions.FailedToReadFromFileException;
 
 public final class FileUtils {
 

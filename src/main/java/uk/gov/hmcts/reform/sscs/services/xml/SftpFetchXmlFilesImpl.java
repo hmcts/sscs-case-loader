@@ -1,9 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services.xml;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
-
-import java.util.Optional;
 
 @Service
 public class SftpFetchXmlFilesImpl implements FetchXmlFilesService {
