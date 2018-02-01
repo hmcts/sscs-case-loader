@@ -19,5 +19,12 @@ management:
   security:
     enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
 
+sftp:
+  keyLocation: ${GAPS2_KEY_LOCATION:./docker/sftp-docker}
+  host: ${GAPS2_SFTP_HOST:localhost}
+  port: ${GAPS2_SFTP_PORT:2222}
+  username: ${GAPS2_SFTP_USER:sftp}
+  inputDirectory: ${GAPS2_SFTP_DIR:incoming}
+
 
 
