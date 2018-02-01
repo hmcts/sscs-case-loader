@@ -18,7 +18,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
-  baseName 'sscs-case-loader'
+  archiveName 'sscs-case-loader.jar'
   manifest {
     attributes 'Implementation-Title': project.name,
       'Implementation-Version': project.version
