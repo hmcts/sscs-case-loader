@@ -6,14 +6,11 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.InputStream;
 import java.util.List;
@@ -32,7 +29,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-@SpringBootTest(classes = SftpSshService.class)
 public class SftpSshServiceTest {
 
     @Mock
@@ -42,7 +38,6 @@ public class SftpSshServiceTest {
     private JSch jschSshChannel;
 
     @InjectMocks
-    @Autowired
     private SftpSshService service;
 
     @Test

@@ -6,8 +6,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 @Service
+@Slf4j
 public class SftpSshService {
-    private static final Logger LOG = getLogger(SftpSshService.class);
 
     @Value("${sftp.host}")
     private String host;
@@ -44,10 +41,8 @@ public class SftpSshService {
     public List<InputStream> readExtractFiles()  {
         try {
             return getFilesAsInputStreams(connect());
-        } catch (JSchException e) {
-            LOG.error(e.getMessage());
-        } catch (SftpException e) {
-            LOG.error(e.getMessage());
+        } catch (JSchException | SftpException e) {
+            log.error(e.getMessage());
         }
         return null;
     }
