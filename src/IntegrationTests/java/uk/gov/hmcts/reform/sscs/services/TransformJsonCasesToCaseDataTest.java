@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services.mapper;
+package uk.gov.hmcts.reform.sscs.services;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
@@ -17,6 +17,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
 

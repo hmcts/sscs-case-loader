@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services.xml;
+package uk.gov.hmcts.reform.sscs.services;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.sscs.exceptions.Gap2ValidationException;
+import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = XmlValidator.class)
