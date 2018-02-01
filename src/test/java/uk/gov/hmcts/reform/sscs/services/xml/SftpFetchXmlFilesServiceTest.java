@@ -1,11 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.xml;
 
-import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.models.XmlFiles;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 
 public class SftpFetchXmlFilesServiceTest {
 

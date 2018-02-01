@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.sscs.utils;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.exceptions.FailedToReadFromFileException;
-
-import static org.junit.Assert.assertNotNull;
 
 public class FileUtilsTest {
     @Test(expected = FailedToReadFromFileException.class)

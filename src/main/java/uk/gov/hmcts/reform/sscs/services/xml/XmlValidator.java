@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.xml;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
-import uk.gov.hmcts.reform.sscs.exceptions.Gap2ValidationException;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+import static javax.xml.validation.SchemaFactory.newInstance;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,9 +13,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
-
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import static javax.xml.validation.SchemaFactory.newInstance;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
+import uk.gov.hmcts.reform.sscs.exceptions.Gap2ValidationException;
 
 @Service
 public class XmlValidator {
