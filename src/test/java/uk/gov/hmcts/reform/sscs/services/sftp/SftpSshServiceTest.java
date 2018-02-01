@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services;
+package uk.gov.hmcts.reform.sscs.services.sftp;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -77,7 +77,7 @@ public class SftpSshServiceTest {
     @Test
     public void givenARequestToReadExtractFiles_shouldConnectToSftpAndReturnFilesAsInputStream()
         throws JSchException, SftpException {
-        when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
+        when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
         doNothing().when(sesConnection).connect(anyInt());
 
         Channel channelSftp = mock(ChannelSftp.class);
@@ -97,16 +97,18 @@ public class SftpSshServiceTest {
         assertThat(result, hasSize(1));
     }
 
+    @Test
     public void shouldHandleJSchException() throws Exception {
-        when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
+        when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
 
         doThrow(new JSchException()).when(sesConnection).connect(anyInt());
 
         assertNull(service.readExtractFiles());
     }
 
+    @Test
     public void shouldHandleSftpException() throws Exception {
-        when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
+        when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
 
         Channel channelSftp = mock(ChannelSftp.class);
 

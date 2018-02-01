@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services;
+package uk.gov.hmcts.reform.sscs.services.sftp;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -53,7 +53,6 @@ public class SftpSshService {
     }
 
     public Session connect() throws JSchException {
-
         jschSshChannel.addIdentity(sftpKeyLocation);
 
         sesConnection = jschSshChannel.getSession(username, host, port);
