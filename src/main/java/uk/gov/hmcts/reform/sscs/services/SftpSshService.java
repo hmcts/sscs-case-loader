@@ -10,7 +10,6 @@ import com.jcraft.jsch.SftpException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.exceptions.SftpSshException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -42,16 +41,15 @@ public class SftpSshService {
 
     private JSch jschSshChannel = new JSch();
 
-    public List<InputStream> readExtractFiles() throws SftpSshException {
+    public List<InputStream> readExtractFiles()  {
         try {
             return getFilesAsInputStreams(connect());
         } catch (JSchException e) {
             LOG.error(e.getMessage());
-            throw new SftpSshException("JSchException whilst connecting to SFTP:" + e.getMessage());
         } catch (SftpException e) {
             LOG.error(e.getMessage());
-            throw new SftpSshException("SftpException whilst connecting to SFTP:" + e.getMessage());
         }
+        return null;
     }
 
     public Session connect() throws JSchException {

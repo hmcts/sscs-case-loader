@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.gov.hmcts.reform.sscs.exceptions.SftpSshException;
 
 import java.io.InputStream;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.Vector;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -76,7 +76,7 @@ public class SftpSshServiceTest {
 
     @Test
     public void givenARequestToReadExtractFiles_shouldConnectToSftpAndReturnFilesAsInputStream()
-        throws JSchException, SftpException, SftpSshException {
+        throws JSchException, SftpException {
         when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
         doNothing().when(sesConnection).connect(anyInt());
 
@@ -97,16 +97,14 @@ public class SftpSshServiceTest {
         assertThat(result, hasSize(1));
     }
 
-    @Test(expected = SftpSshException.class)
     public void shouldHandleJSchException() throws Exception {
         when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
 
         doThrow(new JSchException()).when(sesConnection).connect(anyInt());
 
-        service.readExtractFiles();
+        assertNull(service.readExtractFiles());
     }
 
-    @Test(expected = SftpSshException.class)
     public void shouldHandleSftpException() throws Exception {
         when((jschSshChannel).getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
 
@@ -120,6 +118,6 @@ public class SftpSshServiceTest {
 
         doThrow(new SftpException(4, "")).when((ChannelSftp)channelSftp).ls(anyString());
 
-        service.readExtractFiles();
+        assertNull(service.readExtractFiles());
     }
 }
