@@ -26,7 +26,7 @@ public class CaseDataContentToJsonTest {
 
         // should
         String expectedCaseDataContentJson = FileUtils.getFileContentGivenFilePath(
-            "src/test/resources//CaseDataContent.json");
+            "src/test/resources/CaseDataContent.json");
         assertJsonEquals(expectedCaseDataContentJson, actualCaseDataContentJson);
     }
 

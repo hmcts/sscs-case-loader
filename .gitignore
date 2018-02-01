@@ -18,3 +18,6 @@
 *.ipr
 
 .DS_store
+
+### Eclipse ###
+/bin

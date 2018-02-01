@@ -16,7 +16,7 @@
           "lastName" : "Test"
         },
         "identity" : {
-           "dob" : "01-04-1985",
+           "dob" : "1904-03-10",
            "nino" : "AB 22 55 66 B"
         }
       }
