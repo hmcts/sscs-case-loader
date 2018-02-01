@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services;
+package uk.gov.hmcts.reform.sscs;
 
 import org.junit.Ignore;
 import org.junit.Test;
