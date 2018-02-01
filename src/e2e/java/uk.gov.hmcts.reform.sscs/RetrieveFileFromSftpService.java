@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class RetrieveFileFromSftpService {
     private SftpSshService service;
 
     @Test
-//    @Ignore
+    @Ignore
     public void givenAnSftpFile_shouldBeRetrievedAndConvertedToAnInputStream() throws Exception {
 
         List<InputStream> result = service.readExtractFiles();
