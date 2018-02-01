@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 @Service
 @Slf4j
@@ -63,7 +62,7 @@ public class SftpSshService {
         channel.connect();
         ChannelSftp channelSftp = (ChannelSftp) channel;
 
-        Vector fileList = channelSftp.ls(sftpInputDirectory + "/*.xml");
+        List fileList = channelSftp.ls(sftpInputDirectory + "/*.xml");
 
         List<InputStream> inputStreams = new ArrayList<>();
 
