@@ -37,8 +37,6 @@ public class SftpSshService {
     @Value("${sftp.key.location}")
     private String sftpKeyLocation;
 
-    private Session sesConnection;
-
     private JSch jschSshChannel = new JSch();
 
     public List<InputStream> readExtractFiles()  {
@@ -55,7 +53,7 @@ public class SftpSshService {
     public Session connect() throws JSchException {
         jschSshChannel.addIdentity(sftpKeyLocation);
 
-        sesConnection = jschSshChannel.getSession(username, host, port);
+        Session sesConnection = jschSshChannel.getSession(username, host, port);
         sesConnection.setConfig("StrictHostKeyChecking", "no");
         sesConnection.connect(60000);
 
