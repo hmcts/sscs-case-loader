@@ -6,11 +6,12 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
 
 import java.io.InputStream;
 import java.util.List;
@@ -33,12 +34,17 @@ public class SftpSshServiceTest {
 
     @Mock
     private Session sesConnection;
-
     @Mock
     private JSch jschSshChannel;
+    @Mock
+    private SftpSshProperties sftpSshProperties;
 
-    @InjectMocks
     private SftpSshService service;
+
+    @Before
+    public void setUp() {
+        service = new SftpSshService(jschSshChannel, sftpSshProperties);
+    }
 
     @Test
     public void givenAListOfFiles_shouldGetFilesAsInputStream() throws SftpException, JSchException {
@@ -49,7 +55,7 @@ public class SftpSshServiceTest {
         rows.add(row);
 
         when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
-        when(((ChannelSftp)channelSftp).ls(anyString())).thenReturn(rows);
+        when(((ChannelSftp) channelSftp).ls(anyString())).thenReturn(rows);
         when(row.getFilename()).thenReturn("Testing.xml");
 
         List<InputStream> result = service.getFilesAsInputStreams(sesConnection);
@@ -82,7 +88,7 @@ public class SftpSshServiceTest {
         rows.add(row);
 
         when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
-        when(((ChannelSftp)channelSftp).ls(anyString())).thenReturn(rows);
+        when(((ChannelSftp) channelSftp).ls(anyString())).thenReturn(rows);
         when(row.getFilename()).thenReturn("Testing.xml");
 
         List<InputStream> result = service.readExtractFiles();
@@ -109,7 +115,7 @@ public class SftpSshServiceTest {
 
         when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
 
-        doThrow(new SftpException(4, "")).when((ChannelSftp)channelSftp).ls(anyString());
+        doThrow(new SftpException(4, "")).when((ChannelSftp) channelSftp).ls(anyString());
 
         assertTrue(service.readExtractFiles().isEmpty());
     }

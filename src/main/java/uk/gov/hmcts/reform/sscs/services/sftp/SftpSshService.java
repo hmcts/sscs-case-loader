@@ -8,8 +8,8 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,29 +20,16 @@ import java.util.List;
 @Slf4j
 public class SftpSshService {
 
-    @Value("${sftp.host}")
-    private String host;
-
-    @Value("${sftp.port}")
-    private int port;
-
-    @Value("${sftp.user}")
-    private String username;
-
-    @Value("${sftp.input.dir}")
-    private String sftpInputDirectory;
-
-    @Value("${sftp.key.location}")
-    private String sftpKeyLocation;
-
-    private JSch jschSshChannel;
+    private final JSch jschSshChannel;
+    private final SftpSshProperties sftpSshProperties;
 
     @Autowired
-    public SftpSshService(JSch jschSshChannel) {
+    public SftpSshService(JSch jschSshChannel, SftpSshProperties sftpSshProperties) {
         this.jschSshChannel = jschSshChannel;
+        this.sftpSshProperties = sftpSshProperties;
     }
 
-    public List<InputStream> readExtractFiles()  {
+    public List<InputStream> readExtractFiles() {
         try {
             return getFilesAsInputStreams(connect());
         } catch (JSchException | SftpException e) {
@@ -52,9 +39,12 @@ public class SftpSshService {
     }
 
     public Session connect() throws JSchException {
-        jschSshChannel.addIdentity(sftpKeyLocation);
+        jschSshChannel.addIdentity(sftpSshProperties.getKeyLocation());
 
-        Session sesConnection = jschSshChannel.getSession(username, host, port);
+        Session sesConnection = jschSshChannel.getSession(
+            sftpSshProperties.getUsername(),
+            sftpSshProperties.getHost(),
+            sftpSshProperties.getPort());
         sesConnection.setConfig("StrictHostKeyChecking", "no");
         sesConnection.connect(60000);
 
@@ -66,12 +56,13 @@ public class SftpSshService {
         channel.connect();
         ChannelSftp channelSftp = (ChannelSftp) channel;
 
-        List fileList = channelSftp.ls(sftpInputDirectory + "/*.xml");
+        List fileList = channelSftp.ls(sftpSshProperties.getInputDirectory() + "/*.xml");
 
         List<InputStream> inputStreams = new ArrayList<>();
 
         for (Object file : fileList) {
-            inputStreams.add(channelSftp.get(sftpInputDirectory + "/" + ((ChannelSftp.LsEntry)file).getFilename()));
+            inputStreams.add(channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
+                + ((ChannelSftp.LsEntry) file).getFilename()));
         }
         return inputStreams;
     }
