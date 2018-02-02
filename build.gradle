@@ -156,15 +156,14 @@ dependencies {
 }
 
 jacocoTestReport {
-//  additionalSourceDirs = files(sourceSets.integrationTestoutput)
-//  sourceDirectories = files(sourceSets.main)
+  additionalSourceDirs = project.files(sourceSets.main.allSource.srcDirs)
+  sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
+  classDirectories =  project.files(sourceSets.main.output)
   reports {
     xml.enabled = true
     html.enabled = true
     csv.enabled = false
     xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-    additionalSourceDirs new File(rootProject.projectDir, 'integratoinTests/src/main/java')
-//    additionalSourceDirs new File(rootProject.projectDir, 'e2e/src/main/java')
   }
 }
 
