@@ -21,6 +21,7 @@ before_install:
 script:
   - ./gradlew build
   - ./gradlew test jacocoTestReport
+  - ./gradlew integrationTestClasses jacocoTestReport
 
 after_success:
   - java -cp ./codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
