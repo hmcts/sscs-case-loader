@@ -40,24 +40,6 @@ pmd {
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
-jacocoTestReport {
-  reports {
-    xml.enabled = true
-    csv.enabled = false
-    xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-  }
-}
-
-project.tasks['sonarqube'].dependsOn test
-sonarqube {
-  properties {
-    property "sonar.projectName", "SSCS - Case loader"
-    property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-    property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
-
-  }
-}
-
 dependencyUpdates.resolutionStrategy = {
   componentSelection { rules ->
     rules.all { ComponentSelection selection ->
@@ -84,6 +66,68 @@ def springBootVersion = plugins.getPlugin('org.springframework.boot').class.pack
 repositories {
   jcenter()
 }
+
+
+sourceSets {
+  integrationTest {
+    java {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir('src/IntegrationTests/java')
+    }
+    resources {
+      srcDir('src/IntegrationTests/resources')
+    }
+  }
+  e2e {
+    java {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir('src/e2e/java')
+    }
+    resources {
+      srcDir('src/e2e/resources')
+    }
+  }
+}
+
+dependencies {
+  integrationTestCompile(sourceSets.test.output)
+  e2eCompile(sourceSets.test.output)
+}
+
+task integrationTest(type: Test) {
+  setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+  setClasspath(sourceSets.integrationTest.runtimeClasspath)
+}
+
+
+jacocoTestReport {
+  executionData(test, integrationTest)
+  reports {
+    xml.enabled = true
+    html.enabled = true
+    csv.enabled = false
+  }
+}
+
+project.tasks['sonarqube'].dependsOn test, integrationTest
+check.dependsOn integrationTest
+checkstyleMain.shouldRunAfter(compileJava)
+test.shouldRunAfter(checkstyleTest)
+integrationTest.shouldRunAfter(checkstyleIntegrationTest)
+integrationTest.shouldRunAfter(test)
+
+sonarqube {
+  properties {
+    property "sonar.projectName", "SSCS - Case loader"
+    property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integrationTest.exec"
+    property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
+
+  }
+}
+
 
 configurations {
   integrationTestCompile.extendsFrom(testCompile)
@@ -129,36 +173,5 @@ dependencies {
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 
-  testCompile 'pl.pragmatists:JUnitParams:1.1.1'
-}
-
-sourceSets {
-  integrationTest {
-    java {
-      compileClasspath += main.output + test.output
-      runtimeClasspath += main.output + test.output
-      srcDir('src/IntegrationTests/java')
-    }
-    resources {
-      srcDir('src/IntegrationTests/resources')
-    }
-  }
-}
-
-sourceSets {
-  e2e {
-    java {
-      compileClasspath += main.output + test.output
-      runtimeClasspath += main.output + test.output
-      srcDir('src/e2e/java')
-    }
-    resources {
-      srcDir('src/e2e/resources')
-    }
-  }
-}
-
-dependencies {
-  integrationTestCompile(sourceSets.test.output)
-  e2eCompile(sourceSets.test.output)
+  integrationTestCompile 'pl.pragmatists:JUnitParams:1.1.1'
 }
