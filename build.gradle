@@ -110,6 +110,9 @@ dependencies {
 }
 
 jacocoTestReport {
+  additionalSourceDirs = project.files(sourceSets.integrationTest.allSource.srcDirs, (sourceSets.e2e.allSource.srcDirs))
+  sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
+  classDirectories = project.files(sourceSets.main.output)
   executionData(test, integrationTestClasses, e2eClasses)
   reports {
     xml.enabled = true
