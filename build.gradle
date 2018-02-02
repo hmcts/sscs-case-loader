@@ -89,9 +89,6 @@ sourceSets {
       srcDir('src/IntegrationTests/resources')
     }
   }
-}
-
-sourceSets {
   e2e {
     java {
       compileClasspath += main.output + test.output
@@ -110,9 +107,7 @@ dependencies {
 }
 
 jacocoTestReport {
-  additionalSourceDirs = project.files(sourceSets.integrationTest.allSource.srcDirs, (sourceSets.e2e.allSource.srcDirs))
-  sourceDirectories = project.files(sourceSets.main.allSource.srcDirs)
-  classDirectories = project.files(sourceSets.main.output)
+  additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
   executionData(test, integrationTestClasses, e2eClasses)
   reports {
     xml.enabled = true
