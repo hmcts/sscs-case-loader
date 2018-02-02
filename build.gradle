@@ -110,6 +110,7 @@ dependencies {
 }
 
 jacocoTestReport {
+  executionData(test, integrationTestClasses, e2eClasses)
   reports {
     xml.enabled = true
     html.enabled = true
