@@ -40,16 +40,6 @@ pmd {
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
-project.tasks['sonarqube'].dependsOn test
-sonarqube {
-  properties {
-    property "sonar.projectName", "SSCS - Case loader"
-    property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-    property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
-
-  }
-}
-
 dependencyUpdates.resolutionStrategy = {
   componentSelection { rules ->
     rules.all { ComponentSelection selection ->
@@ -106,16 +96,38 @@ dependencies {
   e2eCompile(sourceSets.test.output)
 }
 
+task integrationTest(type: Test) {
+  setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+  setClasspath(sourceSets.integrationTest.runtimeClasspath)
+}
+
+
 jacocoTestReport {
-  additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
-  executionData(test, integrationTestClasses, e2eClasses)
+  executionData(test, integrationTest)
   reports {
     xml.enabled = true
     html.enabled = true
     csv.enabled = false
-    xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
+
+project.tasks['sonarqube'].dependsOn test, integrationTest
+check.dependsOn integrationTest
+checkstyleMain.shouldRunAfter(compileJava)
+test.shouldRunAfter(checkstyleTest)
+integrationTest.shouldRunAfter(checkstyleIntegrationTest)
+integrationTest.shouldRunAfter(test)
+
+sonarqube {
+  properties {
+    property "sonar.projectName", "SSCS - Case loader"
+    property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integrationTest.exec"
+    property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
+
+  }
+}
+
 
 configurations {
   integrationTestCompile.extendsFrom(testCompile)
