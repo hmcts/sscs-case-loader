@@ -2,12 +2,18 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 
 @Service
 public class TransformJsonCasesToCaseData {
@@ -31,7 +37,7 @@ public class TransformJsonCasesToCaseData {
 
     private Identity getIdentity(AppealCase appealCase) {
         return Identity.builder()
-            .dob(appealCase.getParties().getDob())
+            .dob(getValidDoB(appealCase.getParties().getDob()))
             .nino(appealCase.getAppealCaseNino())
             .build();
     }
@@ -49,5 +55,15 @@ public class TransformJsonCasesToCaseData {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
         return mapper.readerFor(Gaps2Extract.class).readValue(json);
     }
+
+    private String getValidDoB(String dob) {
+        return dob != null ? parseToIsoDateTime(dob) : "";
+    }
+
+    private String parseToIsoDateTime(String utcTime) {
+        ZonedDateTime result = ZonedDateTime.parse(utcTime, DateTimeFormatter.ISO_DATE_TIME);
+        return result.toLocalDate().toString();
+    }
+
 }
 

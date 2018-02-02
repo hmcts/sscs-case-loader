@@ -21,7 +21,7 @@ import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class CoreCddCaseDataServiceIntegrationTest {
+public class CoreCddCaseDataServiceTest {
 
     private static final String USER_TOKEN = "Bearer userToken";
     private static final String S2S_TOKEN = "s2sToken";

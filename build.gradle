@@ -128,6 +128,8 @@ dependencies {
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: versions.javacrumbsJsonUnit
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
+
+  testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 }
 
 sourceSets {
