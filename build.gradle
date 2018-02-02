@@ -40,14 +40,6 @@ pmd {
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
-jacocoTestReport {
-  reports {
-    xml.enabled = true
-    csv.enabled = false
-    xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
-  }
-}
-
 project.tasks['sonarqube'].dependsOn test
 sonarqube {
   properties {
@@ -162,3 +154,17 @@ dependencies {
   integrationTestCompile(sourceSets.test.output)
   e2eCompile(sourceSets.test.output)
 }
+
+jacocoTestReport {
+//  additionalSourceDirs = files(sourceSets.integrationTestoutput)
+//  sourceDirectories = files(sourceSets.main)
+  reports {
+    xml.enabled = true
+    html.enabled = true
+    csv.enabled = false
+    xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    additionalSourceDirs new File(rootProject.projectDir, 'integratoinTests/src/main/java')
+//    additionalSourceDirs new File(rootProject.projectDir, 'e2e/src/main/java')
+  }
+}
+
