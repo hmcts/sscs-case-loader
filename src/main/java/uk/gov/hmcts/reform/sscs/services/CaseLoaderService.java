@@ -47,23 +47,32 @@ public class CaseLoaderService {
         List<InputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         inputStreamList.forEach(inputStream -> {
-            CaseData caseData = null;
-            try {
-                xmlValidator.validateXml(inputStream, "Ref");
-                log.info("*** case-loader *** Validate xml files successfully");
-            } catch (SAXException | XMLStreamException | IOException e) {
-                throw new GapsValidationException("Failed to validate xml", e);
-            }
-            try {
-                caseData = transformFromXmlFilesToCaseData(inputStream);
-                log.info("*** case-loader *** Transform xml files into CCD Cases successfully");
-            } catch (IOException e) {
-                // TODO: 03/02/2018 create custom exception here
-                throw new RuntimeException("Failed to transform xml to CCD data", e);
-            }
+            valideXml(inputStream);
+            log.info("*** case-loader *** Validate xml files successfully");
+            CaseData caseData = transformXmlFilesToCaseData(inputStream);
+            log.info("*** case-loader *** Transform xml files into CCD Cases successfully");
             CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
             log.info("*** case-loader *** Save Case into CCD  successfully: %s", caseDetails);
         });
+    }
+
+    private CaseData transformXmlFilesToCaseData(InputStream inputStream) {
+        CaseData caseData;
+        try {
+            caseData = transformFromXmlFilesToCaseData(inputStream);
+        } catch (IOException e) {
+            // TODO: 03/02/2018 create custom exception here
+            throw new RuntimeException("Failed to transform xml to CCD data", e);
+        }
+        return caseData;
+    }
+
+    private void valideXml(InputStream inputStream) {
+        try {
+            xmlValidator.validateXml(inputStream, "Ref");
+        } catch (SAXException | XMLStreamException | IOException e) {
+            throw new GapsValidationException("Failed to validate xml", e);
+        }
     }
 
     private CaseData transformFromXmlFilesToCaseData(InputStream inputStream) throws IOException {

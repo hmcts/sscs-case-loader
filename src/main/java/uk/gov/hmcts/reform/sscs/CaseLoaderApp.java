@@ -22,7 +22,7 @@ public class CaseLoaderApp implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         try {
             caseLoaderService.process();
         } catch (Exception e) {
