@@ -3,12 +3,14 @@ package uk.gov.hmcts.reform.sscs.models;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
-import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
 public class CaseDataContentToJsonTest {
 
@@ -25,8 +27,9 @@ public class CaseDataContentToJsonTest {
         String actualCaseDataContentJson = mapper.writeValueAsString(caseDataContent);
 
         // should
-        String expectedCaseDataContentJson = FileUtils.getFileContentGivenFilePath(
-            "src/test/resources/CaseDataContent.json");
+        File caseDataContentFile = new File("src/test/resources/CaseDataContent.json");
+        String expectedCaseDataContentJson = FileUtils.readFileToString(caseDataContentFile,
+            StandardCharsets.UTF_8.name());
         assertJsonEquals(expectedCaseDataContentJson, actualCaseDataContentJson);
     }
 
