@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
+import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
@@ -61,8 +62,7 @@ public class CaseLoaderService {
         try {
             caseData = transformFromXmlFilesToCaseData(inputStream);
         } catch (IOException e) {
-            // TODO: 03/02/2018 create custom exception here
-            throw new RuntimeException("Failed to transform xml to CCD data", e);
+            throw new TransformException("Failed to transform xml to CCD data", e);
         }
         return caseData;
     }
