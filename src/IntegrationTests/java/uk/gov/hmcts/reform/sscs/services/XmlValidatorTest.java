@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+<<<<<<<HEAD
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
+=======
+import java.io.InputStream;
+>>>>>>>SSCS-2648Change validate Service to accept an InputStream as arg
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
+import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = XmlValidator.class)
@@ -25,20 +30,20 @@ public class XmlValidatorTest {
 
     @Test
     public void givenValidDeltaInputStream_shouldValidateContent() throws Exception {
-        validator.validateXml(FileUtils.readFileToString(new File(DELTA_PATH), StandardCharsets.UTF_8.name()),
-            "Delta");
+        InputStream deltaStream = FileUtils.getInputStreamGivenFilePath(DELTA_PATH);
+        validator.validateXml(deltaStream, "Delta");
     }
 
     @Test
     public void givenValidRefXmlInputStream_shouldPassValidator() throws Exception {
-        validator.validateXml(FileUtils.readFileToString(new File(REF_PATH), StandardCharsets.UTF_8.name()),
-            "Ref");
+        InputStream refStream = FileUtils.getInputStreamGivenFilePath(REF_PATH);
+        validator.validateXml(refStream, "Ref");
     }
 
 
     @Test(expected = SAXException.class)
     public void givenInvalidRefXmlFile_shouldFailValidator() throws Exception {
-        validator.validateXml(FileUtils.readFileToString(new File(INVALID_DELTA_PATH), StandardCharsets.UTF_8.name()),
-            "Delta");
+        InputStream invalidDeltaStream = FileUtils.getInputStreamGivenFilePath(INVALID_DELTA_PATH);
+        validator.validateXml(invalidDeltaStream, "Delta");
     }
 }
