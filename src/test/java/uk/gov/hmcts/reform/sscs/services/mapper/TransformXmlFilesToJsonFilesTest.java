@@ -2,10 +2,13 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.models.JsonFiles;
 import uk.gov.hmcts.reform.sscs.models.XmlFiles;
-import uk.gov.hmcts.reform.sscs.utils.FileUtils;
 
 public class TransformXmlFilesToJsonFilesTest {
 
@@ -18,16 +21,21 @@ public class TransformXmlFilesToJsonFilesTest {
         new TransformXmlFilesToJsonFiles();
 
     @Test
-    public void givenXmlFiles_shouldTransformToJsonFiles() {
+    public void givenXmlFiles_shouldTransformToJsonFiles() throws IOException {
         //Given
-        XmlFiles xmlFiles = XmlFiles.builder().delta(DELTA_XML).ref(REF_XML).build();
+        String deltaAsString = FileUtils.readFileToString(new File(DELTA_XML), StandardCharsets.UTF_8.name());
+        String refAsString = FileUtils.readFileToString(new File(REF_XML), StandardCharsets.UTF_8.name());
+
+        XmlFiles xmlFiles = XmlFiles.builder().delta(deltaAsString).ref(refAsString).build();
+        System.out.println(xmlFiles);
 
         //When
         JsonFiles actualJsonFiles = transformXmlFilesToJsonFiles.transform(xmlFiles);
 
         //Should
-        String expectedDeltaJson = FileUtils.getFileContentGivenFilePath(DELTA_JSON);
-        String expectedRefJson = FileUtils.getFileContentGivenFilePath(REF_JSON);
+        String expectedDeltaJson = FileUtils.readFileToString(new File(DELTA_JSON), StandardCharsets.UTF_8.name());
+        String expectedRefJson = FileUtils.readFileToString(new File(REF_JSON), StandardCharsets.UTF_8.name());
+
         assertJsonEquals(expectedDeltaJson, actualJsonFiles.getDelta());
         assertJsonEquals(expectedRefJson, actualJsonFiles.getRef());
     }
