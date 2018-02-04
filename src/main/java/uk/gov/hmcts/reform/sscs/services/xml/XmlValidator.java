@@ -25,14 +25,15 @@ public class XmlValidator {
     @Value("${sscs.gaps2.schema.location.delta}")
     private String deltaSchemaPath;
 
-    public void validateXml(InputStream inputStream, String type) throws IOException, SAXException,
+    public void validateXml(String xmlAsString, String type) throws IOException, SAXException,
         XMLStreamException {
+        InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
         String schemaPath = type.equals("Ref") ? refSchemaPath : deltaSchemaPath;
         InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
         StreamSource schemaSource = new StreamSource(schemaAsStream);
         Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
         validator.setErrorHandler(new XmlErrorHandler());
-        XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(inputStream);
+        XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
         validator.validate(new StAXSource(xmlStreamReader));
     }
 }

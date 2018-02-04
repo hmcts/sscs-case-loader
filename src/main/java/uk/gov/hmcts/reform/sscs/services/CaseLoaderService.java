@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -8,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -46,46 +49,61 @@ public class CaseLoaderService {
 
     public void process() {
         List<InputStream> inputStreamList = sftpSshService.readExtractFiles();
-        log.info("*** case-loader *** Read xml files from SFTP successfully");
+        log.info("*** case-loader *** Read Delta xml file from SFTP successfully");
         inputStreamList.forEach(inputStream -> {
-            // FIXME: 04/02/2018 this method close the intpuStream and causes next service fails
-            // TODO: 04/02/2018 convert before anything inputStream to String to fix this issue
-            validateXml(inputStream);
-            log.info("*** case-loader *** Validate xml files successfully");
-            CaseData caseData = transformXmlFilesToCaseData(inputStream);
-            log.info("*** case-loader *** Transform xml files into CCD Cases successfully");
+            String deltaXmlAsString = fromInputStreamToString(inputStream);
+            validateXml(deltaXmlAsString);
+            log.info("*** case-loader *** Validate Delta xml file successfully");
+            CaseData caseData = transformDeltaToCaseData(deltaXmlAsString);
+            log.info("*** case-loader *** Transform Delta xml file into CCD Cases successfully");
             CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
-            log.info("*** case-loader *** Save Case into CCD  successfully: %s", caseDetails);
+            log.info("*** case-loader *** Save CDD case into CCD successfully: {}",
+                printCaseDetailsInJson(caseDetails));
         });
     }
 
-    private CaseData transformXmlFilesToCaseData(InputStream inputStream) {
+    private String printCaseDetailsInJson(CaseDetails caseDetails) {
+        ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
+            .indentOutput(true)
+            .build();
+        try {
+            return mapper.writeValueAsString(caseDetails);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String fromInputStreamToString(InputStream inputStream) {
+        try {
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+        } catch (IOException e) {
+            throw new RuntimeException("Fail to convert inputStream to String");
+        }
+    }
+
+    private CaseData transformDeltaToCaseData(String deltaAsString) {
         CaseData caseData;
         try {
-            caseData = transformFromXmlFilesToCaseData(inputStream);
+            caseData = transformDeltaToCaseDataUnHandled(deltaAsString);
         } catch (IOException e) {
             throw new TransformException("Failed to transform xml to CCD data", e);
         }
         return caseData;
     }
 
-    private void validateXml(InputStream inputStream) {
+    private void validateXml(String deltaAsString) {
         try {
-            xmlValidator.validateXml(inputStream, "Delta");
+            xmlValidator.validateXml(deltaAsString, "Delta");
         } catch (SAXException | XMLStreamException | IOException e) {
             throw new GapsValidationException("Failed to validate xml", e);
         }
     }
 
-    private CaseData transformFromXmlFilesToCaseData(InputStream inputStream) throws IOException {
-        JsonFiles jsonCases = transformXmlFilesToJsonFiles.transform(
-            buildXmlFilesFromInputStream(inputStream));
+    private CaseData transformDeltaToCaseDataUnHandled(String deltaAsString) throws IOException {
+        XmlFiles xmlFiles = XmlFiles.builder().delta(deltaAsString).ref("nothing for now").build();
+        JsonFiles jsonCases = transformXmlFilesToJsonFiles.transform(xmlFiles);
         return transformJsonCasesToCaseData.transform(jsonCases.getDelta().toString());
-    }
-
-    private XmlFiles buildXmlFilesFromInputStream(InputStream inputStream) throws IOException {
-        String xmlAsString = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-        return XmlFiles.builder().delta(xmlAsString).ref("nothing for now").build();
     }
 
 }
