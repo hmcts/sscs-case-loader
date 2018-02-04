@@ -48,7 +48,8 @@ public class CaseLoaderService {
         List<InputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         inputStreamList.forEach(inputStream -> {
-            valideXml(inputStream);
+            // FIXME: 04/02/2018 this method close the intpuStream and causes next service fails
+            validateXml(inputStream);
             log.info("*** case-loader *** Validate xml files successfully");
             CaseData caseData = transformXmlFilesToCaseData(inputStream);
             log.info("*** case-loader *** Transform xml files into CCD Cases successfully");
@@ -67,9 +68,9 @@ public class CaseLoaderService {
         return caseData;
     }
 
-    private void valideXml(InputStream inputStream) {
+    private void validateXml(InputStream inputStream) {
         try {
-            xmlValidator.validateXml(inputStream, "Ref");
+            xmlValidator.validateXml(inputStream, "Delta");
         } catch (SAXException | XMLStreamException | IOException e) {
             throw new GapsValidationException("Failed to validate xml", e);
         }
@@ -81,9 +82,9 @@ public class CaseLoaderService {
         return transformJsonCasesToCaseData.transform(jsonCases.getDelta().toString());
     }
 
-    private XmlFiles buildXmlFilesFromInputStream(InputStream refAsStream) throws IOException {
-        String refAsString = IOUtils.toString(refAsStream, StandardCharsets.UTF_8.name());
-        return XmlFiles.builder().ref(refAsString).build();
+    private XmlFiles buildXmlFilesFromInputStream(InputStream inputStream) throws IOException {
+        String xmlAsString = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+        return XmlFiles.builder().delta(xmlAsString).ref("nothing for now").build();
     }
 
 }
