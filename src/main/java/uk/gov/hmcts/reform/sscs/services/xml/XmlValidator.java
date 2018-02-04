@@ -28,7 +28,7 @@ public class XmlValidator {
     public void validateXml(String xmlAsString, String type) throws IOException, SAXException,
         XMLStreamException {
         InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
-        String schemaPath = type.equals("Ref") ? refSchemaPath : deltaSchemaPath;
+        String schemaPath = "Ref".equals(type) ? refSchemaPath : deltaSchemaPath;
         InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
         StreamSource schemaSource = new StreamSource(schemaAsStream);
         Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
