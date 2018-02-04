@@ -1,5 +1,4 @@
-server:
-  port: ${PORT:8082}
+server.port: ${PORT:8082}
 
 core_case_data:
   api:
@@ -15,9 +14,7 @@ idam:
     microservice: ${IDAM.S2S-AUTH.MICROSERVICE:ccd_gw}
     url: ${IDAM.S2S-AUTH:http://localhost:4502}
 
-management:
-  security:
-    enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
+management.security.enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
 
 sftp:
   keyLocation: ${GAPS2_KEY_LOCATION:./docker/sftp-docker}
@@ -25,6 +22,11 @@ sftp:
   port: ${GAPS2_SFTP_PORT:2222}
   username: ${GAPS2_SFTP_USER:sftp}
   inputDirectory: ${GAPS2_SFTP_DIR:incoming}
+
+sscs.gaps2.schema.location:
+  delta: /schema/SSCS_Extract_Schema_0.8.xsd
+  reference: /schema/SSCS_Extract_Schema_Reference_0.2.xsd
+
 
 
 
