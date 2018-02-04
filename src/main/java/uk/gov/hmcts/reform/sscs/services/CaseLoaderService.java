@@ -49,6 +49,7 @@ public class CaseLoaderService {
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         inputStreamList.forEach(inputStream -> {
             // FIXME: 04/02/2018 this method close the intpuStream and causes next service fails
+            // TODO: 04/02/2018 convert before anything inputStream to String to fix this issue
             validateXml(inputStream);
             log.info("*** case-loader *** Validate xml files successfully");
             CaseData caseData = transformXmlFilesToCaseData(inputStream);
