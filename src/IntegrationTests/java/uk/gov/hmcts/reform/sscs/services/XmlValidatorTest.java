@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import java.io.File;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,20 +25,20 @@ public class XmlValidatorTest {
 
     @Test
     public void givenValidDeltaInputStream_shouldValidateContent() throws Exception {
-        InputStream deltaStream = FileUtils.openInputStream(new File(DELTA_PATH));
-        validator.validateXml(deltaStream, "Delta");
+        validator.validateXml(FileUtils.readFileToString(new File(DELTA_PATH), StandardCharsets.UTF_8.name()),
+            "Delta");
     }
 
     @Test
     public void givenValidRefXmlInputStream_shouldPassValidator() throws Exception {
-        InputStream refStream = FileUtils.openInputStream(new File(REF_PATH));
-        validator.validateXml(refStream, "Ref");
+        validator.validateXml(FileUtils.readFileToString(new File(REF_PATH), StandardCharsets.UTF_8.name()),
+            "Ref");
     }
 
 
     @Test(expected = SAXException.class)
     public void givenInvalidRefXmlFile_shouldFailValidator() throws Exception {
-        InputStream invalidDeltaStream = FileUtils.openInputStream(new File(INVALID_DELTA_PATH));
-        validator.validateXml(invalidDeltaStream, "Delta");
+        validator.validateXml(FileUtils.readFileToString(new File(INVALID_DELTA_PATH), StandardCharsets.UTF_8.name()),
+            "Delta");
     }
 }
