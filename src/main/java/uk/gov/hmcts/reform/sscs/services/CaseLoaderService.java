@@ -69,7 +69,7 @@ public class CaseLoaderService {
         try {
             return mapper.writeValueAsString(caseDetails);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Fail to serialise CaseDetails", e);
         }
         return null;
     }
@@ -78,7 +78,7 @@ public class CaseLoaderService {
         try {
             return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
         } catch (IOException e) {
-            throw new RuntimeException("Fail to convert inputStream to String");
+            throw new TransformException("Failed to transform inputStream to String", e);
         }
     }
 
