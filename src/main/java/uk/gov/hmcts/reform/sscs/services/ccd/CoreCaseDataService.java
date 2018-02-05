@@ -87,7 +87,6 @@ public class CoreCaseDataService {
         String authorisation = idamProperties.getRole().getEmail() + ":" + idamProperties.getRole().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
         Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
-        System.out.println("*** getIdamUserToken: " + authorize);
         return "Bearer " + authorize.getAccessToken();
     }
 }
