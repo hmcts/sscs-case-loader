@@ -49,7 +49,7 @@ public class CoreCaseDataServiceTest {
         mockCoreCaseDataProperties();
         mockStartEventResponse();
         mockCaseDetails();
-        when(idamApiClient.authorize(anyString())).thenReturn(Authorize.builder().build());
+        when(idamApiClient.authorize(anyString())).thenReturn(new Authorize("url", "userToken"));
 
         //When
         CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
