@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.*;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @Service
 public class CoreCaseDataService {
@@ -14,13 +15,15 @@ public class CoreCaseDataService {
     private final CoreCaseDataApi coreCaseDataApi;
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final AuthTokenGenerator authTokenGenerator;
+    private final IdamApiClient idamApiClient;
 
     @Autowired
     public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
-                               AuthTokenGenerator authTokenGenerator) {
+                               AuthTokenGenerator authTokenGenerator, IdamApiClient idamApiClient) {
         this.coreCaseDataApi = coreCaseDataApi;
         this.coreCaseDataProperties = coreCaseDataProperties;
         this.authTokenGenerator = authTokenGenerator;
+        this.idamApiClient = idamApiClient;
     }
 
     public CaseDetails startEventAndSaveGivenCase(CaseData caseData) {
@@ -60,9 +63,8 @@ public class CoreCaseDataService {
     }
 
     private EventRequestData getEventRequestData() {
-        //TODO How to get the userToken? Address in this ticket here -> https://tools.hmcts.net/jira/browse/SSCS-2568
-        //Complete this method once the ticket above mentioned is done.
-        String userToken = "Bearer userToken";
+        String authorisation = "emal:password";
+        String userToken = idamApiClient.authorize(authorisation);
         return EventRequestData.builder()
             .userToken(userToken)
             .userId(coreCaseDataProperties.getUserId())

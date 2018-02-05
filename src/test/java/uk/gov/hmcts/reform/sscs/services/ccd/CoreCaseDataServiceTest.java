@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CoreCaseDataServiceTest {
@@ -32,11 +33,13 @@ public class CoreCaseDataServiceTest {
     private CoreCaseDataProperties coreCaseDataPropertiesMock;
     @Mock
     private AuthTokenGenerator authTokenGenerator;
+    @Mock
+    private IdamApiClient idamApiClient;
 
     @Before
     public void setUp() {
         coreCaseDataService = new CoreCaseDataService(coreCaseDataApiMock, coreCaseDataPropertiesMock,
-            authTokenGenerator);
+            authTokenGenerator, idamApiClient);
     }
 
     @Test
@@ -45,6 +48,7 @@ public class CoreCaseDataServiceTest {
         mockCoreCaseDataProperties();
         mockStartEventResponse();
         mockCaseDetails();
+        when(idamApiClient.authorize(anyString())).thenReturn("userToken");
 
         //When
         CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());

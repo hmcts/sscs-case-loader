@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -18,6 +19,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -34,6 +36,8 @@ public class CoreCddCaseDataServiceTest {
     private AuthTokenGenerator authTokenGenerator;
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
+    @MockBean
+    private IdamApiClient idamApiClient;
     @Autowired
     private CoreCaseDataService coreCaseDataService;
 
@@ -61,6 +65,8 @@ public class CoreCddCaseDataServiceTest {
             any(CaseDataContent.class)
         )).willReturn(CaseDetails.builder().build());
 
+        given(idamApiClient.authorize(anyString())).willReturn(USER_TOKEN);
+
         coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
 
         verify(coreCaseDataApi)
@@ -83,5 +89,7 @@ public class CoreCddCaseDataServiceTest {
                 eq(true),
                 any(CaseDataContent.class)
             );
+
+        verify(idamApiClient).authorize(anyString());
     }
 }
