@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -10,16 +11,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class CoreCddCaseDataServiceTest {
 
@@ -34,6 +37,8 @@ public class CoreCddCaseDataServiceTest {
     private AuthTokenGenerator authTokenGenerator;
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
+    @MockBean
+    private IdamApiClient idamApiClient;
     @Autowired
     private CoreCaseDataService coreCaseDataService;
 
@@ -61,6 +66,9 @@ public class CoreCddCaseDataServiceTest {
             any(CaseDataContent.class)
         )).willReturn(CaseDetails.builder().build());
 
+        given(idamApiClient.authorize(anyString()))
+            .willReturn(new Authorize("url", "userToken"));
+
         coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
 
         verify(coreCaseDataApi)
@@ -83,5 +91,7 @@ public class CoreCddCaseDataServiceTest {
                 eq(true),
                 any(CaseDataContent.class)
             );
+
+        verify(idamApiClient).authorize(anyString());
     }
 }

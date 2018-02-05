@@ -1,12 +1,20 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.*;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
+import uk.gov.hmcts.reform.ccd.client.model.EventRequestData;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
+import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @Service
 public class CoreCaseDataService {
@@ -14,13 +22,18 @@ public class CoreCaseDataService {
     private final CoreCaseDataApi coreCaseDataApi;
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final AuthTokenGenerator authTokenGenerator;
+    private final IdamApiClient idamApiClient;
+    private final IdamProperties idamProperties;
 
     @Autowired
     public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
-                               AuthTokenGenerator authTokenGenerator) {
+                               AuthTokenGenerator authTokenGenerator, IdamApiClient idamApiClient,
+                               IdamProperties idamProperties) {
         this.coreCaseDataApi = coreCaseDataApi;
         this.coreCaseDataProperties = coreCaseDataProperties;
         this.authTokenGenerator = authTokenGenerator;
+        this.idamApiClient = idamApiClient;
+        this.idamProperties = idamProperties;
     }
 
     public CaseDetails startEventAndSaveGivenCase(CaseData caseData) {
@@ -60,16 +73,20 @@ public class CoreCaseDataService {
     }
 
     private EventRequestData getEventRequestData() {
-        //TODO How to get the userToken? Address in this ticket here -> https://tools.hmcts.net/jira/browse/SSCS-2568
-        //Complete this method once the ticket above mentioned is done.
-        String userToken = "Bearer userToken";
         return EventRequestData.builder()
-            .userToken(userToken)
+            .userToken(getUserToken())
             .userId(coreCaseDataProperties.getUserId())
             .jurisdictionId(coreCaseDataProperties.getJurisdictionId())
             .caseTypeId(coreCaseDataProperties.getCaseTypeId())
             .eventId(coreCaseDataProperties.getEventId())
             .ignoreWarning(true)
             .build();
+    }
+
+    private String getUserToken() {
+        String authorisation = idamProperties.getRole().getEmail() + ":" + idamProperties.getRole().getPassword();
+        String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
+        Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
+        return "Bearer " + authorize.getAccessToken();
     }
 }
