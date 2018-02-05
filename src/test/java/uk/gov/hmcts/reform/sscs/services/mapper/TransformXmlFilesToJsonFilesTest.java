@@ -27,7 +27,6 @@ public class TransformXmlFilesToJsonFilesTest {
         String refAsString = FileUtils.readFileToString(new File(REF_XML), StandardCharsets.UTF_8.name());
 
         XmlFiles xmlFiles = XmlFiles.builder().delta(deltaAsString).ref(refAsString).build();
-        System.out.println(xmlFiles);
 
         //When
         JsonFiles actualJsonFiles = transformXmlFilesToJsonFiles.transform(xmlFiles);
