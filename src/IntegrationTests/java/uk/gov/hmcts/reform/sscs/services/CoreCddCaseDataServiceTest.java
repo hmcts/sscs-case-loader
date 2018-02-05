@@ -18,12 +18,13 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.TestCaseLoaderApp;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = TestCaseLoaderApp.class)
 public class CoreCddCaseDataServiceTest {
 
     private static final String USER_TOKEN = "Bearer userToken";

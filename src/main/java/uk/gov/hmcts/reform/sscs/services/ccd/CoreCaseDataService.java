@@ -74,7 +74,7 @@ public class CoreCaseDataService {
 
     private EventRequestData getEventRequestData() {
         return EventRequestData.builder()
-            .userToken(getUserToken())
+            .userToken(getIdamUserToken())
             .userId(coreCaseDataProperties.getUserId())
             .jurisdictionId(coreCaseDataProperties.getJurisdictionId())
             .caseTypeId(coreCaseDataProperties.getCaseTypeId())
@@ -83,10 +83,11 @@ public class CoreCaseDataService {
             .build();
     }
 
-    private String getUserToken() {
+    private String getIdamUserToken() {
         String authorisation = idamProperties.getRole().getEmail() + ":" + idamProperties.getRole().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
         Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
+        System.out.println("*** getIdamUserToken: " + authorize);
         return "Bearer " + authorize.getAccessToken();
     }
 }
