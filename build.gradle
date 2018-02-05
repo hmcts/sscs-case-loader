@@ -17,6 +17,8 @@ version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp.java'
+
 jar {
   archiveName 'sscs-case-loader.jar'
   manifest {
@@ -176,4 +178,12 @@ dependencies {
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
 
   integrationTestCompile 'pl.pragmatists:JUnitParams:1.1.1'
+
+  run {
+    def debug = System.getProperty("debug")
+    if (debug == 'true') {
+      jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+    }
+  }
+
 }
