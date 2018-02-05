@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
@@ -36,11 +37,13 @@ public class CoreCaseDataServiceTest {
     private AuthTokenGenerator authTokenGenerator;
     @Mock
     private IdamApiClient idamApiClient;
+    @Mock
+    private IdamProperties idamProperties;
 
     @Before
     public void setUp() {
         coreCaseDataService = new CoreCaseDataService(coreCaseDataApiMock, coreCaseDataPropertiesMock,
-            authTokenGenerator, idamApiClient);
+            authTokenGenerator, idamApiClient, idamProperties);
     }
 
     @Test
@@ -50,6 +53,7 @@ public class CoreCaseDataServiceTest {
         mockStartEventResponse();
         mockCaseDetails();
         when(idamApiClient.authorize(anyString())).thenReturn(new Authorize("url", "userToken"));
+        mockIdamProrperties();
 
         //When
         CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
@@ -58,6 +62,13 @@ public class CoreCaseDataServiceTest {
         assertNotNull(caseDetails);
         CaseData caseData = (CaseData) caseDetails.getData().get("case-data");
         assertEquals("2017-10-08", caseData.getAppeal().getMrnDate());
+    }
+
+    private void mockIdamProrperties() {
+        IdamProperties.Role role = mock(IdamProperties.Role.class);
+        when(idamProperties.getRole()).thenReturn(role);
+        when(role.getEmail()).thenReturn("email");
+        when(role.getPassword()).thenReturn("pass");
     }
 
     private void mockCaseDetails() {

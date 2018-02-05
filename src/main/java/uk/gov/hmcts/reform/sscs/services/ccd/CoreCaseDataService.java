@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.EventRequestData;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
@@ -22,14 +23,17 @@ public class CoreCaseDataService {
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final AuthTokenGenerator authTokenGenerator;
     private final IdamApiClient idamApiClient;
+    private final IdamProperties idamProperties;
 
     @Autowired
     public CoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
-                               AuthTokenGenerator authTokenGenerator, IdamApiClient idamApiClient) {
+                               AuthTokenGenerator authTokenGenerator, IdamApiClient idamApiClient,
+                               IdamProperties idamProperties) {
         this.coreCaseDataApi = coreCaseDataApi;
         this.coreCaseDataProperties = coreCaseDataProperties;
         this.authTokenGenerator = authTokenGenerator;
         this.idamApiClient = idamApiClient;
+        this.idamProperties = idamProperties;
     }
 
     public CaseDetails startEventAndSaveGivenCase(CaseData caseData) {
@@ -80,7 +84,7 @@ public class CoreCaseDataService {
     }
 
     private String getUserToken() {
-        String authorisation = "david.crespo@hmcts.net:password";
+        String authorisation = idamProperties.getRole().getEmail() + ":" + idamProperties.getRole().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
         Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
         return "Bearer " + authorize.getAccessToken();
