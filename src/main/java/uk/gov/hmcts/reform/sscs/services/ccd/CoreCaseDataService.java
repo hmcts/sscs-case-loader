@@ -82,9 +82,7 @@ public class CoreCaseDataService {
     private String getUserToken() {
         String authorisation = "david.crespo@hmcts.net:password";
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
-        System.out.println(base64Authorisation);
         Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
-        System.out.println(authorize);
-        return authorize.getAccessToken();
+        return "Bearer " + authorize.getAccessToken();
     }
 }
