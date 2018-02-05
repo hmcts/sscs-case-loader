@@ -1,11 +1,17 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.*;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
+import uk.gov.hmcts.reform.ccd.client.model.EventRequestData;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
@@ -63,15 +69,22 @@ public class CoreCaseDataService {
     }
 
     private EventRequestData getEventRequestData() {
-        String authorisation = "emal:password";
-        String userToken = idamApiClient.authorize(authorisation);
         return EventRequestData.builder()
-            .userToken(userToken)
+            .userToken(getUserToken())
             .userId(coreCaseDataProperties.getUserId())
             .jurisdictionId(coreCaseDataProperties.getJurisdictionId())
             .caseTypeId(coreCaseDataProperties.getCaseTypeId())
             .eventId(coreCaseDataProperties.getEventId())
             .ignoreWarning(true)
             .build();
+    }
+
+    private String getUserToken() {
+        String authorisation = "david.crespo@hmcts.net:password";
+        String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
+        System.out.println(base64Authorisation);
+        Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
+        System.out.println(authorize);
+        return authorize.getAccessToken();
     }
 }

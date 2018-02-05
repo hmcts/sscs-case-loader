@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
@@ -65,7 +66,8 @@ public class CoreCddCaseDataServiceTest {
             any(CaseDataContent.class)
         )).willReturn(CaseDetails.builder().build());
 
-        given(idamApiClient.authorize(anyString())).willReturn(USER_TOKEN);
+        given(idamApiClient.authorize(anyString()))
+            .willReturn(Authorize.builder().accessToken(USER_TOKEN).build());
 
         coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
 
