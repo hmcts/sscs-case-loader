@@ -68,7 +68,7 @@ public class CoreCddCaseDataServiceTest {
         )).willReturn(CaseDetails.builder().build());
 
         given(idamApiClient.authorize(anyString()))
-            .willReturn(new Authorize("url", "userToken"));
+            .willReturn(new Authorize("url", "userToken", ""));
 
         coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
 

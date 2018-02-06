@@ -52,7 +52,8 @@ public class CoreCaseDataServiceTest {
         mockCoreCaseDataProperties();
         mockStartEventResponse();
         mockCaseDetails();
-        when(idamApiClient.authorize(anyString())).thenReturn(new Authorize("url", "userToken"));
+        when(idamApiClient.authorize(anyString())).thenReturn(
+            new Authorize("url", "userToken", "code"));
         mockIdamProrperties();
 
         //When
