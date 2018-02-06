@@ -12,7 +12,6 @@ import uk.gov.hmcts.reform.ccd.client.model.EventRequestData;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
-import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
@@ -83,10 +82,17 @@ public class CoreCaseDataService {
             .build();
     }
 
+    // TODO: 06/02/2018 Finish implementing the IDAM Aouth2 authentication
     private String getIdamUserToken() {
         String authorisation = idamProperties.getRole().getEmail() + ":" + idamProperties.getRole().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
-        Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
-        return "Bearer " + authorize.getAccessToken();
+        String authorize = idamApiClient.authorizeCodeType(
+            "Basic " + base64Authorisation,
+            "code",
+            "sscs",
+            "http://localhost"
+        );
+        System.out.println(authorize);
+        return "Bearer ";
     }
 }
