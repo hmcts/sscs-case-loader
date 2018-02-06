@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
  * that we can save a Case into the CDD from the CaseLoader successfully.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = TestCaseLoaderApp.class)
 public class ProcessFileAndSaveIntoCcd {
 
     @Autowired

@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
  */
 //TODO: Move this class to our End to End tests project
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = TestCaseLoaderApp.class)
 public class SaveSimpleCaseIntoCcd {
 
     @Autowired
