@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
@@ -49,6 +50,6 @@ public class CaseLoaderServiceTest {
 
         caseLoaderService.process();
 
-        verify(coreCaseDataService).startEventAndSaveGivenCase(any(CaseData.class));
+        verify(coreCaseDataService, times(16)).startEventAndSaveGivenCase(any(CaseData.class));
     }
 }

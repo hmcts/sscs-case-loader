@@ -15,7 +15,7 @@ idam:
     url: ${IDAM.S2S-AUTH:http://localhost:4502}
   url: ${IDAM_URL:http://localhost:4501}
   role:
-    email: ${IDAM_ROLE_EMAIL:your.email@something.com}
+    email: ${IDAM_ROLE_EMAIL:santhosh.avirneni@transformuk.com}
     password: ${IDAM_ROLE_PASSWORD:password}
 
 management.security.enabled: ${MANAGEMENT_SECURITY_ENABLED:true}
