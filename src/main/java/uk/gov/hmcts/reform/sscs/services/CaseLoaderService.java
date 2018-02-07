@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,7 @@ import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
-import uk.gov.hmcts.reform.sscs.models.JsonFiles;
-import uk.gov.hmcts.reform.sscs.models.XmlFiles;
+import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
@@ -48,14 +48,15 @@ public class CaseLoaderService {
     }
 
     public void process() {
-        List<InputStream> inputStreamList = sftpSshService.readExtractFiles();
-        log.info("*** case-loader *** Read Delta xml file from SFTP successfully");
-        inputStreamList.forEach(inputStream -> {
-            String deltaXmlAsString = fromInputStreamToString(inputStream);
-            validateXml(deltaXmlAsString);
-            log.info("*** case-loader *** Validate Delta xml file successfully");
-            CaseData caseData = transformDeltaToCaseData(deltaXmlAsString);
-            log.info("*** case-loader *** Transform Delta xml file into CCD Cases successfully");
+        List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
+        log.info("*** case-loader *** Read xml files from SFTP successfully");
+        inputStreamList.forEach(gapsInputStream -> {
+            String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
+            String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
+            validateXml(xmlAsString, type);
+            log.info("*** case-loader *** Validate " + type + " xml file successfully");
+            CaseData caseData = transformStringToCaseData(xmlAsString);
+            log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
             CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
             log.info("*** case-loader *** Save CDD case into CCD successfully: {}",
                 printCaseDetailsInJson(caseDetails));
@@ -82,28 +83,27 @@ public class CaseLoaderService {
         }
     }
 
-    private CaseData transformDeltaToCaseData(String deltaAsString) {
+    private CaseData transformStringToCaseData(String input) {
         CaseData caseData;
         try {
-            caseData = transformDeltaToCaseDataUnHandled(deltaAsString);
+            caseData = transformInputToCaseDataUnHandled(input);
         } catch (IOException e) {
             throw new TransformException("Failed to transform xml to CCD data", e);
         }
         return caseData;
     }
 
-    private void validateXml(String deltaAsString) {
+    private void validateXml(String inputAsString, String type) {
         try {
-            xmlValidator.validateXml(deltaAsString, "Delta");
+            xmlValidator.validateXml(inputAsString, type);
         } catch (SAXException | XMLStreamException | IOException e) {
             throw new GapsValidationException("Failed to validate xml", e);
         }
     }
 
-    private CaseData transformDeltaToCaseDataUnHandled(String deltaAsString) throws IOException {
-        XmlFiles xmlFiles = XmlFiles.builder().delta(deltaAsString).ref("nothing for now").build();
-        JsonFiles jsonCases = transformXmlFilesToJsonFiles.transform(xmlFiles);
-        return transformJsonCasesToCaseData.transform(jsonCases.getDelta().toString());
+    private CaseData transformInputToCaseDataUnHandled(String input) throws IOException {
+        JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(input);
+        return transformJsonCasesToCaseData.transform(jsonCases.toString());
     }
 
 }
