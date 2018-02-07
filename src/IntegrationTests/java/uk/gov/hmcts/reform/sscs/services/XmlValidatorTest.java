@@ -33,7 +33,7 @@ public class XmlValidatorTest {
     @Test
     public void givenValidRefXmlInputStream_shouldPassValidator() throws Exception {
         validator.validateXml(FileUtils.readFileToString(new File(REF_PATH), StandardCharsets.UTF_8.name()),
-            "Ref");
+            "Reference");
     }
 
 

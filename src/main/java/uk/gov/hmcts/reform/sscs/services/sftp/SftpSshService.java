@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
+import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 
 @Service
 @Slf4j
@@ -16,6 +17,8 @@ public class SftpSshService {
 
     private final JSch jschSshChannel;
     private final SftpSshProperties sftpSshProperties;
+    private static final String DELTA_FILE_START = "SSCS_Extract_Delta";
+    private static final String REFERENCE_FILE_START = "SSCS_Extract_Reference";
 
     @Autowired
     public SftpSshService(JSch jschSshChannel, SftpSshProperties sftpSshProperties) {
@@ -23,7 +26,7 @@ public class SftpSshService {
         this.sftpSshProperties = sftpSshProperties;
     }
 
-    public List<InputStream> readExtractFiles() {
+    public List<GapsInputStream> readExtractFiles() {
         try {
             return getFilesAsInputStreams(connect());
         } catch (JSchException | SftpException e) {
@@ -45,20 +48,26 @@ public class SftpSshService {
         return sesConnection;
     }
 
-    public List<InputStream> getFilesAsInputStreams(Session sesConnection) throws JSchException, SftpException {
+    public List<GapsInputStream> getFilesAsInputStreams(Session sesConnection) throws JSchException, SftpException {
         Channel channel = sesConnection.openChannel("sftp");
         channel.connect();
         ChannelSftp channelSftp = (ChannelSftp) channel;
 
         List fileList = channelSftp.ls(sftpSshProperties.getInputDirectory() + "/*.xml");
 
-        List<InputStream> inputStreams = new ArrayList<>();
+        List<GapsInputStream> inputStreams = new ArrayList<>();
 
         for (Object file : fileList) {
-            inputStreams.add(channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
-                + ((ChannelSftp.LsEntry) file).getFilename()));
+            InputStream stream = channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
+                + ((ChannelSftp.LsEntry) file).getFilename());
+
+            inputStreams.add(GapsInputStream.builder().isDelta(isFileType((ChannelSftp.LsEntry)file, DELTA_FILE_START))
+                .isReference(isFileType((ChannelSftp.LsEntry)file, REFERENCE_FILE_START)).inputStream(stream).build());
         }
         return inputStreams;
     }
 
+    private Boolean isFileType(ChannelSftp.LsEntry file, String startPath) {
+        return file.getFilename().startsWith(startPath);
+    }
 }
