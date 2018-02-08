@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,33 +90,4 @@ public class CaseLoaderServiceTest {
         verify(coreCaseDataService).startEventAndSaveGivenCase(any(CaseData.class));
     }
 
-    @Test
-    @Ignore
-    // FIXME: 07/02/2018 Unignore this test when Reference data gets converted to a case
-    public void givenReferenceXmlInSftp_shouldBeSavedIntoCcd() throws IOException {
-        List<GapsInputStream> inputStreamList = new ArrayList<>(1);
-        InputStream stream = FileUtils.openInputStream(new File(REFERENCE_XML));
-        inputStreamList.add(GapsInputStream.builder().inputStream(stream).isDelta(false).isReference(true)
-            .build());
-
-        given(sftpSshService.readExtractFiles()).willReturn(inputStreamList);
-
-        given(authTokenGenerator.generate()).willReturn("s2s token");
-
-        given(coreCaseDataApi.startForCaseworker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString()))
-            .willReturn(StartEventResponse.builder().build());
-
-        given(idamApiClient.authorize(anyString()))
-            .willReturn(new Authorize("url", "accessToken"));
-
-        caseLoaderService.process();
-
-        verify(coreCaseDataService).startEventAndSaveGivenCase(any(CaseData.class));
-    }
 }
