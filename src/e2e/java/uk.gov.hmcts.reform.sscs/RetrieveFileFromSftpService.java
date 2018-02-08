@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 
 /**
@@ -33,11 +34,11 @@ public class RetrieveFileFromSftpService {
     @Ignore
     public void givenAnSftpFile_shouldBeRetrievedAndConvertedToAnInputStream() throws Exception {
 
-        List<InputStream> result = service.readExtractFiles();
+        List<GapsInputStream> result = service.readExtractFiles();
 
         assertThat(result, hasSize(1));
         InputStream stream;
-        stream = result.get(0);
+        stream = result.get(0).getInputStream();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             assertEquals(br.readLine(), "<?xml version=\"1.0\" standalone=\"yes\"?>");
         } finally {

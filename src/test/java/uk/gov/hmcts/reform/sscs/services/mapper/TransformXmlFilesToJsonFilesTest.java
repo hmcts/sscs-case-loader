@@ -6,9 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.models.JsonFiles;
-import uk.gov.hmcts.reform.sscs.models.XmlFiles;
 
 public class TransformXmlFilesToJsonFilesTest {
 
@@ -26,16 +25,15 @@ public class TransformXmlFilesToJsonFilesTest {
         String deltaAsString = FileUtils.readFileToString(new File(DELTA_XML), StandardCharsets.UTF_8.name());
         String refAsString = FileUtils.readFileToString(new File(REF_XML), StandardCharsets.UTF_8.name());
 
-        XmlFiles xmlFiles = XmlFiles.builder().delta(deltaAsString).ref(refAsString).build();
-
         //When
-        JsonFiles actualJsonFiles = transformXmlFilesToJsonFiles.transform(xmlFiles);
+        JSONObject actualDeltaJson = transformXmlFilesToJsonFiles.transform(deltaAsString);
+        JSONObject actualRefJson = transformXmlFilesToJsonFiles.transform(refAsString);
 
         //Should
         String expectedDeltaJson = FileUtils.readFileToString(new File(DELTA_JSON), StandardCharsets.UTF_8.name());
         String expectedRefJson = FileUtils.readFileToString(new File(REF_JSON), StandardCharsets.UTF_8.name());
 
-        assertJsonEquals(expectedDeltaJson, actualJsonFiles.getDelta());
-        assertJsonEquals(expectedRefJson, actualJsonFiles.getRef());
+        assertJsonEquals(expectedDeltaJson, actualDeltaJson);
+        assertJsonEquals(expectedRefJson, actualRefJson);
     }
 }
