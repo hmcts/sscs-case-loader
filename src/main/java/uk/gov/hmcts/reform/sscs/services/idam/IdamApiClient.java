@@ -15,14 +15,6 @@ public interface IdamApiClient {
         method = RequestMethod.POST,
         value = "/oauth2/authorize"
     )
-    Authorize authorize(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) final String authorisation
-    );
-
-    @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/oauth2/authorize"
-    )
     Authorize authorizeCodeType(
         @RequestHeader(HttpHeaders.AUTHORIZATION) final String authorisation,
         @RequestParam("response_type") final String responseType,
@@ -34,7 +26,7 @@ public interface IdamApiClient {
         method = RequestMethod.POST,
         value = "/oauth2/token"
     )
-    String authorizeToken(
+    Authorize authorizeToken(
         @RequestParam("code") final String code,
         @RequestParam("grant_type") final String grantType,
         @RequestParam("redirect_uri") final String redirectUri,

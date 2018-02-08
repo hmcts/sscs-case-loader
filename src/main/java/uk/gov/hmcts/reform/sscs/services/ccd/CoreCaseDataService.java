@@ -56,7 +56,7 @@ public class CoreCaseDataService {
             .event(Event.builder()
                 .id(startEventResponse.getEventId())
                 .summary("SSCS - appeal created event")
-                .description("Created SSCS case with token " + startEventResponse.getToken())
+                .description("Created SSCS")
                 .build())
             .data(caseData)
             .build();
@@ -74,7 +74,7 @@ public class CoreCaseDataService {
 
     private EventRequestData getEventRequestData() {
         return EventRequestData.builder()
-            .userToken(getIdamUserToken())
+            .userToken(getIdamOauth2Token())
             .userId(coreCaseDataProperties.getUserId())
             .jurisdictionId(coreCaseDataProperties.getJurisdictionId())
             .caseTypeId(coreCaseDataProperties.getCaseTypeId())
@@ -83,30 +83,26 @@ public class CoreCaseDataService {
             .build();
     }
 
-    private String getIdamUserToken() {
-        String authorisation = idamProperties.getRole().getEmail() + ":" + idamProperties.getRole().getPassword();
+    private String getIdamOauth2Token() {
+        String authorisation = idamProperties.getOauth2().getUser().getEmail()
+            + ":" + idamProperties.getOauth2().getUser().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
-        Authorize authorize = idamApiClient.authorize("Basic " + base64Authorisation);
 
-        // FIXME: 06/02/2018 Fix issue when using IDAM OAuth2
+        Authorize authorize = idamApiClient.authorizeCodeType(
+            "Basic " + base64Authorisation,
+            "code",
+            idamProperties.getOauth2().getClient().getId(),
+            idamProperties.getOauth2().getRedirectUrl()
+        );
 
-        //        Authorize authorize = idamApiClient.authorizeCodeType(
-        //            "Basic " + base64Authorisation,
-        //            "code",
-        //            "sscs",
-        //            "http://localhost"
-        //        );
-        //
-        //        String authorizeToken = idamApiClient.authorizeToken(
-        //            authorize.getCode(),
-        //            "authorization_code",
-        //            "http://localhost",
-        //            "sscs",
-        //            "AAAAAAAAAAAAAAAC"
-        //        );
-        //
-        //        System.out.println(authorizeToken);
+        Authorize authorizeToken = idamApiClient.authorizeToken(
+            authorize.getCode(),
+            "authorization_code",
+            idamProperties.getOauth2().getRedirectUrl(),
+            idamProperties.getOauth2().getClient().getId(),
+            idamProperties.getOauth2().getClient().getSecret()
+        );
 
-        return "Bearer " + authorize.getAccessToken();
+        return "Bearer " + authorizeToken.getAccessToken();
     }
 }

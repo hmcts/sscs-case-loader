@@ -68,11 +68,23 @@ public class CaseLoaderServiceTest {
             anyString(),
             anyString(),
             anyString(),
-            anyString()))
-            .willReturn(StartEventResponse.builder().build());
+            anyString())
+        ).willReturn(StartEventResponse.builder().build());
 
-        given(idamApiClient.authorize(anyString()))
-            .willReturn(new Authorize("url", "accessToken"));
+        given(idamApiClient.authorizeCodeType(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString())
+        ).willReturn(new Authorize("url", "code", ""));
+
+        given(idamApiClient.authorizeToken(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString())
+        ).willReturn(new Authorize("", "", "accessToken"));
 
         caseLoaderService.process();
 

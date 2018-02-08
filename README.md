@@ -176,11 +176,7 @@ git clone git@git.reform.hmcts.net:case-management/ccd-docker.git
 ```bash
 ./compose-frontend.sh up -d
 ```
-* Step 3: Create idam roles
-```bash
-./bin/idam-create-caseworker.sh caseworker-sscs,caseworker-sscs-systemupdate,caseworker-sscs-anonymouscitizen yourEmail@hmcts.net
-```
-* Step 4: Add those roles in CDD
+* Step 3: Add those roles in CDD
 ```bash
 ./bin/ccd-add-role.sh caseworker-sscs
 ```
@@ -192,9 +188,9 @@ and the last one
 ```bash
 ./bin/ccd-add-role.sh caseworker-sscs-anonymouscitizen
 ```
-* Step 5: Finally import the XLS definition file
+* Step 4: Finally import the XLS definition file
 ```bash
-./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_V28.xlsx
+./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
 ```
 
 ### Setting up a Dockerised SFTP server for developing purpose
