@@ -167,12 +167,12 @@ There is no need to remove postgres and java or similar core images.
 
 ### Setting up a Dockerised env to test the CaseLoader against CDD and rest of apps such as IDAM 
 
-* Step 1: Clone the CCD docker env
+* Step 1: Clone the SSCS docker env
 ```bash
-git clone git@git.reform.hmcts.net:case-management/ccd-docker.git
+git clone git@git.reform.hmcts.net:sscs/sscs-docker.git
 
 ```
-* Step 2: to bring up the Dockerised CDD env
+* Step 2: to bring up the Dockerised env
 ```bash
 ./compose-frontend.sh up -d
 ```
@@ -191,6 +191,10 @@ and the last one
 * Step 4: Finally import the XLS definition file
 ```bash
 ./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
+```
+* Step 5: Finally copy and paste the application.yml from
+```bash
+https://tools.hmcts.net/confluence/display/SSCS/application.yml
 ```
 
 ### Setting up a Dockerised SFTP server for developing purpose
