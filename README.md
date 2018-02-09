@@ -192,6 +192,10 @@ and the last one
 ```bash
 ./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
 ```
+* Step 5: Finally copy and paste the application.yml from
+```bash
+https://tools.hmcts.net/confluence/display/SSCS/application.yml
+```
 
 ### Setting up a Dockerised SFTP server for developing purpose
 * To build both the case-loader and SFTP server services 
