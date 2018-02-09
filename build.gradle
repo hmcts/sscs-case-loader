@@ -98,14 +98,14 @@ dependencies {
   e2eCompile(sourceSets.test.output)
 }
 
-task integrationTest(type: Test) {
+task functional(type: Test) {
   setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
   setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
 
 jacocoTestReport {
-  executionData(test, integrationTest)
+  executionData(test, functional)
   reports {
     xml.enabled = true
     html.enabled = true
@@ -113,12 +113,12 @@ jacocoTestReport {
   }
 }
 
-project.tasks['sonarqube'].dependsOn test, integrationTest
-check.dependsOn integrationTest
+project.tasks['sonarqube'].dependsOn test, functional
+check.dependsOn functional
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
-integrationTest.shouldRunAfter(checkstyleIntegrationTest)
-integrationTest.shouldRunAfter(test)
+functional.shouldRunAfter(checkstyleIntegrationTest)
+functional.shouldRunAfter(test)
 
 sonarqube {
   properties {
