@@ -52,7 +52,20 @@ public class CoreCaseDataServiceTest {
         mockCoreCaseDataProperties();
         mockStartEventResponse();
         mockCaseDetails();
-        when(idamApiClient.authorize(anyString())).thenReturn(new Authorize("url", "userToken"));
+        when(idamApiClient.authorizeCodeType(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString())
+        ).thenReturn(new Authorize("url", "code", ""));
+
+        when(idamApiClient.authorizeToken(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString())
+        ).thenReturn(new Authorize("", "", "accessToken"));
         mockIdamProrperties();
 
         //When
@@ -65,10 +78,17 @@ public class CoreCaseDataServiceTest {
     }
 
     private void mockIdamProrperties() {
-        IdamProperties.Role role = mock(IdamProperties.Role.class);
-        when(idamProperties.getRole()).thenReturn(role);
-        when(role.getEmail()).thenReturn("email");
-        when(role.getPassword()).thenReturn("pass");
+        IdamProperties.Oauth2 oauth2 = mock(IdamProperties.Oauth2.class);
+        when(idamProperties.getOauth2()).thenReturn(oauth2);
+
+        IdamProperties.Oauth2.User user = mock(IdamProperties.Oauth2.User.class);
+        when(oauth2.getUser()).thenReturn(user);
+
+        IdamProperties.Oauth2.Client client = mock(IdamProperties.Oauth2.Client.class);
+        when(oauth2.getClient()).thenReturn(client);
+
+        when(user.getEmail()).thenReturn("email");
+        when(user.getPassword()).thenReturn("password");
     }
 
     private void mockCaseDetails() {
