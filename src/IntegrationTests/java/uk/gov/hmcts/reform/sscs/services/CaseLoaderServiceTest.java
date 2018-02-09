@@ -48,7 +48,6 @@ public class CaseLoaderServiceTest {
     private CaseLoaderService caseLoaderService;
 
     private static final String DELTA_XML = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
-    private static final String REFERENCE_XML = "src/test/resources/SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
 
     @Test
     public void givenDeltaXmlInSftp_shouldBeSavedIntoCcd() throws IOException {
