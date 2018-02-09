@@ -6,11 +6,14 @@ import lombok.Value;
 @Value
 public class Authorize {
     private String defaultUrl;
+    private String code;
     private String accessToken;
 
     public Authorize(@JsonProperty("default-url") String defaultUrl,
-                     @JsonProperty("access-token") String accessToken) {
+                     @JsonProperty("code") String code,
+                     @JsonProperty("access_token") String accessToken) {
         this.defaultUrl = defaultUrl;
+        this.code = code;
         this.accessToken = accessToken;
     }
 }
