@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.models.deserialize.gaps2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.ArrayList;
-
+import java.util.List;
 import lombok.Value;
 
 @Value
@@ -13,7 +11,7 @@ public class AppealCase {
     private String originatingOfficeId;
     private String appealCaseDateFtaResponseReceived;
     private String appealCaseRefNum;
-    private ArrayList<MajorStatus> majorStatus;
+    private List<MajorStatus> majorStatus;
     private String extractTimeUtc;
     private String appealCaseBfDate;
     private Parties parties;
@@ -25,7 +23,7 @@ public class AppealCase {
     private String appealCaseCaseCodeId;
     private String appealCaseDateAppealMade;
     private String appealCaseDateAppealReceived;
-    private PostponementRequests postponementRequests;
+    private List<PostponementRequests> postponementRequests;
 
 
     public AppealCase(@JsonProperty("Appeal_Case_Date_of_Decision") String appealCaseDateOfDecision,
@@ -33,7 +31,7 @@ public class AppealCase {
                       @JsonProperty("Originating_Office_Id") String originatingOfficeId,
                       @JsonProperty("Appeal_Case_Date_FTA_Response_Received") String appealCaseDateFtaResponseReceived,
                       @JsonProperty("Appeal_Case_RefNum") String appealCaseRefNum,
-                      @JsonProperty("Major_Status") ArrayList<MajorStatus> majorStatus,
+                      @JsonProperty("Major_Status") List<MajorStatus> majorStatus,
                       @JsonProperty("Extract_Time_UTC") String extractTimeUtc,
                       @JsonProperty("Appeal_Case_BF_Date") String appealCaseBfDate,
                       @JsonProperty("Parties") Parties parties,
@@ -45,7 +43,7 @@ public class AppealCase {
                       @JsonProperty("Appeal_Case_Case_Code_Id") String appealCaseCaseCodeId,
                       @JsonProperty("Appeal_Case_Date_Appeal_Made") String appealCaseDateAppealMade,
                       @JsonProperty("Appeal_Case_Date_Appeal_Received") String appealCaseDateAppealReceived,
-                      @JsonProperty("Postponement_Requests") PostponementRequests postponementRequests) {
+                      @JsonProperty("Postponement_Requests") List<PostponementRequests> postponementRequests) {
         this.appealCaseDateOfDecision = appealCaseDateOfDecision;
         this.adminTeamId = adminTeamId;
         this.originatingOfficeId = originatingOfficeId;

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -59,6 +60,7 @@ public class TransformJsonCasesToCaseData {
 
     private Gaps2Extract fromJsonToGapsExtract(String json) {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
+        mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         try {
             return mapper.readerFor(Gaps2Extract.class).readValue(json);
         } catch (Exception e) {
