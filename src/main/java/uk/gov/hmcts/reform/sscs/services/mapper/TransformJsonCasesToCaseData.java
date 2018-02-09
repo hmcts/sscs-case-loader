@@ -12,9 +12,11 @@ import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 
@@ -32,10 +34,21 @@ public class TransformJsonCasesToCaseData {
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
         Name name = getName(appealCase);
+        Address address = getAddress(appealCase);
+        Contact contact = getContact(appealCase);
         Identity identity = getIdentity(appealCase);
 
-        Appellant appellant = Appellant.builder().name(name).identity(identity).build();
-        Appeal appeal = Appeal.builder().appellant(appellant).build();
+        Appellant appellant = Appellant.builder()
+            .name(name)
+            .address(address)
+            .contact(contact)
+            .identity(identity)
+            .build();
+
+        Appeal appeal = Appeal.builder()
+            .appellant(appellant)
+            .build();
+
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
@@ -55,6 +68,20 @@ public class TransformJsonCasesToCaseData {
             .title(parties.getTitle())
             .firstName(parties.getInitials())
             .lastName(parties.getSurname())
+            .build();
+    }
+
+    private Address getAddress(AppealCase appealCase) {
+        return Address.builder()
+            .postcode(appealCase.getParties().getPostCode())
+            .build();
+    }
+
+    private Contact getContact(AppealCase appealCase) {
+        return Contact.builder()
+            .email(appealCase.getParties().getEmail())
+            .phone(appealCase.getParties().getPhone1())
+            .mobile(appealCase.getParties().getPhone2())
             .build();
     }
 
