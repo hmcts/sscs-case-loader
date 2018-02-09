@@ -125,7 +125,7 @@ sonarqube {
     property "sonar.projectName", "SSCS - Case loader"
     property "sonar.projectKey", "SSCSCL"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integrationTest.exec"
+    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/functional.exec"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
 
   }
