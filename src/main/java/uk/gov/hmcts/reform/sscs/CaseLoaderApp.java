@@ -26,7 +26,7 @@ public class CaseLoaderApp implements CommandLineRunner {
         try {
             caseLoaderService.process();
         } catch (Exception e) {
-            log.error("Something went wrong...", e);
+            log.error("Oops...something went wrong...", e);
         }
     }
 

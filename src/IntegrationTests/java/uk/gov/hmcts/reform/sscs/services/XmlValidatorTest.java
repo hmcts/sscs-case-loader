@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.sscs.TestCaseLoaderApp;
+import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
 @RunWith(SpringRunner.class)
@@ -37,7 +37,7 @@ public class XmlValidatorTest {
     }
 
 
-    @Test(expected = SAXException.class)
+    @Test(expected = GapsValidationException.class)
     public void givenInvalidRefXmlFile_shouldFailValidator() throws Exception {
         validator.validateXml(FileUtils.readFileToString(new File(INVALID_DELTA_PATH), StandardCharsets.UTF_8.name()),
             "Delta");

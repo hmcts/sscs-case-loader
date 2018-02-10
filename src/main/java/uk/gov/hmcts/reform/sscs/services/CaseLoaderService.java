@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -46,15 +44,16 @@ public class CaseLoaderService {
         this.coreCaseDataService = coreCaseDataService;
     }
 
-    public void process() throws SftpException, JSchException {
+    public void process() {
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         inputStreamList.forEach(gapsInputStream -> {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
-            validateXml(xmlAsString, type);
+            xmlValidator.validateXml(xmlAsString, type);
             log.info("*** case-loader *** Validate " + type + " xml file successfully");
-            List<CaseData> caseDataList = transformStringToCaseData(xmlAsString);
+            JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
+            CaseData caseData = transformJsonCasesToCaseData.transform(jsonCases.toString());
             log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
             caseDataList.forEach(caseData -> {
                 CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
@@ -84,24 +83,6 @@ public class CaseLoaderService {
             log.error("Failed to transform inputStream to String", e);
         }
         return null;
-    }
-
-    private List<CaseData> transformStringToCaseData(String input) {
-        JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(input);
-        try {
-            return transformJsonCasesToCaseData.transform(jsonCases.toString());
-        } catch (IOException e) {
-            log.error("Failed to transform xml to CCD data", e);
-        }
-        return null;
-    }
-
-    private void validateXml(String inputAsString, String type) {
-        try {
-            xmlValidator.validateXml(inputAsString, type);
-        } catch (Exception e) {
-            log.error("Something wrong when validating the xml files", e);
-        }
     }
 
 }
