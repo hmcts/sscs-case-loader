@@ -110,25 +110,4 @@ public class SftpSshServiceTest {
         assertThat(result, hasSize(1));
     }
 
-    @Test
-    public void shouldHandleJSchException() throws Exception {
-        when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
-
-        doThrow(new JSchException()).when(sesConnection).connect(anyInt());
-
-        assertTrue(service.readExtractFiles().isEmpty());
-    }
-
-    @Test
-    public void shouldHandleSftpException() throws Exception {
-        when(jschSshChannel.getSession(anyString(), anyString(), anyInt())).thenReturn(sesConnection);
-
-        Channel channelSftp = mock(ChannelSftp.class);
-
-        when(sesConnection.openChannel(anyString())).thenReturn(channelSftp);
-
-        doThrow(new SftpException(4, "")).when((ChannelSftp) channelSftp).ls(anyString());
-
-        assertTrue(service.readExtractFiles().isEmpty());
-    }
 }

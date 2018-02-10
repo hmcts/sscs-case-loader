@@ -8,7 +8,6 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,8 @@ public class SftpSshService {
         this.sftpSshProperties = sftpSshProperties;
     }
 
-    public List<GapsInputStream> readExtractFiles() {
-        try {
-            return getFilesAsInputStreams(connect());
-        } catch (Exception e) {
-            log.error("something went wrong when  getting the file input streams", e);
-        }
-        return Collections.emptyList();
+    public List<GapsInputStream> readExtractFiles() throws JSchException, SftpException {
+        return getFilesAsInputStreams(connect());
     }
 
     public Session connect() throws JSchException {

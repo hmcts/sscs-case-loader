@@ -2,7 +2,8 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -45,8 +46,7 @@ public class CaseLoaderService {
         this.coreCaseDataService = coreCaseDataService;
     }
 
-    public void process() {
-
+    public void process() throws SftpException, JSchException {
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         inputStreamList.forEach(gapsInputStream -> {
