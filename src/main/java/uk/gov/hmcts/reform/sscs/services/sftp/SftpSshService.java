@@ -35,7 +35,7 @@ public class SftpSshService {
         try {
             return getFilesAsInputStreams(connect());
         } catch (JSchException | SftpException e) {
-            log.error(e.getMessage());
+            log.error("something went wrong when  getting the file input streams", e);
         }
         return Collections.emptyList();
     }

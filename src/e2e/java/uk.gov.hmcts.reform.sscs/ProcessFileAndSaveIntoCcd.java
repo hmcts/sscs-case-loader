@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class ProcessFileAndSaveIntoCcd {
     private CaseLoaderService caseLoaderService;
 
     @Test
-    @Ignore
+//    @Ignore
     public void givenACase_shouldBeSaveIntoCcd() {
         caseLoaderService.process();
     }
