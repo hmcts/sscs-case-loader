@@ -38,7 +38,7 @@ public class SftpSshServiceTest {
     }
 
     @Test
-    public void givenAListOfFiles_shouldGetDeltaFileAsInputStream() throws SftpException, JSchException {
+    public void givenAListOfFiles_shouldGetDeltaFileAsInputStream() throws Exception {
         Channel channelSftp = mock(ChannelSftp.class);
 
         Vector<ChannelSftp.LsEntry> rows = new Vector<>();
@@ -57,7 +57,7 @@ public class SftpSshServiceTest {
     }
 
     @Test
-    public void givenAListOfFiles_shouldGetReferenceFileAsInputStream() throws SftpException, JSchException {
+    public void givenAListOfFiles_shouldGetReferenceFileAsInputStream() throws Exception {
         Channel channelSftp = mock(ChannelSftp.class);
 
         Vector<ChannelSftp.LsEntry> rows = new Vector<>();

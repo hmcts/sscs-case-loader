@@ -34,7 +34,7 @@ public class SftpSshService {
     public List<GapsInputStream> readExtractFiles() {
         try {
             return getFilesAsInputStreams(connect());
-        } catch (JSchException | SftpException e) {
+        } catch (Exception e) {
             log.error("something went wrong when  getting the file input streams", e);
         }
         return Collections.emptyList();
@@ -66,8 +66,8 @@ public class SftpSshService {
             InputStream stream = channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
                 + ((ChannelSftp.LsEntry) file).getFilename());
 
-            inputStreams.add(GapsInputStream.builder().isDelta(isFileType((ChannelSftp.LsEntry)file, DELTA_FILE_START))
-                .isReference(isFileType((ChannelSftp.LsEntry)file, REFERENCE_FILE_START)).inputStream(stream).build());
+            inputStreams.add(GapsInputStream.builder().isDelta(isFileType((ChannelSftp.LsEntry) file, DELTA_FILE_START))
+                .isReference(isFileType((ChannelSftp.LsEntry) file, REFERENCE_FILE_START)).inputStream(stream).build());
         }
         return inputStreams;
     }
