@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
@@ -16,10 +14,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
-
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
@@ -104,8 +99,8 @@ public class CaseLoaderService {
     private void validateXml(String inputAsString, String type) {
         try {
             xmlValidator.validateXml(inputAsString, type);
-        } catch (SAXException | XMLStreamException | IOException e) {
-            throw new GapsValidationException("Failed to validate xml", e);
+        } catch (Exception e) {
+            log.error("Something wrong when validating the xml files", e);
         }
     }
 
