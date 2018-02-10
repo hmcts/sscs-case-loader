@@ -21,11 +21,7 @@ public class CaseLoaderApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        try {
-            caseLoaderService.process();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        caseLoaderService.process();
     }
 
     public static void main(String[] args) {

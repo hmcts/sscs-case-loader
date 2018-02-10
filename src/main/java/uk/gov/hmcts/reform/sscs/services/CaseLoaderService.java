@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
@@ -82,18 +81,19 @@ public class CaseLoaderService {
         try {
             return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
         } catch (IOException e) {
-            throw new TransformException("Failed to transform inputStream to String", e);
+            log.error("Failed to transform inputStream to String", e);
         }
+        return null;
     }
 
     private List<CaseData> transformStringToCaseData(String input) {
-        List<CaseData> caseDataList;
+        JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(input);
         try {
-            caseDataList = transformInputToCaseDataUnHandled(input);
+            return transformJsonCasesToCaseData.transform(jsonCases.toString());
         } catch (IOException e) {
-            throw new TransformException("Failed to transform xml to CCD data", e);
+            log.error("Failed to transform xml to CCD data", e);
         }
-        return caseDataList;
+        return null;
     }
 
     private void validateXml(String inputAsString, String type) {
@@ -102,11 +102,6 @@ public class CaseLoaderService {
         } catch (Exception e) {
             log.error("Something wrong when validating the xml files", e);
         }
-    }
-
-    private List<CaseData> transformInputToCaseDataUnHandled(String input) throws IOException {
-        JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(input);
-        return transformJsonCasesToCaseData.transform(jsonCases.toString());
     }
 
 }
