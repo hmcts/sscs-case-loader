@@ -114,7 +114,7 @@ public class CaseLoaderServiceTest {
 
         verify(coreCaseDataService, times(16)).startEventAndSaveGivenCase(any(CaseData.class));
 
-        verify(coreCaseDataApi).submitForCaseworker(
+        verify(coreCaseDataApi, times(16)).submitForCaseworker(
             anyString(),
             anyString(),
             anyString(),
