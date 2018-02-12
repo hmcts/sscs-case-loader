@@ -35,7 +35,7 @@ public class SftpSshService {
         return getFilesAsInputStreams(connect());
     }
 
-    public Session connect() {
+    private Session connect() {
         try {
             jschSshChannel.addIdentity(sftpSshProperties.getKeyLocation());
 
@@ -52,7 +52,7 @@ public class SftpSshService {
         }
     }
 
-    public List<GapsInputStream> getFilesAsInputStreams(Session sesConnection) {
+    private List<GapsInputStream> getFilesAsInputStreams(Session sesConnection) {
         try {
             Channel channel = sesConnection.openChannel("sftp");
             channel.connect();
