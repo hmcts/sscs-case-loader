@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.exceptions.ApplicationErrorException;
+import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
@@ -53,7 +55,7 @@ public class CaseLoaderService {
             xmlValidator.validateXml(xmlAsString, type);
             log.info("*** case-loader *** Validate " + type + " xml file successfully");
             JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
-            CaseData caseData = transformJsonCasesToCaseData.transform(jsonCases.toString());
+            List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases.toString());
             log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
             caseDataList.forEach(caseData -> {
                 CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
@@ -64,25 +66,22 @@ public class CaseLoaderService {
     }
 
     private String printCaseDetailsInJson(CaseDetails caseDetails) {
-
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
             .indentOutput(true)
             .build();
         try {
             return mapper.writeValueAsString(caseDetails);
         } catch (JsonProcessingException e) {
-            log.error("Fail to serialise CaseDetails", e);
+            throw new ApplicationErrorException("Oops...something went wrong...", e);
         }
-        return null;
     }
 
     private String fromInputStreamToString(InputStream inputStream) {
         try {
             return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
         } catch (IOException e) {
-            log.error("Failed to transform inputStream to String", e);
+            throw new TransformException("Oops...something went wrong...", e);
         }
-        return null;
     }
 
 }

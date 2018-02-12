@@ -10,11 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
-<<<<<<< HEAD
-
-=======
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
->>>>>>> Fix throws multiple exception in argument methods issue in Sonarqube
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
@@ -23,11 +19,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 @Service
 public class TransformJsonCasesToCaseData {
 
-<<<<<<< HEAD
-    public List<CaseData> transform(String json) throws IOException {
-=======
-    public CaseData transform(String json) {
->>>>>>> Fix throws multiple exception in argument methods issue in Sonarqube
+    public List<CaseData> transform(String json) {
         Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
         return fromGaps2ExtractToCaseDataList(gaps2Extract.getAppealCases().getAppealCaseList());
     }
