@@ -22,7 +22,7 @@ public class ProcessFileAndSaveIntoCcd {
 
     @Test
     @Ignore
-    public void givenACase_shouldBeSaveIntoCcd() {
+    public void givenACase_shouldBeSaveIntoCcd() throws Exception {
         caseLoaderService.process();
     }
 

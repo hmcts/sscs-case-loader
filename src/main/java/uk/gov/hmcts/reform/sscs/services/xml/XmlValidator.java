@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
+import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 
 @Service
 public class XmlValidator {
@@ -25,15 +26,18 @@ public class XmlValidator {
     @Value("${sscs.gaps2.schema.location.delta}")
     private String deltaSchemaPath;
 
-    public void validateXml(String xmlAsString, String type) throws IOException, SAXException,
-        XMLStreamException {
-        InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
-        String schemaPath = "Reference".equals(type) ? refSchemaPath : deltaSchemaPath;
-        InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
-        StreamSource schemaSource = new StreamSource(schemaAsStream);
-        Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
-        validator.setErrorHandler(new XmlErrorHandler());
-        XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
-        validator.validate(new StAXSource(xmlStreamReader));
+    public void validateXml(String xmlAsString, String type) {
+        try {
+            InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
+            String schemaPath = "Reference".equals(type) ? refSchemaPath : deltaSchemaPath;
+            InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
+            StreamSource schemaSource = new StreamSource(schemaAsStream);
+            Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
+            validator.setErrorHandler(new XmlErrorHandler());
+            XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
+            validator.validate(new StAXSource(xmlStreamReader));
+        } catch (IOException | SAXException | XMLStreamException e) {
+            throw new GapsValidationException("Oops...something went wrong, ", e);
+        }
     }
 }

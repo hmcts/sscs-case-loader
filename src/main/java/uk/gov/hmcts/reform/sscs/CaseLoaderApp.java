@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 @EnableHystrixDashboard
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
 @EnableFeignClients
+@Slf4j
 public class CaseLoaderApp implements CommandLineRunner {
 
     @Autowired
@@ -24,7 +26,7 @@ public class CaseLoaderApp implements CommandLineRunner {
         try {
             caseLoaderService.process();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Oops...something went wrong...", e);
         }
     }
 
