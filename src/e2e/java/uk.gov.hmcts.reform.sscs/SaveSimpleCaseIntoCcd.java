@@ -28,6 +28,7 @@ public class SaveSimpleCaseIntoCcd {
     @Ignore
     public void givenACase_shouldBeSaveIntoCcd() {
         CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
+        System.out.println();
         assertNotNull(caseDetails);
     }
 

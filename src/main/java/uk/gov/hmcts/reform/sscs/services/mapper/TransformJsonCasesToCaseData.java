@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 
@@ -45,8 +46,11 @@ public class TransformJsonCasesToCaseData {
             .identity(identity)
             .build();
 
+        HearingOptions hearingOptions = getHearingOptions(appealCase);
+
         Appeal appeal = Appeal.builder()
             .appellant(appellant)
+            .hearingOptions(hearingOptions)
             .build();
 
         return CaseData.builder()
@@ -82,6 +86,12 @@ public class TransformJsonCasesToCaseData {
             .email(appealCase.getParties().getEmail())
             .phone(appealCase.getParties().getPhone1())
             .mobile(appealCase.getParties().getPhone2())
+            .build();
+    }
+
+    private HearingOptions getHearingOptions(AppealCase appealCase) {
+        return HearingOptions.builder()
+            .languageInterpreter(appealCase.getParties().getInterpreterSignerId())
             .build();
     }
 

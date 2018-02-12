@@ -9,7 +9,7 @@ public final class CaseDataUtils {
     public static CaseData buildCaseData() {
         Name name = Name.builder()
             .title("Mr")
-            .firstName("Userzzz")
+            .firstName("User")
             .lastName("Test")
             .build();
         Address address = Address.builder()
@@ -30,10 +30,14 @@ public final class CaseDataUtils {
             .contact(contact)
             .identity(identity)
             .build();
+        HearingOptions hearingOptions = HearingOptions.builder()
+            .languageInterpreter("167")
+            .build();
         Appeal appeal = Appeal.builder()
             .mrnDate("2017-10-08")
             .mrnMissingReason("It was missing")
             .appellant(appellant)
+            .hearingOptions(hearingOptions)
             .build();
         return CaseData.builder()
             .caseReference("SC068/17/00013")

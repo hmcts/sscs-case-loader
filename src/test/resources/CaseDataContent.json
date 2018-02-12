@@ -15,10 +15,21 @@
           "firstName" : "User",
           "lastName" : "Test"
         },
+        "address" : {
+          "postcode" : "L17 7AE"
+        },
+        "contact" : {
+          "email" : "mail@email.com",
+          "phone" : "01234567890",
+          "mobile": "01234567890"
+        },
         "identity" : {
            "dob" : "1904-03-10",
            "nino" : "AB 22 55 66 B"
         }
+      },
+      "hearingOptions" : {
+        "languageInterpreter" : "167"
       }
     }
   },
