@@ -5,6 +5,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,18 +13,19 @@ import static org.mockito.Mockito.when;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import java.util.List;
 import java.util.Vector;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
+import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 
 @RunWith(JUnitParamsRunner.class)
@@ -71,11 +73,17 @@ public class SftpSshServiceTest {
         verify(sesConnection).connect(60000);
     }
 
-    @Test
-    @Ignore
-    public void givenSessionConnectFails_shouldThrowAnException() {
-
+    @Test(expected = SftpCustomException.class)
+    public void givenSessionConnectFails_shouldThrowAnException() throws Exception {
+        mockSftpInternalServices("Delta.xml");
+        doThrow(JSchException.class).when(sesConnection).connect(anyInt());
         service.readExtractFiles();
+    }
 
+    @Test(expected = SftpCustomException.class)
+    public void givenSessionOpenChannelFails_shouldThrowAnException() throws Exception {
+        mockSftpInternalServices("Delta.xml");
+        doThrow(JSchException.class).when(sesConnection).openChannel(anyString());
+        service.readExtractFiles();
     }
 }
