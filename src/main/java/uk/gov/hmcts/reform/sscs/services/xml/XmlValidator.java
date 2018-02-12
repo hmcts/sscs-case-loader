@@ -13,7 +13,6 @@ import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
@@ -21,15 +20,13 @@ import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 @Service
 public class XmlValidator {
 
-    @Value("${sscs.gaps2.schema.location.reference}")
-    private String refSchemaPath;
-    @Value("${sscs.gaps2.schema.location.delta}")
-    private String deltaSchemaPath;
+    private static final String REF_SCHEMA_PATH = "/schema/SSCS_Extract_Schema_Reference_0.2.xsd";
+    private static final String DELTA_SCHEMA_PATH = "/schema/SSCS_Extract_Schema_0.8.xsd";
 
     public void validateXml(String xmlAsString, String type) {
         try {
             InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
-            String schemaPath = "Reference".equals(type) ? refSchemaPath : deltaSchemaPath;
+            String schemaPath = "Reference".equals(type) ? REF_SCHEMA_PATH : DELTA_SCHEMA_PATH;
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
             Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
