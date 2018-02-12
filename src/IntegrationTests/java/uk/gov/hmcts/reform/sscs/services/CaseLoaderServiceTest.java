@@ -6,6 +6,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -111,9 +112,9 @@ public class CaseLoaderServiceTest {
 
         caseLoaderService.process();
 
-        verify(coreCaseDataService).startEventAndSaveGivenCase(any(CaseData.class));
+        verify(coreCaseDataService, times(16)).startEventAndSaveGivenCase(any(CaseData.class));
 
-        verify(coreCaseDataApi).submitForCaseworker(
+        verify(coreCaseDataApi, times(16)).submitForCaseworker(
             anyString(),
             anyString(),
             anyString(),

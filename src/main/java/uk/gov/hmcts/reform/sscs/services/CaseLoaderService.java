@@ -2,18 +2,22 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
+
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
@@ -48,6 +52,7 @@ public class CaseLoaderService {
     }
 
     public void process() {
+
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         inputStreamList.forEach(gapsInputStream -> {
@@ -55,15 +60,18 @@ public class CaseLoaderService {
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
             validateXml(xmlAsString, type);
             log.info("*** case-loader *** Validate " + type + " xml file successfully");
-            CaseData caseData = transformStringToCaseData(xmlAsString);
+            List<CaseData> caseDataList = transformStringToCaseData(xmlAsString);
             log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
-            CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
-            log.info("*** case-loader *** Save CDD case into CCD successfully: {}",
-                printCaseDetailsInJson(caseDetails));
+            caseDataList.forEach(caseData -> {
+                CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
+                log.info("*** case-loader *** Save case details into CCD successfully: {}",
+                    printCaseDetailsInJson(caseDetails));
+            });
         });
     }
 
     private String printCaseDetailsInJson(CaseDetails caseDetails) {
+
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
             .indentOutput(true)
             .build();
@@ -83,14 +91,14 @@ public class CaseLoaderService {
         }
     }
 
-    private CaseData transformStringToCaseData(String input) {
-        CaseData caseData;
+    private List<CaseData> transformStringToCaseData(String input) {
+        List<CaseData> caseDataList;
         try {
-            caseData = transformInputToCaseDataUnHandled(input);
+            caseDataList = transformInputToCaseDataUnHandled(input);
         } catch (IOException e) {
             throw new TransformException("Failed to transform xml to CCD data", e);
         }
-        return caseData;
+        return caseDataList;
     }
 
     private void validateXml(String inputAsString, String type) {
@@ -101,7 +109,7 @@ public class CaseLoaderService {
         }
     }
 
-    private CaseData transformInputToCaseDataUnHandled(String input) throws IOException {
+    private List<CaseData> transformInputToCaseDataUnHandled(String input) throws IOException {
         JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(input);
         return transformJsonCasesToCaseData.transform(jsonCases.toString());
     }
