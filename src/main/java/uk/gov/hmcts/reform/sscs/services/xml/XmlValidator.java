@@ -20,13 +20,10 @@ import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 @Service
 public class XmlValidator {
 
-    private static final String REF_SCHEMA_PATH = "/schema/SSCS_Extract_Schema_Reference_0.2.xsd";
-    private static final String DELTA_SCHEMA_PATH = "/schema/SSCS_Extract_Schema_0.8.xsd";
-
     public void validateXml(String xmlAsString, String type) {
         try {
             InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
-            String schemaPath = "Reference".equals(type) ? REF_SCHEMA_PATH : DELTA_SCHEMA_PATH;
+            String schemaPath = "Reference".equals(type) ? XmlSchemas.REF.getPath() : XmlSchemas.DELTA.getPath();
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
             Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
