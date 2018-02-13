@@ -31,3 +31,7 @@ sftp:
   port: ${GAPS2_SFTP_PORT:2222}
   username: ${GAPS2_SFTP_USER:sftp}
   inputDirectory: ${GAPS2_SFTP_DIR:incoming}
+
+sscs.gaps2.schema.location:
+  delta: /schema/SSCS_Extract_Schema_0.8.xsd
+  reference: /schema/SSCS_Extract_Schema_Reference_0.2.xsd
