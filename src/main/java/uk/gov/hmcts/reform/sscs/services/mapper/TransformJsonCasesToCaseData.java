@@ -60,12 +60,12 @@ public class TransformJsonCasesToCaseData {
             .hearingOptions(hearingOptions)
             .build();
 
-        List<Value> valueList = getHearings(appealCase);
+        List<Hearing> hearingsList = getHearings(appealCase);
 
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
-            .hearings(valueList)
+            .hearings(hearingsList)
             .build();
     }
 
@@ -106,8 +106,8 @@ public class TransformJsonCasesToCaseData {
             .build();
     }
 
-    private List<Value> getHearings(AppealCase appealCase) {
-        List<Value> valueList = new ArrayList<>();
+    private List<Hearing> getHearings(AppealCase appealCase) {
+        List<Hearing> hearingsList = new ArrayList<>();
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
@@ -118,14 +118,14 @@ public class TransformJsonCasesToCaseData {
                 .time(getValidTime(appealCase.getHearing().getAppealTime()))
                 .build();
 
-            Value value = Value.builder()
+            Hearing value = Hearing.builder()
                 .value(hearings)
                 .build();
 
-            valueList.add(value);
+            hearingsList.add(value);
         }
 
-        return valueList;
+        return hearingsList;
     }
 
     private Gaps2Extract fromJsonToGapsExtract(String json) {

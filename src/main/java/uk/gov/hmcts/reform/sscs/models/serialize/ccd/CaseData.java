@@ -9,5 +9,5 @@ import lombok.Builder;
 public class CaseData {
     private String caseReference;
     private Appeal appeal;
-    private List<Value> hearings;
+    private List<Hearing> hearings;
 }
