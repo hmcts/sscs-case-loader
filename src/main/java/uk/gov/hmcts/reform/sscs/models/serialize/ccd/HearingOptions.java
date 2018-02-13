@@ -7,4 +7,5 @@ import lombok.Value;
 @Builder
 public class HearingOptions {
     private String languageInterpreter;
+    private String other;
 }

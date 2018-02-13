@@ -28,6 +28,9 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 @Service
 public class TransformJsonCasesToCaseData {
 
+    private final String YES = "Yes";
+    private final String NO = "No";
+
     public List<CaseData> transform(String json) {
         Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
         return fromGaps2ExtractToCaseDataList(gaps2Extract.getAppealCases().getAppealCaseList());
@@ -98,7 +101,8 @@ public class TransformJsonCasesToCaseData {
 
     private HearingOptions getHearingOptions(AppealCase appealCase) {
         return HearingOptions.builder()
-            .languageInterpreter(appealCase.getParties().getInterpreterSignerId() != null ? "Yes" : "No")
+            .languageInterpreter(appealCase.getParties().getInterpreterSignerId() != null ? YES : NO)
+            .other("Y".equals(appealCase.getParties().getDisabilityNeeds()) ? YES : NO)
             .build();
     }
 
