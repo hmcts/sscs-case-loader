@@ -56,15 +56,27 @@ public final class CaseDataUtils {
         Hearing hearings = Hearing.builder()
             .value(hearingDetails)
             .build();
-
         List<Hearing> hearingsList = new ArrayList<>();
         hearingsList.add(hearings);
 
+        Doc doc = Doc.builder()
+            .dateReceived("2017-05-24")
+            .description("1")
+            .build();
+        Documents documents = Documents.builder()
+            .value(doc)
+            .build();
+        List<Documents> documentsList = new ArrayList<>();
+        documentsList.add(documents);
+        Evidence evidence = Evidence.builder()
+            .documents(documentsList)
+            .build();
 
         return CaseData.builder()
             .caseReference("SC068/17/00013")
             .appeal(appeal)
             .hearings(hearingsList)
+            .evidence(evidence)
             .build();
     }
 }

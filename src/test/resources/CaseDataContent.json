@@ -43,7 +43,17 @@
           "time" : "10:45"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": [
+        {
+          "value": {
+            "dateReceived": "2017-05-24",
+            "description": "1"
+          }
+        }
+      ]
+    }
   },
   "security_classification" : null,
   "event_token" : "user token",

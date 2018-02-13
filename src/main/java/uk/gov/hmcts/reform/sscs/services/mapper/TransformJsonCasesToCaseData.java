@@ -62,10 +62,13 @@ public class TransformJsonCasesToCaseData {
 
         List<Hearing> hearingsList = getHearings(appealCase);
 
+        Evidence evidence = getEvidence(appealCase);
+
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
+            .evidence(evidence)
             .build();
     }
 
@@ -111,7 +114,6 @@ public class TransformJsonCasesToCaseData {
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
-
             hearings = HearingDetails.builder()
                 .venue(Venue.builder().venueTown("Aberdeen").build())
                 .hearingDate(getValidDate(appealCase.getHearing().getSessionDate()))
@@ -126,6 +128,24 @@ public class TransformJsonCasesToCaseData {
         }
 
         return hearingsList;
+    }
+
+    private Evidence getEvidence(AppealCase appealCase) {
+        List<Documents> documentsList = new ArrayList<>();
+        Doc doc;
+
+        if (appealCase.getFurtherEvidence() != null) {
+            doc = Doc.builder()
+                .dateReceived(getValidDate(appealCase.getFurtherEvidence().getFeDateReceived()))
+                .description(appealCase.getFurtherEvidence().getFeTypeofEvidenceId())
+                .build();
+            Documents documents = Documents.builder().value(doc).build();
+            documentsList.add(documents);
+        }
+
+        return Evidence.builder()
+            .documents(documentsList)
+            .build();
     }
 
     private Gaps2Extract fromJsonToGapsExtract(String json) {

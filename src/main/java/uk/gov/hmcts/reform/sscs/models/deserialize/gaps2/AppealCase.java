@@ -10,6 +10,7 @@ public class AppealCase {
     private String adminTeamId;
     private String originatingOfficeId;
     private String appealCaseDateFtaResponseReceived;
+    private FurtherEvidence furtherEvidence;
     private String appealCaseRefNum;
     private List<MajorStatus> majorStatus;
     private String extractTimeUtc;
@@ -30,6 +31,7 @@ public class AppealCase {
                       @JsonProperty("Admin_Team_Id") String adminTeamId,
                       @JsonProperty("Originating_Office_Id") String originatingOfficeId,
                       @JsonProperty("Appeal_Case_Date_FTA_Response_Received") String appealCaseDateFtaResponseReceived,
+                      @JsonProperty("Further_Evidence") FurtherEvidence furtherEvidence,
                       @JsonProperty("Appeal_Case_RefNum") String appealCaseRefNum,
                       @JsonProperty("Major_Status") List<MajorStatus> majorStatus,
                       @JsonProperty("Extract_Time_UTC") String extractTimeUtc,
@@ -48,6 +50,7 @@ public class AppealCase {
         this.adminTeamId = adminTeamId;
         this.originatingOfficeId = originatingOfficeId;
         this.appealCaseDateFtaResponseReceived = appealCaseDateFtaResponseReceived;
+        this.furtherEvidence = furtherEvidence;
         this.appealCaseRefNum = appealCaseRefNum;
         this.majorStatus = majorStatus;
         this.extractTimeUtc = extractTimeUtc;

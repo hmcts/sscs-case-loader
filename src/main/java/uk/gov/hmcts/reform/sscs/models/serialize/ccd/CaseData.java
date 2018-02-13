@@ -10,4 +10,5 @@ public class CaseData {
     private String caseReference;
     private Appeal appeal;
     private List<Hearing> hearings;
+    private Evidence evidence;
 }
