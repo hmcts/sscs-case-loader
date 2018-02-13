@@ -29,7 +29,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 public class TransformJsonCasesToCaseData {
 
     private static final String YES = "Yes";
-    private static  String NO = "No";
+    private static final String NO = "No";
 
     public List<CaseData> transform(String json) {
         Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
