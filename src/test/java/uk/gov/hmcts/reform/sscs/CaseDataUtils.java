@@ -51,6 +51,7 @@ public final class CaseDataUtils {
         HearingDetails hearingDetails = HearingDetails.builder()
             .venue(venue)
             .hearingDate("2017-05-24")
+            .time("10:45")
             .build();
         Value value = Value.builder()
             .value(hearingDetails)

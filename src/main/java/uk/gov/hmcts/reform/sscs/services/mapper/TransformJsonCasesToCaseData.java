@@ -114,7 +114,8 @@ public class TransformJsonCasesToCaseData {
 
             hearings = HearingDetails.builder()
                 .venue(Venue.builder().venueTown("Aberdeen").build())
-                .hearingDate(getValidDate(appealCase.getHearing().getDateHearingNotification()))
+                .hearingDate(getValidDate(appealCase.getHearing().getSessionDate()))
+                .time(getValidTime(appealCase.getHearing().getAppealTime()))
                 .build();
 
             Value value = Value.builder()
@@ -146,5 +147,13 @@ public class TransformJsonCasesToCaseData {
         return result.toLocalDate().toString();
     }
 
+    private String getValidTime(String dateTime) {
+        return dateTime != null ? parseToIsoTime(dateTime) : "";
+    }
+
+    private String parseToIsoTime(String utcTime) {
+        ZonedDateTime result = ZonedDateTime.parse(utcTime, DateTimeFormatter.ISO_DATE_TIME);
+        return result.toLocalTime().toString();
+    }
 }
 

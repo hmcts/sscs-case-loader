@@ -8,4 +8,5 @@ import lombok.Value;
 public class HearingDetails {
     private Venue venue;
     private String hearingDate;
+    private String time;
 }

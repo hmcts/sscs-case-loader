@@ -33,13 +33,14 @@
         "other" : "No"
       }
     },
-    "hearings": [
+    "hearings" : [
       {
-        "value": {
-          "venue": {
-            "venueTown": "Aberdeen"
+        "value" : {
+          "venue" : {
+            "venueTown" : "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate" : "2017-05-24",
+          "time" : "10:45"
         }
       }
     ]
