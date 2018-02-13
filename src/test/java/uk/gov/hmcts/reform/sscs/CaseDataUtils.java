@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 
 public final class CaseDataUtils {
@@ -30,8 +33,9 @@ public final class CaseDataUtils {
             .contact(contact)
             .identity(identity)
             .build();
+
         HearingOptions hearingOptions = HearingOptions.builder()
-            .languageInterpreter("167")
+            .languageInterpreter("Yes")
             .build();
         Appeal appeal = Appeal.builder()
             .mrnDate("2017-10-08")
@@ -39,8 +43,26 @@ public final class CaseDataUtils {
             .appellant(appellant)
             .hearingOptions(hearingOptions)
             .build();
+
+        Venue venue = Venue.builder()
+            .venueTown("Aberdeen")
+            .build();
+        Hearing hearing = Hearing.builder()
+            .venue(venue)
+            .hearingDate("2017-05-24")
+            .build();
+        Value value = Value.builder()
+            .value(hearing)
+            .build();
+
+        List<Value> valueList = new ArrayList<>();
+        valueList.add(value);
+
+
         return CaseData.builder()
             .caseReference("SC068/17/00013")
-            .appeal(appeal).build();
+            .appeal(appeal)
+            .hearings(valueList)
+            .build();
     }
 }

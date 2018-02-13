@@ -29,9 +29,19 @@
         }
       },
       "hearingOptions" : {
-        "languageInterpreter" : "167"
+        "languageInterpreter" : "Yes"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   "security_classification" : null,
   "event_token" : "user token",

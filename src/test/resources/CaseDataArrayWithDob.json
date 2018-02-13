@@ -24,9 +24,19 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00003",
@@ -53,9 +63,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00009",
@@ -82,9 +93,19 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00006",
@@ -111,9 +132,19 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00007",
@@ -140,9 +171,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "239"
+        "languageInterpreter": "Yes"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00001",
@@ -169,9 +201,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "239"
+        "languageInterpreter": "Yes"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00004",
@@ -198,9 +231,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00014",
@@ -227,9 +261,19 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00011",
@@ -256,9 +300,19 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00015",
@@ -285,9 +339,19 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "239"
+        "languageInterpreter": "Yes"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00017",
@@ -314,9 +378,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00005",
@@ -343,9 +408,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "239"
+        "languageInterpreter": "Yes"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00016",
@@ -372,9 +438,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00002",
@@ -401,9 +468,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "239"
+        "languageInterpreter": "Yes"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00008",
@@ -430,9 +498,10 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": []
   },
   {
     "caseReference": "SC068/17/00012",
@@ -459,8 +528,18 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": null
+        "languageInterpreter": "No"
       }
-    }
+    },
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
+          },
+          "hearingDate": "2017-05-24"
+        }
+      }
+    ]
   }
 ]

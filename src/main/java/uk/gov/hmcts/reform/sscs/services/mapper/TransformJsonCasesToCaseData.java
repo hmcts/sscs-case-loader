@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -17,9 +18,12 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Value;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 
 @Service
 public class TransformJsonCasesToCaseData {
@@ -53,15 +57,18 @@ public class TransformJsonCasesToCaseData {
             .hearingOptions(hearingOptions)
             .build();
 
+        List<Value> valueList = getHearings(appealCase);
+
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
+            .hearings(valueList)
             .build();
     }
 
     private Identity getIdentity(AppealCase appealCase) {
         return Identity.builder()
-            .dob(getValidDoB(appealCase.getParties().getDob()))
+            .dob(getValidDate(appealCase.getParties().getDob()))
             .nino(appealCase.getAppealCaseNino())
             .build();
     }
@@ -91,8 +98,29 @@ public class TransformJsonCasesToCaseData {
 
     private HearingOptions getHearingOptions(AppealCase appealCase) {
         return HearingOptions.builder()
-            .languageInterpreter(appealCase.getParties().getInterpreterSignerId())
+            .languageInterpreter(appealCase.getParties().getInterpreterSignerId() != null ? "Yes" : "No")
             .build();
+    }
+
+    private List<Value> getHearings(AppealCase appealCase) {
+        List<Value> valueList = new ArrayList<>();
+        Hearing hearings;
+
+        if (appealCase.getHearing() != null) {
+
+            hearings = Hearing.builder()
+                .venue(Venue.builder().venueTown("Aberdeen").build())
+                .hearingDate(getValidDate(appealCase.getHearing().getDateHearingNotification()))
+                .build();
+
+            Value value = Value.builder()
+                .value(hearings)
+                .build();
+
+            valueList.add(value);
+        }
+
+        return valueList;
     }
 
     private Gaps2Extract fromJsonToGapsExtract(String json) {
@@ -105,8 +133,8 @@ public class TransformJsonCasesToCaseData {
         }
     }
 
-    private String getValidDoB(String dob) {
-        return dob != null ? parseToIsoDateTime(dob) : "";
+    private String getValidDate(String dateTime) {
+        return dateTime != null ? parseToIsoDateTime(dateTime) : "";
     }
 
     private String parseToIsoDateTime(String utcTime) {
