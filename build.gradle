@@ -77,18 +77,12 @@ sourceSets {
       runtimeClasspath += main.output + test.output
       srcDir('src/IntegrationTests/java')
     }
-    resources {
-      srcDir('src/IntegrationTests/resources')
-    }
   }
   e2e {
     java {
       compileClasspath += main.output + test.output
       runtimeClasspath += main.output + test.output
       srcDir('src/e2e/java')
-    }
-    resources {
-      srcDir('src/e2e/resources')
     }
   }
 }
