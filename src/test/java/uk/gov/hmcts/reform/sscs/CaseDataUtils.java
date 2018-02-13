@@ -48,12 +48,12 @@ public final class CaseDataUtils {
         Venue venue = Venue.builder()
             .venueTown("Aberdeen")
             .build();
-        Hearing hearing = Hearing.builder()
+        HearingDetails hearingDetails = HearingDetails.builder()
             .venue(venue)
             .hearingDate("2017-05-24")
             .build();
         Value value = Value.builder()
-            .value(hearing)
+            .value(hearingDetails)
             .build();
 
         List<Value> valueList = new ArrayList<>();

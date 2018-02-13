@@ -24,7 +24,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": [
@@ -63,7 +64,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": []
@@ -93,7 +95,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": [
@@ -132,7 +135,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": [
@@ -171,7 +175,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "Yes"
+        "languageInterpreter": "Yes",
+        "other": "No"
       }
     },
     "hearings": []
@@ -201,7 +206,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "Yes"
+        "languageInterpreter": "Yes",
+        "other": "No"
       }
     },
     "hearings": []
@@ -231,7 +237,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": []
@@ -261,7 +268,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": [
@@ -300,7 +308,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": [
@@ -339,7 +348,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "Yes"
+        "languageInterpreter": "Yes",
+        "other": "No"
       }
     },
     "hearings": [
@@ -378,7 +388,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": []
@@ -408,7 +419,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "Yes"
+        "languageInterpreter": "Yes",
+        "other": "No"
       }
     },
     "hearings": []
@@ -438,7 +450,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": []
@@ -468,7 +481,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "Yes"
+        "languageInterpreter": "Yes",
+        "other": "No"
       }
     },
     "hearings": []
@@ -498,7 +512,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": []
@@ -528,7 +543,8 @@
         }
       },
       "hearingOptions": {
-        "languageInterpreter": "No"
+        "languageInterpreter": "No",
+        "other": "No"
       }
     },
     "hearings": [

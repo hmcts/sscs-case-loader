@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class Hearing {
+public class HearingDetails {
     private Venue venue;
     private String hearingDate;
 }

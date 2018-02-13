@@ -28,8 +28,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 @Service
 public class TransformJsonCasesToCaseData {
 
-    private final String YES = "Yes";
-    private final String NO = "No";
+    private static final String YES = "Yes";
+    private static  String NO = "No";
 
     public List<CaseData> transform(String json) {
         Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
@@ -108,11 +108,11 @@ public class TransformJsonCasesToCaseData {
 
     private List<Value> getHearings(AppealCase appealCase) {
         List<Value> valueList = new ArrayList<>();
-        Hearing hearings;
+        HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
 
-            hearings = Hearing.builder()
+            hearings = HearingDetails.builder()
                 .venue(Venue.builder().venueTown("Aberdeen").build())
                 .hearingDate(getValidDate(appealCase.getHearing().getDateHearingNotification()))
                 .build();

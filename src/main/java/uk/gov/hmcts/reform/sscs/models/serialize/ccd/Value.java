@@ -5,5 +5,5 @@ import lombok.Builder;
 @lombok.Value
 @Builder
 public class Value {
-    private Hearing value;
+    private HearingDetails value;
 }
