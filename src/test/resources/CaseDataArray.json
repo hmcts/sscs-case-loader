@@ -34,10 +34,14 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-24",
+          "time": "11:00"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00003",
@@ -68,7 +72,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00009",
@@ -105,10 +112,14 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-29",
+          "time": "10:00"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00006",
@@ -145,10 +156,21 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-24",
+          "time": "10:00"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": [
+        {
+          "value": {
+            "dateReceived": "2017-05-24",
+            "description": "1"
+          }
+        }
+      ]
+    }
   },
   {
     "caseReference": "SC068/17/00007",
@@ -179,7 +201,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00001",
@@ -210,7 +235,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00004",
@@ -241,7 +269,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00014",
@@ -278,10 +309,14 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-24",
+          "time": "11:30"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00011",
@@ -318,10 +353,21 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-24",
+          "time": "10:00"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": [
+        {
+          "value": {
+            "dateReceived": "2017-05-24",
+            "description": "1"
+          }
+        }
+      ]
+    }
   },
   {
     "caseReference": "SC068/17/00015",
@@ -358,10 +404,14 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-25",
+          "time": "10:00"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00017",
@@ -392,7 +442,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00005",
@@ -423,7 +476,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00016",
@@ -454,7 +510,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00002",
@@ -485,7 +544,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00008",
@@ -516,7 +578,10 @@
         "other": "No"
       }
     },
-    "hearings": []
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    }
   },
   {
     "caseReference": "SC068/17/00012",
@@ -553,9 +618,13 @@
           "venue": {
             "venueTown": "Aberdeen"
           },
-          "hearingDate": "2017-05-24"
+          "hearingDate": "2017-05-24",
+          "time": "10:30"
         }
       }
-    ]
+    ],
+    "evidence": {
+      "documents": []
+    }
   }
 ]
