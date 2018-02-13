@@ -84,9 +84,6 @@ sourceSets {
       runtimeClasspath += main.output + test.output
       srcDir('src/e2e/java')
     }
-    resources {
-      srcDir('src/e2e/resources')
-    }
   }
 }
 
