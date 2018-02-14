@@ -38,7 +38,7 @@ public final class CaseDataUtils {
             .languageInterpreter("Yes")
             .other("No")
             .build();
-        Appeal appeal = Appeal.builder()
+        final Appeal appeal = Appeal.builder()
             .mrnDate("2017-10-08")
             .mrnMissingReason("It was missing")
             .appellant(appellant)
@@ -68,7 +68,7 @@ public final class CaseDataUtils {
             .build();
         List<Documents> documentsList = new ArrayList<>();
         documentsList.add(documents);
-        Evidence evidence = Evidence.builder()
+        final Evidence evidence = Evidence.builder()
             .documents(documentsList)
             .build();
 

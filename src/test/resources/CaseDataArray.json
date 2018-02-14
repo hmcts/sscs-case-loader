@@ -41,7 +41,15 @@
     ],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00003",
@@ -75,7 +83,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00009",
@@ -119,7 +128,8 @@
     ],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00006",
@@ -170,7 +180,8 @@
           }
         }
       ]
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00007",
@@ -204,7 +215,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00001",
@@ -238,7 +250,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00004",
@@ -272,7 +285,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00014",
@@ -316,7 +330,15 @@
     ],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00011",
@@ -367,7 +389,21 @@
           }
         }
       ]
-    }
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      },
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "No"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00015",
@@ -411,7 +447,15 @@
     ],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      }
+    ]
   },
   {
     "caseReference": "SC068/17/00017",
@@ -445,7 +489,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00005",
@@ -479,7 +524,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00016",
@@ -513,7 +559,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00002",
@@ -547,7 +594,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00008",
@@ -581,7 +629,8 @@
     "hearings": [],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": []
   },
   {
     "caseReference": "SC068/17/00012",
@@ -625,6 +674,14 @@
     ],
     "evidence": {
       "documents": []
-    }
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      }
+    ]
   }
 ]

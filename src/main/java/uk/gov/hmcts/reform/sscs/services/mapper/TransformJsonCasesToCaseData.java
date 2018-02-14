@@ -162,14 +162,16 @@ public class TransformJsonCasesToCaseData {
 
         List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
         List<PostponementRequests> postponementRequestsList = appealCase.getPostponementRequests();
-        if (postponementRequestsList != null ) {
+        if (postponementRequestsList != null) {
             appealCase.getPostponementRequests().forEach(
                 postponementRequests -> {
                     DwpTimeExtensionDetails dwpTimeExtensionDetails = DwpTimeExtensionDetails.builder()
                         .requested(postponementRequests.getPostponementReasonId() != null ? YES : NO)
                         .granted(Y.equals(postponementRequests.getPostponementGranted()) ? YES : NO)
                         .build();
-                    DwpTimeExtension dwpTimeExtension = DwpTimeExtension.builder().value(dwpTimeExtensionDetails).build();
+                    DwpTimeExtension dwpTimeExtension = DwpTimeExtension.builder()
+                        .value(dwpTimeExtensionDetails)
+                        .build();
                     dwpTimeExtensionList.add(dwpTimeExtension);
                 }
             );
