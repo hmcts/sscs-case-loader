@@ -52,6 +52,7 @@ public final class CaseDataUtils {
             .venue(venue)
             .hearingDate("2017-05-24")
             .time("10:45")
+            .adjourned("Yes")
             .build();
         Hearing hearings = Hearing.builder()
             .value(hearingDetails)

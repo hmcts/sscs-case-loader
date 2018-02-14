@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
@@ -128,6 +129,7 @@ public class TransformJsonCasesToCaseData {
                 .venue(Venue.builder().venueTown("Aberdeen").build())
                 .hearingDate(getValidDate(appealCase.getHearing().getSessionDate()))
                 .time(getValidTime(appealCase.getHearing().getAppealTime()))
+                .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
                 .build();
 
             Hearing value = Hearing.builder()
@@ -178,6 +180,10 @@ public class TransformJsonCasesToCaseData {
         }
 
         return dwpTimeExtensionList;
+    }
+
+    private boolean isAdjourned(List<MajorStatus> majorStatusList) {
+        return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
     private Gaps2Extract fromJsonToGapsExtract(String json) {
