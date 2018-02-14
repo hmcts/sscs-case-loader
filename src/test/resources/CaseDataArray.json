@@ -23,6 +23,9 @@
           "nino": "AB 22 55 66 B"
         }
       },
+      "benefitType": {
+        "code": "1325"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -75,6 +78,9 @@
           "nino": "AC 45 89 36 B"
         }
       },
+      "benefitType": {
+        "code": "1667"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -108,6 +114,9 @@
           "dob": "",
           "nino": "JK 67 89 08 A"
         }
+      },
+      "benefitType": {
+        "code": "1325"
       },
       "hearingOptions": {
         "other": "No"
@@ -153,6 +162,9 @@
           "dob": "",
           "nino": "CA 10 34 56 A"
         }
+      },
+      "benefitType": {
+        "code": "1325"
       },
       "hearingOptions": {
         "other": "No"
@@ -206,6 +218,9 @@
           "nino": "GH 56 87 96 B"
         }
       },
+      "benefitType": {
+        "code": "1667"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -239,6 +254,9 @@
           "dob": "",
           "nino": "AB 12 34 56 A"
         }
+      },
+      "benefitType": {
+        "code": "1667"
       },
       "hearingOptions": {
         "other": "No"
@@ -274,6 +292,9 @@
           "nino": "AB 56 21 41 B"
         }
       },
+      "benefitType": {
+        "code": "1667"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -307,6 +328,9 @@
           "dob": "",
           "nino": "PB 45 78 36 C"
         }
+      },
+      "benefitType": {
+        "code": "1325"
       },
       "hearingOptions": {
         "other": "No"
@@ -359,6 +383,9 @@
           "dob": "",
           "nino": "CA 36 98 74 A"
         }
+      },
+      "benefitType": {
+        "code": "1324"
       },
       "hearingOptions": {
         "other": "No"
@@ -425,6 +452,9 @@
           "nino": "PB 11 22 33 B"
         }
       },
+      "benefitType": {
+        "code": "1325"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -477,6 +507,9 @@
           "nino": "PB 55 44 33 A"
         }
       },
+      "benefitType": {
+        "code": "1325"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -510,6 +543,9 @@
           "dob": "",
           "nino": "CA 12 34 56 A"
         }
+      },
+      "benefitType": {
+        "code": "1667"
       },
       "hearingOptions": {
         "other": "No"
@@ -545,6 +581,9 @@
           "nino": "PB 44 99 88 C"
         }
       },
+      "benefitType": {
+        "code": "1324"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -578,6 +617,9 @@
           "dob": "",
           "nino": "NA 23 45 67 B"
         }
+      },
+      "benefitType": {
+        "code": "1667"
       },
       "hearingOptions": {
         "other": "No"
@@ -613,6 +655,9 @@
           "nino": "AB 89 08 08 C"
         }
       },
+      "benefitType": {
+        "code": "1667"
+      },
       "hearingOptions": {
         "other": "No"
       }
@@ -646,6 +691,9 @@
           "dob": "",
           "nino": "YY 78 43 23 D"
         }
+      },
+      "benefitType": {
+        "code": "1325"
       },
       "hearingOptions": {
         "other": "No"

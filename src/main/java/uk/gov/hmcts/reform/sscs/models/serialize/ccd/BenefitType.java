@@ -7,5 +7,4 @@ import lombok.Value;
 @Builder
 public class BenefitType {
     private String code;
-    private String description;
 }
