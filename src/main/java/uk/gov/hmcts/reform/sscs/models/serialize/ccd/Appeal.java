@@ -9,5 +9,6 @@ public class Appeal {
     private String mrnDate;
     private String mrnMissingReason;
     private Appellant appellant;
+    private BenefitType benefitType;
     private HearingOptions hearingOptions;
 }

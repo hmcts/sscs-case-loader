@@ -28,6 +28,9 @@
            "nino" : "AB 22 55 66 B"
         }
       },
+      "benefitType" : {
+        "code" : "1325"
+      },
       "hearingOptions" : {
         "other" : "No"
       }

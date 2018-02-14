@@ -33,6 +33,9 @@ public final class CaseDataUtils {
             .contact(contact)
             .identity(identity)
             .build();
+        BenefitType benefit = BenefitType.builder()
+            .code("1325")
+            .build();
 
         HearingOptions hearingOptions = HearingOptions.builder()
             .other("No")
@@ -41,6 +44,7 @@ public final class CaseDataUtils {
             .mrnDate("2017-10-08")
             .mrnMissingReason("It was missing")
             .appellant(appellant)
+            .benefitType(benefit)
             .hearingOptions(hearingOptions)
             .build();
 

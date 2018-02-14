@@ -61,10 +61,13 @@ public class TransformJsonCasesToCaseData {
             .identity(identity)
             .build();
 
+        BenefitType benefitType = getBenefitType(appealCase);
+
         HearingOptions hearingOptions = getHearingOptions(appealCase);
 
         Appeal appeal = Appeal.builder()
             .appellant(appellant)
+            .benefitType(benefitType)
             .hearingOptions(hearingOptions)
             .build();
 
@@ -110,6 +113,12 @@ public class TransformJsonCasesToCaseData {
             .email(appealCase.getParties().getEmail())
             .phone(appealCase.getParties().getPhone1())
             .mobile(appealCase.getParties().getPhone2())
+            .build();
+    }
+
+    private BenefitType getBenefitType(AppealCase appealCase) {
+        return BenefitType.builder()
+            .code(appealCase.getAppealCaseCaseCodeId())
             .build();
     }
 
