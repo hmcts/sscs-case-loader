@@ -53,7 +53,15 @@
           }
         }
       ]
-    }
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      }
+    ]
   },
   "security_classification" : null,
   "event_token" : "user token",

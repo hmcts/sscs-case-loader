@@ -72,11 +72,22 @@ public final class CaseDataUtils {
             .documents(documentsList)
             .build();
 
+        DwpTimeExtensionDetails dwpTimeExtensionDetails =  DwpTimeExtensionDetails.builder()
+            .requested("Yes")
+            .granted("Yes")
+            .build();
+        DwpTimeExtension dwpTimeExtension = DwpTimeExtension.builder()
+            .value(dwpTimeExtensionDetails)
+            .build();
+        List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
+        dwpTimeExtensionList.add(dwpTimeExtension);
+
         return CaseData.builder()
             .caseReference("SC068/17/00013")
             .appeal(appeal)
             .hearings(hearingsList)
             .evidence(evidence)
+            .dwpTimeExtension(dwpTimeExtensionList)
             .build();
     }
 }

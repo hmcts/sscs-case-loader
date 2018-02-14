@@ -13,16 +13,22 @@ import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Value;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 
 @Service
@@ -30,6 +36,7 @@ public class TransformJsonCasesToCaseData {
 
     private static final String YES = "Yes";
     private static final String NO = "No";
+    private static final String Y = "Y";
 
     public List<CaseData> transform(String json) {
         Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
@@ -64,11 +71,14 @@ public class TransformJsonCasesToCaseData {
 
         Evidence evidence = getEvidence(appealCase);
 
+        List<DwpTimeExtension> dwpTimeExtensionList = getDwpTimeExtensions(appealCase);
+
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
             .evidence(evidence)
+            .dwpTimeExtension(dwpTimeExtensionList)
             .build();
     }
 
@@ -105,7 +115,7 @@ public class TransformJsonCasesToCaseData {
     private HearingOptions getHearingOptions(AppealCase appealCase) {
         return HearingOptions.builder()
             .languageInterpreter(appealCase.getParties().getInterpreterSignerId() != null ? YES : NO)
-            .other("Y".equals(appealCase.getParties().getDisabilityNeeds()) ? YES : NO)
+            .other(Y.equals(appealCase.getParties().getDisabilityNeeds()) ? YES : NO)
             .build();
     }
 
@@ -146,6 +156,26 @@ public class TransformJsonCasesToCaseData {
         return Evidence.builder()
             .documents(documentsList)
             .build();
+    }
+
+    private List<DwpTimeExtension> getDwpTimeExtensions(AppealCase appealCase) {
+
+        List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
+        List<PostponementRequests> postponementRequestsList = appealCase.getPostponementRequests();
+        if (postponementRequestsList != null ) {
+            appealCase.getPostponementRequests().forEach(
+                postponementRequests -> {
+                    DwpTimeExtensionDetails dwpTimeExtensionDetails = DwpTimeExtensionDetails.builder()
+                        .requested(postponementRequests.getPostponementReasonId() != null ? YES : NO)
+                        .granted(Y.equals(postponementRequests.getPostponementGranted()) ? YES : NO)
+                        .build();
+                    DwpTimeExtension dwpTimeExtension = DwpTimeExtension.builder().value(dwpTimeExtensionDetails).build();
+                    dwpTimeExtensionList.add(dwpTimeExtension);
+                }
+            );
+        }
+
+        return dwpTimeExtensionList;
     }
 
     private Gaps2Extract fromJsonToGapsExtract(String json) {
