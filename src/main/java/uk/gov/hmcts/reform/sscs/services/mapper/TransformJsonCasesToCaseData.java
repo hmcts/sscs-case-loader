@@ -115,7 +115,6 @@ public class TransformJsonCasesToCaseData {
 
     private HearingOptions getHearingOptions(AppealCase appealCase) {
         return HearingOptions.builder()
-            .languageInterpreter(appealCase.getParties().getInterpreterSignerId() != null ? YES : NO)
             .other(Y.equals(appealCase.getParties().getDisabilityNeeds()) ? YES : NO)
             .build();
     }

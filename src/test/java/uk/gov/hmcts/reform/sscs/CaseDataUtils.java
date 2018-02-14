@@ -35,7 +35,6 @@ public final class CaseDataUtils {
             .build();
 
         HearingOptions hearingOptions = HearingOptions.builder()
-            .languageInterpreter("Yes")
             .other("No")
             .build();
         final Appeal appeal = Appeal.builder()

@@ -29,7 +29,6 @@
         }
       },
       "hearingOptions" : {
-        "languageInterpreter" : "Yes",
         "other" : "No"
       }
     },
