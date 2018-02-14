@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;

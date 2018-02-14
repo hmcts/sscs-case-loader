@@ -74,7 +74,7 @@ public class CoreCaseDataServiceTest {
         //Then
         assertNotNull(caseDetails);
         CaseData caseData = (CaseData) caseDetails.getData().get("case-data");
-        assertEquals("2017-10-08", caseData.getAppeal().getMrnDate());
+        assertEquals("AB 22 55 66 B", caseData.getAppeal().getAppellant().getIdentity().getNino());
     }
 
     private void mockIdamProrperties() {

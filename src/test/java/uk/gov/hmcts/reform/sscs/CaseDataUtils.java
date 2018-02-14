@@ -41,8 +41,6 @@ public final class CaseDataUtils {
             .other("No")
             .build();
         final Appeal appeal = Appeal.builder()
-            .mrnDate("2017-10-08")
-            .mrnMissingReason("It was missing")
             .appellant(appellant)
             .benefitType(benefitType)
             .hearingOptions(hearingOptions)
