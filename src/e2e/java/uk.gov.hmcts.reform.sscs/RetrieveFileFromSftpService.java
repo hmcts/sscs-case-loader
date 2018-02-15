@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 
-/**
- * Class for testing purpose.
- * When running the SFTP dockerized env we can use the method here to confirm
- * that we can read files from SFTP successfully.
- */
-//TODO: Move this class to our End to End tests project
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestCaseLoaderApp.class)
 public class RetrieveFileFromSftpService {
@@ -31,7 +24,6 @@ public class RetrieveFileFromSftpService {
     private SftpSshService service;
 
     @Test
-    @Ignore
     public void givenAnSftpFile_shouldBeRetrievedAndConvertedToAnInputStream() throws Exception {
 
         List<GapsInputStream> result = service.readExtractFiles();

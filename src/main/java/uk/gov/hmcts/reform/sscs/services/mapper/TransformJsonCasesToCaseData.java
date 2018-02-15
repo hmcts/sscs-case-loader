@@ -170,7 +170,6 @@ public class TransformJsonCasesToCaseData {
     }
 
     private List<DwpTimeExtension> getDwpTimeExtensions(AppealCase appealCase) {
-
         List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
         List<PostponementRequests> postponementRequestsList = appealCase.getPostponementRequests();
         if (postponementRequestsList != null) {
