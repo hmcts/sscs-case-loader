@@ -12,9 +12,9 @@
           "postcode": "L17 7AE"
         },
         "contact": {
-          "email": null,
-          "phone": null,
-          "mobile": null
+          "email": "mail@email.com",
+          "phone": "01234567890",
+          "mobile": "01234567890"
         },
         "identity": {
           "dob": "2004-12-14",

@@ -76,6 +76,9 @@
                "Attending":"N",
                "Disability_Needs":"N",
                "Surname":"Elderberry",
+               "Email":"mail@email.com",
+               "Phone_1":"01234567890",
+               "Phone_2":"01234567890",
                "Postcode":"L17 7AE",
                "Role_Id":4,
                "DOB":"2004-12-14T21:39:45.618-08:00"
