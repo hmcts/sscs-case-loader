@@ -28,8 +28,6 @@ variable "subscription" {
 
 variable "ilbIp"{}
 
-variable "core_case_data_api_url"{}
-
 variable "core_case_data_user_id"{
   default = "16"
 }
@@ -57,19 +55,13 @@ variable "idam_s2s_auth"{
   default = "http://betaDevBccidamS2SLB.reform.hmcts.net"
 }
 
-variable "idam_sscs_systemupdate_user"{}
-variable "idam_sscs_systemupdate_password"{}
-
 variable "idam_oauth2_client_id"{
   default = "sscs"
 }
-variable "idam_oauth2_client_secret"{}
+
 variable "idam_oauth2_redirect_url"{
   default = "http://localhost"
 }
-
-
-variable "gaps2_key_location"{}
 
 variable "gaps2_sftp_host"{
   default = "sftp-dev.reform.hmcts.net"
