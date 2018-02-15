@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,5 +76,14 @@ public class TransformJsonCasesToCaseDataTest {
         String jsonCases = FileUtils.readFileToString(new File(invalidFileName), StandardCharsets.UTF_8.name());
         transformJsonCasesToCaseData.transform(jsonCases);
 
+    }
+
+    @Test
+    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusEqual3() throws Exception {
+        String jsonCasesPath = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.json";
+        String jsonCases = FileUtils.readFileToString(new File(jsonCasesPath), StandardCharsets.UTF_8.name());
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
+        int expectedNumberOfCasesWithStatusEqual3 = 2;
+        assertTrue(caseDataList.size() == expectedNumberOfCasesWithStatusEqual3);
     }
 }

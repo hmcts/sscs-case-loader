@@ -36,6 +36,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 @Service
 public class TransformJsonCasesToCaseData {
 
+    private static final String AWAIT_RESPONSE = "3";
+
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
@@ -46,7 +48,13 @@ public class TransformJsonCasesToCaseData {
     }
 
     private List<CaseData> fromGaps2ExtractToCaseDataList(List<AppealCase> appealCaseList) {
-        return appealCaseList.stream().map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+        return appealCaseList.stream()
+            .filter(this::isAwaitResponse)
+            .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+    }
+
+    private boolean isAwaitResponse(AppealCase appealCase) {
+        return appealCase.getAppealCaseMajorId().equals(AWAIT_RESPONSE);
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
