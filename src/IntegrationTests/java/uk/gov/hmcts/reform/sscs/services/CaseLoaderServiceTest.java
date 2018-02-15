@@ -37,6 +37,9 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 @SpringBootTest(classes = TestCaseLoaderApp.class)
 public class CaseLoaderServiceTest {
 
+    private static final int EXPECTED_NUMBER_OF_CASES_TO_SEND_TO_CCD = 2;
+    private static final String DELTA_XML = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
+
     @MockBean
     private JSch jschSshChannel;
     @MockBean
@@ -51,7 +54,6 @@ public class CaseLoaderServiceTest {
     @Autowired
     private CaseLoaderService caseLoaderService;
 
-    private static final String DELTA_XML = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
 
     @Test
     public void givenDeltaXmlInSftp_shouldBeSavedIntoCcd() throws Exception {
@@ -112,17 +114,19 @@ public class CaseLoaderServiceTest {
 
         caseLoaderService.process();
 
-        verify(coreCaseDataService, times(16)).startEventAndSaveGivenCase(any(CaseData.class));
+        verify(coreCaseDataService, times(EXPECTED_NUMBER_OF_CASES_TO_SEND_TO_CCD))
+            .startEventAndSaveGivenCase(any(CaseData.class));
 
-        verify(coreCaseDataApi, times(16)).submitForCaseworker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            eq(Boolean.TRUE),
-            any(CaseDataContent.class)
-        );
+        verify(coreCaseDataApi, times(EXPECTED_NUMBER_OF_CASES_TO_SEND_TO_CCD))
+            .submitForCaseworker(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString(),
+                eq(Boolean.TRUE),
+                any(CaseDataContent.class)
+            );
     }
 
 }
