@@ -1,0 +1,5 @@
+ignore:
+- "**/sscs/models/.**"
+- "**/sscs/CaseLoaderApp.java"
+- "**/sscs/TestCaseLoaderApp.java"
+- "**/sscs/TestCaseLoaderApp.java"
