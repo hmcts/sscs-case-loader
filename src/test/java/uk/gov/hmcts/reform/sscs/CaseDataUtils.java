@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.EventDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
@@ -101,8 +102,14 @@ public final class CaseDataUtils {
         List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
         dwpTimeExtensionList.add(dwpTimeExtension);
 
-        Event event = Event.builder().type("appealReceived").desc("Appeal Received").date("2015-02-04").build();
-        List<Event> eventList = Collections.singletonList(event);
+        EventDetails eventDetails = EventDetails.builder()
+            .type("appealCreated")
+            .desc("Appeal Created")
+            .date("2015-02-04")
+            .build();
+        Event event = Event.builder()
+            .value(eventDetails)
+            .build();
 
         return CaseData.builder()
             .caseReference("SC068/17/00013")
@@ -110,7 +117,7 @@ public final class CaseDataUtils {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(eventList)
+            .events(Collections.singletonList(event))
             .build();
     }
 }

@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.EventDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
@@ -88,15 +89,24 @@ public class TransformJsonCasesToCaseData {
 
         List<DwpTimeExtension> dwpTimeExtensionList = getDwpTimeExtensions(appealCase);
 
-        Event event = Event.builder().type("appealReceived").desc("Appeal Received").build();
-
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(Collections.singletonList(event))
+            .events(Collections.singletonList(buildEvent()))
+            .build();
+    }
+
+    private Event buildEvent() {
+        EventDetails eventDetails = EventDetails.builder()
+            .type("appealCreated")
+            .desc("Appeal created in CCD")
+            .date("2017-05-24")
+            .build();
+        return Event.builder()
+            .value(eventDetails)
             .build();
     }
 

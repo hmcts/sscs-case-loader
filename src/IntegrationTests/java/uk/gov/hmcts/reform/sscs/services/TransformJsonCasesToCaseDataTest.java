@@ -61,7 +61,6 @@ public class TransformJsonCasesToCaseDataTest {
 
         // Should
         String actualCaseDataString = transformCasesToString(caseDataList);
-        System.out.println(actualCaseDataString);
         String expectedCaseDataString = FileUtils.readFileToString(new File(expectedCaseDataPath),
             StandardCharsets.UTF_8.name());
 
@@ -99,6 +98,6 @@ public class TransformJsonCasesToCaseDataTest {
         List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
         //Should
         Event event = caseDataList.get(0).getEvents().get(0);
-        assertEquals(event.getType(), "appealReceived");
+        assertEquals(event.getValue().getType(), "appealCreated");
     }
 }

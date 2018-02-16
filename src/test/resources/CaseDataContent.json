@@ -65,9 +65,11 @@
     ],
     "events": [
       {
-        "date": "2015-02-04",
-        "type": "appealReceived",
-        "desc": "Appeal Received"
+        "value": {
+          "date": "2015-02-04",
+          "type": "appealCreated",
+          "desc": "Appeal Created"
+        }
       }
     ]
   },

@@ -53,9 +53,11 @@
     ],
     "events": [
       {
-        "date": null,
-        "type": "appealReceived",
-        "desc": "Appeal Received"
+        "value": {
+          "date": "2017-05-24",
+          "type": "appealCreated",
+          "desc": "Appeal created in CCD"
+        }
       }
     ]
   }
