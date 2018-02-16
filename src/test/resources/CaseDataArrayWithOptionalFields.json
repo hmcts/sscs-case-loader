@@ -50,6 +50,13 @@
           "granted": "Yes"
         }
       }
+    ],
+    "events": [
+      {
+        "date": null,
+        "type": "appealReceived",
+        "desc": "Appeal Received"
+      }
     ]
   }
 ]

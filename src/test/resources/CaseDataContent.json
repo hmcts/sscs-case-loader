@@ -1,47 +1,47 @@
 {
-  "event" : {
-    "id" : "appealCreated",
-    "summary" : "SSCS - appeal created event",
-    "description" : "Created SSCS case with token"
+  "event": {
+    "id": "appealCreated",
+    "summary": "SSCS - appeal created event",
+    "description": "Created SSCS case with token"
   },
-  "data" : {
-    "caseReference" : "SC068/17/00013",
-    "appeal" : {
-      "appellant" : {
-        "name" : {
-          "title" : "Mr",
-          "firstName" : "User",
-          "lastName" : "Test"
+  "data": {
+    "caseReference": "SC068/17/00013",
+    "appeal": {
+      "appellant": {
+        "name": {
+          "title": "Mr",
+          "firstName": "User",
+          "lastName": "Test"
         },
-        "address" : {
-          "postcode" : "L17 7AE"
+        "address": {
+          "postcode": "L17 7AE"
         },
-        "contact" : {
-          "email" : "mail@email.com",
-          "phone" : "01234567890",
+        "contact": {
+          "email": "mail@email.com",
+          "phone": "01234567890",
           "mobile": "01234567890"
         },
-        "identity" : {
-           "dob" : "1904-03-10",
-           "nino" : "AB 22 55 66 B"
+        "identity": {
+          "dob": "1904-03-10",
+          "nino": "AB 22 55 66 B"
         }
       },
-      "benefitType" : {
-        "code" : "1325"
+      "benefitType": {
+        "code": "1325"
       },
-      "hearingOptions" : {
-        "other" : "No"
+      "hearingOptions": {
+        "other": "No"
       }
     },
-    "hearings" : [
+    "hearings": [
       {
-        "value" : {
-          "venue" : {
-            "venueTown" : "Aberdeen"
+        "value": {
+          "venue": {
+            "venueTown": "Aberdeen"
           },
-          "hearingDate" : "2017-05-24",
-          "time" : "10:45",
-          "adjourned" : "Yes"
+          "hearingDate": "2017-05-24",
+          "time": "10:45",
+          "adjourned": "Yes"
         }
       }
     ],
@@ -62,9 +62,16 @@
           "granted": "Yes"
         }
       }
+    ],
+    "events": [
+      {
+        "date": "2015-02-04",
+        "type": "appealReceived",
+        "desc": "Appeal Received"
+      }
     ]
   },
-  "security_classification" : null,
-  "event_token" : "user token",
-  "ignore_warning" : false
+  "security_classification": null,
+  "event_token": "user token",
+  "ignore_warning": false
 }
