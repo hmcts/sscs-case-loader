@@ -51,20 +51,20 @@ module "sscs-case-loader" {
     IDAM_URL = "${var.idam_url}"
 
     IDAM.S2S-AUTH.TOTP_SECRET ="${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
-    IDAM.S2S-AUTH = "${var.idam_s2s_auth}}"
+    IDAM.S2S-AUTH = "${var.idam_s2s_auth}"
     IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
 
     IDAM_SSCS_SYSTEMUPDATE_USER = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
     IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
 
-    IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}}"
+    IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
-    IDAM_OAUTH2_REDIRECT_URL = "${var.idam_oauth2_redirect_url}}"
+    IDAM_OAUTH2_REDIRECT_URL = "${var.idam_oauth2_redirect_url}"
 
     GAPS2_KEY_LOCATION = "${data.vault_generic_secret.gaps2_key_location.data["value"]}"
     GAPS2_SFTP_HOST = "${var.gaps2_sftp_host}"
-    GAPS2_SFTP_PORT = "${var.gaps2_sftp_port}}"
-    GAPS2_SFTP_USER = "${var.gaps2_sftp_user}}"
+    GAPS2_SFTP_PORT = "${var.gaps2_sftp_port}"
+    GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"
     GAPS2_SFTP_DIR = "${var.gaps2_sftp_dir}"
 
   }
