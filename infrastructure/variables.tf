@@ -67,7 +67,7 @@ variable "gaps2_sftp_host"{
   default = "sftp-dev.reform.hmcts.net"
 }
 variable "gaps2_sftp_port"{
-  default = "9000"
+  default = 9000
 }
 variable "gaps2_sftp_user"{
   default = "sscs-sftp-test"
