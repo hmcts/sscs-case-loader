@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 
-/**
- * Class for testing purpose.
- * When running the CDD dockerized env we can use the method here to confirm
- * that we can save a Case into the CDD from the CaseLoader successfully.
- */
-//TODO: Move this class to our End to End tests project
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestCaseLoaderApp.class)
 public class SaveSimpleCaseIntoCcd {
@@ -25,7 +18,6 @@ public class SaveSimpleCaseIntoCcd {
     private CoreCaseDataService coreCaseDataService;
 
     @Test
-    @Ignore
     public void givenACase_shouldBeSaveIntoCcd() {
         CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
         assertNotNull(caseDetails);

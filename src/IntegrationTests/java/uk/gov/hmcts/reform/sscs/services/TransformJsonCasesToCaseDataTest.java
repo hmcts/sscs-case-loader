@@ -43,8 +43,8 @@ public class TransformJsonCasesToCaseDataTest {
     @Parameters({
         "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.json, "
             + "src/test/resources/CaseDataArray.json",
-        "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19_With_Dob.json, "
-            + "src/test/resources/CaseDataArrayWithDob.json"
+        "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19_With_Optional_Fields.json, "
+            + "src/test/resources/CaseDataArrayWithOptionalFields.json"
     })
     public void givenJsonCases_shouldBeMappedIntoCaseData(String jsonCasesPath, String expectedCaseDataPath)
         throws IOException {
