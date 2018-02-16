@@ -21,7 +21,7 @@ data "vault_generic_secret" "idam_sscs_systemupdate_password" {
 }
 
 data "vault_generic_secret" "idam_oauth2_client_secret" {
-  path = "secret/demo/ccidam/idam-api/oauth2/client-secrets/sscs"
+  path = "secret/test/ccidam/idam-api/oauth2/client-secrets/sscs"
 }
 
 data "vault_generic_secret" "gaps2_key_location" {
