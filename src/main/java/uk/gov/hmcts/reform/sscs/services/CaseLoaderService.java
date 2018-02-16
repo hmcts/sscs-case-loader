@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,7 @@ public class CaseLoaderService {
     }
 
     private String printCaseDetailsInJson(CaseDetails caseDetails) {
+
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
             .indentOutput(true)
             .build();

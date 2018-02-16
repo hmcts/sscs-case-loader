@@ -8,6 +8,8 @@ import lombok.Value;
 public class Appellant {
 
     private Name name;
+    private Address address;
+    private Contact contact;
     private Identity identity;
 
 }

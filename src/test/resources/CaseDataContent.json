@@ -7,20 +7,62 @@
   "data" : {
     "caseReference" : "SC068/17/00013",
     "appeal" : {
-      "mrnDate" : "2017-10-08",
-      "mrnMissingReason" : "It was missing",
       "appellant" : {
         "name" : {
           "title" : "Mr",
           "firstName" : "User",
           "lastName" : "Test"
         },
+        "address" : {
+          "postcode" : "L17 7AE"
+        },
+        "contact" : {
+          "email" : "mail@email.com",
+          "phone" : "01234567890",
+          "mobile": "01234567890"
+        },
         "identity" : {
            "dob" : "1904-03-10",
            "nino" : "AB 22 55 66 B"
         }
+      },
+      "benefitType" : {
+        "code" : "1325"
+      },
+      "hearingOptions" : {
+        "other" : "No"
       }
-    }
+    },
+    "hearings" : [
+      {
+        "value" : {
+          "venue" : {
+            "venueTown" : "Aberdeen"
+          },
+          "hearingDate" : "2017-05-24",
+          "time" : "10:45",
+          "adjourned" : "Yes"
+        }
+      }
+    ],
+    "evidence": {
+      "documents": [
+        {
+          "value": {
+            "dateReceived": "2017-05-24",
+            "description": "1"
+          }
+        }
+      ]
+    },
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
+        }
+      }
+    ]
   },
   "security_classification" : null,
   "event_token" : "user token",
