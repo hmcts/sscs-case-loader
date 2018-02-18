@@ -8,5 +8,5 @@ import lombok.Value;
 public class EventDetails {
     String date;
     String type;
-    String desc;
+    String description;
 }

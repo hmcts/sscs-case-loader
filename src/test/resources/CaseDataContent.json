@@ -68,7 +68,7 @@
         "value": {
           "date": "2015-02-04",
           "type": "appealCreated",
-          "desc": "Appeal Created"
+          "description": "Appeal Created"
         }
       }
     ]

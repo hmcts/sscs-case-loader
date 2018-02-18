@@ -102,7 +102,7 @@ public class TransformJsonCasesToCaseData {
     private Event buildEvent() {
         EventDetails eventDetails = EventDetails.builder()
             .type("appealCreated")
-            .desc("Appeal created in CCD")
+            .description("Appeal created in CCD")
             .date("2017-05-24")
             .build();
         return Event.builder()

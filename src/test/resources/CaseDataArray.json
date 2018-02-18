@@ -38,7 +38,7 @@
         "value": {
           "date": "2017-05-24",
           "type": "appealCreated",
-          "desc": "Appeal created in CCD"
+          "description": "Appeal created in CCD"
         }
       }
     ]
@@ -82,7 +82,7 @@
         "value": {
           "date": "2017-05-24",
           "type": "appealCreated",
-          "desc": "Appeal created in CCD"
+          "description": "Appeal created in CCD"
         }
       }
     ]

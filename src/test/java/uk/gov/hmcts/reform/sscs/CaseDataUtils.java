@@ -104,7 +104,7 @@ public final class CaseDataUtils {
 
         EventDetails eventDetails = EventDetails.builder()
             .type("appealCreated")
-            .desc("Appeal Created")
+            .description("Appeal Created")
             .date("2015-02-04")
             .build();
         Event event = Event.builder()
