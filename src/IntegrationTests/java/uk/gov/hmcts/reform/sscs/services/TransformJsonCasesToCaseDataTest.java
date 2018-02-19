@@ -2,11 +2,15 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -88,5 +92,14 @@ public class TransformJsonCasesToCaseDataTest {
         //Should
         Events event = caseDataList.get(0).getEvents().get(0);
         assertEquals("appealReceived", event.getValue().getType());
+        eventDateShouldIncludeTheTimeAsWell(event);
+    }
+
+    private void eventDateShouldIncludeTheTimeAsWell(Events event) {
+        LocalDateTime dateTime = LocalDateTime.parse(event.getValue().getDate());
+        LocalDate date = dateTime.toLocalDate();
+        assertNotNull("Oops...Date cannot be null", date);
+        LocalTime time = dateTime.toLocalTime();
+        assertNotNull("Oops...Time cannot be null", time);
     }
 }

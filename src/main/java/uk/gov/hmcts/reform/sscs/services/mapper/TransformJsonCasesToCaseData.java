@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class TransformJsonCasesToCaseData {
         Event event = Event.builder()
             .type("appealReceived")
             .description("Appeal Received")
-            .date(LocalDate.now().toString())
+            .date(LocalDateTime.now().toString())
             .build();
         return Events.builder()
             .value(event)
