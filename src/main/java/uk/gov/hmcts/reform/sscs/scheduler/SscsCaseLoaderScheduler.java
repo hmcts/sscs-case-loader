@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 @Slf4j
 public class SscsCaseLoaderScheduler {
 
-    private CaseLoaderService caseLoaderService;
+    private final CaseLoaderService caseLoaderService;
 
     @Autowired
     public SscsCaseLoaderScheduler(CaseLoaderService caseLoaderService) {
@@ -20,9 +20,13 @@ public class SscsCaseLoaderScheduler {
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     public void run() {
-        log.info("SSCS Case loader started : {} ", LocalDateTime.now());
-        caseLoaderService.process();
-        log.info("SSCS Case loader Ended : {} ", LocalDateTime.now());
+        try {
+            log.info("SSCS Case loader started : {} ", LocalDateTime.now());
+            caseLoaderService.process();
+            log.info("SSCS Case loader Ended : {} ", LocalDateTime.now());
+        } catch (Exception e) {
+            log.error("SSCS Case loader failed :", e);
+        }
     }
 
 }
