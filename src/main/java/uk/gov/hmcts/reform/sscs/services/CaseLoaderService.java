@@ -57,20 +57,22 @@ public class CaseLoaderService {
             List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases.toString());
             log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
             caseDataList.forEach(caseData -> {
+                log.info("*** case-loader *** About to save case into CCD: {}",
+                    printCaseDetailsInJson(caseData));
                 CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
-                log.info("*** case-loader *** Save case details into CCD successfully: {}",
+                log.info("*** case-loader *** Save case into CCD successfully: {}",
                     printCaseDetailsInJson(caseDetails));
             });
         });
     }
 
-    private String printCaseDetailsInJson(CaseDetails caseDetails) {
+    private String printCaseDetailsInJson(Object object) {
 
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
             .indentOutput(true)
             .build();
         try {
-            return mapper.writeValueAsString(caseDetails);
+            return mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new ApplicationErrorException("Oops...something went wrong...", e);
         }

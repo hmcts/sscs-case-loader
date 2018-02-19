@@ -12,4 +12,5 @@ public class CaseData {
     private List<Hearing> hearings;
     private Evidence evidence;
     private List<DwpTimeExtension> dwpTimeExtension;
+    private List<Events> events;
 }

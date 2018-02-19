@@ -50,6 +50,15 @@
           "granted": "Yes"
         }
       }
+    ],
+    "events": [
+      {
+        "value": {
+          "date": "${json-unit.ignore}",
+          "type": "appealReceived",
+          "description": "Appeal Received"
+        }
+      }
     ]
   }
 ]

@@ -1,9 +1,27 @@
 package uk.gov.hmcts.reform.sscs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 
 public final class CaseDataUtils {
     private CaseDataUtils() {
@@ -74,7 +92,7 @@ public final class CaseDataUtils {
             .documents(documentsList)
             .build();
 
-        DwpTimeExtensionDetails dwpTimeExtensionDetails =  DwpTimeExtensionDetails.builder()
+        DwpTimeExtensionDetails dwpTimeExtensionDetails = DwpTimeExtensionDetails.builder()
             .requested("Yes")
             .granted("Yes")
             .build();
@@ -84,12 +102,22 @@ public final class CaseDataUtils {
         List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
         dwpTimeExtensionList.add(dwpTimeExtension);
 
+        Event event = Event.builder()
+            .type("appealCreated")
+            .description("Appeal Created")
+            .date("2015-02-04")
+            .build();
+        Events events = Events.builder()
+            .value(event)
+            .build();
+
         return CaseData.builder()
             .caseReference("SC068/17/00013")
             .appeal(appeal)
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
+            .events(Collections.singletonList(events))
             .build();
     }
 }

@@ -1,12 +1,16 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -17,12 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.TestCaseLoaderApp;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 
 
@@ -38,6 +42,8 @@ public class TransformJsonCasesToCaseDataTest {
 
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
+    private static final String JSON_CASES_PATH = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.json";
 
     @Test
     @Parameters({
@@ -55,18 +61,10 @@ public class TransformJsonCasesToCaseDataTest {
         List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
 
         // Should
-        String actualCaseDataString = transformCasesToString(caseDataList);
         String expectedCaseDataString = FileUtils.readFileToString(new File(expectedCaseDataPath),
             StandardCharsets.UTF_8.name());
 
-        assertJsonEquals(expectedCaseDataString, actualCaseDataString);
-    }
-
-    private String transformCasesToString(List<CaseData> caseDataList) throws JsonProcessingException {
-        ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
-            .indentOutput(true)
-            .build();
-        return mapper.writeValueAsString(caseDataList);
+        assertJsonEquals(expectedCaseDataString, caseDataList);
     }
 
     @Test(expected = TransformException.class)
@@ -74,6 +72,34 @@ public class TransformJsonCasesToCaseDataTest {
         String invalidFileName = "src/test/resources/SSCS_ExtractInvalid_Delta_2017-06-30-09-25-56.xml";
         String jsonCases = FileUtils.readFileToString(new File(invalidFileName), StandardCharsets.UTF_8.name());
         transformJsonCasesToCaseData.transform(jsonCases);
+    }
 
+    @Test
+    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusEqual3() throws Exception {
+        //Given
+        String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
+        //Should
+        int expectedNumberOfCasesWithStatusEqual3 = 2;
+        assertTrue(caseDataList.size() == expectedNumberOfCasesWithStatusEqual3);
+    }
+
+    @Test
+    public void givenJsonCasesAreTransformedToCaseData_shouldIncludeTheEventsJsonField() throws Exception {
+        // Given
+        String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
+        //Should
+        Events event = caseDataList.get(0).getEvents().get(0);
+        assertEquals("appealReceived", event.getValue().getType());
+        eventDateShouldIncludeTheTimeAsWell(event);
+    }
+
+    private void eventDateShouldIncludeTheTimeAsWell(Events event) {
+        LocalDateTime dateTime = LocalDateTime.parse(event.getValue().getDate());
+        LocalDate date = dateTime.toLocalDate();
+        assertNotNull("Oops...Date cannot be null", date);
+        LocalTime time = dateTime.toLocalTime();
+        assertNotNull("Oops...Time cannot be null", time);
     }
 }

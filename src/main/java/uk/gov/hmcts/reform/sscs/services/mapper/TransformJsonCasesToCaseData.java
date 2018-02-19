@@ -2,9 +2,11 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -25,6 +27,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
@@ -36,6 +40,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 @Service
 public class TransformJsonCasesToCaseData {
 
+    private static final String AWAIT_RESPONSE = "3";
+
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
@@ -46,7 +52,13 @@ public class TransformJsonCasesToCaseData {
     }
 
     private List<CaseData> fromGaps2ExtractToCaseDataList(List<AppealCase> appealCaseList) {
-        return appealCaseList.stream().map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+        return appealCaseList.stream()
+            .filter(this::isAwaitResponse)
+            .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+    }
+
+    private boolean isAwaitResponse(AppealCase appealCase) {
+        return appealCase.getAppealCaseMajorId().equals(AWAIT_RESPONSE);
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
@@ -84,6 +96,18 @@ public class TransformJsonCasesToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
+            .events(Collections.singletonList(buildEvent()))
+            .build();
+    }
+
+    private Events buildEvent() {
+        Event event = Event.builder()
+            .type("appealReceived")
+            .description("Appeal Received")
+            .date(LocalDateTime.now().toString())
+            .build();
+        return Events.builder()
+            .value(event)
             .build();
     }
 
