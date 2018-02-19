@@ -33,3 +33,5 @@ sftp:
   inputDirectory: ${GAPS2_SFTP_DIR:incoming}
 
 spring.application.name: CaseLoader Insights WebApp
+
+sscs.case.loader.cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0 0/5 * * * ?}
