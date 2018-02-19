@@ -55,8 +55,8 @@
       {
         "value": {
           "date": "${json-unit.ignore}",
-          "type": "appealCreated",
-          "description": "Appeal created in CCD"
+          "type": "appealReceived",
+          "description": "Appeal Received"
         }
       }
     ]
