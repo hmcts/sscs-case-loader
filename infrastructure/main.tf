@@ -67,5 +67,7 @@ module "sscs-case-loader" {
     GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"
     GAPS2_SFTP_DIR = "${var.gaps2_sftp_dir}"
 
+    SSCS_CASE_LOADER_CRON_SCHEDULE = "${var.sscs_case_loader_cron_schedule}"
+
   }
 }
