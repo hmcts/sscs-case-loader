@@ -54,7 +54,7 @@
     "events": [
       {
         "value": {
-          "date": "2017-05-24",
+          "date": "${json-unit.ignore}",
           "type": "appealCreated",
           "description": "Appeal created in CCD"
         }
