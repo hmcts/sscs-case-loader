@@ -5,8 +5,6 @@ import lombok.Value;
 
 @Value
 @Builder
-public class EventDetails {
-    String date;
-    String type;
-    String description;
+public class Events {
+    Event value;
 }

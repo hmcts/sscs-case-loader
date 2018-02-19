@@ -28,7 +28,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.EventDetails;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
@@ -100,14 +100,14 @@ public class TransformJsonCasesToCaseData {
             .build();
     }
 
-    private Event buildEvent() {
-        EventDetails eventDetails = EventDetails.builder()
+    private Events buildEvent() {
+        Event event = Event.builder()
             .type("appealCreated")
             .description("Appeal created in CCD")
             .date(LocalDate.now().toString())
             .build();
-        return Event.builder()
-            .value(eventDetails)
+        return Events.builder()
+            .value(event)
             .build();
     }
 

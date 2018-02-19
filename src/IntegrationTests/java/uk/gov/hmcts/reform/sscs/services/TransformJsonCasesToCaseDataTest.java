@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.TestCaseLoaderApp;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 
 
@@ -86,7 +86,7 @@ public class TransformJsonCasesToCaseDataTest {
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
         List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
         //Should
-        Event event = caseDataList.get(0).getEvents().get(0);
+        Events event = caseDataList.get(0).getEvents().get(0);
         assertEquals(event.getValue().getType(), "appealCreated");
     }
 }
