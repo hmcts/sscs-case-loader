@@ -75,3 +75,7 @@ variable "gaps2_sftp_user"{
 variable "gaps2_sftp_dir"{
   default = "incoming"
 }
+
+variable "sscs_case_loader_cron_schedule" {
+  default = "0 0/5 * * * ?"
+}

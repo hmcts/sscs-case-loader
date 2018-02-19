@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestCaseLoaderApp.class)
+@SpringBootTest
 public class ProcessFileAndSaveIntoCcd {
 
     @Autowired

@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import uk.gov.hmcts.reform.sscs.TestCaseLoaderApp;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
@@ -31,7 +30,7 @@ import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 
 
 @RunWith(JUnitParamsRunner.class)
-@SpringBootTest(classes = TestCaseLoaderApp.class)
+@SpringBootTest
 public class TransformJsonCasesToCaseDataTest {
 
     @Autowired
