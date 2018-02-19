@@ -23,9 +23,9 @@ public class SscsCaseLoaderScheduler {
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     public void run() {
         try {
-            log.info("SSCS Case loader started : {} ", LocalDateTime.now());
+            log.info("SSCS Case loader scheduler started : {} ", LocalDateTime.now());
             caseLoaderService.process();
-            log.info("SSCS Case loader Ended : {} ", LocalDateTime.now());
+            log.info("SSCS Case loader scheduler Ended : {} ", LocalDateTime.now());
         } catch (Exception e) {
             log.error("SSCS Case loader failed :", e);
         }
