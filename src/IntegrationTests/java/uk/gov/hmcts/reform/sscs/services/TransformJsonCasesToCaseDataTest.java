@@ -87,6 +87,6 @@ public class TransformJsonCasesToCaseDataTest {
         List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
         //Should
         Events event = caseDataList.get(0).getEvents().get(0);
-        assertEquals(event.getValue().getType(), "appealCreated");
+        assertEquals("appealReceived", event.getValue().getType());
     }
 }
