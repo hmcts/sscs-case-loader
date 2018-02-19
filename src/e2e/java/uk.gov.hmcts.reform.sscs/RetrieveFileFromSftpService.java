@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestCaseLoaderApp.class)
+@SpringBootTest
 public class RetrieveFileFromSftpService {
 
     @Autowired

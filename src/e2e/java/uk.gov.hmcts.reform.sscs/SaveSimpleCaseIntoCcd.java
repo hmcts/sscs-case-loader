@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestCaseLoaderApp.class)
+@SpringBootTest
 public class SaveSimpleCaseIntoCcd {
 
     @Autowired
