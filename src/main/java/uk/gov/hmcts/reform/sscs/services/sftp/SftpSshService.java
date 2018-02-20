@@ -38,7 +38,8 @@ public class SftpSshService {
 
     private Session connect() {
         try {
-            jschSshChannel.addIdentity(SSCS_SFTP,sftpSshProperties.getKeyLocation().getBytes(), null, null);
+            jschSshChannel.addIdentity(SSCS_SFTP, sftpSshProperties.getKeyLocation().getBytes(),
+                null, null);
 
             Session sesConnection = jschSshChannel.getSession(
                 sftpSshProperties.getUsername(),
