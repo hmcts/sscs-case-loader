@@ -44,6 +44,7 @@ public class SftpSshServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         service = new SftpSshService(jschSshChannel, sftpSshProperties);
+        when(sftpSshProperties.getKeyLocation()).thenReturn("key");
     }
 
     private void mockSftpInternalServices(String fileName) throws Exception {
