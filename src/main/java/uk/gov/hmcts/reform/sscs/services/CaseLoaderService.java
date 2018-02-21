@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -48,21 +49,24 @@ public class CaseLoaderService {
     public void process() {
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
-        inputStreamList.forEach(gapsInputStream -> {
+        List<CaseData> caseDataList = new ArrayList<>();
+        for (GapsInputStream gapsInputStream : inputStreamList) {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
             xmlValidator.validateXml(xmlAsString, type);
             log.info("*** case-loader *** Validate " + type + " xml file successfully");
-            JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
-            List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases.toString());
-            log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
-            caseDataList.forEach(caseData -> {
-                log.info("*** case-loader *** About to save case into CCD: {}",
-                    printCaseDetailsInJson(caseData));
-                CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
-                log.info("*** case-loader *** Save case into CCD successfully: {}",
-                    printCaseDetailsInJson(caseDetails));
-            });
+            if ("Delta".equals(type)) {
+                JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
+                caseDataList = transformJsonCasesToCaseData.transform(jsonCases.toString());
+                log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
+            }
+        }
+        caseDataList.forEach(caseData -> {
+            log.info("*** case-loader *** About to save case into CCD: {}",
+                printCaseDetailsInJson(caseData));
+            CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
+            log.info("*** case-loader *** Save case into CCD successfully: {}",
+                printCaseDetailsInJson(caseDetails));
         });
     }
 

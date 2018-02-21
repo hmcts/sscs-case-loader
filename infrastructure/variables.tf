@@ -60,7 +60,7 @@ variable "idam_oauth2_client_id"{
 }
 
 variable "idam_oauth2_redirect_url"{
-  default = "sscs-case-loader-aat.service.core-compute-aat.internal"
+  default = "https://sscs-case-loader-aat.service.core-compute-aat.internal"
 }
 
 variable "gaps2_sftp_host"{
@@ -78,4 +78,16 @@ variable "gaps2_sftp_dir"{
 
 variable "sscs_case_loader_cron_schedule" {
   default = "0 0/5 * * * ?"
+}
+
+variable "root_logging_level" {
+  default = "INFO"
+}
+
+variable "log_level_spring_web" {
+  default = "INFO"
+}
+
+variable "log_level_sscs" {
+  default = "INFO"
 }
