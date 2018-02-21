@@ -32,7 +32,6 @@ locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 }
 
-
 module "sscs-case-loader" {
   source = "git@github.com:contino/moj-module-webapp?ref=master"
   product = "${var.product}-case-loader"
@@ -68,6 +67,11 @@ module "sscs-case-loader" {
     GAPS2_SFTP_DIR = "${var.gaps2_sftp_dir}"
 
     SSCS_CASE_LOADER_CRON_SCHEDULE = "${var.sscs_case_loader_cron_schedule}"
+
+    # addtional log
+    ROOT_LOGGING_LEVEL = "${var.root_logging_level}"
+    LOG_LEVEL_SPRING_WEB = "${var.log_level_spring_web}"
+    LOG_LEVEL_SSCS = "${var.log_level_sscs}"
 
   }
 }
