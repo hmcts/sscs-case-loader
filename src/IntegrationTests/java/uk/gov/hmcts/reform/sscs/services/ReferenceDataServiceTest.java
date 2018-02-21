@@ -55,6 +55,7 @@ public class ReferenceDataServiceTest {
     @Test
     public void givenDifferentVenueIds_shouldReturnExpectedResponse() {
         assertNull(referenceDataService.getVenueDetails("xxxxx"));
+        assertNull(referenceDataService.getVenueDetails(""));
         assertNull(referenceDataService.getVenueDetails(null));
     }
 }

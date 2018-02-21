@@ -23,7 +23,7 @@ public class ReferenceDataService {
         Stream<VenueDetails> venueDetailsStream = referenceDataLoader.getVenueDetailsList()
             .stream().filter(
                 venueDetails ->
-                    venueId != null && venueId.equals(venueDetails.getVenueId())
+                    venueId != null && !("".equals(venueId)) && venueId.equals(venueDetails.getVenueId())
                 );
         Optional<VenueDetails> optionalVenueDetails = venueDetailsStream.findAny();
         return optionalVenueDetails.orElse(null);
