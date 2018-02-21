@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 public class ReferenceDataLoader {
 
     private static final String CSV_FILE_PATH = "src/main/resources/reference-data/sscs-venues.csv";
-    private List<VenueDetails> venueDetailsList = new ArrayList<>();
+    private final List<VenueDetails> venueDetailsList = new ArrayList<>();
 
     @PostConstruct
     private void init() {
