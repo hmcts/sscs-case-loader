@@ -79,3 +79,15 @@ variable "gaps2_sftp_dir"{
 variable "sscs_case_loader_cron_schedule" {
   default = "0 0/5 * * * ?"
 }
+
+variable "root_logging_level" {
+  default = "INFO"
+}
+
+variable "log_level_spring_web" {
+  default = "INFO"
+}
+
+variable "log_level_sscs" {
+  default = "INFO"
+}
