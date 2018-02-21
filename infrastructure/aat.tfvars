@@ -1,3 +1,5 @@
 root_logging_level = "DEBUG"
 log_level_spring_web = "DEBUG"
 log_level_sscs = "DEBUG"
+management_security_enabled = "false"
+idam_oauth2_redirect_url = "https://sscs-case-loader-aat.service.core-compute-aat.internal"
