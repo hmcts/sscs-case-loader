@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.refdataloader;
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -42,8 +43,8 @@ public class ReferenceDataLoader {
                         .url(line[11])
                         .build())
             );
-        } catch (Exception e) {
-            log.error("Error occurred when loading the sscs venues reference data file: " + CSV_FILE_PATH + e);
+        } catch (IOException e) {
+            log.error("Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH + e);
         }
     }
 
