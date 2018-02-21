@@ -60,7 +60,7 @@ variable "idam_oauth2_client_id"{
 }
 
 variable "idam_oauth2_redirect_url"{
-  default = "sscs-case-loader-aat.service.core-compute-aat.internal"
+  default = "https://sscs-case-loader-aat.service.core-compute-aat.internal"
 }
 
 variable "gaps2_sftp_host"{
