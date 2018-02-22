@@ -25,6 +25,6 @@ public class ReferenceDataLoaderTest {
         List<VenueDetails> venueDetailsList = referenceDataLoader.getVenueDetailsList();
 
         assertNotNull(venueDetailsList);
-        assertEquals(265, venueDetailsList.size());
+        assertEquals(263, venueDetailsList.size());
     }
 }
