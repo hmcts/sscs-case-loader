@@ -64,13 +64,13 @@ public class CoreCaseDataService {
         return "Bearer " + authorizeToken.getAccessToken();
     }
 
-    protected EventRequestData getEventRequestData() {
+    protected EventRequestData getEventRequestData(String eventId) {
         return EventRequestData.builder()
             .userToken(getIdamOauth2Token())
             .userId(coreCaseDataProperties.getUserId())
             .jurisdictionId(coreCaseDataProperties.getJurisdictionId())
             .caseTypeId(coreCaseDataProperties.getCaseTypeId())
-            .eventId(coreCaseDataProperties.getEventId())
+            .eventId(eventId)
             .ignoreWarning(true)
             .build();
     }

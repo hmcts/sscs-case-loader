@@ -18,8 +18,8 @@ public class UpdateCoreCaseDataService {
         this.coreCaseDataService = coreCaseDataService;
     }
 
-    public CaseDetails updateCase(CaseData caseData, Long caseId) {
-        EventRequestData eventRequestData = coreCaseDataService.getEventRequestData();
+    public CaseDetails updateCase(CaseData caseData, Long caseId, String eventId) {
+        EventRequestData eventRequestData = coreCaseDataService.getEventRequestData(eventId);
         String serviceAuthorization = coreCaseDataService.generateServiceAuthorization();
         StartEventResponse startEventResponse = start(eventRequestData, serviceAuthorization, caseId);
         return submit(eventRequestData, serviceAuthorization, coreCaseDataService.getCaseDataContent(caseData,

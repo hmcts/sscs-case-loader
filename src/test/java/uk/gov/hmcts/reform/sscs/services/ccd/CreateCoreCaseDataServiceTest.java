@@ -109,6 +109,5 @@ public class CreateCoreCaseDataServiceTest {
         when(coreCaseDataPropertiesMock.getUserId()).thenReturn("userId");
         when(coreCaseDataPropertiesMock.getJurisdictionId()).thenReturn("jurisdictionId");
         when(coreCaseDataPropertiesMock.getCaseTypeId()).thenReturn("caseTypeId");
-        when(coreCaseDataPropertiesMock.getEventId()).thenReturn("eventId");
     }
 }

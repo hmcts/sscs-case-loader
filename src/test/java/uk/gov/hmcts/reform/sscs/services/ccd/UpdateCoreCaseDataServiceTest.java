@@ -69,7 +69,8 @@ public class UpdateCoreCaseDataServiceTest {
         mockIdamProrperties();
 
         //When
-        CaseDetails caseDetails = updateCoreCaseDataService.updateCase(CaseDataUtils.buildCaseData(), 2L);
+        CaseDetails caseDetails = updateCoreCaseDataService.updateCase(CaseDataUtils.buildCaseData(), 2L,
+            "responseReceived");
 
         //Then
         assertNotNull(caseDetails);
@@ -109,6 +110,5 @@ public class UpdateCoreCaseDataServiceTest {
         when(coreCaseDataPropertiesMock.getUserId()).thenReturn("userId");
         when(coreCaseDataPropertiesMock.getJurisdictionId()).thenReturn("jurisdictionId");
         when(coreCaseDataPropertiesMock.getCaseTypeId()).thenReturn("caseTypeId");
-        when(coreCaseDataPropertiesMock.getEventId()).thenReturn("eventId");
     }
 }

@@ -15,8 +15,6 @@ public class CoreCaseDataProperties {
     private String jurisdictionId;
     @NotBlank
     private String caseTypeId;
-    @NotBlank
-    private String eventId;
 
     public String getUserId() {
         return userId;
@@ -30,9 +28,6 @@ public class CoreCaseDataProperties {
         return caseTypeId;
     }
 
-    public String getEventId() {
-        return eventId;
-    }
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -46,7 +41,4 @@ public class CoreCaseDataProperties {
         this.caseTypeId = caseTypeId;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
 }
