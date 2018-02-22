@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.exceptions.ApplicationErrorException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -32,18 +32,18 @@ public class CaseLoaderService {
     private final XmlValidator xmlValidator;
     private final TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles;
     private final TransformJsonCasesToCaseData transformJsonCasesToCaseData;
-    private final CoreCaseDataService coreCaseDataService;
+    private final CreateCoreCaseDataService createCoreCaseDataService;
 
     @Autowired
     public CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator,
                              TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles,
                              TransformJsonCasesToCaseData transformJsonCasesToCaseData,
-                             CoreCaseDataService coreCaseDataService) {
+                             CreateCoreCaseDataService createCoreCaseDataService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformXmlFilesToJsonFiles = transformXmlFilesToJsonFiles;
         this.transformJsonCasesToCaseData = transformJsonCasesToCaseData;
-        this.coreCaseDataService = coreCaseDataService;
+        this.createCoreCaseDataService = createCoreCaseDataService;
     }
 
     public void process() {
@@ -64,7 +64,7 @@ public class CaseLoaderService {
         caseDataList.forEach(caseData -> {
             log.info("*** case-loader *** About to save case into CCD: {}",
                 printCaseDetailsInJson(caseData));
-            CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(caseData);
+            CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
             log.info("*** case-loader *** Save case into CCD successfully: {}",
                 printCaseDetailsInJson(caseDetails));
         });

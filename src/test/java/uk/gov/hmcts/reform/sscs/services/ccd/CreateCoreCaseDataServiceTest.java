@@ -26,11 +26,11 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CoreCaseDataServiceTest {
+public class CreateCoreCaseDataServiceTest {
 
     @Mock
     private CoreCaseDataApi coreCaseDataApiMock;
-    private CoreCaseDataService coreCaseDataService;
+    private CreateCoreCaseDataService createCoreCaseDataService;
     @Mock
     private CoreCaseDataProperties coreCaseDataPropertiesMock;
     @Mock
@@ -42,8 +42,8 @@ public class CoreCaseDataServiceTest {
 
     @Before
     public void setUp() {
-        coreCaseDataService = new CoreCaseDataService(coreCaseDataApiMock, coreCaseDataPropertiesMock,
-            authTokenGenerator, idamApiClient, idamProperties);
+        createCoreCaseDataService = new CreateCoreCaseDataService(new CoreCaseDataService(coreCaseDataApiMock,
+            coreCaseDataPropertiesMock, authTokenGenerator, idamApiClient, idamProperties));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class CoreCaseDataServiceTest {
         mockIdamProrperties();
 
         //When
-        CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
+        CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(CaseDataUtils.buildCaseData());
 
         //Then
         assertNotNull(caseDetails);

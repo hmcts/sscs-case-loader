@@ -53,7 +53,6 @@ public class TransformJsonCasesToCaseData {
 
     private List<CaseData> fromGaps2ExtractToCaseDataList(List<AppealCase> appealCaseList) {
         return appealCaseList.stream()
-            // TODO: 21/02/2018 add filter by Status: 3 and 18 for now.
             .filter(this::isAwaitResponse)
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
     }
@@ -91,7 +90,6 @@ public class TransformJsonCasesToCaseData {
 
         List<DwpTimeExtension> dwpTimeExtensionList = getDwpTimeExtensions(appealCase);
 
-        // TODO: 21/02/2018 Build Event depending on Status
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
@@ -106,7 +104,7 @@ public class TransformJsonCasesToCaseData {
         Event event = Event.builder()
             .type("appealReceived")
             .description("Appeal Received")
-            .date(LocalDateTime.now().toString()) // TODO: 21/02/2018 is this coming from Major status date??
+            .date(LocalDateTime.now().toString())
             .build();
         return Events.builder()
             .value(event)

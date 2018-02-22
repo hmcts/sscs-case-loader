@@ -2,9 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -21,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -39,14 +37,14 @@ public class CaseLoaderServiceTest {
     @Mock
     private TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     @Mock
-    private CoreCaseDataService coreCaseDataService;
+    private CreateCoreCaseDataService createCoreCaseDataService;
 
     private CaseLoaderService caseLoaderService;
 
     @Before
     public void setUp() throws Exception {
         caseLoaderService = new CaseLoaderService(sftpSshService, xmlValidator, transformXmlFilesToJsonFiles,
-            transformJsonCasesToCaseData, coreCaseDataService);
+            transformJsonCasesToCaseData, createCoreCaseDataService);
     }
 
     @Test
@@ -56,7 +54,7 @@ public class CaseLoaderServiceTest {
         when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
         List<CaseData> caseDataList = Collections.singletonList(CaseData.builder().build());
         when(transformJsonCasesToCaseData.transform(anyString())).thenReturn(caseDataList);
-        when(coreCaseDataService.startEventAndSaveGivenCase(any(CaseData.class)))
+        when(createCoreCaseDataService.createCcdCase(any(CaseData.class)))
             .thenReturn(CaseDetails.builder().build());
         caseLoaderService.process();
     }
