@@ -51,7 +51,7 @@ module "sscs-case-loader" {
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
-    CORE_CASE_DATA_API_URL = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
+    CORE_CASE_DATA_API_URL = "https://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
     CORE_CASE_DATA_USER_ID = "${var.core_case_data_user_id}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
