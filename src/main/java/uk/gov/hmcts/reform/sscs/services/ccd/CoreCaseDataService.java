@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import java.util.Base64;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @Service
+@Slf4j
 public class CoreCaseDataService {
 
     private final CoreCaseDataApi coreCaseDataApi;
@@ -42,6 +44,7 @@ public class CoreCaseDataService {
     }
 
     protected String getIdamOauth2Token() {
+        log.info("getIdamOauth2Token...");
         String authorisation = idamProperties.getOauth2().getUser().getEmail()
             + ":" + idamProperties.getOauth2().getUser().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
@@ -61,10 +64,13 @@ public class CoreCaseDataService {
             idamProperties.getOauth2().getClient().getSecret()
         );
 
-        return "Bearer " + authorizeToken.getAccessToken();
+        String oauth2Token = "Bearer " + authorizeToken.getAccessToken();
+        log.info("oauth2Token: " + oauth2Token);
+        return oauth2Token;
     }
 
     protected EventRequestData getEventRequestData(String eventId) {
+        log.info("getEventRequestData...");
         return EventRequestData.builder()
             .userToken(getIdamOauth2Token())
             .userId(coreCaseDataProperties.getUserId())
