@@ -68,7 +68,7 @@ module "sscs-case-loader" {
 
     IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
-    IDAM_OAUTH2_REDIRECT_URL = "https://sscs-case-loader-${var.env}.service.${local.asename}.internal"
+    IDAM_OAUTH2_REDIRECT_URL = "https://sscs-case-loader-${var.env}.service.${local.aseName}.internal"
 
     GAPS2_KEY_LOCATION = "${data.vault_generic_secret.gaps2_key_location.data["value"]}"
     GAPS2_SFTP_HOST = "${data.vault_generic_secret.sftp_host.data["value"]}"
