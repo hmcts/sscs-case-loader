@@ -5,9 +5,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -29,7 +27,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(SpringRunner.class)
@@ -48,7 +46,7 @@ public class CaseLoaderServiceTest {
     @MockBean
     private IdamApiClient idamApiClient;
     @SpyBean
-    private CoreCaseDataService coreCaseDataService;
+    private CreateCoreCaseDataService createCoreCaseDataService;
 
     @Autowired
     private CaseLoaderService caseLoaderService;
@@ -113,8 +111,8 @@ public class CaseLoaderServiceTest {
 
         caseLoaderService.process();
 
-        verify(coreCaseDataService, times(EXPECTED_NUMBER_OF_CASES_TO_SEND_TO_CCD))
-            .startEventAndSaveGivenCase(any(CaseData.class));
+        verify(createCoreCaseDataService, times(EXPECTED_NUMBER_OF_CASES_TO_SEND_TO_CCD))
+            .createCcdCase(any(CaseData.class));
 
         verify(coreCaseDataApi, times(EXPECTED_NUMBER_OF_CASES_TO_SEND_TO_CCD))
             .submitForCaseworker(
