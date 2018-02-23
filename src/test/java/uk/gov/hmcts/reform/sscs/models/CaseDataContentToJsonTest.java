@@ -32,7 +32,7 @@ public class CaseDataContentToJsonTest {
                 .summary("SSCS - appeal created event")
                 .description("Created SSCS case with token")
                 .build())
-            .data(CaseDataUtils.buildCaseData())
+            .data(CaseDataUtils.buildCaseData("SC068/17/00013"))
             .build();
     }
 }

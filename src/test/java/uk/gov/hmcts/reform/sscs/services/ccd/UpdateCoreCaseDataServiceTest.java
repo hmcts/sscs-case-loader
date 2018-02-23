@@ -69,8 +69,8 @@ public class UpdateCoreCaseDataServiceTest {
         mockIdamProrperties();
 
         //When
-        CaseDetails caseDetails = updateCoreCaseDataService.updateCase(CaseDataUtils.buildCaseData(), 2L,
-            "responseReceived");
+        CaseDetails caseDetails = updateCoreCaseDataService.updateCase(CaseDataUtils.buildCaseData("SC068/17/00013"),
+            2L, "responseReceived");
 
         //Then
         assertNotNull(caseDetails);
@@ -94,7 +94,7 @@ public class UpdateCoreCaseDataServiceTest {
 
     private void mockCaseDetails() {
         Map<String, Object> caseData = new HashMap<>(1);
-        caseData.put("case-data", CaseDataUtils.buildCaseData());
+        caseData.put("case-data", CaseDataUtils.buildCaseData("SC068/17/00013"));
         CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         when(coreCaseDataApiMock.submitEventForCaseWorker(anyString(), anyString(), anyString(), anyString(),
             anyString(), anyString(), eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
