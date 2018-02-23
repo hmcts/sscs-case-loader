@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -38,13 +39,15 @@ public class CaseLoaderServiceTest {
     private TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     @Mock
     private CreateCoreCaseDataService createCoreCaseDataService;
+    @Mock
+    private UpdateCoreCaseDataService updateCoreCaseDataService;
 
     private CaseLoaderService caseLoaderService;
 
     @Before
     public void setUp() throws Exception {
         caseLoaderService = new CaseLoaderService(sftpSshService, xmlValidator, transformXmlFilesToJsonFiles,
-            transformJsonCasesToCaseData, createCoreCaseDataService);
+            transformJsonCasesToCaseData, createCoreCaseDataService, updateCoreCaseDataService);
     }
 
     @Test
@@ -53,7 +56,7 @@ public class CaseLoaderServiceTest {
         doNothing().when(xmlValidator).validateXml(anyString(), anyString());
         when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
         List<CaseData> caseDataList = Collections.singletonList(CaseData.builder().build());
-        when(transformJsonCasesToCaseData.transform(anyString())).thenReturn(caseDataList);
+        when(transformJsonCasesToCaseData.transformCreateCases(anyString())).thenReturn(caseDataList);
         when(createCoreCaseDataService.createCcdCase(any(CaseData.class)))
             .thenReturn(CaseDetails.builder().build());
         caseLoaderService.process();

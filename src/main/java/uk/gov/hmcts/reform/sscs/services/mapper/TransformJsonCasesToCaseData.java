@@ -1,17 +1,24 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
+import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
@@ -40,25 +47,34 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 @Service
 public class TransformJsonCasesToCaseData {
 
-    private static final String AWAIT_RESPONSE = "3";
-
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
 
-    public List<CaseData> transform(String json) {
-        Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
-        return fromGaps2ExtractToCaseDataList(gaps2Extract.getAppealCases().getAppealCaseList());
+    public List<CaseData> transformCreateCases(String json) {
+        List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
+        return findCasesToCreate(appealCases);
     }
 
-    private List<CaseData> fromGaps2ExtractToCaseDataList(List<AppealCase> appealCaseList) {
+    public List<CaseData> transformUpdateCases(String json) {
+        List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
+        return findCasesToUpdate(appealCases);
+    }
+
+    private List<CaseData> findCasesToCreate(List<AppealCase> appealCaseList) {
         return appealCaseList.stream()
             .filter(this::isAwaitResponse)
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
     }
 
+    private List<CaseData> findCasesToUpdate(List<AppealCase> appealCaseList) {
+        return appealCaseList.stream()
+            .filter(((Predicate<AppealCase>) this::isAwaitResponse).negate())
+            .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+    }
+
     private boolean isAwaitResponse(AppealCase appealCase) {
-        return appealCase.getAppealCaseMajorId().equals(AWAIT_RESPONSE);
+        return appealCase.getAppealCaseMajorId().equals(APPEAL_RECEIVED.getGapsCode());
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
@@ -96,19 +112,28 @@ public class TransformJsonCasesToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(Collections.singletonList(buildEvent()))
+            .events(Collections.singletonList(buildEvent(appealCase)))
             .build();
     }
 
-    private Events buildEvent() {
+    private Events buildEvent(AppealCase appealCase) {
+        GapsEvent gapsEvent = GapsEvent.getGapsEventByCode(appealCase.getAppealCaseMajorId());
+
+
+
         Event event = Event.builder()
-            .type("appealReceived")
-            .description("Appeal Received")
+            .type(gapsEvent.getType())
+            .description(gapsEvent.getDescription())
+            //TODO: fix this date
             .date(LocalDateTime.now().toString())
             .build();
         return Events.builder()
             .value(event)
             .build();
+    }
+
+    private void getLatestEventDate() {
+
     }
 
     private Identity getIdentity(AppealCase appealCase) {
@@ -221,6 +246,10 @@ public class TransformJsonCasesToCaseData {
     private Gaps2Extract fromJsonToGapsExtract(String json) {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        mapper.registerModule(new ParameterNamesModule())
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
+
         try {
             return mapper.readerFor(Gaps2Extract.class).readValue(json);
         } catch (Exception e) {

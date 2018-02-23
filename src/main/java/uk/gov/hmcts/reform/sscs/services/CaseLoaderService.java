@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -33,17 +34,20 @@ public class CaseLoaderService {
     private final TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles;
     private final TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     private final CreateCoreCaseDataService createCoreCaseDataService;
+    private final UpdateCoreCaseDataService updateCoreCaseDataService;
 
     @Autowired
     public CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator,
                              TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles,
                              TransformJsonCasesToCaseData transformJsonCasesToCaseData,
-                             CreateCoreCaseDataService createCoreCaseDataService) {
+                             CreateCoreCaseDataService createCoreCaseDataService,
+                             UpdateCoreCaseDataService updateCoreCaseDataService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformXmlFilesToJsonFiles = transformXmlFilesToJsonFiles;
         this.transformJsonCasesToCaseData = transformJsonCasesToCaseData;
         this.createCoreCaseDataService = createCoreCaseDataService;
+        this.updateCoreCaseDataService = updateCoreCaseDataService;
     }
 
     public void process() {
@@ -51,6 +55,7 @@ public class CaseLoaderService {
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         List<CaseData> caseDataList = new ArrayList<>();
+        List<CaseData> updateCaseList = new ArrayList<>();
         for (GapsInputStream gapsInputStream : inputStreamList) {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
@@ -58,16 +63,28 @@ public class CaseLoaderService {
             log.info("*** case-loader *** Validate " + type + " xml file successfully");
             if ("Delta".equals(type)) {
                 JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
-                caseDataList = transformJsonCasesToCaseData.transform(jsonCases.toString());
+                caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
+                updateCaseList = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
                 log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
             }
         }
+        sendCreateCcdCases(caseDataList);
+        sendUpdateCcdCases(updateCaseList);
+    }
+
+    private void sendCreateCcdCases(List<CaseData> caseDataList) {
         caseDataList.forEach(caseData -> {
-            log.info("*** case-loader *** About to save case into CCD: {}",
-                printCaseDetailsInJson(caseData));
+            log.info("*** case-loader *** About to save case into CCD: {}", printCaseDetailsInJson(caseData));
             CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
-            log.info("*** case-loader *** Save case into CCD successfully: {}",
-                printCaseDetailsInJson(caseDetails));
+            log.info("*** case-loader *** Save case into CCD successfully: {}", printCaseDetailsInJson(caseDetails));
+        });
+    }
+
+    private void sendUpdateCcdCases(List<CaseData> caseDataList) {
+        caseDataList.forEach(caseData -> {
+            log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
+//            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, 1L, caseData.getEvents().equals("3"));
+//            log.info("*** case-loader *** Updated case in CCD successfully: {}", printCaseDetailsInJson(caseDetails));
         });
     }
 

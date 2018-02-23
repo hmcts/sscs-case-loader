@@ -57,7 +57,7 @@ public class TransformJsonCasesToCaseDataTest {
         String jsonCases = FileUtils.readFileToString(new File(jsonCasesPath), StandardCharsets.UTF_8.name());
 
         // When
-        List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases);
 
         // Should
         String expectedCaseDataString = FileUtils.readFileToString(new File(expectedCaseDataPath),
@@ -70,14 +70,14 @@ public class TransformJsonCasesToCaseDataTest {
     public void givenTheMapperReaderFails_shouldThrowAnException() throws Exception {
         String invalidFileName = "src/test/resources/SSCS_ExtractInvalid_Delta_2017-06-30-09-25-56.xml";
         String jsonCases = FileUtils.readFileToString(new File(invalidFileName), StandardCharsets.UTF_8.name());
-        transformJsonCasesToCaseData.transform(jsonCases);
+        transformJsonCasesToCaseData.transformCreateCases(jsonCases);
     }
 
     @Test
     public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusEqual3() throws Exception {
         //Given
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
-        List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases);
         //Should
         int expectedNumberOfCasesWithStatusEqual3 = 2;
         assertTrue(caseDataList.size() == expectedNumberOfCasesWithStatusEqual3);
@@ -87,7 +87,7 @@ public class TransformJsonCasesToCaseDataTest {
     public void givenJsonCasesAreTransformedToCaseData_shouldIncludeTheEventsJsonField() throws Exception {
         // Given
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
-        List<CaseData> caseDataList = transformJsonCasesToCaseData.transform(jsonCases);
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases);
         //Should
         Events event = caseDataList.get(0).getEvents().get(0);
         assertEquals("appealReceived", event.getValue().getType());
