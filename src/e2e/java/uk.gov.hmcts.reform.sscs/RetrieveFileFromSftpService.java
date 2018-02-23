@@ -28,7 +28,7 @@ public class RetrieveFileFromSftpService {
 
         List<GapsInputStream> result = service.readExtractFiles();
 
-        assertThat(result, hasSize(1));
+        assertThat(result, hasSize(2));
         InputStream stream;
         stream = result.get(0).getInputStream();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
