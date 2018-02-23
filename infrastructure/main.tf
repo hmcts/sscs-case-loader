@@ -1,31 +1,41 @@
 provider "vault" {
-  //  # It is strongly recommended to configure this provider through the
-  //  # environment variables described above, so that each user can have
-  //  # separate credentials set in the environment.
-  //  #
-  //  # This will default to using $VAULT_ADDR
-  //  # But can be set explicitly
   address = "https://vault.reform.hmcts.net:6200"
 }
 
 data "vault_generic_secret" "sscs_s2s_secret" {
-  path = "secret/test/ccidam/service-auth-provider/api/microservice-keys/sscs"
+  path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
 }
 
 data "vault_generic_secret" "idam_sscs_systemupdate_user" {
-  path = "secret/test/ccidam/idam-api/sscs/systemupdate/user"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/user"
 }
 
 data "vault_generic_secret" "idam_sscs_systemupdate_password" {
-  path = "secret/test/ccidam/idam-api/sscs/systemupdate/password"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/password"
 }
 
 data "vault_generic_secret" "idam_oauth2_client_secret" {
-  path = "secret/test/ccidam/idam-api/oauth2/client-secrets/sscs"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/oauth2/client-secrets/sscs"
 }
 
 data "vault_generic_secret" "gaps2_key_location" {
-  path = "secret/test/sscs/gaps2_service_sftp_private_key"
+  path = "secret/${var.infrastructure_env}/sscs/gaps2_service_sftp_private_key"
+}
+
+data "vault_generic_secret" "idam_api" {
+  path = "secret/${var.infrastructure_env}/sscs/idam_api"
+}
+
+data "vault_generic_secret" "idam_s2s_api" {
+  path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
+}
+
+data "vault_generic_secret" "sftp_host" {
+  path = "secret/${var.infrastructure_env}/sscs/sftp_host"
+}
+
+data "vault_generic_secret" "sftp_port" {
+  path = "secret/${var.infrastructure_env}/sscs/sftp_port"
 }
 
 locals {
@@ -47,10 +57,10 @@ module "sscs-case-loader" {
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
     CORE_CASE_DATA_EVENT_ID = "${var.core_case_data_event_id}"
 
-    IDAM_URL = "${var.idam_url}"
+    IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
 
     IDAM.S2S-AUTH.TOTP_SECRET ="${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
-    IDAM.S2S-AUTH = "${var.idam_s2s_auth}"
+    IDAM.S2S-AUTH = "${data.vault_generic_secret.idam_s2s_api.data["value"]}"
     IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
 
     IDAM_SSCS_SYSTEMUPDATE_USER = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
@@ -58,11 +68,11 @@ module "sscs-case-loader" {
 
     IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
-    IDAM_OAUTH2_REDIRECT_URL = "${var.idam_oauth2_redirect_url}"
+    IDAM_OAUTH2_REDIRECT_URL = "https://sscs-case-loader-${var.env}.service.${local.aseName}.internal"
 
     GAPS2_KEY_LOCATION = "${data.vault_generic_secret.gaps2_key_location.data["value"]}"
-    GAPS2_SFTP_HOST = "${var.gaps2_sftp_host}"
-    GAPS2_SFTP_PORT = "${var.gaps2_sftp_port}"
+    GAPS2_SFTP_HOST = "${data.vault_generic_secret.sftp_host.data["value"]}"
+    GAPS2_SFTP_PORT = "${data.vault_generic_secret.sftp_port.data["value"]}"
     GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"
     GAPS2_SFTP_DIR = "${var.gaps2_sftp_dir}"
 
