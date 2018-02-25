@@ -1,19 +1,16 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
@@ -63,17 +60,21 @@ public class TransformJsonCasesToCaseData {
 
     private List<CaseData> findCasesToCreate(List<AppealCase> appealCaseList) {
         return appealCaseList.stream()
-            .filter(this::isAwaitResponse)
+            .filter(this::isAppealReceived)
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
     }
 
     private List<CaseData> findCasesToUpdate(List<AppealCase> appealCaseList) {
         return appealCaseList.stream()
-            .filter(((Predicate<AppealCase>) this::isAwaitResponse).negate())
+            .filter(this::isResponseReceived)
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
     }
 
-    private boolean isAwaitResponse(AppealCase appealCase) {
+    private boolean isResponseReceived(AppealCase appealCase) {
+        return appealCase.getAppealCaseMajorId().equals(RESPONSE_RECEIVED.getGapsCode());
+    }
+
+    private boolean isAppealReceived(AppealCase appealCase) {
         return appealCase.getAppealCaseMajorId().equals(APPEAL_RECEIVED.getGapsCode());
     }
 
@@ -118,9 +119,6 @@ public class TransformJsonCasesToCaseData {
 
     private Events buildEvent(AppealCase appealCase) {
         GapsEvent gapsEvent = GapsEvent.getGapsEventByCode(appealCase.getAppealCaseMajorId());
-
-
-
         Event event = Event.builder()
             .type(gapsEvent.getType())
             .description(gapsEvent.getDescription())
@@ -246,10 +244,6 @@ public class TransformJsonCasesToCaseData {
     private Gaps2Extract fromJsonToGapsExtract(String json) {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        mapper.registerModule(new ParameterNamesModule())
-            .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule());
-
         try {
             return mapper.readerFor(Gaps2Extract.class).readValue(json);
         } catch (Exception e) {

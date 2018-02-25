@@ -15,10 +15,10 @@ public enum GapsEvent {
         this.gapsCode = gapsCode;
     }
 
-    public static GapsEvent getGapsEventByCode(String x) {
+    public static GapsEvent getGapsEventByCode(String code) {
         GapsEvent e = null;
         for (GapsEvent event : GapsEvent.values()) {
-            if (event.gapsCode.toString().equals(x)) {
+            if (event.gapsCode.toString().equals(code)) {
                 e = event;
             }
         }

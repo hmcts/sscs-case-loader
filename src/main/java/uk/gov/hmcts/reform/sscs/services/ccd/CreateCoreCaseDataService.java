@@ -21,7 +21,7 @@ public class CreateCoreCaseDataService {
     }
 
     public CaseDetails createCcdCase(CaseData caseData) {
-        EventRequestData eventRequestData = coreCaseDataService.getEventRequestData("appealCreated");
+        EventRequestData eventRequestData = coreCaseDataService.getEventRequestData("appealReceived");
         log.info("*** case-loader *** eventRequestData: {}", eventRequestData);
         String serviceAuthorization = coreCaseDataService.generateServiceAuthorization();
         log.info("*** case-loader *** s2s token: {}", serviceAuthorization);

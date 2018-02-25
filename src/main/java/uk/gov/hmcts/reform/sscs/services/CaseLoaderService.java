@@ -63,9 +63,11 @@ public class CaseLoaderService {
             log.info("*** case-loader *** Validate " + type + " xml file successfully");
             if ("Delta".equals(type)) {
                 JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
+                log.info("*** case-loader *** Transform XML to JSON successfully");
                 caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
+                log.info("*** case-loader *** Transform CreateCases to JSON successfully");
                 updateCaseList = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
-                log.info("*** case-loader *** Transform " + type + " xml file into CCD Cases successfully");
+                log.info("*** case-loader *** Transform UpdateCases to JSON successfully");
             }
         }
         sendCreateCcdCases(caseDataList);
@@ -83,8 +85,8 @@ public class CaseLoaderService {
     private void sendUpdateCcdCases(List<CaseData> caseDataList) {
         caseDataList.forEach(caseData -> {
             log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
-//            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, 1L, caseData.getEvents().equals("3"));
-//            log.info("*** case-loader *** Updated case in CCD successfully: {}", printCaseDetailsInJson(caseDetails));
+            // TODO: 25/02/2018 call find and update ccd api
+            log.info("*** case-loader *** Update case into CCD successfully:");
         });
     }
 

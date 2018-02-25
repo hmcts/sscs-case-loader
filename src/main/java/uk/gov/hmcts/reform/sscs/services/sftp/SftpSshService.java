@@ -22,7 +22,7 @@ public class SftpSshService {
 
     private final JSch jschSshChannel;
     private final SftpSshProperties sftpSshProperties;
-    public static final String SSCS_SFTP = "SSCS-SFTP";
+    private static final String SSCS_SFTP = "SSCS-SFTP";
     private static final String DELTA_FILE_START = "SSCS_Extract_Delta";
     private static final String REFERENCE_FILE_START = "SSCS_Extract_Reference";
 
