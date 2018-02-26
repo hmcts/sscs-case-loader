@@ -47,6 +47,7 @@ public class CaseLoaderService {
     }
 
     public void process() {
+        log.info("*** case-loader *** Reading xml files from SFTP...");
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         List<CaseData> caseDataList = new ArrayList<>();
