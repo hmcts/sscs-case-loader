@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import java.util.Base64;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,9 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 @Slf4j
 public class CoreCaseDataService {
 
+    @Getter
     private final CoreCaseDataApi coreCaseDataApi;
+    @Getter
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final AuthTokenGenerator authTokenGenerator;
     private final IdamApiClient idamApiClient;
@@ -40,14 +43,10 @@ public class CoreCaseDataService {
     }
 
     protected String generateServiceAuthorization() {
-
-        String s2sToken = authTokenGenerator.generate();
-        log.info("s2s Token: {}", s2sToken);
-        return s2sToken;
+        return authTokenGenerator.generate();
     }
 
     private String getIdamOauth2Token() {
-        log.info("getIdamOauth2Token...");
         String authorisation = idamProperties.getOauth2().getUser().getEmail()
             + ":" + idamProperties.getOauth2().getUser().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
@@ -67,13 +66,10 @@ public class CoreCaseDataService {
             idamProperties.getOauth2().getClient().getSecret()
         );
 
-        String oauth2Token = "Bearer " + authorizeToken.getAccessToken();
-        log.info("oauth2Token: " + oauth2Token);
-        return oauth2Token;
+        return "Bearer " + authorizeToken.getAccessToken();
     }
 
     protected EventRequestData getEventRequestData(String eventId) {
-        log.info("getEventRequestData...");
         return EventRequestData.builder()
             .userToken(getIdamOauth2Token())
             .userId(coreCaseDataProperties.getUserId())
@@ -82,10 +78,6 @@ public class CoreCaseDataService {
             .eventId(eventId)
             .ignoreWarning(true)
             .build();
-    }
-
-    protected CoreCaseDataApi getCoreCaseDataApi() {
-        return coreCaseDataApi;
     }
 
     protected CaseDataContent getCaseDataContent(CaseData caseData, StartEventResponse startEventResponse,
