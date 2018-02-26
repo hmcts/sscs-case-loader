@@ -26,11 +26,11 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CoreCaseDataServiceTest {
+public class CreateCoreCaseDataServiceTest {
 
     @Mock
     private CoreCaseDataApi coreCaseDataApiMock;
-    private CoreCaseDataService coreCaseDataService;
+    private CreateCoreCaseDataService createCoreCaseDataService;
     @Mock
     private CoreCaseDataProperties coreCaseDataPropertiesMock;
     @Mock
@@ -42,8 +42,8 @@ public class CoreCaseDataServiceTest {
 
     @Before
     public void setUp() {
-        coreCaseDataService = new CoreCaseDataService(coreCaseDataApiMock, coreCaseDataPropertiesMock,
-            authTokenGenerator, idamApiClient, idamProperties);
+        createCoreCaseDataService = new CreateCoreCaseDataService(new CoreCaseDataService(coreCaseDataApiMock,
+            coreCaseDataPropertiesMock, authTokenGenerator, idamApiClient, idamProperties));
     }
 
     @Test
@@ -69,7 +69,8 @@ public class CoreCaseDataServiceTest {
         mockIdamProrperties();
 
         //When
-        CaseDetails caseDetails = coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
+        CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(
+            CaseDataUtils.buildCaseData("SC068/17/00013"));
 
         //Then
         assertNotNull(caseDetails);
@@ -93,7 +94,7 @@ public class CoreCaseDataServiceTest {
 
     private void mockCaseDetails() {
         Map<String, Object> caseData = new HashMap<>(1);
-        caseData.put("case-data", CaseDataUtils.buildCaseData());
+        caseData.put("case-data", CaseDataUtils.buildCaseData("SC068/17/00013"));
         CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         when(coreCaseDataApiMock.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
@@ -109,6 +110,5 @@ public class CoreCaseDataServiceTest {
         when(coreCaseDataPropertiesMock.getUserId()).thenReturn("userId");
         when(coreCaseDataPropertiesMock.getJurisdictionId()).thenReturn("jurisdictionId");
         when(coreCaseDataPropertiesMock.getCaseTypeId()).thenReturn("caseTypeId");
-        when(coreCaseDataPropertiesMock.getEventId()).thenReturn("eventId");
     }
 }

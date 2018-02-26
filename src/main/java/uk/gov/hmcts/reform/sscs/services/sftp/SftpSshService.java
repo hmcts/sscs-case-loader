@@ -65,6 +65,7 @@ public class SftpSshService {
             List<GapsInputStream> inputStreams = new ArrayList<>();
 
             for (Object file : fileList) {
+                log.info("Sftp file: {}", ((ChannelSftp.LsEntry) file).getFilename());
                 InputStream stream = channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
                     + ((ChannelSftp.LsEntry) file).getFilename());
 

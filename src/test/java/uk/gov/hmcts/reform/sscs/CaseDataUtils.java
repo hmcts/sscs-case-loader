@@ -27,7 +27,7 @@ public final class CaseDataUtils {
     private CaseDataUtils() {
     }
 
-    public static CaseData buildCaseData() {
+    public static CaseData buildCaseData(String caseReference) {
         Name name = Name.builder()
             .title("Mr")
             .firstName("User")
@@ -112,7 +112,7 @@ public final class CaseDataUtils {
             .build();
 
         return CaseData.builder()
-            .caseReference("SC068/17/00013")
+            .caseReference(caseReference)
             .appeal(appeal)
             .hearings(hearingsList)
             .evidence(evidence)

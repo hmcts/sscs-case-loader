@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
@@ -19,7 +17,8 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
-import uk.gov.hmcts.reform.sscs.services.ccd.CoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(SpringRunner.class)
@@ -33,7 +32,9 @@ public class CoreCddCaseDataServiceTest {
     @MockBean
     private IdamApiClient idamApiClient;
     @Autowired
-    private CoreCaseDataService coreCaseDataService;
+    private CreateCoreCaseDataService createCoreCaseDataService;
+    @Autowired
+    private UpdateCoreCaseDataService updateCoreCaseDataService;
 
     @Test
     public void givenACase_shouldSaveItIntoCdd() {
@@ -74,7 +75,7 @@ public class CoreCddCaseDataServiceTest {
             anyString())
         ).willReturn(new Authorize("", "", "accessToken"));
 
-        coreCaseDataService.startEventAndSaveGivenCase(CaseDataUtils.buildCaseData());
+        createCoreCaseDataService.createCcdCase(CaseDataUtils.buildCaseData("SC068/17/00013"));
 
         verify(coreCaseDataApi).startForCaseworker(
             anyString(),
@@ -86,6 +87,72 @@ public class CoreCddCaseDataServiceTest {
         );
 
         verify(coreCaseDataApi).submitForCaseworker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class)
+        );
+
+    }
+
+    @Test
+    public void givenACase_shouldUpdateItInCdd() {
+        given(authTokenGenerator.generate()).willReturn("s2sToken");
+
+        given(coreCaseDataApi.startEventForCaseWorker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()
+            )
+        ).willReturn(StartEventResponse.builder().build());
+
+        given(coreCaseDataApi.submitEventForCaseWorker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class)
+        )).willReturn(CaseDetails.builder().build());
+
+        given(idamApiClient.authorizeCodeType(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString())
+        ).willReturn(new Authorize("url", "code", ""));
+
+        given(idamApiClient.authorizeToken(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString())
+        ).willReturn(new Authorize("", "", "accessToken"));
+
+        updateCoreCaseDataService.updateCase(CaseDataUtils.buildCaseData("SC068/17/00013"), 123L, "appealReceived");
+
+        verify(coreCaseDataApi).startEventForCaseWorker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()
+        );
+
+        verify(coreCaseDataApi).submitEventForCaseWorker(
+            anyString(),
             anyString(),
             anyString(),
             anyString(),
