@@ -40,10 +40,13 @@ public class CoreCaseDataService {
     }
 
     protected String generateServiceAuthorization() {
-        return authTokenGenerator.generate();
+
+        String s2sToken = authTokenGenerator.generate();
+        log.info("s2s Token: {}", s2sToken);
+        return s2sToken;
     }
 
-    protected String getIdamOauth2Token() {
+    private String getIdamOauth2Token() {
         log.info("getIdamOauth2Token...");
         String authorisation = idamProperties.getOauth2().getUser().getEmail()
             + ":" + idamProperties.getOauth2().getUser().getPassword();
