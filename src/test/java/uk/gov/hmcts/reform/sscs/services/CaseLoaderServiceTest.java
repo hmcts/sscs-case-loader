@@ -58,7 +58,7 @@ public class CaseLoaderServiceTest {
         when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
         List<CaseData> caseDataList = Collections.singletonList(CaseData.builder().build());
         when(transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(anyString(),
-            eq(APPEAL_RECEIVED.getGapsCode()))).thenReturn(caseDataList);
+            eq(APPEAL_RECEIVED.getStatus()))).thenReturn(caseDataList);
         when(createCoreCaseDataService.createCcdCase(any(CaseData.class)))
             .thenReturn(CaseDetails.builder().build());
         caseLoaderService.process();

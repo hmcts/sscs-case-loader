@@ -97,7 +97,7 @@ public class TransformJsonCasesToCaseData {
     }
 
     private Events buildEvent(AppealCase appealCase) {
-        GapsEvent gapsEvent = GapsEvent.getGapsEventByCode(appealCase.getAppealCaseMajorId());
+        GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(appealCase.getAppealCaseMajorId());
         Event event = Event.builder()
             .type(gapsEvent.getType())
             .description(gapsEvent.getDescription())

@@ -7,18 +7,18 @@ public enum GapsEvent {
 
     private String type;
     private String description;
-    private String gapsCode;
+    private String status;
 
-    GapsEvent(String type, String description, String gapsCode) {
+    GapsEvent(String type, String description, String status) {
         this.type = type;
         this.description = description;
-        this.gapsCode = gapsCode;
+        this.status = status;
     }
 
-    public static GapsEvent getGapsEventByCode(String code) {
+    public static GapsEvent getGapsEventByStatus(String status) {
         GapsEvent e = null;
         for (GapsEvent event : GapsEvent.values()) {
-            if (event.gapsCode.toString().equals(code)) {
+            if (event.status.toString().equals(status)) {
                 e = event;
             }
         }
@@ -33,7 +33,7 @@ public enum GapsEvent {
         return description;
     }
 
-    public String getGapsCode() {
-        return gapsCode;
+    public String getStatus() {
+        return status;
     }
 }

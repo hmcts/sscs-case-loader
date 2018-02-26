@@ -64,10 +64,10 @@ public class CaseLoaderService {
                 JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
                 log.info("*** case-loader *** Transform XML to JSON successfully");
                 appealReceivedCases = transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(
-                    jsonCases.toString(), APPEAL_RECEIVED.getGapsCode());
+                    jsonCases.toString(), APPEAL_RECEIVED.getStatus());
                 log.info("*** case-loader *** Transform Appeal Received cases to CaseData successfully");
                 responseReceivedCases = transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(
-                    jsonCases.toString(), RESPONSE_RECEIVED.getGapsCode());
+                    jsonCases.toString(), RESPONSE_RECEIVED.getStatus());
                 log.info("*** case-loader *** Transform Response Received cases to CaseData successfully");
             }
         }
