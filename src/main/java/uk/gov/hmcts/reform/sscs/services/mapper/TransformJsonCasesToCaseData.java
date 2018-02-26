@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -48,34 +45,16 @@ public class TransformJsonCasesToCaseData {
     private static final String NO = "No";
     private static final String Y = "Y";
 
-    public List<CaseData> transformCreateCases(String json) {
+    public List<CaseData> transformCasesOfGivenStatusIntoCaseData(String json, String status) {
         List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
-        return findCasesToCreate(appealCases);
+        return filterCasesByStatusAndTransformThemIntoCaseData(appealCases, status);
     }
 
-    public List<CaseData> transformUpdateCases(String json) {
-        List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
-        return findCasesToUpdate(appealCases);
-    }
-
-    private List<CaseData> findCasesToCreate(List<AppealCase> appealCaseList) {
+    private List<CaseData> filterCasesByStatusAndTransformThemIntoCaseData(List<AppealCase> appealCaseList,
+                                                                           String status) {
         return appealCaseList.stream()
-            .filter(this::isAppealReceived)
+            .filter(appealCase -> appealCase.getAppealCaseMajorId().equals(status))
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
-    }
-
-    private List<CaseData> findCasesToUpdate(List<AppealCase> appealCaseList) {
-        return appealCaseList.stream()
-            .filter(this::isResponseReceived)
-            .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
-    }
-
-    private boolean isResponseReceived(AppealCase appealCase) {
-        return appealCase.getAppealCaseMajorId().equals(RESPONSE_RECEIVED.getGapsCode());
-    }
-
-    private boolean isAppealReceived(AppealCase appealCase) {
-        return appealCase.getAppealCaseMajorId().equals(APPEAL_RECEIVED.getGapsCode());
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
@@ -128,10 +107,6 @@ public class TransformJsonCasesToCaseData {
         return Events.builder()
             .value(event)
             .build();
-    }
-
-    private void getLatestEventDate() {
-
     }
 
     private Identity getIdentity(AppealCase appealCase) {

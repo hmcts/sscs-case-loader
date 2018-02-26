@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -19,7 +22,6 @@ import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
-import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -34,28 +36,25 @@ public class CaseLoaderService {
     private final TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles;
     private final TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     private final CreateCoreCaseDataService createCoreCaseDataService;
-    private final UpdateCoreCaseDataService updateCoreCaseDataService;
 
     @Autowired
     public CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator,
                              TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles,
                              TransformJsonCasesToCaseData transformJsonCasesToCaseData,
-                             CreateCoreCaseDataService createCoreCaseDataService,
-                             UpdateCoreCaseDataService updateCoreCaseDataService) {
+                             CreateCoreCaseDataService createCoreCaseDataService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformXmlFilesToJsonFiles = transformXmlFilesToJsonFiles;
         this.transformJsonCasesToCaseData = transformJsonCasesToCaseData;
         this.createCoreCaseDataService = createCoreCaseDataService;
-        this.updateCoreCaseDataService = updateCoreCaseDataService;
     }
 
     public void process() {
         log.info("*** case-loader *** Reading xml files from SFTP...");
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
-        List<CaseData> caseDataList = new ArrayList<>();
-        List<CaseData> updateCaseList = new ArrayList<>();
+        List<CaseData> appealReceivedCases = new ArrayList<>();
+        List<CaseData> responseReceivedCases = new ArrayList<>();
         for (GapsInputStream gapsInputStream : inputStreamList) {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
@@ -64,14 +63,16 @@ public class CaseLoaderService {
             if ("Delta".equals(type)) {
                 JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
                 log.info("*** case-loader *** Transform XML to JSON successfully");
-                caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
-                log.info("*** case-loader *** Transform CreateCases to JSON successfully");
-                updateCaseList = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
-                log.info("*** case-loader *** Transform UpdateCases to JSON successfully");
+                appealReceivedCases = transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(
+                    jsonCases.toString(), APPEAL_RECEIVED.getGapsCode());
+                log.info("*** case-loader *** Transform Appeal Received cases to CaseData successfully");
+                responseReceivedCases = transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(
+                    jsonCases.toString(), RESPONSE_RECEIVED.getGapsCode());
+                log.info("*** case-loader *** Transform Response Received cases to CaseData successfully");
             }
         }
-        sendCreateCcdCases(caseDataList);
-        sendUpdateCcdCases(updateCaseList);
+        sendCreateCcdCases(appealReceivedCases);
+        sendUpdateCcdCases(responseReceivedCases);
     }
 
     private void sendCreateCcdCases(List<CaseData> caseDataList) {

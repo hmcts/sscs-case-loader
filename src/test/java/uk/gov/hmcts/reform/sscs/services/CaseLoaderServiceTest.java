@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class CaseLoaderServiceTest {
     @Before
     public void setUp() throws Exception {
         caseLoaderService = new CaseLoaderService(sftpSshService, xmlValidator, transformXmlFilesToJsonFiles,
-            transformJsonCasesToCaseData, createCoreCaseDataService, updateCoreCaseDataService);
+            transformJsonCasesToCaseData, createCoreCaseDataService);
     }
 
     @Test
@@ -56,7 +57,8 @@ public class CaseLoaderServiceTest {
         doNothing().when(xmlValidator).validateXml(anyString(), anyString());
         when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
         List<CaseData> caseDataList = Collections.singletonList(CaseData.builder().build());
-        when(transformJsonCasesToCaseData.transformCreateCases(anyString())).thenReturn(caseDataList);
+        when(transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(anyString(),
+            eq(APPEAL_RECEIVED.getGapsCode()))).thenReturn(caseDataList);
         when(createCoreCaseDataService.createCcdCase(any(CaseData.class)))
             .thenReturn(CaseDetails.builder().build());
         caseLoaderService.process();
