@@ -13,25 +13,25 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 @Slf4j
 public class UpdateCoreCaseDataService {
 
-    private final CoreCaseDataService coreCaseDataService;
+    private final CoreCaseDataServiceUtil coreCaseDataServiceUtil;
 
     @Autowired
-    public UpdateCoreCaseDataService(CoreCaseDataService coreCaseDataService) {
-        this.coreCaseDataService = coreCaseDataService;
+    public UpdateCoreCaseDataService(CoreCaseDataServiceUtil coreCaseDataServiceUtil) {
+        this.coreCaseDataServiceUtil = coreCaseDataServiceUtil;
     }
 
     public CaseDetails updateCase(CaseData caseData, Long caseId, String eventId) {
         log.info("updateCase...");
-        EventRequestData eventRequestData = coreCaseDataService.getEventRequestData(eventId);
-        String serviceAuthorization = coreCaseDataService.generateServiceAuthorization();
+        EventRequestData eventRequestData = coreCaseDataServiceUtil.getEventRequestData(eventId);
+        String serviceAuthorization = coreCaseDataServiceUtil.generateServiceAuthorization();
         StartEventResponse startEventResponse = start(eventRequestData, serviceAuthorization, caseId);
-        return submit(eventRequestData, serviceAuthorization, coreCaseDataService.getCaseDataContent(caseData,
+        return submit(eventRequestData, serviceAuthorization, coreCaseDataServiceUtil.getCaseDataContent(caseData,
             startEventResponse, "SSCS - appeal updated event", "Updated SSCS"), caseId);
     }
 
     private StartEventResponse start(EventRequestData eventRequestData, String serviceAuthorization, Long caseId) {
         log.info("start...");
-        return coreCaseDataService.getCoreCaseDataApi().startEventForCaseWorker(
+        return coreCaseDataServiceUtil.getCoreCaseDataApi().startEventForCaseWorker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
             eventRequestData.getUserId(),
@@ -45,7 +45,7 @@ public class UpdateCoreCaseDataService {
     private CaseDetails submit(EventRequestData eventRequestData, String serviceAuthorization,
                                CaseDataContent caseDataContent, Long caseId) {
         log.info("submit...");
-        return coreCaseDataService.getCoreCaseDataApi().submitEventForCaseWorker(
+        return coreCaseDataServiceUtil.getCoreCaseDataApi().submitEventForCaseWorker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
             eventRequestData.getUserId(),

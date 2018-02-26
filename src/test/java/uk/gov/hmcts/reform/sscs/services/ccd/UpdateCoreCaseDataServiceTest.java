@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateCoreCaseDataServiceTest {
@@ -39,11 +40,13 @@ public class UpdateCoreCaseDataServiceTest {
     private IdamApiClient idamApiClient;
     @Mock
     private IdamProperties idamProperties;
+    @Mock
+    private IdamService idamService;
 
     @Before
     public void setUp() {
-        updateCoreCaseDataService = new UpdateCoreCaseDataService(new CoreCaseDataService(coreCaseDataApiMock,
-            coreCaseDataPropertiesMock, authTokenGenerator, idamApiClient, idamProperties));
+        updateCoreCaseDataService = new UpdateCoreCaseDataService(new CoreCaseDataServiceUtil(coreCaseDataApiMock,
+            coreCaseDataPropertiesMock, idamService));
     }
 
     @Test

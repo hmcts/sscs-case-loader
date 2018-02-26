@@ -13,28 +13,25 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 @Slf4j
 public class CreateCoreCaseDataService {
 
-    private final CoreCaseDataService coreCaseDataService;
+    private final CoreCaseDataServiceUtil coreCaseDataServiceUtil;
 
     @Autowired
-    public CreateCoreCaseDataService(CoreCaseDataService coreCaseDataService) {
-        this.coreCaseDataService = coreCaseDataService;
+    public CreateCoreCaseDataService(CoreCaseDataServiceUtil coreCaseDataServiceUtil) {
+        this.coreCaseDataServiceUtil = coreCaseDataServiceUtil;
     }
 
     public CaseDetails createCcdCase(CaseData caseData) {
-        EventRequestData eventRequestData = coreCaseDataService.getEventRequestData("appealReceived");
-        log.info("*** case-loader *** eventRequestData: {}", eventRequestData);
-        String serviceAuthorization = coreCaseDataService.generateServiceAuthorization();
-        log.info("*** case-loader *** s2s token: {}", serviceAuthorization);
+        log.info("createCcdCase...");
+        EventRequestData eventRequestData = coreCaseDataServiceUtil.getEventRequestData("appealCreated");
+        String serviceAuthorization = coreCaseDataServiceUtil.generateServiceAuthorization();
         StartEventResponse startEventResponse = start(eventRequestData, serviceAuthorization);
-        log.info("*** case-loader *** startEventResponse: {}", startEventResponse);
-        return save(eventRequestData, serviceAuthorization, coreCaseDataService.getCaseDataContent(caseData,
+        return create(eventRequestData, serviceAuthorization, coreCaseDataServiceUtil.getCaseDataContent(caseData,
             startEventResponse, "SSCS - appeal created event", "Created SSCS"));
     }
 
     private StartEventResponse start(EventRequestData eventRequestData, String serviceAuthorization) {
-        String ccdUrl = coreCaseDataService.getCoreCaseDataProperties().getApi().getUrl();
-        log.info("*** case-loader *** Calling CCD (url: {}) endpoint to start Case For Caseworker...", ccdUrl);
-        return coreCaseDataService.getCoreCaseDataApi().startForCaseworker(
+        log.info("start...");
+        return coreCaseDataServiceUtil.getCoreCaseDataApi().startForCaseworker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
             eventRequestData.getUserId(),
@@ -43,10 +40,10 @@ public class CreateCoreCaseDataService {
             eventRequestData.getEventId());
     }
 
-    private CaseDetails save(EventRequestData eventRequestData, String serviceAuthorization,
-                             CaseDataContent caseDataContent) {
-        log.info("*** case-loader *** Calling CCD endpoint to save CaseDetails For CaseWorker...");
-        return coreCaseDataService.getCoreCaseDataApi().submitForCaseworker(
+    private CaseDetails create(EventRequestData eventRequestData, String serviceAuthorization,
+                               CaseDataContent caseDataContent) {
+        log.info("create...");
+        return coreCaseDataServiceUtil.getCoreCaseDataApi().submitForCaseworker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
             eventRequestData.getUserId(),

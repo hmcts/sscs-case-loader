@@ -24,26 +24,29 @@ import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateCoreCaseDataServiceTest {
 
     @Mock
-    private CoreCaseDataApi coreCaseDataApi;
+    private CoreCaseDataApi coreCaseDataApiMock;
     private CreateCoreCaseDataService createCoreCaseDataService;
     @Mock
-    private CoreCaseDataProperties coreCaseDataProperties;
+    private CoreCaseDataProperties coreCaseDataPropertiesMock;
     @Mock
     private AuthTokenGenerator authTokenGenerator;
     @Mock
     private IdamApiClient idamApiClient;
     @Mock
     private IdamProperties idamProperties;
+    @Mock
+    private IdamService idamService;
 
     @Before
     public void setUp() {
-        createCoreCaseDataService = new CreateCoreCaseDataService(new CoreCaseDataService(coreCaseDataApi,
-            coreCaseDataProperties, authTokenGenerator, idamApiClient, idamProperties));
+        createCoreCaseDataService = new CreateCoreCaseDataService(new CoreCaseDataServiceUtil(coreCaseDataApiMock,
+            coreCaseDataPropertiesMock, idamService));
     }
 
     @Test
@@ -96,22 +99,19 @@ public class CreateCoreCaseDataServiceTest {
         Map<String, Object> caseData = new HashMap<>(1);
         caseData.put("case-data", CaseDataUtils.buildCaseData("SC068/17/00013"));
         CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
-        when(coreCaseDataApi.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
+        when(coreCaseDataApiMock.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
     }
 
     private void mockStartEventResponse() {
         StartEventResponse startEventResponseMock = mock(StartEventResponse.class);
-        when(coreCaseDataApi.startForCaseworker(anyString(), anyString(), anyString(), anyString(),
+        when(coreCaseDataApiMock.startForCaseworker(anyString(), anyString(), anyString(), anyString(),
             anyString(), anyString())).thenReturn(startEventResponseMock);
     }
 
     private void mockCoreCaseDataProperties() {
-        when(coreCaseDataProperties.getUserId()).thenReturn("userId");
-        when(coreCaseDataProperties.getJurisdictionId()).thenReturn("jurisdictionId");
-        when(coreCaseDataProperties.getCaseTypeId()).thenReturn("caseTypeId");
-        CoreCaseDataProperties.Api api = new CoreCaseDataProperties.Api();
-        api.setUrl("http://localhost");
-        when(coreCaseDataProperties.getApi()).thenReturn(api);
+        when(coreCaseDataPropertiesMock.getUserId()).thenReturn("userId");
+        when(coreCaseDataPropertiesMock.getJurisdictionId()).thenReturn("jurisdictionId");
+        when(coreCaseDataPropertiesMock.getCaseTypeId()).thenReturn("caseTypeId");
     }
 }
