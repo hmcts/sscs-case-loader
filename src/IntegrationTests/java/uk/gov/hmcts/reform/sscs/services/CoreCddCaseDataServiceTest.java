@@ -139,7 +139,8 @@ public class CoreCddCaseDataServiceTest {
             anyString())
         ).willReturn(new Authorize("", "", "accessToken"));
 
-        updateCoreCaseDataService.updateCase(CaseDataUtils.buildCaseData("SC068/17/00013"), 123L, "appealReceived");
+        updateCoreCaseDataService.updateCase(CaseDataUtils
+            .buildCaseData("SC068/17/00013"), 123L, "appealReceived");
 
         verify(coreCaseDataApi).startEventForCaseWorker(
             anyString(),
