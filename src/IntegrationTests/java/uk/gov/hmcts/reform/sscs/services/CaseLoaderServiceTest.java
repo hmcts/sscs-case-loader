@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -117,6 +118,17 @@ public class CaseLoaderServiceTest {
             anyString(),
             anyString()
         )).willReturn(StartEventResponse.builder().build());
+
+        given(coreCaseDataApi.submitEventForCaseWorker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyBoolean(),
+            any(CaseDataContent.class)
+        )).willReturn(CaseDetails.builder().build());
 
         caseLoaderService.process();
 

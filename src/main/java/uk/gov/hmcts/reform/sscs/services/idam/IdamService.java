@@ -24,9 +24,7 @@ public class IdamService {
     }
 
     public String generateServiceAuthorization() {
-        String s2sToken = authTokenGenerator.generate();
-        log.info("s2s Token: {}", s2sToken);
-        return s2sToken;
+        return authTokenGenerator.generate();
     }
 
     public String getIdamOauth2Token() {
