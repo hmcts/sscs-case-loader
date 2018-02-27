@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
+import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
@@ -40,25 +41,20 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 @Service
 public class TransformJsonCasesToCaseData {
 
-    private static final String AWAIT_RESPONSE = "3";
-
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
 
-    public List<CaseData> transform(String json) {
-        Gaps2Extract gaps2Extract = fromJsonToGapsExtract(json);
-        return fromGaps2ExtractToCaseDataList(gaps2Extract.getAppealCases().getAppealCaseList());
+    public List<CaseData> transformCasesOfGivenStatusIntoCaseData(String json, String status) {
+        List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
+        return filterCasesByStatusAndTransformThemIntoCaseData(appealCases, status);
     }
 
-    private List<CaseData> fromGaps2ExtractToCaseDataList(List<AppealCase> appealCaseList) {
+    private List<CaseData> filterCasesByStatusAndTransformThemIntoCaseData(List<AppealCase> appealCaseList,
+                                                                           String status) {
         return appealCaseList.stream()
-            .filter(this::isAwaitResponse)
+            .filter(appealCase -> appealCase.getAppealCaseMajorId().equals(status))
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
-    }
-
-    private boolean isAwaitResponse(AppealCase appealCase) {
-        return appealCase.getAppealCaseMajorId().equals(AWAIT_RESPONSE);
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
@@ -96,14 +92,16 @@ public class TransformJsonCasesToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(Collections.singletonList(buildEvent()))
+            .events(Collections.singletonList(buildEvent(appealCase.getAppealCaseMajorId())))
             .build();
     }
 
-    private Events buildEvent() {
+    private Events buildEvent(String status) {
+        GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(status);
         Event event = Event.builder()
-            .type("appealReceived")
-            .description("Appeal Received")
+            .type(gapsEvent.getType())
+            .description(gapsEvent.getDescription())
+            // FIXME: 27/02/2018 this date is the most recent date from Major Status.
             .date(LocalDateTime.now().toString())
             .build();
         return Events.builder()

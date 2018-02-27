@@ -38,7 +38,7 @@
         "value": {
           "date": "${json-unit.ignore}",
           "type": "appealReceived",
-          "description": "Appeal Received"
+          "description": "Appeal received"
         }
       }
     ]
@@ -82,7 +82,7 @@
         "value": {
           "date": "${json-unit.ignore}",
           "type": "appealReceived",
-          "description": "Appeal Received"
+          "description": "Appeal received"
         }
       }
     ]
