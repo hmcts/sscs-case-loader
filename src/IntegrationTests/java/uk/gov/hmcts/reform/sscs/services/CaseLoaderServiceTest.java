@@ -11,8 +11,11 @@ import static org.mockito.Mockito.verify;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
 import org.apache.commons.io.FileUtils;
@@ -57,24 +60,7 @@ public class CaseLoaderServiceTest {
 
     @Test
     public void givenDeltaXmlInSftp_shouldBeSavedIntoCcd() throws Exception {
-        Session session = mock(Session.class);
-        given(jschSshChannel.getSession(
-            anyString(),
-            anyString(),
-            anyInt())
-        ).willReturn(session);
-
-        ChannelSftp channelSftp = mock(ChannelSftp.class);
-        given(session.openChannel(anyString())).willReturn(channelSftp);
-        given(channelSftp.get(anyString())).willReturn(FileUtils.openInputStream(new File(DELTA_XML)));
-
-        ChannelSftp.LsEntry file = mock(ChannelSftp.LsEntry.class);
-        given(file.getFilename()).willReturn("SSCS_Extract_Delta");
-
-        Vector<ChannelSftp.LsEntry> fileList = new Vector<>();
-        fileList.add(file);
-
-        given(channelSftp.ls(anyString())).willReturn(fileList);
+        mockSftp();
 
         given(authTokenGenerator.generate()).willReturn("s2s token");
 
@@ -147,6 +133,27 @@ public class CaseLoaderServiceTest {
                 eq(Boolean.TRUE),
                 any(CaseDataContent.class)
             );
+    }
+
+    private void mockSftp() throws JSchException, SftpException, IOException {
+        Session session = mock(Session.class);
+        given(jschSshChannel.getSession(
+            anyString(),
+            anyString(),
+            anyInt())
+        ).willReturn(session);
+
+        ChannelSftp channelSftp = mock(ChannelSftp.class);
+        given(session.openChannel(anyString())).willReturn(channelSftp);
+        given(channelSftp.get(anyString())).willReturn(FileUtils.openInputStream(new File(DELTA_XML)));
+
+        ChannelSftp.LsEntry file = mock(ChannelSftp.LsEntry.class);
+        given(file.getFilename()).willReturn("SSCS_Extract_Delta");
+
+        Vector<ChannelSftp.LsEntry> fileList = new Vector<>();
+        fileList.add(file);
+
+        given(channelSftp.ls(anyString())).willReturn(fileList);
     }
 
 }

@@ -92,16 +92,21 @@ public class CaseLoaderService {
     }
 
     private void sendUpdateCcdCases(List<CaseData> caseDataList) {
-        caseDataList.forEach(caseData -> {
+        CaseDetails caseDetails = null;
+        for (CaseData caseData : caseDataList) {
             log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
             List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
+            log.info("*** case-loader *** Found cases with caseRef: {} in CCD: {}", caseData.getCaseReference(),
+                printCaseDetailsInJson(cases));
             if (cases.get(0) != null) {
-                updateCoreCaseDataService.updateCase(caseData, cases.get(0).getId(), "responseReceived");
+                caseDetails = updateCoreCaseDataService.updateCase(caseData, cases.get(0).getId(),
+                    "responseReceived");
             } else {
-                createCoreCaseDataService.createCcdCase(caseData);
+                caseDetails = createCoreCaseDataService.createCcdCase(caseData);
             }
-            log.info("*** case-loader *** Update case into CCD successfully:");
-        });
+            log.info("*** case-loader *** Update case into CCD successfully: {}", caseDetails);
+
+        }
     }
 
     private String printCaseDetailsInJson(Object object) {

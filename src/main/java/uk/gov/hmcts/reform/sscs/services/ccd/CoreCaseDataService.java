@@ -23,7 +23,6 @@ public class CoreCaseDataService {
     }
 
     public EventRequestData getEventRequestData(String eventId) {
-        log.info("getEventRequestData...");
         return EventRequestData.builder()
             .userToken(idamService.getIdamOauth2Token())
             .userId(coreCaseDataProperties.getUserId())
