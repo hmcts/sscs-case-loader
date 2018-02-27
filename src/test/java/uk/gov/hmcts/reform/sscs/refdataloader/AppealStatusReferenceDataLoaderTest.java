@@ -8,12 +8,12 @@ import javax.xml.stream.XMLStreamException;
 
 import org.junit.Before;
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.exceptions.Gaps2ReferenceDataNotFoundException;
+import uk.gov.hmcts.reform.sscs.models.ReferenceDataFiles;
 import uk.gov.hmcts.reform.sscs.models.refdata.AppealStatus;
 
 public class AppealStatusReferenceDataLoaderTest {
 
-    public static final String GAPS2_REFERENCE_DATA_XML =
-        "reference-data/SSCS_Extract_ReferenceTest_2017-06-30-09-01-31.xml";
     private AppealStatusReferenceDataLoader appealStatusReferenceDataLoader;
 
     @Before
@@ -25,7 +25,7 @@ public class AppealStatusReferenceDataLoaderTest {
     public void testToParseAndStoreAppealStatusIntoAMap() throws XMLStreamException {
 
         InputStream referenceDataResourceAsStream = ClassLoader
-            .getSystemResourceAsStream(GAPS2_REFERENCE_DATA_XML);
+            .getSystemResourceAsStream(ReferenceDataFiles.GAPS2_REFERENCE_DATA_XML);
 
         appealStatusReferenceDataLoader.extract(referenceDataResourceAsStream);
 
@@ -43,10 +43,15 @@ public class AppealStatusReferenceDataLoaderTest {
     @Test(expected = XMLStreamException.class)
     public void shouldThrowXmlStreamExceptionForInvalidXml() throws XMLStreamException {
         InputStream referenceDataResourceAsStream = ClassLoader
-            .getSystemResourceAsStream("reference-data/Invalid_SSCS_Extract_Reference.xml");
+            .getSystemResourceAsStream(ReferenceDataFiles.INVALID_GAPS2_REFERENCE_DATA_XML);
 
         appealStatusReferenceDataLoader.extract(referenceDataResourceAsStream);
 
+    }
+
+    @Test(expected = Gaps2ReferenceDataNotFoundException.class)
+    public void shouldReturnGaps2ReferenceDataNotFoundException() {
+        appealStatusReferenceDataLoader.getAppealStatusById(100);
     }
 
 
