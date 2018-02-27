@@ -41,9 +41,9 @@ public class SearchCoreCaseDataServiceTest {
         given(coreCaseDataApi.searchForCaseworker(
             anyString(),
             anyString(),
-            eq("16"),
-            eq("SSCS"),
-            eq("Benefit"),
+            anyString(),
+            anyString(),
+            anyString(),
             eq(ImmutableMap.of("case.caseReference", "SC068/17/00013"))
             )
         ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
@@ -70,9 +70,9 @@ public class SearchCoreCaseDataServiceTest {
         verify(coreCaseDataApi).searchForCaseworker(
             anyString(),
             anyString(),
-            eq("16"),
-            eq("SSCS"),
-            eq("Benefit"),
+            anyString(),
+            anyString(),
+            anyString(),
             eq(ImmutableMap.of("case.caseReference", "SC068/17/00013"))
         );
 
