@@ -29,10 +29,10 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 public class CreateCoreCaseDataServiceTest {
 
     @Mock
-    private CoreCaseDataApi coreCaseDataApiMock;
+    private CoreCaseDataApi coreCaseDataApi;
     private CreateCoreCaseDataService createCoreCaseDataService;
     @Mock
-    private CoreCaseDataProperties coreCaseDataPropertiesMock;
+    private CoreCaseDataProperties coreCaseDataProperties;
     @Mock
     private AuthTokenGenerator authTokenGenerator;
     @Mock
@@ -42,8 +42,8 @@ public class CreateCoreCaseDataServiceTest {
 
     @Before
     public void setUp() {
-        createCoreCaseDataService = new CreateCoreCaseDataService(new CoreCaseDataService(coreCaseDataApiMock,
-            coreCaseDataPropertiesMock, authTokenGenerator, idamApiClient, idamProperties));
+        createCoreCaseDataService = new CreateCoreCaseDataService(new CoreCaseDataService(coreCaseDataApi,
+            coreCaseDataProperties, authTokenGenerator, idamApiClient, idamProperties));
     }
 
     @Test
@@ -96,19 +96,22 @@ public class CreateCoreCaseDataServiceTest {
         Map<String, Object> caseData = new HashMap<>(1);
         caseData.put("case-data", CaseDataUtils.buildCaseData("SC068/17/00013"));
         CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
-        when(coreCaseDataApiMock.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
+        when(coreCaseDataApi.submitForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(true), any(CaseDataContent.class))).thenReturn(caseDetails);
     }
 
     private void mockStartEventResponse() {
         StartEventResponse startEventResponseMock = mock(StartEventResponse.class);
-        when(coreCaseDataApiMock.startForCaseworker(anyString(), anyString(), anyString(), anyString(),
+        when(coreCaseDataApi.startForCaseworker(anyString(), anyString(), anyString(), anyString(),
             anyString(), anyString())).thenReturn(startEventResponseMock);
     }
 
     private void mockCoreCaseDataProperties() {
-        when(coreCaseDataPropertiesMock.getUserId()).thenReturn("userId");
-        when(coreCaseDataPropertiesMock.getJurisdictionId()).thenReturn("jurisdictionId");
-        when(coreCaseDataPropertiesMock.getCaseTypeId()).thenReturn("caseTypeId");
+        when(coreCaseDataProperties.getUserId()).thenReturn("userId");
+        when(coreCaseDataProperties.getJurisdictionId()).thenReturn("jurisdictionId");
+        when(coreCaseDataProperties.getCaseTypeId()).thenReturn("caseTypeId");
+        CoreCaseDataProperties.Api api = new CoreCaseDataProperties.Api();
+        api.setUrl("http://localhost");
+        when(coreCaseDataProperties.getApi()).thenReturn(api);
     }
 }

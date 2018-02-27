@@ -21,16 +21,19 @@ public class CreateCoreCaseDataService {
     }
 
     public CaseDetails createCcdCase(CaseData caseData) {
-        log.info("createCcdCase...");
         EventRequestData eventRequestData = coreCaseDataService.getEventRequestData("appealCreated");
+        log.info("*** case-loader *** eventRequestData: {}", eventRequestData);
         String serviceAuthorization = coreCaseDataService.generateServiceAuthorization();
+        log.info("*** case-loader *** s2s token: {}", serviceAuthorization);
         StartEventResponse startEventResponse = start(eventRequestData, serviceAuthorization);
-        return create(eventRequestData, serviceAuthorization, coreCaseDataService.getCaseDataContent(caseData,
+        log.info("*** case-loader *** startEventResponse: {}", startEventResponse);
+        return save(eventRequestData, serviceAuthorization, coreCaseDataService.getCaseDataContent(caseData,
             startEventResponse, "SSCS - appeal created event", "Created SSCS"));
     }
 
     private StartEventResponse start(EventRequestData eventRequestData, String serviceAuthorization) {
-        log.info("start...");
+        String ccdUrl = coreCaseDataService.getCoreCaseDataProperties().getApi().getUrl();
+        log.info("*** case-loader *** Calling CCD (url: {}) endpoint to start Case For Caseworker...", ccdUrl);
         return coreCaseDataService.getCoreCaseDataApi().startForCaseworker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
@@ -40,9 +43,9 @@ public class CreateCoreCaseDataService {
             eventRequestData.getEventId());
     }
 
-    private CaseDetails create(EventRequestData eventRequestData, String serviceAuthorization,
-                               CaseDataContent caseDataContent) {
-        log.info("create...");
+    private CaseDetails save(EventRequestData eventRequestData, String serviceAuthorization,
+                             CaseDataContent caseDataContent) {
+        log.info("*** case-loader *** Calling CCD endpoint to save CaseDetails For CaseWorker...");
         return coreCaseDataService.getCoreCaseDataApi().submitForCaseworker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
