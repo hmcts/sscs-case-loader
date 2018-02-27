@@ -5,12 +5,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import java.io.File;
+import java.util.Collections;
 import java.util.Vector;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -108,6 +111,26 @@ public class CaseLoaderServiceTest {
             anyString(),
             anyString())
         ).willReturn(new Authorize("", "", "accessToken"));
+
+
+        given(coreCaseDataApi.searchForCaseworker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any())
+        ).willReturn(Collections.singletonList(CaseDetails.builder().id(1L).build()));
+
+        given(coreCaseDataApi.startEventForCaseWorker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()
+        )).willReturn(StartEventResponse.builder().build());
 
         caseLoaderService.process();
 

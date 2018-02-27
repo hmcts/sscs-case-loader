@@ -92,16 +92,16 @@ public class TransformJsonCasesToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(Collections.singletonList(buildEvent(appealCase)))
+            .events(Collections.singletonList(buildEvent(appealCase.getAppealCaseMajorId())))
             .build();
     }
 
-    private Events buildEvent(AppealCase appealCase) {
-        GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(appealCase.getAppealCaseMajorId());
+    private Events buildEvent(String status) {
+        GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(status);
         Event event = Event.builder()
             .type(gapsEvent.getType())
             .description(gapsEvent.getDescription())
-            //TODO: fix this date
+            // FIXME: 27/02/2018 this date is the most recent date from Major Status.
             .date(LocalDateTime.now().toString())
             .build();
         return Events.builder()

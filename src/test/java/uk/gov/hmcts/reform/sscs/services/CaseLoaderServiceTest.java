@@ -2,7 +2,10 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import com.google.common.collect.ImmutableList;
@@ -21,6 +24,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
@@ -41,14 +45,17 @@ public class CaseLoaderServiceTest {
     @Mock
     private CreateCoreCaseDataService createCoreCaseDataService;
     @Mock
+    private SearchCoreCaseDataService searchCoreCaseDataService;
+    @Mock
     private UpdateCoreCaseDataService updateCoreCaseDataService;
 
     private CaseLoaderService caseLoaderService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         caseLoaderService = new CaseLoaderService(sftpSshService, xmlValidator, transformXmlFilesToJsonFiles,
-            transformJsonCasesToCaseData, createCoreCaseDataService);
+            transformJsonCasesToCaseData, createCoreCaseDataService,
+            searchCoreCaseDataService, updateCoreCaseDataService);
     }
 
     @Test

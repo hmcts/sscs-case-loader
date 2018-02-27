@@ -22,6 +22,8 @@ import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -36,17 +38,23 @@ public class CaseLoaderService {
     private final TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles;
     private final TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     private final CreateCoreCaseDataService createCoreCaseDataService;
+    private final SearchCoreCaseDataService searchCoreCaseDataService;
+    private final UpdateCoreCaseDataService updateCoreCaseDataService;
 
     @Autowired
     public CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator,
                              TransformXmlFilesToJsonFiles transformXmlFilesToJsonFiles,
                              TransformJsonCasesToCaseData transformJsonCasesToCaseData,
-                             CreateCoreCaseDataService createCoreCaseDataService) {
+                             CreateCoreCaseDataService createCoreCaseDataService,
+                             SearchCoreCaseDataService searchCoreCaseDataService,
+                             UpdateCoreCaseDataService updateCoreCaseDataService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformXmlFilesToJsonFiles = transformXmlFilesToJsonFiles;
         this.transformJsonCasesToCaseData = transformJsonCasesToCaseData;
         this.createCoreCaseDataService = createCoreCaseDataService;
+        this.searchCoreCaseDataService = searchCoreCaseDataService;
+        this.updateCoreCaseDataService = updateCoreCaseDataService;
     }
 
     public void process() {
@@ -86,7 +94,12 @@ public class CaseLoaderService {
     private void sendUpdateCcdCases(List<CaseData> caseDataList) {
         caseDataList.forEach(caseData -> {
             log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
-            // TODO: 25/02/2018 call find and update ccd api
+            List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
+            if (cases.get(0) != null) {
+                updateCoreCaseDataService.updateCase(caseData, cases.get(0).getId(), "responseReceived");
+            } else {
+                createCoreCaseDataService.createCcdCase(caseData);
+            }
             log.info("*** case-loader *** Update case into CCD successfully:");
         });
     }
