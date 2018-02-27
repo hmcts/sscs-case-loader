@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes"?>
+<Reference_Tables>
+  <Case_Code>
+    <CASE_CODE_ID>483</CASE_CODE_ID>
+    <CCD_KEY>013RA</CCD_KEY>
+    <CCD_ORALEXMN_TIME>15</CCD_ORALEXMN_TIME>
+    <CCD_PAPEREXMN_TIME>10</CCD_PAPEREXMN_TIME>
+    <CCD_LEGN_DATE>2000-12-15T00:00:00+00:00</CCD_LEGN_DATE>
+    <CCD_PRE_TIME>3</CCD_PRE_TIME>
+    <CCD_POST_TIME>1</CCD_POST_TIME>
+    <BEN_ASSESS_TYPE_ID>34</BEN_ASSESS_TYPE_ID>
+    <ISSUES_ID>18</ISSUES_ID>
+    <SESSION_CATEGORY_ID>8</SESSION_CATEGORY_ID>
+    <OFFICE_TYPE_ID>1</OFFICE_TYPE_ID>
+    <BUSINESS_RULES_GRP_ID>10</BUSINESS_RULES_GRP_ID>
+    <ROW_IS_DELETED>N</ROW_IS_DELETED>
+    <LAST_MODIFIED_DATE>2008-02-08T16:42:00.213+00:00</LAST_MODIFIED_DATE>
+    <LAST_MODIFIED_BY>dbo</LAST_MODIFIED_BY>
+
+    <Schema_Version>
+      <Version xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0.2</Version>
+    </Schema_Version>
+  </Reference_Tables>
