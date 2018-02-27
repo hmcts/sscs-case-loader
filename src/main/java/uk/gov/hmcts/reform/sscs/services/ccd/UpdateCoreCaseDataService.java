@@ -22,7 +22,6 @@ public class UpdateCoreCaseDataService {
     }
 
     public CaseDetails updateCase(CaseData caseData, Long caseId, String eventId) {
-        log.info("updateCase...");
         EventRequestData eventRequestData = coreCaseDataService.getEventRequestData(eventId);
         String serviceAuthorization = coreCaseDataService.generateServiceAuthorization();
         StartEventResponse startEventResponse = start(eventRequestData, serviceAuthorization, caseId);
@@ -31,7 +30,6 @@ public class UpdateCoreCaseDataService {
     }
 
     private StartEventResponse start(EventRequestData eventRequestData, String serviceAuthorization, Long caseId) {
-        log.info("start...");
         return coreCaseDataApi.startEventForCaseWorker(
             eventRequestData.getUserToken(),
             serviceAuthorization,
@@ -45,7 +43,6 @@ public class UpdateCoreCaseDataService {
 
     private CaseDetails submit(EventRequestData eventRequestData, String serviceAuthorization,
                                CaseDataContent caseDataContent, Long caseId) {
-        log.info("submit...");
         return coreCaseDataApi.submitEventForCaseWorker(
             eventRequestData.getUserToken(),
             serviceAuthorization,

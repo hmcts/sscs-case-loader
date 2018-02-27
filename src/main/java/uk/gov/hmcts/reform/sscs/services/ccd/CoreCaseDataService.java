@@ -51,4 +51,8 @@ public class CoreCaseDataService {
         return idamService.generateServiceAuthorization();
     }
 
+    public String getCcdUrl() {
+        return coreCaseDataProperties.getApi().getUrl();
+    }
+
 }
