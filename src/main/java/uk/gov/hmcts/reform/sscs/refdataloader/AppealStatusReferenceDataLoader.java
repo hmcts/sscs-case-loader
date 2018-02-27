@@ -11,19 +11,21 @@ import javax.xml.stream.XMLStreamReader;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.exceptions.Gaps2ReferenceDataNotFoundException;
 import uk.gov.hmcts.reform.sscs.models.refdata.AppealStatus;
 
 @Service
 @Slf4j
 public class AppealStatusReferenceDataLoader {
 
-    public static final String APPEAL_STATUS = "Appeal_Status";
-    public static final String APPEAL_STATUS_ID = "APPEAL_STATUS_ID";
-    public static final String APS_MINOR = "APS_MINOR";
-    public static final String APS_BF_DAYS = "APS_BF_DAYS";
-    public static final String APS_DESC = "APS_DESC";
-    public static final String APS_DORMANT = "APS_DORMANT";
-    public static final String APS_SEARCH = "APS_SEARCH";
+    private static final String APPEAL_STATUS = "Appeal_Status";
+    private static final String APPEAL_STATUS_ID = "APPEAL_STATUS_ID";
+    private static final String APS_MINOR = "APS_MINOR";
+    private static final String APS_BF_DAYS = "APS_BF_DAYS";
+    private static final String APS_DESC = "APS_DESC";
+    private static final String APS_DORMANT = "APS_DORMANT";
+    private static final String APS_SEARCH = "APS_SEARCH";
+    private static final String DATA_NOT_FOUND_EXCEPTION = "No AppealStatus found for ID = ";
 
     private final Map<Integer, AppealStatus> appealStatusMap = new HashMap<>();
 
@@ -102,7 +104,11 @@ public class AppealStatusReferenceDataLoader {
     }
 
     public AppealStatus getAppealStatusById(Integer id) {
-        return appealStatusMap.get(id);
+        if (appealStatusMap.containsKey(id)) {
+            return appealStatusMap.get(id);
+        } else {
+            throw new Gaps2ReferenceDataNotFoundException(DATA_NOT_FOUND_EXCEPTION + id);
+        }
     }
 
 }
