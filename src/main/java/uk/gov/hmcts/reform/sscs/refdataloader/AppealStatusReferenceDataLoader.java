@@ -57,31 +57,7 @@ public class AppealStatusReferenceDataLoader {
                         break;
 
                     case XMLStreamConstants.END_ELEMENT:
-                        switch (reader.getLocalName()) {
-                            case APPEAL_STATUS:
-                                appealStatusMap.put(appealStatus.getAppealStatusId(), appealStatus);
-                                break;
-                            case APPEAL_STATUS_ID:
-                                appealStatus.setAppealStatusId(Integer.parseInt(tagContent));
-                                break;
-                            case APS_MINOR:
-                                appealStatus.setApsMinor(Integer.parseInt(tagContent));
-                                break;
-                            case APS_BF_DAYS:
-                                appealStatus.setApsBfDays(Integer.parseInt(tagContent));
-                                break;
-                            case APS_DESC:
-                                appealStatus.setApsDesc(tagContent);
-                                break;
-                            case APS_DORMANT:
-                                appealStatus.setApsDormant(tagContent);
-                                break;
-                            case APS_SEARCH:
-                                appealStatus.setApsSearch(tagContent);
-                                break;
-                            default:
-                                break;
-                        }
+                        populateAppealStatus(appealStatus, tagContent, reader);
                         break;
                     default:
                         break;
@@ -92,6 +68,36 @@ public class AppealStatusReferenceDataLoader {
         } catch (XMLStreamException e) {
             log.error("Error in processing Gaps2 Appeal Status reference data", e);
             throw e;
+        }
+    }
+
+    private void populateAppealStatus(AppealStatus appealStatus, String tagContent, XMLStreamReader reader) {
+        if (null != appealStatus) {
+            switch (reader.getLocalName()) {
+                case APPEAL_STATUS:
+                    appealStatusMap.put(appealStatus.getAppealStatusId(), appealStatus);
+                    break;
+                case APPEAL_STATUS_ID:
+                    appealStatus.setAppealStatusId(Integer.parseInt(tagContent));
+                    break;
+                case APS_MINOR:
+                    appealStatus.setApsMinor(Integer.parseInt(tagContent));
+                    break;
+                case APS_BF_DAYS:
+                    appealStatus.setApsBfDays(Integer.parseInt(tagContent));
+                    break;
+                case APS_DESC:
+                    appealStatus.setApsDesc(tagContent);
+                    break;
+                case APS_DORMANT:
+                    appealStatus.setApsDormant(tagContent);
+                    break;
+                case APS_SEARCH:
+                    appealStatus.setApsSearch(tagContent);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
