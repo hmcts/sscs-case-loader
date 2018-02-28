@@ -54,6 +54,13 @@
     "events": [
       {
         "value": {
+          "date": "2017-05-24T13:55:06.603",
+          "type": "hearingPostponed",
+          "description": "Hearing postponed"
+        }
+      },
+      {
+        "value": {
           "date": "2017-05-24T13:54:06.637",
           "type": "hearingBooked",
           "description": "Hearing booked"
