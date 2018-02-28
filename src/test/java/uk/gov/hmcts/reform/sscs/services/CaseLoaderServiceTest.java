@@ -3,10 +3,8 @@ package uk.gov.hmcts.reform.sscs.services;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -64,8 +62,7 @@ public class CaseLoaderServiceTest {
         doNothing().when(xmlValidator).validateXml(anyString(), anyString());
         when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
         List<CaseData> caseDataList = Collections.singletonList(CaseData.builder().build());
-        when(transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(anyString(),
-            eq(APPEAL_RECEIVED.getStatus()))).thenReturn(caseDataList);
+        when(transformJsonCasesToCaseData.transformCreateCases(anyString())).thenReturn(caseDataList);
         when(createCoreCaseDataService.createCcdCase(any(CaseData.class)))
             .thenReturn(CaseDetails.builder().build());
         caseLoaderService.process();

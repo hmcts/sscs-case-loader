@@ -12,12 +12,12 @@
           "postcode": "L17 7AE"
         },
         "contact": {
-          "email": "mail@email.com",
-          "phone": "01234567890",
-          "mobile": "01234567890"
+          "email": null,
+          "phone": null,
+          "mobile": null
         },
         "identity": {
-          "dob": "2004-12-14",
+          "dob": "",
           "nino": "AB 22 55 66 B"
         }
       },
@@ -79,6 +79,50 @@
       }, {
         "value": {
           "date": "2017-05-23T13:27:09.613",
+          "type": "appealReceived",
+          "description": "Appeal received"
+        }
+      }
+    ]
+  },
+  {
+    "caseReference": "SC068/17/00003",
+    "appeal": {
+      "appellant": {
+        "name": {
+          "title": "Mr.",
+          "firstName": "M",
+          "lastName": "Mango"
+        },
+        "address": {
+          "postcode": "L3 6AB"
+        },
+        "contact": {
+          "email": null,
+          "phone": null,
+          "mobile": null
+        },
+        "identity": {
+          "dob": "",
+          "nino": "AC 45 89 36 B"
+        }
+      },
+      "benefitType": {
+        "code": "1667"
+      },
+      "hearingOptions": {
+        "other": "No"
+      }
+    },
+    "hearings": [],
+    "evidence": {
+      "documents": []
+    },
+    "dwpTimeExtension": [],
+    "events": [
+      {
+        "value": {
+          "date": "2017-05-23T10:55:50.503",
           "type": "appealReceived",
           "description": "Appeal received"
         }
