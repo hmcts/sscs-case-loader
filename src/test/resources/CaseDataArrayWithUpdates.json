@@ -36,7 +36,7 @@
           },
           "hearingDate": "2017-05-24",
           "time": "11:00",
-          "adjourned": "No"
+          "adjourned": "Yes"
         }
       }
     ],
@@ -52,6 +52,13 @@
       }
     ],
     "events": [
+      {
+        "value": {
+          "date": "2017-05-24T13:56:06.603",
+          "type": "hearingAdjourned",
+          "description": "Hearing adjourned"
+        }
+      },
       {
         "value": {
           "date": "2017-05-24T13:55:06.603",
