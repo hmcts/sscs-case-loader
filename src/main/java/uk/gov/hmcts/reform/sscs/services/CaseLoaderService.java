@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -61,8 +58,8 @@ public class CaseLoaderService {
         log.info("*** case-loader *** Reading xml files from SFTP...");
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
-        List<CaseData> appealReceivedCases = new ArrayList<>();
-        List<CaseData> responseReceivedCases = new ArrayList<>();
+        List<CaseData> casesToCreate = new ArrayList<>();
+        List<CaseData> casesToUpdate = new ArrayList<>();
         for (GapsInputStream gapsInputStream : inputStreamList) {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
@@ -71,16 +68,14 @@ public class CaseLoaderService {
             if ("Delta".equals(type)) {
                 JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
                 log.info("*** case-loader *** Transform XML to JSON successfully");
-                appealReceivedCases = transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(
-                    jsonCases.toString(), APPEAL_RECEIVED.getStatus());
-                log.info("*** case-loader *** Transform Appeal Received cases to CaseData successfully");
-                responseReceivedCases = transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(
-                    jsonCases.toString(), RESPONSE_RECEIVED.getStatus());
-                log.info("*** case-loader *** Transform Response Received cases to CaseData successfully");
+                casesToCreate = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
+                log.info("*** case-loader *** Transform json to cases to create successfully");
+                casesToUpdate = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
+                log.info("*** case-loader *** Transform json to cases to update successfully");
             }
         }
-        sendCreateCcdCases(appealReceivedCases);
-        sendUpdateCcdCases(responseReceivedCases);
+        sendCreateCcdCases(casesToCreate);
+        sendUpdateCcdCases(casesToUpdate);
     }
 
     private void sendCreateCcdCases(List<CaseData> caseDataList) {

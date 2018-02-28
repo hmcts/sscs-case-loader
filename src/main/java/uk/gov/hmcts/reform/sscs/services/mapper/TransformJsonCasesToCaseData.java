@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.ZonedDateTime;
@@ -7,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
@@ -44,16 +47,30 @@ public class TransformJsonCasesToCaseData {
     private static final String NO = "No";
     private static final String Y = "Y";
 
-    public List<CaseData> transformCasesOfGivenStatusIntoCaseData(String json, String status) {
+    public List<CaseData> transformCreateCases(String json) {
         List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
-        return filterCasesByStatusAndTransformThemIntoCaseData(appealCases, status);
+        return findCasesToCreate(appealCases);
     }
 
-    private List<CaseData> filterCasesByStatusAndTransformThemIntoCaseData(List<AppealCase> appealCaseList,
-                                                                           String status) {
+    public List<CaseData> transformUpdateCases(String json) {
+        List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
+        return findCasesToUpdate(appealCases);
+    }
+
+    private List<CaseData> findCasesToCreate(List<AppealCase> appealCaseList) {
         return appealCaseList.stream()
-            .filter(appealCase -> appealCase.getAppealCaseMajorId().equals(status))
+            .filter(this::isAwaitResponse)
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+    }
+
+    private List<CaseData> findCasesToUpdate(List<AppealCase> appealCaseList) {
+        return appealCaseList.stream()
+            .filter(((Predicate<AppealCase>) this::isAwaitResponse).negate())
+            .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
+    }
+
+    private boolean isAwaitResponse(AppealCase appealCase) {
+        return appealCase.getAppealCaseMajorId().equals(APPEAL_RECEIVED.getStatus());
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {

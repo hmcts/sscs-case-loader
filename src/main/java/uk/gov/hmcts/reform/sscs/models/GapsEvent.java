@@ -3,7 +3,8 @@ package uk.gov.hmcts.reform.sscs.models;
 public enum GapsEvent {
 
     APPEAL_RECEIVED("appealReceived", "Appeal received", "3"),
-    RESPONSE_RECEIVED("responseReceived", "Response received", "18");
+    RESPONSE_RECEIVED("responseReceived", "Response received", "18"),
+    HEARING_BOOKED("hearingBooked", "Hearing booked", "24");
 
     private String type;
     private String description;

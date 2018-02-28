@@ -4,7 +4,6 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,14 +51,33 @@ public class TransformJsonCasesToCaseDataTest {
         "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19_With_Optional_Fields.json, "
             + "src/test/resources/CaseDataArrayWithOptionalFields.json"
     })
-    public void givenJsonCases_shouldBeMappedIntoCaseData(String jsonCasesPath, String expectedCaseDataPath)
+    public void givenJsonCases_shouldBeMappedIntoCreateCaseData(String jsonCasesPath, String expectedCaseDataPath)
         throws IOException {
         // Given
         String jsonCases = FileUtils.readFileToString(new File(jsonCasesPath), StandardCharsets.UTF_8.name());
 
         // When
-        List<CaseData> caseDataList = transformJsonCasesToCaseData
-            .transformCasesOfGivenStatusIntoCaseData(jsonCases, APPEAL_RECEIVED.getStatus());
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases);
+
+        // Should
+        String expectedCaseDataString = FileUtils.readFileToString(new File(expectedCaseDataPath),
+            StandardCharsets.UTF_8.name());
+
+        assertJsonEquals(expectedCaseDataString, caseDataList);
+    }
+
+    @Test
+    public void givenJsonCases_shouldBeMappedIntoUpdateCaseData()
+        throws IOException {
+
+        String jsonCasesPath = "src/test/resources/SSCS_Extract_Delta_2017-05-25-08-24-12_With_Update_Snapshot.json";
+        String expectedCaseDataPath = "src/test/resources/CaseDataArrayWithUpdates.json";
+
+        // Given
+        String jsonCases = FileUtils.readFileToString(new File(jsonCasesPath), StandardCharsets.UTF_8.name());
+
+        // When
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transformUpdateCases(jsonCases);
 
         // Should
         String expectedCaseDataString = FileUtils.readFileToString(new File(expectedCaseDataPath),
@@ -72,29 +90,36 @@ public class TransformJsonCasesToCaseDataTest {
     public void givenTheMapperReaderFails_shouldThrowAnException() throws Exception {
         String invalidFileName = "src/test/resources/SSCS_ExtractInvalid_Delta_2017-06-30-09-25-56.xml";
         String jsonCases = FileUtils.readFileToString(new File(invalidFileName), StandardCharsets.UTF_8.name());
-        transformJsonCasesToCaseData.transformCasesOfGivenStatusIntoCaseData(jsonCases, APPEAL_RECEIVED.getStatus());
+        transformJsonCasesToCaseData.transformCreateCases(jsonCases);
     }
 
     @Test
-    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusEqual3() throws Exception {
+    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusEqualTo3() throws Exception {
         //Given
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
         List<CaseData> caseDataList = transformJsonCasesToCaseData
-            .transformCasesOfGivenStatusIntoCaseData(jsonCases, APPEAL_RECEIVED.getStatus());
+            .transformCreateCases(jsonCases);
         //Should
         int expectedNumberOfCasesWithStatusEqual3 = 2;
         assertTrue(caseDataList.size() == expectedNumberOfCasesWithStatusEqual3);
+        Events event = caseDataList.get(0).getEvents().get(0);
+        assertEquals("appealReceived", event.getValue().getType());
+        eventDateShouldIncludeTheTimeAsWell(event);
     }
 
     @Test
-    public void givenJsonCasesAreTransformedToCaseData_shouldIncludeTheEventsJsonField() throws Exception {
-        // Given
+    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusNotEqualTo3() throws Exception {
+        //Given
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
         List<CaseData> caseDataList = transformJsonCasesToCaseData
-            .transformCasesOfGivenStatusIntoCaseData(jsonCases, APPEAL_RECEIVED.getStatus());
+            .transformUpdateCases(jsonCases);
+
+
         //Should
+        int expectedNumberOfCasesWithStatusNotEqual3 = 14;
+        assertTrue(caseDataList.size() == expectedNumberOfCasesWithStatusNotEqual3);
         Events event = caseDataList.get(0).getEvents().get(0);
-        assertEquals("appealReceived", event.getValue().getType());
+        assertEquals("hearingBooked", event.getValue().getType());
         eventDateShouldIncludeTheTimeAsWell(event);
     }
 
