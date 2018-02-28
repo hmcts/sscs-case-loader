@@ -84,6 +84,12 @@
           "type": "appealReceived",
           "description": "Appeal received"
         }
+      },{
+        "value": {
+          "date": "${json-unit.ignore}",
+          "type": "appealReceived",
+          "description": "Appeal received"
+        }
       }
     ]
   }

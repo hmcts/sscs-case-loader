@@ -55,6 +55,18 @@
       {
         "value": {
           "date": "${json-unit.ignore}",
+          "type": "responseReceived",
+          "description": "Response received"
+        }
+      }, {
+        "value": {
+          "date": "${json-unit.ignore}",
+          "type": "responseReceived",
+          "description": "Response received"
+        }
+      }, {
+        "value": {
+          "date": "${json-unit.ignore}",
           "type": "appealReceived",
           "description": "Appeal received"
         }
