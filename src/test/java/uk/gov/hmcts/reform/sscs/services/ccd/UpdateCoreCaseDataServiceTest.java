@@ -38,7 +38,7 @@ public class UpdateCoreCaseDataServiceTest {
     }
 
     @Test
-    public void givenACase_shouldBeUpdatedItIntoCcd() {
+    public void givenACase_shouldBeUpdatedInCcd() {
         //Given
         mockStartEventResponse();
         mockCaseDetails();

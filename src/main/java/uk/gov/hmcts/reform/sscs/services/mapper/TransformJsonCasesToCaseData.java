@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -92,21 +91,29 @@ public class TransformJsonCasesToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(Collections.singletonList(buildEvent(appealCase.getAppealCaseMajorId())))
+            .events(buildEvent(appealCase))
             .build();
     }
 
-    private Events buildEvent(String status) {
-        GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(status);
-        Event event = Event.builder()
-            .type(gapsEvent.getType())
-            .description(gapsEvent.getDescription())
-            // FIXME: 27/02/2018 this date is the most recent date from Major Status.
-            .date(LocalDateTime.now().toString())
-            .build();
-        return Events.builder()
-            .value(event)
-            .build();
+    private List<Events> buildEvent(AppealCase appealCase) {
+
+        List<Events> events = new ArrayList<>();
+        for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
+            GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
+            if (gapsEvent != null) {
+                Event event = Event.builder()
+                    .type(gapsEvent.getType())
+                    .description(gapsEvent.getDescription())
+                    .date(majorStatus.getDateSet().toLocalDateTime().toString())
+                    .build();
+
+                events.add(Events.builder()
+                    .value(event)
+                    .build());
+            }
+        }
+        Collections.sort(events, Collections.reverseOrder());
+        return events;
     }
 
     private Identity getIdentity(AppealCase appealCase) {

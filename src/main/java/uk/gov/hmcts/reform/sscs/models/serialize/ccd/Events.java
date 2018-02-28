@@ -5,6 +5,12 @@ import lombok.Value;
 
 @Value
 @Builder
-public class Events {
+public class Events implements Comparable<Events> {
     Event value;
+
+    @Override
+    public int compareTo(Events o) {
+        return value.getDate().compareTo(o.getValue().getDate());
+    }
+
 }
