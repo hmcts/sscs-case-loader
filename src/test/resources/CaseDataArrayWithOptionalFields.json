@@ -54,19 +54,19 @@
     "events": [
       {
         "value": {
-          "date": "${json-unit.ignore}",
+          "date": "2017-05-24T13:51:15.877",
           "type": "responseReceived",
           "description": "Response received"
         }
       }, {
         "value": {
-          "date": "${json-unit.ignore}",
+          "date": "2017-05-23T14:15:25.150",
           "type": "responseReceived",
           "description": "Response received"
         }
       }, {
         "value": {
-          "date": "${json-unit.ignore}",
+          "date": "2017-05-23T13:27:09.613",
           "type": "appealReceived",
           "description": "Appeal received"
         }

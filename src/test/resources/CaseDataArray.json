@@ -36,7 +36,7 @@
     "events": [
       {
         "value": {
-          "date": "${json-unit.ignore}",
+          "date": "2017-05-24T12:46:09.070",
           "type": "appealReceived",
           "description": "Appeal received"
         }
@@ -80,13 +80,13 @@
     "events": [
       {
         "value": {
-          "date": "${json-unit.ignore}",
+          "date": "2017-05-24T13:00:42.233",
           "type": "appealReceived",
           "description": "Appeal received"
         }
       },{
         "value": {
-          "date": "${json-unit.ignore}",
+          "date": "2017-05-23T12:01:47.620",
           "type": "appealReceived",
           "description": "Appeal received"
         }
