@@ -1,8 +1,15 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -10,13 +17,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
@@ -31,7 +40,7 @@ import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class CaseLoaderServiceTest {
 
     @Mock
@@ -53,6 +62,7 @@ public class CaseLoaderServiceTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         caseLoaderService = new CaseLoaderService(sftpSshService, xmlValidator, transformXmlFilesToJsonFiles,
             transformJsonCasesToCaseData, createCoreCaseDataService,
             searchCoreCaseDataService, updateCoreCaseDataService);
@@ -71,83 +81,15 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void givenFileWithAppealReceivedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(APPEAL_RECEIVED);
+    @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
+        "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
+    public void givenFileWithAppealReceivedUpdate_shouldUpdateCcdCorrectly(GapsEvent gapsEvent) throws IOException {
+        setupUpdateCaseMocks(gapsEvent);
 
         caseLoaderService.process();
 
         verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_RECEIVED.getType()));
-    }
-
-    @Test
-    public void givenFileWithResponseReceivedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(RESPONSE_RECEIVED);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(RESPONSE_RECEIVED.getType()));
-    }
-
-    @Test
-    public void givenFileWithHearingBookedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(HEARING_BOOKED);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_BOOKED.getType()));
-    }
-
-    @Test
-    public void givenFileWithHearingPostponedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(HEARING_POSTPONED);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_POSTPONED.getType()));
-    }
-
-    @Test
-    public void givenFileWithAppealLapsedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(APPEAL_LAPSED);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_LAPSED.getType()));
-    }
-
-    @Test
-    public void givenFileWithAppealWithdrawnUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(APPEAL_WITHDRAWN);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_WITHDRAWN.getType()));
-    }
-
-    @Test
-    public void givenFileWithHearingAdjournedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(HEARING_ADJOURNED);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_ADJOURNED.getType()));
-    }
-
-    @Test
-    public void givenFileWithAppealDormantUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(APPEAL_DORMANT);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_DORMANT.getType()));
+            .updateCase(any(CaseData.class), anyLong(), eq(gapsEvent.getType()));
     }
 
     @Test

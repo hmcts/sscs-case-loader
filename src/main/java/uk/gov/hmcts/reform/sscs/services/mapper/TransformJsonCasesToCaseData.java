@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
@@ -65,7 +64,7 @@ public class TransformJsonCasesToCaseData {
 
     private List<CaseData> findCasesToUpdate(List<AppealCase> appealCaseList) {
         return appealCaseList.stream()
-            .filter(((Predicate<AppealCase>) this::isAwaitResponse).negate())
+            .filter(appealCase -> !isAwaitResponse(appealCase))
             .map(this::fromAppealCaseToCaseData).collect(Collectors.toList());
     }
 
