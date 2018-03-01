@@ -54,6 +54,13 @@
     "events": [
       {
         "value": {
+          "date": "2017-05-24T13:57:06.603",
+          "type": "hearingLapsed",
+          "description": "Hearing lapsed"
+        }
+      },
+      {
+        "value": {
           "date": "2017-05-24T13:56:06.603",
           "type": "hearingAdjourned",
           "description": "Hearing adjourned"
