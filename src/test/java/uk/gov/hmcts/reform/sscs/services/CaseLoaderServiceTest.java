@@ -111,13 +111,13 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void givenFileWithHearingLapsedUpdate_shouldUpdateCcdCorrectly() throws IOException {
-        setupUpdateCaseMocks(HEARING_LAPSED);
+    public void givenFileWithAppealLapsedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(APPEAL_LAPSED);
 
         caseLoaderService.process();
 
         verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_LAPSED.getType()));
+            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_LAPSED.getType()));
     }
 
     @Test
