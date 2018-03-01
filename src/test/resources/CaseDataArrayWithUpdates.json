@@ -36,7 +36,7 @@
           },
           "hearingDate": "2017-05-24",
           "time": "11:00",
-          "adjourned": "No"
+          "adjourned": "Yes"
         }
       }
     ],
@@ -52,6 +52,41 @@
       }
     ],
     "events": [
+      {
+        "value": {
+          "date": "2017-05-24T14:01:18.243",
+          "type": "appealDormant",
+          "description": "Appeal dormant"
+        }
+      },
+      {
+        "value": {
+          "date": "2017-05-24T13:58:06.603",
+          "type": "appealWithdrawn",
+          "description": "Appeal withdrawn"
+        }
+      },
+      {
+        "value": {
+          "date": "2017-05-24T13:57:06.603",
+          "type": "hearingLapsed",
+          "description": "Hearing lapsed"
+        }
+      },
+      {
+        "value": {
+          "date": "2017-05-24T13:56:06.603",
+          "type": "hearingAdjourned",
+          "description": "Hearing adjourned"
+        }
+      },
+      {
+        "value": {
+          "date": "2017-05-24T13:55:06.603",
+          "type": "hearingPostponed",
+          "description": "Hearing postponed"
+        }
+      },
       {
         "value": {
           "date": "2017-05-24T13:54:06.637",
@@ -120,6 +155,13 @@
     },
     "dwpTimeExtension": [],
     "events": [
+      {
+        "value": {
+          "date": "2017-05-24T12:28:16.090",
+          "type": "appealWithdrawn",
+          "description": "Appeal withdrawn"
+        }
+      },
       {
         "value": {
           "date": "2017-05-23T10:55:50.503",
