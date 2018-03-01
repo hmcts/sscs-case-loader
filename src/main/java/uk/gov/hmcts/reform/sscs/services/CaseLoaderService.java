@@ -94,9 +94,12 @@ public class CaseLoaderService {
             log.info("*** case-loader *** Found cases with caseRef: {} in CCD: {}", caseData.getCaseReference(),
                 printCaseDetailsInJson(cases));
             if (!cases.isEmpty()) {
-                caseDetails = updateCoreCaseDataService.updateCase(caseData, cases.get(0).getId(),
-                    "responseReceived");
-                log.info("*** case-loader *** Update case into CCD successfully: {}", caseDetails);
+                String latestEventType = caseData.getLatestEventType();
+                if (latestEventType != null) {
+                    caseDetails = updateCoreCaseDataService.updateCase(caseData, cases.get(0).getId(),
+                        caseData.getLatestEventType());
+                    log.info("*** case-loader *** Update case into CCD successfully: {}", caseDetails);
+                }
             } else {
                 caseDetails = createCoreCaseDataService.createCcdCase(caseData);
                 log.info("*** case-loader *** Save case into CCD successfully: {}",
