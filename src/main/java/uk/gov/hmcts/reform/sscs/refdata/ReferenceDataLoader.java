@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.refdataloader;
+package uk.gov.hmcts.reform.sscs.refdata;
 
 import com.opencsv.CSVReader;
 

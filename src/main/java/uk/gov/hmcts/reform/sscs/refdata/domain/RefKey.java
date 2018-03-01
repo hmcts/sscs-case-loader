@@ -1,0 +1,23 @@
+package uk.gov.hmcts.reform.sscs.refdata.domain;
+
+public enum RefKey {
+    APPEAL_STATUS,
+    CASE_CODE,
+    BUSINESS_RULES_GROUP,
+    TRIBUNAL,
+    TRIBUNAL_TYPE,
+    OFFICE,
+    BEN_ASSESS_TYPE,
+    ADMIN_TEAM,
+    VENUE,
+    DISTRICT,
+    ITS_CENTRE,
+    PTTP_ROLE,
+    SEPARATE_CORRESPONDENCE,
+    LANGUAGE_TYPE,
+    FUR_EVID_TYPE,
+    HEARING_OUTCOME,
+    POSTPONE_REASON,
+    SCHEMA_VERSION;
+
+}
