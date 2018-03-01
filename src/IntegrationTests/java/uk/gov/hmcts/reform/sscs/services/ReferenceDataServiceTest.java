@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.refdataloader.ReferenceDataLoader;
+import uk.gov.hmcts.reform.sscs.refdata.ReferenceDataLoader;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @RunWith(SpringRunner.class)
@@ -29,7 +29,7 @@ public class ReferenceDataServiceTest {
     }
 
     @Test
-    public void givenVenueId_shouldReturnVenueDetails() {
+    public void givenVenueIdShouldReturnVenueDetails() {
         VenueDetails venueDetails = VenueDetails.builder()
             .venueId("2")
             .threeDigitReference("SC028")
@@ -53,7 +53,7 @@ public class ReferenceDataServiceTest {
     }
 
     @Test
-    public void givenDifferentVenueIds_shouldReturnExpectedResponse() {
+    public void givenDifferentVenueIdsShouldReturnExpectedResponse() {
         assertNull(referenceDataService.getVenueDetails("xxxxx"));
         assertNull(referenceDataService.getVenueDetails(""));
         assertNull(referenceDataService.getVenueDetails(null));

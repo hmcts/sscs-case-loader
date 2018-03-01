@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.refdataloader.ReferenceDataLoader;
+import uk.gov.hmcts.reform.sscs.refdata.ReferenceDataLoader;
 
 @Service
 public class ReferenceDataService {
