@@ -1,14 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.*;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
@@ -19,8 +18,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
@@ -68,6 +70,109 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
     }
 
+    @Test
+    public void givenFileWithAppealReceivedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(APPEAL_RECEIVED);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_RECEIVED.getType()));
+    }
+
+    @Test
+    public void givenFileWithResponseReceivedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(RESPONSE_RECEIVED);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(RESPONSE_RECEIVED.getType()));
+    }
+
+    @Test
+    public void givenFileWithHearingBookedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(HEARING_BOOKED);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_BOOKED.getType()));
+    }
+
+    @Test
+    public void givenFileWithHearingPostponedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(HEARING_POSTPONED);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_POSTPONED.getType()));
+    }
+
+    @Test
+    public void givenFileWithHearingLapsedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(HEARING_LAPSED);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_LAPSED.getType()));
+    }
+
+    @Test
+    public void givenFileWithAppealWithdrawnUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(APPEAL_WITHDRAWN);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_WITHDRAWN.getType()));
+    }
+
+    @Test
+    public void givenFileWithHearingAdjournedUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(HEARING_ADJOURNED);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(HEARING_ADJOURNED.getType()));
+    }
+
+    @Test
+    public void givenFileWithAppealDormantUpdate_shouldUpdateCcdCorrectly() throws IOException {
+        setupUpdateCaseMocks(APPEAL_DORMANT);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq(APPEAL_DORMANT.getType()));
+    }
+
+    @Test
+    public void givenLatestEventIsNull_shouldNotUpdateCcd() throws IOException {
+        when(sftpSshService.readExtractFiles()).thenReturn(buildGapsInputStreams());
+        doNothing().when(xmlValidator).validateXml(anyString(), anyString());
+        when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
+
+        CaseData caseData = CaseData.builder().build();
+
+        List<CaseData> caseDataList = Collections.singletonList(caseData);
+        when(transformJsonCasesToCaseData.transformUpdateCases(anyString())).thenReturn(caseDataList);
+
+        CaseDetails caseDetails = CaseDetails.builder().build();
+        List<CaseDetails> caseDetailsList = new ArrayList<>();
+        caseDetailsList.add(caseDetails);
+
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString())).thenReturn(caseDetailsList);
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(0))
+            .updateCase(any(CaseData.class), anyLong(), anyString());
+    }
+
     private List<GapsInputStream> buildGapsInputStreams() throws IOException {
         GapsInputStream refStream = GapsInputStream.builder()
             .isDelta(false)
@@ -80,5 +185,49 @@ public class CaseLoaderServiceTest {
             .inputStream(IOUtils.toInputStream("Delta", StandardCharsets.UTF_8.name()))
             .build();
         return ImmutableList.of(refStream, deltaStream);
+    }
+
+    private void setupUpdateCaseMocks(GapsEvent event) throws IOException {
+        when(sftpSshService.readExtractFiles()).thenReturn(buildGapsInputStreams());
+        doNothing().when(xmlValidator).validateXml(anyString(), anyString());
+        when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
+
+        CaseData caseData = buildUpdateCaseData(event);
+
+        List<CaseData> caseDataList = Collections.singletonList(caseData);
+        when(transformJsonCasesToCaseData.transformUpdateCases(anyString())).thenReturn(caseDataList);
+
+        CaseDetails caseDetails = CaseDetails.builder().build();
+        List<CaseDetails> caseDetailsList = new ArrayList<>();
+        caseDetailsList.add(caseDetails);
+
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString())).thenReturn(caseDetailsList);
+
+        doReturn(caseDetails)
+            .when(updateCoreCaseDataService).updateCase(any(CaseData.class), anyLong(), eq(event.getType()));
+    }
+
+    private CaseData buildUpdateCaseData(GapsEvent event) {
+        Event appealCreatedEvent = Event.builder()
+            .type("appealCreated")
+            .description("Appeal Created")
+            .date("2018-01-14T21:59:43.10-05:00")
+            .build();
+
+        Event updateEvent = Event.builder()
+            .type(event.getType())
+            .description(event.getDescription())
+            .date("2018-01-15T21:59:43.10-05:00")
+            .build();
+
+        List<Events> events = new ArrayList<>();
+
+        events.add(Events.builder().value(appealCreatedEvent).build());
+        events.add(Events.builder().value(updateEvent).build());
+
+        Collections.sort(events, Collections.reverseOrder());
+
+        return CaseData.builder().events(events).build();
+
     }
 }
