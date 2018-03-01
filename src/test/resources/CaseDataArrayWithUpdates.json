@@ -54,6 +54,13 @@
     "events": [
       {
         "value": {
+          "date": "2017-05-24T14:01:18.243",
+          "type": "appealDormant",
+          "description": "Appeal dormant"
+        }
+      },
+      {
+        "value": {
           "date": "2017-05-24T13:58:06.603",
           "type": "appealWithdrawn",
           "description": "Appeal withdrawn"

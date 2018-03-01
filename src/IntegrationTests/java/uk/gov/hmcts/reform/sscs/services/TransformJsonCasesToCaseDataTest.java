@@ -114,12 +114,11 @@ public class TransformJsonCasesToCaseDataTest {
         List<CaseData> caseDataList = transformJsonCasesToCaseData
             .transformUpdateCases(jsonCases);
 
-
         //Should
         int expectedNumberOfCasesWithStatusNotEqual3 = 14;
         assertTrue(caseDataList.size() == expectedNumberOfCasesWithStatusNotEqual3);
         Events event = caseDataList.get(0).getEvents().get(0);
-        assertEquals("hearingBooked", event.getValue().getType());
+        assertEquals("appealDormant", event.getValue().getType());
         eventDateShouldIncludeTheTimeAsWell(event);
     }
 
