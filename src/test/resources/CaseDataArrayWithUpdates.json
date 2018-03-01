@@ -54,6 +54,13 @@
     "events": [
       {
         "value": {
+          "date": "2017-05-24T13:58:06.603",
+          "type": "appealWithdrawn",
+          "description": "Appeal withdrawn"
+        }
+      },
+      {
+        "value": {
           "date": "2017-05-24T13:57:06.603",
           "type": "hearingLapsed",
           "description": "Hearing lapsed"
@@ -141,6 +148,13 @@
     },
     "dwpTimeExtension": [],
     "events": [
+      {
+        "value": {
+          "date": "2017-05-24T12:28:16.090",
+          "type": "appealWithdrawn",
+          "description": "Appeal withdrawn"
+        }
+      },
       {
         "value": {
           "date": "2017-05-23T10:55:50.503",

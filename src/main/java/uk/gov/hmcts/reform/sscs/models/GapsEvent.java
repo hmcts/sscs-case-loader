@@ -7,6 +7,7 @@ public enum GapsEvent {
     HEARING_BOOKED("hearingBooked", "Hearing booked", "24"),
     HEARING_POSTPONED("hearingPostponed", "Hearing postponed", "27"),
     HEARING_LAPSED("hearingLapsed", "Hearing lapsed", "56"),
+    APPEAL_WITHDRAWN("appealWithdrawn", "Appeal withdrawn", "58"),
     HEARING_ADJOURNED("hearingAdjourned", "Hearing adjourned", "92");
 
     private String type;
