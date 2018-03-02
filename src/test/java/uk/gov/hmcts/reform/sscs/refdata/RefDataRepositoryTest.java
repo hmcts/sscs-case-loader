@@ -8,6 +8,8 @@ import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.CASE_CODE_ID;
 
 import org.junit.Before;
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.refdata.domain.RefKey;
+import uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField;
 
 public class RefDataRepositoryTest {
 
@@ -20,8 +22,8 @@ public class RefDataRepositoryTest {
 
     @Test
     public void shouldReturnValueGivenKey() {
-        repo.add("CASE_CODE", "CASE_CODE_ID", "A");
-        repo.add("ADMIN_TEAM", "CASE_CODE_ID", "B");
+        repo.add(RefKey.CASE_CODE, RefKeyField.CASE_CODE_ID, "A");
+        repo.add(RefKey.ADMIN_TEAM, RefKeyField.CASE_CODE_ID, "B");
 
         assertThat(repo.find(CASE_CODE, CASE_CODE_ID), is("A"));
         assertThat(repo.find(ADMIN_TEAM, CASE_CODE_ID), is("B"));
