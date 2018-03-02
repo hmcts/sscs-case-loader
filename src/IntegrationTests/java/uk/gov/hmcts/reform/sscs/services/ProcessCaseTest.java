@@ -13,8 +13,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Vector;
+import java.util.*;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,10 +35,10 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CaseLoaderServiceTest {
+public class ProcessCaseTest {
 
     private static final int EXPECTED_NUMBER_OF_CASES_TO_CREATE_IN_CCD = 2;
-    private static final int EXPECTED_NUMBER_OF_CASES_TO_UPDATE_IN_CCD = 14;
+    private static final int EXPECTED_NUMBER_OF_CASES_TO_UPDATE_IN_CCD = 16;
     private static final String DELTA_XML = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
 
     @MockBean
@@ -73,6 +72,11 @@ public class CaseLoaderServiceTest {
             anyString())
         ).willReturn(StartEventResponse.builder().build());
 
+        Map<String, Object> caseDataMap = new HashMap<>(1);
+        Map<String, Object> evidenceMap = new LinkedHashMap<>();
+        evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
+        caseDataMap.put("evidence", evidenceMap);
+
         given(coreCaseDataApi.submitForCaseworker(
             anyString(),
             anyString(),
@@ -81,7 +85,7 @@ public class CaseLoaderServiceTest {
             anyString(),
             eq(Boolean.TRUE),
             any(CaseDataContent.class)
-        )).willReturn(CaseDetails.builder().build());
+        )).willReturn(CaseDetails.builder().data(caseDataMap).build());
 
         given(idamApiClient.authorizeCodeType(
             anyString(),
@@ -98,7 +102,6 @@ public class CaseLoaderServiceTest {
             anyString())
         ).willReturn(new Authorize("", "", "accessToken"));
 
-
         given(coreCaseDataApi.searchForCaseworker(
             anyString(),
             anyString(),
@@ -106,7 +109,7 @@ public class CaseLoaderServiceTest {
             anyString(),
             anyString(),
             any())
-        ).willReturn(Collections.singletonList(CaseDetails.builder().id(1L).build()));
+        ).willReturn(Collections.singletonList(CaseDetails.builder().id(1L).data(caseDataMap).build()));
 
         given(coreCaseDataApi.startEventForCaseWorker(
             anyString(),
