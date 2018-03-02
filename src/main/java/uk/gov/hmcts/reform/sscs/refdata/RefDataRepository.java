@@ -13,14 +13,14 @@ public class RefDataRepository {
     private final Map<String, String> dataMap = newHashMap();
 
     public String find(RefKey key, RefKeyField keyField) {
-        return dataMap.get(getKey(key.name(), keyField.name()));
+        return dataMap.get(getKey(key, keyField));
     }
 
-    public void add(String key, String keyField, String value) {
+    public void add(RefKey key, RefKeyField keyField, String value) {
         dataMap.put(getKey(key, keyField), value);
     }
 
-    private String getKey(String key, String keyField) {
-        return String.format("%s|%s", key, keyField);
+    private String getKey(RefKey key, RefKeyField keyField) {
+        return String.format("%s|%s", key.name(), keyField.name());
     }
 }
