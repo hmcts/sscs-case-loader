@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.refdata;
 
 import java.io.InputStream;
+import java.util.Locale;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -25,16 +26,16 @@ public class RefDataFactory {
         XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(refDataInputStream);
 
         String tagContent = null;
-        String key = null;
+        RefKey key = null;
         while (reader.hasNext()) {
             int event = reader.next();
 
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    String localName = reader.getLocalName();
+                    String localName = reader.getLocalName().toUpperCase(Locale.getDefault());
                     try {
-                        key = RefKey.valueOf(localName.toUpperCase()).name();
-                    } catch (Exception e) {
+                        key = RefKey.valueOf(localName);
+                    } catch (IllegalArgumentException e) {
                         // Not a reference tag name
                     }
                     break;
@@ -44,10 +45,11 @@ public class RefDataFactory {
                     break;
 
                 case XMLStreamConstants.END_ELEMENT:
+                    localName = reader.getLocalName();
                     try {
-                        localName = RefKeyField.valueOf(reader.getLocalName()).name();
-                        repo.add(key, localName, tagContent);
-                    } catch (Exception e) {
+                        RefKeyField keyField = RefKeyField.valueOf(localName);
+                        repo.add(key, keyField, tagContent);
+                    } catch (IllegalArgumentException e) {
                         // Not a reference field tag name
                     }
                     break;

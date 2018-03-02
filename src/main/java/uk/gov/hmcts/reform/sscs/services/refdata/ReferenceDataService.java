@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.sscs.refdata.ReferenceDataLoader;
 @Service
 public class ReferenceDataService {
 
+
     private final ReferenceDataLoader referenceDataLoader;
 
     @Autowired

@@ -13,9 +13,17 @@ import org.junit.Test;
 
 public class RefDataFactoryTest {
 
-    private RefDataRepository repo = new RefDataRepository();
+    private final RefDataRepository repo = new RefDataRepository();
     private RefDataFactory factory;
     private InputStream is;
+
+    private String refData = "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
+        + "<Reference_Tables>\n"
+        + "  <Case_Code>\n"
+        + "    <CASE_CODE_ID>1</CASE_CODE_ID>\n"
+        + "  </Case_Code>\n"
+        + "</Reference_Tables>\n"
+        + "";
 
     @Before
     public void setUp() {
@@ -30,12 +38,4 @@ public class RefDataFactoryTest {
 
         assertThat(repo.find(CASE_CODE, CASE_CODE_ID), is("1"));
     }
-
-    private String refData = "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
-        + "<Reference_Tables>\n"
-        + "  <Case_Code>\n"
-        + "    <CASE_CODE_ID>1</CASE_CODE_ID>\n"
-        + "  </Case_Code>\n"
-        + "</Reference_Tables>\n"
-        + "";
 }
