@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -18,6 +20,9 @@ import uk.gov.hmcts.reform.sscs.exceptions.ApplicationErrorException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
@@ -96,8 +101,12 @@ public class CaseLoaderService {
             if (!cases.isEmpty()) {
                 String latestEventType = caseData.getLatestEventType();
                 if (latestEventType != null) {
-                    caseDetails = updateCoreCaseDataService.updateCase(caseData, cases.get(0).getId(),
+                    CaseDetails existingCase = cases.get(0);
+                    checkNewEvidenceReceived(caseData, existingCase);
+
+                    caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(),
                         caseData.getLatestEventType());
+
                     log.info("*** case-loader *** Update case into CCD successfully: {}", caseDetails);
                 }
             } else {
@@ -105,8 +114,37 @@ public class CaseLoaderService {
                 log.info("*** case-loader *** Save case into CCD successfully: {}",
                     printCaseDetailsInJson(caseDetails));
             }
-
         }
+    }
+
+    public void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase) {
+        Evidence newEvidence = caseData.getEvidence();
+        Evidence existingEvidence = buildExistingEvidence(existingCase);
+
+        if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
+            CaseDetails caseDetails = updateCoreCaseDataService
+                .updateCase(caseData, existingCase.getId(), "evidenceReceived");
+            log.info("*** case-loader *** New evidence received event: {}", caseDetails);
+        }
+    }
+
+    private Evidence buildExistingEvidence(CaseDetails existingCase) {
+        List<HashMap<String, Object>> documents = (List<HashMap<String, Object>>)(
+            (HashMap) existingCase.getData().get("evidence")).get("documents");
+
+        List<Documents> documentList = new ArrayList<>();
+        for (HashMap doc : documents) {
+            Map<String, Object> docValue = (HashMap<String, Object>) doc.get("value");
+
+            documentList.add(Documents.builder().value(
+                Doc.builder()
+                    .dateReceived((String) docValue.get("dateReceived"))
+                    .description((String) docValue.get("description"))
+                    .build())
+                .build());
+        }
+
+        return Evidence.builder().documents(documentList).build();
     }
 
     private String printCaseDetailsInJson(Object object) {

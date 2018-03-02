@@ -10,13 +10,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.io.IOUtils;
@@ -29,9 +28,7 @@ import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
@@ -93,6 +90,82 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
+    public void givenFileWithFurtherEvidence_shouldUpdateCcdTwice() throws IOException {
+        when(sftpSshService.readExtractFiles()).thenReturn(buildGapsInputStreams());
+        doNothing().when(xmlValidator).validateXml(anyString(), anyString());
+        when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
+
+        CaseData caseData = buildUpdateCaseData(APPEAL_RECEIVED);
+
+        List<CaseData> caseDataList = Collections.singletonList(caseData);
+        when(transformJsonCasesToCaseData.transformUpdateCases(anyString())).thenReturn(caseDataList);
+
+        CaseDetails existingCaseDetails = CaseDetails.builder().data(buildCcdDataMap()).build();
+        List<CaseDetails> caseDetailsList = new ArrayList<>();
+        caseDetailsList.add(existingCaseDetails);
+
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString())).thenReturn(caseDetailsList);
+
+        doReturn(existingCaseDetails)
+            .when(updateCoreCaseDataService).updateCase(any(CaseData.class), anyLong(), eq(APPEAL_RECEIVED.getType()));
+
+        caseLoaderService.process();
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
+    }
+
+    @Test
+    public void givenFurtherEvidenceReceived_shouldUpdateCcdCorrectly() {
+
+        CaseData newCaseData = CaseData.builder().evidence(buildEvidence()).build();
+
+        CaseDetails existingCaseDetails = CaseDetails.builder().data(buildCcdDataMap()).build();
+
+        caseLoaderService.checkNewEvidenceReceived(newCaseData, existingCaseDetails);
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+    }
+
+    @Test
+    public void givenNoNewFurtherEvidenceReceived_shouldNotUpdateCcd() {
+        Map<String, Object> valueMap = new LinkedHashMap<>();
+        Map<String, String> evidenceData = new LinkedHashMap<>();
+        evidenceData.put("description", "1");
+        evidenceData.put("dateReceived", "2017-05-24");
+        valueMap.put("value", evidenceData);
+
+        List<Map<String, Object>> documentsMap = new ArrayList<>();
+        documentsMap.add(valueMap);
+
+        Map<String, Object> evidenceMap = new LinkedHashMap<>();
+        evidenceMap.put("documents", documentsMap);
+        Map<String, Object> caseDataMap = new HashMap<>(1);
+        caseDataMap.put("evidence", evidenceMap);
+
+        CaseDetails existingCaseDetails = CaseDetails.builder().data(caseDataMap).build();
+
+        Documents doc = Documents.builder()
+            .value(Doc.builder()
+                .description("1")
+                .dateReceived("2017-05-24")
+                .build())
+            .build();
+
+        Evidence evidence = Evidence.builder().documents(Collections.singletonList(doc)).build();
+        CaseData newCaseData = CaseData.builder().evidence(evidence).build();
+
+        caseLoaderService.checkNewEvidenceReceived(newCaseData, existingCaseDetails);
+
+        verify(updateCoreCaseDataService, times(0))
+            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+    }
+
+    @Test
     public void givenLatestEventIsNull_shouldNotUpdateCcd() throws IOException {
         when(sftpSshService.readExtractFiles()).thenReturn(buildGapsInputStreams());
         doNothing().when(xmlValidator).validateXml(anyString(), anyString());
@@ -139,7 +212,12 @@ public class CaseLoaderServiceTest {
         List<CaseData> caseDataList = Collections.singletonList(caseData);
         when(transformJsonCasesToCaseData.transformUpdateCases(anyString())).thenReturn(caseDataList);
 
-        CaseDetails caseDetails = CaseDetails.builder().build();
+        Map<String, Object> caseDataMap = new HashMap<>(1);
+        Map<String, Object> evidenceMap = new LinkedHashMap<>();
+        evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
+        caseDataMap.put("evidence", evidenceMap);
+
+        CaseDetails caseDetails = CaseDetails.builder().data(caseDataMap).build();
         List<CaseDetails> caseDetailsList = new ArrayList<>();
         caseDetailsList.add(caseDetails);
 
@@ -169,7 +247,34 @@ public class CaseLoaderServiceTest {
 
         Collections.sort(events, Collections.reverseOrder());
 
-        return CaseData.builder().events(events).build();
+        return CaseData.builder().events(events).evidence(buildEvidence()).build();
+    }
 
+    private Evidence buildEvidence() {
+        Doc document1 = Doc.builder()
+            .description("1")
+            .dateReceived("2017-05-24")
+            .build();
+
+        Doc document2 = Doc.builder()
+            .description("Second evidence")
+            .dateReceived("2017-05-25")
+            .build();
+
+        List<Documents> documents = new ArrayList<>();
+
+        documents.add(Documents.builder().value(document1).build());
+        documents.add(Documents.builder().value(document2).build());
+
+        return Evidence.builder().documents(documents).build();
+    }
+
+    private Map<String, Object> buildCcdDataMap() {
+        Map<String, Object> caseDataMap = new HashMap<>(1);
+        Map<String, Object> evidenceMap = new LinkedHashMap<>();
+        evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
+        caseDataMap.put("evidence", evidenceMap);
+
+        return caseDataMap;
     }
 }
