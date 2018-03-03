@@ -53,9 +53,9 @@ public class CronExpressionProductionTest {
         assertTrue("cannot run in Saturday", nextExecution.getDayOfWeek() != DayOfWeek.SATURDAY);
         assertTrue("cannot run in Sunday", nextExecution.getDayOfWeek() != DayOfWeek.SUNDAY);
 
-        assertTrue("has to run at 9 o'clock of after",
+        assertTrue("has to run at 9 o'clock or after",
             nextExecution.toLocalTime().isAfter(LocalTime.of(8, 59)));
-        assertTrue("has to run at 16 o'clcock of earlier ",
+        assertTrue("has to run at 16 o'clcock or earlier ",
             nextExecution.toLocalTime().isBefore(LocalTime.of(16, 1)));
     }
 }
