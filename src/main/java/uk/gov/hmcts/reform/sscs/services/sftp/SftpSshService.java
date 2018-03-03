@@ -62,16 +62,18 @@ public class SftpSshService {
 
             List fileList = channelSftp.ls(sftpSshProperties.getInputDirectory() + "/*.xml");
 
+            List<String> listOfGaps2Files = getOrderedListOfGaps2FilesByDateTime(fileList);
+
             List<GapsInputStream> inputStreams = new ArrayList<>();
 
-            for (Object file : fileList) {
-                log.info("Sftp file: {}", ((ChannelSftp.LsEntry) file).getFilename());
+            for (String fileName : listOfGaps2Files) {
+                log.info("Sftp file: {}", fileName);
                 InputStream stream = channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
-                    + ((ChannelSftp.LsEntry) file).getFilename());
+                    + fileName);
 
                 inputStreams.add(GapsInputStream.builder()
-                    .isDelta(isFileType((ChannelSftp.LsEntry) file, DELTA_FILE_START))
-                    .isReference(isFileType((ChannelSftp.LsEntry) file, REFERENCE_FILE_START))
+                    .isDelta(isFileType(fileName, DELTA_FILE_START))
+                    .isReference(isFileType(fileName, REFERENCE_FILE_START))
                     .inputStream(stream)
                     .build());
             }
@@ -81,7 +83,17 @@ public class SftpSshService {
         }
     }
 
-    private Boolean isFileType(ChannelSftp.LsEntry file, String startPath) {
-        return file.getFilename().startsWith(startPath);
+    private List<String> getOrderedListOfGaps2FilesByDateTime(List fileList) {
+        List<String> fileNameList = new ArrayList<>();
+
+        for (Object lsEntry: fileList) {
+            fileNameList.add(((ChannelSftp.LsEntry) lsEntry).getFilename());
+        }
+
+        return Gaps2FileUtils.getOrderByDateAndTime(fileNameList);
+    }
+
+    private Boolean isFileType(String fileName, String startPath) {
+        return fileName.startsWith(startPath);
     }
 }

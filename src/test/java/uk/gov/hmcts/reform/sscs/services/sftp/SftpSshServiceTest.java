@@ -60,7 +60,8 @@ public class SftpSshServiceTest {
     }
 
     @Test
-    @Parameters({"SSCS_Extract_Delta_bla.xml, True, False", "SSCS_Extract_Reference_bla.xml, False, True"})
+    @Parameters({"SSCS_Extract_Delta_2017-05-24-16-14-19.xml, True, False",
+        "SSCS_Extract_Reference_2017-06-24-15-14-19.xml, False, True"})
     public void givenAListOfFilesInTheSftpServer_shouldGetDeltaFileAsInputStream(
         String fileName, Boolean isDelta, Boolean isRef) throws Exception {
 

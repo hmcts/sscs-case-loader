@@ -177,7 +177,7 @@ public class ProcessCaseTest {
         given(channelSftp.get(anyString())).willReturn(FileUtils.openInputStream(new File(DELTA_XML)));
 
         ChannelSftp.LsEntry file = mock(ChannelSftp.LsEntry.class);
-        given(file.getFilename()).willReturn("SSCS_Extract_Delta");
+        given(file.getFilename()).willReturn("SSCS_Extract_Delta_2017-05-24-16-14-19.xml");
 
         Vector<ChannelSftp.LsEntry> fileList = new Vector<>();
         fileList.add(file);
