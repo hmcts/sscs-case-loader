@@ -16,30 +16,30 @@ import org.springframework.scheduling.support.CronTrigger;
 @RunWith(JUnitParamsRunner.class)
 public class CronExpressionProductionTest {
 
-    private static final String MON_FRI = "0 0 09-16/1 * * MON-FRI";
+    private static final String PRODUCTION_CRON_EXPRESSION = "0 0 09-16/1 * * MON-FRI";
 
     @Test
     @Parameters({"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"})
     public void givenCronExpressionForProduction_shouldRunOnlyFromMondayToFriday(DayOfWeek dayOfWeek) {
-        CronTrigger trigger = new CronTrigger(MON_FRI);
-        LocalDate today = LocalDate.now().with(TemporalAdjusters.previousOrSame(dayOfWeek));
-        final Date yesterday = java.sql.Date.valueOf(today);
+        CronTrigger trigger = new CronTrigger(PRODUCTION_CRON_EXPRESSION);
+        final Date today = java.sql.Date.valueOf(LocalDate.now()
+            .with(TemporalAdjusters.previousOrSame(dayOfWeek)));
         Date nextExecutionTime = trigger.nextExecutionTime(
             new TriggerContext() {
 
                 @Override
                 public Date lastScheduledExecutionTime() {
-                    return yesterday;
+                    return today;
                 }
 
                 @Override
                 public Date lastActualExecutionTime() {
-                    return yesterday;
+                    return today;
                 }
 
                 @Override
                 public Date lastCompletionTime() {
-                    return yesterday;
+                    return today;
                 }
             });
 
