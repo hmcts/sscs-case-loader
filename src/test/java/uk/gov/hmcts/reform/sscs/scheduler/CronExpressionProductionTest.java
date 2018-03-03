@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.sscs.scheduler;
 
+import static java.sql.Timestamp.valueOf;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import junitparams.JUnitParamsRunner;
@@ -19,10 +23,12 @@ public class CronExpressionProductionTest {
     private static final String PRODUCTION_CRON_EXPRESSION = "0 0 09-16/1 * * MON-FRI";
 
     @Test
-    @Parameters({"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"})
-    public void givenCronExpressionForProduction_shouldRunOnlyFromMondayToFriday(DayOfWeek dayOfWeek) {
+    @Parameters({"MONDAY, 9, 0", "TUESDAY, 7, 30", "WEDNESDAY, 16, 0", "THURSDAY, 9, 0", "FRIDAY, 8, 59",
+        "SATURDAY, 8, 0", "SUNDAY, 14, 0"})
+    public void givenCronExpressionForProduction_shouldRunOnlyFromMondayToFridayFrom9To16(
+        DayOfWeek dayOfWeek, int hour, int min) {
         CronTrigger trigger = new CronTrigger(PRODUCTION_CRON_EXPRESSION);
-        final Date today = java.sql.Date.valueOf(LocalDate.now()
+        final Date today = valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, min))
             .with(TemporalAdjusters.previousOrSame(dayOfWeek)));
         Date nextExecutionTime = trigger.nextExecutionTime(
             new TriggerContext() {
@@ -43,9 +49,13 @@ public class CronExpressionProductionTest {
                 }
             });
 
-        LocalDate nextExecution = new java.sql.Date(nextExecutionTime.getTime()).toLocalDate();
+        LocalDateTime nextExecution = new Timestamp(nextExecutionTime.getTime()).toLocalDateTime();
         assertTrue("cannot run in Saturday", nextExecution.getDayOfWeek() != DayOfWeek.SATURDAY);
         assertTrue("cannot run in Sunday", nextExecution.getDayOfWeek() != DayOfWeek.SUNDAY);
 
+        assertTrue("has to run at 9 o'clock of after",
+            nextExecution.toLocalTime().isAfter(LocalTime.of(8, 59)));
+        assertTrue("has to run at 16 o'clcock of earlier ",
+            nextExecution.toLocalTime().isBefore(LocalTime.of(16, 1)));
     }
 }
