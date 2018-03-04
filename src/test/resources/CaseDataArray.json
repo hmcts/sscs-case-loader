@@ -41,7 +41,11 @@
           "description": "Appeal received"
         }
       }
-    ]
+    ],
+    "generatedNino": "AB 56 21 41 B",
+    "generatedSurname": "Goji",
+    "generatedEmail": null,
+    "generatedMobile": null
   },
   {
     "caseReference": "SC068/17/00008",
@@ -91,6 +95,10 @@
           "description": "Appeal received"
         }
       }
-    ]
+    ],
+    "generatedNino": "AB 89 08 08 C",
+    "generatedSurname": "Rasberry",
+    "generatedEmail": null,
+    "generatedMobile": null
   }
 ]

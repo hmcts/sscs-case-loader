@@ -118,6 +118,10 @@ public final class CaseDataUtils {
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(Collections.singletonList(events))
+            .generatedNino(identity.getNino())
+            .generatedSurname(name.getLastName())
+            .generatedEmail(contact.getEmail())
+            .generatedMobile(contact.getMobile())
             .build();
     }
 }

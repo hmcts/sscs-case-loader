@@ -90,6 +90,10 @@
           "description": "Appeal received"
         }
       }
-    ]
+    ],
+    "generatedNino": "AB 22 55 66 B",
+    "generatedSurname": "Elderberry",
+    "generatedEmail": "mail@email.com",
+    "generatedMobile": "01234567890"
   }
 ]

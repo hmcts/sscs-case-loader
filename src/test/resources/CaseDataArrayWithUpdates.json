@@ -118,7 +118,11 @@
           "description": "Appeal received"
         }
       }
-    ]
+    ],
+    "generatedNino": "AB 22 55 66 B",
+    "generatedSurname": "Elderberry",
+    "generatedEmail": null,
+    "generatedMobile": null
   },
   {
     "caseReference": "SC068/17/00003",
@@ -169,6 +173,10 @@
           "description": "Appeal received"
         }
       }
-    ]
+    ],
+    "generatedNino": "AC 45 89 36 B",
+    "generatedSurname": "Mango",
+    "generatedEmail": null,
+    "generatedMobile": null
   }
 ]
