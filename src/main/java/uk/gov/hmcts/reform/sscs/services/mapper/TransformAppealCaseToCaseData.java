@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
@@ -20,8 +18,6 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
@@ -35,21 +31,23 @@ import uk.gov.hmcts.reform.sscs.services.date.DateUtility;
 public class TransformAppealCaseToCaseData {
 
     private final DateUtility dateUtility;
+    private final CaseDataBuilder caseDataBuilder;
 
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
 
     @Autowired
-    public TransformAppealCaseToCaseData(DateUtility dateUtility) {
+    public TransformAppealCaseToCaseData(DateUtility dateUtility, CaseDataBuilder caseDataBuilder) {
         this.dateUtility = dateUtility;
+        this.caseDataBuilder = caseDataBuilder;
     }
 
     public CaseData transform(AppealCase appealCase) {
         Name name = getName(appealCase);
         Address address = getAddress(appealCase);
         Contact contact = getContact(appealCase);
-        Identity identity = getIdentity(appealCase);
+        Identity identity = caseDataBuilder.buildIdentity(appealCase);
 
         Appellant appellant = Appellant.builder()
             .name(name)
@@ -80,35 +78,7 @@ public class TransformAppealCaseToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(buildEvent(appealCase))
-            .build();
-    }
-
-    private List<Events> buildEvent(AppealCase appealCase) {
-
-        List<Events> events = new ArrayList<>();
-        for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
-            GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
-            if (gapsEvent != null) {
-                Event event = Event.builder()
-                    .type(gapsEvent.getType())
-                    .description(gapsEvent.getDescription())
-                    .date(majorStatus.getDateSet().toLocalDateTime().toString())
-                    .build();
-
-                events.add(Events.builder()
-                    .value(event)
-                    .build());
-            }
-        }
-        events.sort(Collections.reverseOrder());
-        return events;
-    }
-
-    private Identity getIdentity(AppealCase appealCase) {
-        return Identity.builder()
-            .dob(dateUtility.getValidDate(appealCase.getParties().getDob()))
-            .nino(appealCase.getAppealCaseNino())
+            .events(caseDataBuilder.buildEvents(appealCase))
             .build();
     }
 
