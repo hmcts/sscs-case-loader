@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField;
 @Component
 public class RefDataRepository {
 
+
     private final Map<String, String> dataMap = newHashMap();
 
     public String find(RefKey key, RefKeyField keyField) {

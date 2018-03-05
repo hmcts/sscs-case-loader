@@ -11,7 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.refdata.ReferenceDataLoader;
+import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
+import uk.gov.hmcts.reform.sscs.refdata.VenueDataLoader;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @RunWith(SpringRunner.class)
@@ -19,13 +20,16 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 public class ReferenceDataServiceTest {
 
     @Autowired
-    private ReferenceDataLoader referenceDataLoader;
+    private VenueDataLoader venueDataLoader;
+
+    @Autowired
+    private RefDataRepository refDataRepo;
 
     private ReferenceDataService referenceDataService;
 
     @Before
     public void setUp() {
-        referenceDataService = new ReferenceDataService(referenceDataLoader);
+        referenceDataService = new ReferenceDataService(venueDataLoader, refDataRepo);
     }
 
     @Test
