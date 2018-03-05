@@ -140,7 +140,7 @@ public class TransformJsonCasesToCaseData {
                     .build());
             }
         }
-        Collections.sort(events, Collections.reverseOrder());
+        events.sort(Collections.reverseOrder());
         return events;
     }
 
