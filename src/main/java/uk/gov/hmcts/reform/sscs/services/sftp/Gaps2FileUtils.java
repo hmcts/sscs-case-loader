@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class Gaps2FileUtils {
+public final class Gaps2FileUtils {
 
     public static final String GAPS2_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     public static final String XML = ".xml";
