@@ -71,7 +71,11 @@
           "description": "Appeal Created"
         }
       }
-    ]
+    ],
+    "generatedNino": "AB 22 55 66 B",
+    "generatedSurname": "Test",
+    "generatedEmail": "mail@email.com",
+    "generatedMobile": "01234567890"
   },
   "security_classification": null,
   "event_token": "user token",

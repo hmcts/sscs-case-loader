@@ -14,6 +14,10 @@ public class CaseData {
     private Evidence evidence;
     private List<DwpTimeExtension> dwpTimeExtension;
     private List<Events> events;
+    private String generatedNino;
+    private String generatedSurname;
+    private String generatedEmail;
+    private String generatedMobile;
 
     @JsonIgnore
     public String getLatestEventType() {

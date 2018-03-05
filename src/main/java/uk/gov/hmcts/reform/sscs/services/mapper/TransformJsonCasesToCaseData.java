@@ -108,6 +108,10 @@ public class TransformJsonCasesToCaseData {
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(buildEvent(appealCase))
+            .generatedNino(identity.getNino())
+            .generatedSurname(name.getLastName())
+            .generatedEmail(contact.getEmail())
+            .generatedMobile(contact.getMobile())
             .build();
     }
 
