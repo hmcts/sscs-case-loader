@@ -65,7 +65,13 @@ public final class CaseDataUtils {
             .build();
 
         Venue venue = Venue.builder()
-            .venueTown("Aberdeen")
+            .name("The venue")
+            .addressLine1("12 The Road Avenue")
+            .addressLine2("Village")
+            .town("Aberdeen")
+            .county("Aberdeenshire")
+            .postcode("AB120HN")
+            .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
             .build();
         HearingDetails hearingDetails = HearingDetails.builder()
             .venue(venue)

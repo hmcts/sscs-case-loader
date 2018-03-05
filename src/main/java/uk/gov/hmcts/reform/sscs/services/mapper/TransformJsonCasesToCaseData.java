@@ -10,34 +10,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.*;
+import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
+import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
 public class TransformJsonCasesToCaseData {
@@ -45,6 +27,13 @@ public class TransformJsonCasesToCaseData {
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
+
+    private final ReferenceDataService referenceDataService;
+
+    @Autowired
+    public TransformJsonCasesToCaseData(ReferenceDataService referenceDataService) {
+        this.referenceDataService = referenceDataService;
+    }
 
     public List<CaseData> transformCreateCases(String json) {
         List<AppealCase> appealCases = fromJsonToGapsExtract(json).getAppealCases().getAppealCaseList();
@@ -183,8 +172,20 @@ public class TransformJsonCasesToCaseData {
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
+            VenueDetails venueDetails = referenceDataService.getVenueDetails(appealCase.getHearing().getVenueId());
+
+            Venue venue = Venue.builder()
+                .name(venueDetails.getVenName())
+                .addressLine1(venueDetails.getVenAddressLine1())
+                .addressLine2(venueDetails.getVenAddressLine2())
+                .town(venueDetails.getVenAddressTown())
+                .county(venueDetails.getVenAddressCounty())
+                .postcode(venueDetails.getVenAddressPostcode())
+                .googleMapLink(venueDetails.getUrl())
+                .build();
+
             hearings = HearingDetails.builder()
-                .venue(Venue.builder().venueTown("Aberdeen").build())
+                .venue(venue)
                 .hearingDate(getValidDate(appealCase.getHearing().getSessionDate()))
                 .time(getValidTime(appealCase.getHearing().getAppealTime()))
                 .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
