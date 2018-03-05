@@ -1,32 +1,32 @@
 package uk.gov.hmcts.reform.sscs.services.refdata;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.refdata.ReferenceDataLoader;
+import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
+import uk.gov.hmcts.reform.sscs.refdata.VenueDataLoader;
+import uk.gov.hmcts.reform.sscs.refdata.domain.RefKey;
+import uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField;
 
 @Service
 public class ReferenceDataService {
 
 
-    private final ReferenceDataLoader referenceDataLoader;
+    private final Map<String, VenueDetails> venueDataMap;
+    private RefDataRepository refDataRepo;
 
     @Autowired
-    public ReferenceDataService(ReferenceDataLoader referenceDataLoader) {
-        this.referenceDataLoader = referenceDataLoader;
+    public ReferenceDataService(VenueDataLoader venueDataLoader, RefDataRepository refDataRepo) {
+        this.venueDataMap = venueDataLoader.getVenueDetailsMap();
+        this.refDataRepo = refDataRepo;
     }
 
     public VenueDetails getVenueDetails(String venueId) {
-        Stream<VenueDetails> venueDetailsStream = referenceDataLoader.getVenueDetailsList()
-            .stream().filter(
-                venueDetails ->
-                    venueId != null && !("".equals(venueId)) && venueId.equals(venueDetails.getVenueId())
-                );
-        Optional<VenueDetails> optionalVenueDetails = venueDetailsStream.findAny();
-        return optionalVenueDetails.orElse(null);
+        return venueDataMap.get(venueId);
+    }
+
+    public String getRefField(RefKey key, RefKeyField field) {
+        return refDataRepo.find(key, field);
     }
 }

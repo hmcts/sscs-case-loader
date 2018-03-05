@@ -1,25 +1,23 @@
 package uk.gov.hmcts.reform.sscs.refdata;
 
-import com.opencsv.CSVReader;
+import static com.google.common.collect.Maps.newHashMap;
 
+import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
-
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 
 @Service
 @Slf4j
-public class ReferenceDataLoader {
+public class VenueDataLoader {
 
     private static final String CSV_FILE_PATH = "src/main/resources/reference-data/sscs-venues.csv";
-    private final List<VenueDetails> venueDetailsList = new ArrayList<>();
+    private final Map<String, VenueDetails> venueDetailsList = newHashMap();
 
     @PostConstruct
     private void init() {
@@ -27,7 +25,7 @@ public class ReferenceDataLoader {
 
             List<String[]> linesList = reader.readAll();
             linesList.forEach(line ->
-                venueDetailsList.add(
+                venueDetailsList.put(line[0],
                     VenueDetails.builder()
                         .venueId(line[0])
                         .threeDigitReference(line[1])
@@ -48,7 +46,7 @@ public class ReferenceDataLoader {
         }
     }
 
-    public List<VenueDetails> getVenueDetailsList() {
+    public Map<String, VenueDetails> getVenueDetailsMap() {
         return venueDetailsList;
     }
 }

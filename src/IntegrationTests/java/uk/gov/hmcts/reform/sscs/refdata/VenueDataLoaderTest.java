@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.sscs.refdata;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +13,16 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ReferenceDataLoaderTest {
+public class VenueDataLoaderTest {
 
     @Autowired
-    private ReferenceDataLoader referenceDataLoader;
+    private VenueDataLoader venueDataLoader;
 
     @Test
     public void shouldLoadReferenceData() {
-        List<VenueDetails> venueDetailsList = referenceDataLoader.getVenueDetailsList();
+        Map<String, VenueDetails> venueDetailsMap = venueDataLoader.getVenueDetailsMap();
 
-        assertNotNull(venueDetailsList);
-        assertEquals(263, venueDetailsList.size());
+        assertNotNull(venueDetailsMap);
+        assertEquals(263, venueDetailsMap.size());
     }
 }
