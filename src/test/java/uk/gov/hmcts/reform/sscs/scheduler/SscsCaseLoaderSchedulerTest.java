@@ -17,7 +17,7 @@ public class SscsCaseLoaderSchedulerTest {
     private SscsCaseLoaderScheduler sscsCaseLoaderScheduler;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         initMocks(this);
         sscsCaseLoaderScheduler = new SscsCaseLoaderScheduler(caseLoaderService);
     }
@@ -27,4 +27,6 @@ public class SscsCaseLoaderSchedulerTest {
         sscsCaseLoaderScheduler.run();
         verify(caseLoaderService).process();
     }
+
+
 }
