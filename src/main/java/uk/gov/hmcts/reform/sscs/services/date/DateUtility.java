@@ -7,20 +7,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class DateUtility {
     public String getValidDate(String dateTime) {
-        return dateTime != null ? parseToIsoDateTime(dateTime) : "";
+        return dateTime != null ? parseAndReturnLocalDateIfTrueElseReturnLocalTime(dateTime, true) : "";
     }
 
-    private String parseToIsoDateTime(String utcTime) {
+    private String parseAndReturnLocalDateIfTrueElseReturnLocalTime(String utcTime, boolean date) {
         ZonedDateTime result = ZonedDateTime.parse(utcTime, DateTimeFormatter.ISO_DATE_TIME);
-        return result.toLocalDate().toString();
+        return date ? result.toLocalDate().toString() : result.toLocalTime().toString();
     }
 
     public String getValidTime(String dateTime) {
-        return dateTime != null ? parseToIsoTime(dateTime) : "";
+        return dateTime != null ? parseAndReturnLocalDateIfTrueElseReturnLocalTime(dateTime, false) : "";
     }
 
-    private String parseToIsoTime(String utcTime) {
-        ZonedDateTime result = ZonedDateTime.parse(utcTime, DateTimeFormatter.ISO_DATE_TIME);
-        return result.toLocalTime().toString();
-    }
 }
