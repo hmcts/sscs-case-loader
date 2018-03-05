@@ -174,13 +174,17 @@ public class TransformJsonCasesToCaseData {
         if (appealCase.getHearing() != null) {
             VenueDetails venueDetails = referenceDataService.getVenueDetails(appealCase.getHearing().getVenueId());
 
-            Venue venue = Venue.builder()
-                .name(venueDetails.getVenName())
-                .addressLine1(venueDetails.getVenAddressLine1())
-                .addressLine2(venueDetails.getVenAddressLine2())
+            Address address = Address.builder()
+                .line1(venueDetails.getVenAddressLine1())
+                .line2(venueDetails.getVenAddressLine2())
                 .town(venueDetails.getVenAddressTown())
                 .county(venueDetails.getVenAddressCounty())
                 .postcode(venueDetails.getVenAddressPostcode())
+                .build();
+
+            Venue venue = Venue.builder()
+                .name(venueDetails.getVenName())
+                .address(address)
                 .googleMapLink(venueDetails.getUrl())
                 .build();
 
