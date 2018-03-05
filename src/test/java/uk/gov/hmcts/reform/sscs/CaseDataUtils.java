@@ -64,8 +64,18 @@ public final class CaseDataUtils {
             .hearingOptions(hearingOptions)
             .build();
 
+        Address venueAddress = Address.builder()
+            .line1("12 The Road Avenue")
+            .line2("Village")
+            .town("Aberdeen")
+            .county("Aberdeenshire")
+            .postcode("AB12 0HN")
+            .build();
+
         Venue venue = Venue.builder()
-            .venueTown("Aberdeen")
+            .name("The venue")
+            .address(venueAddress)
+            .googleMapLink("http://www.googlemaps.com/aberdeenvenue")
             .build();
         HearingDetails hearingDetails = HearingDetails.builder()
             .venue(venue)

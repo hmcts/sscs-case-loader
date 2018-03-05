@@ -6,5 +6,7 @@ import lombok.Value;
 @Value
 @Builder
 public class Venue {
-    private String venueTown;
+    private String name;
+    private Address address;
+    private String googleMapLink;
 }
