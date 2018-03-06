@@ -94,7 +94,7 @@ public class TransformJsonCasesToCaseDataTest {
     }
 
     @Test
-    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusEqualTo3() throws Exception {
+    public void givenJsonCasesForCreate_shouldBeTransformedOnlyCasesWithStatusEqualTo3() throws Exception {
         //Given
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
         List<CaseData> caseDataList = transformJsonCasesToCaseData
@@ -108,7 +108,7 @@ public class TransformJsonCasesToCaseDataTest {
     }
 
     @Test
-    public void givenJsonCases_shouldBeTransformedOnlyCasesWithStatusNotEqualTo3() throws Exception {
+    public void givenJsonCasesForUpdate_shouldBeTransformedOnlyCasesWithStatusNotEqualTo3() throws Exception {
         //Given
         String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
         List<CaseData> caseDataList = transformJsonCasesToCaseData
@@ -120,6 +120,13 @@ public class TransformJsonCasesToCaseDataTest {
         Events event = caseDataList.get(0).getEvents().get(0);
         assertEquals("appealDormant", event.getValue().getType());
         eventDateShouldIncludeTheTimeAsWell(event);
+    }
+
+    @Test
+    public void givenJsonCases_shouldOnlyTransformPartiesWithRole4() throws Exception {
+        String jsonCases = FileUtils.readFileToString(new File(JSON_CASES_PATH), StandardCharsets.UTF_8.name());
+        List<CaseData> caseDataList = transformJsonCasesToCaseData.transformCreateCases(jsonCases);
+        assertEquals("Goji", caseDataList.get(0).getAppeal().getAppellant().getName().getLastName());
     }
 
     private void eventDateShouldIncludeTheTimeAsWell(Events event) {

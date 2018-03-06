@@ -394,6 +394,16 @@
       <Attending>N</Attending>
       <Disability_Needs>N</Disability_Needs>
     </Parties>
+    <Parties>
+      <PTTP_ID>234534</PTTP_ID>
+      <Title>Mr.</Title>
+      <INITIALS>B</INITIALS>
+      <Surname>Orange</Surname>
+      <Postcode>L12 7AB</Postcode>
+      <Role_Id>5</Role_Id>
+      <Attending>N</Attending>
+      <Disability_Needs>N</Disability_Needs>
+    </Parties>
     <Major_Status>
       <Status_Id>3</Status_Id>
       <Date_Set>2017-05-24T13:46:09.07+01:00</Date_Set>

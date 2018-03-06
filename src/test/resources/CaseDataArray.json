@@ -8,9 +8,6 @@
           "firstName": "G",
           "lastName": "Goji"
         },
-        "address": {
-          "postcode": "L1 3GH"
-        },
         "contact": {
           "email": null,
           "phone": null,
@@ -55,9 +52,6 @@
           "title": "Mr.",
           "firstName": "R",
           "lastName": "Rasberry"
-        },
-        "address": {
-          "postcode": "L9 8UY"
         },
         "contact": {
           "email": null,

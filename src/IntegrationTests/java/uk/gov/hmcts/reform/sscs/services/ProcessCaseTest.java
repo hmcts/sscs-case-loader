@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.google.common.collect.ImmutableMap;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -37,7 +38,7 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 @SpringBootTest
 public class ProcessCaseTest {
 
-    private static final int EXPECTED_NUMBER_OF_CASES_TO_CREATE_IN_CCD = 2;
+    private static final int EXPECTED_NUMBER_OF_CASES_TO_CREATE_IN_CCD = 1;
     private static final int EXPECTED_NUMBER_OF_CASES_TO_UPDATE_IN_CCD = 16;
     private static final String DELTA_XML = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
 
@@ -110,6 +111,16 @@ public class ProcessCaseTest {
             anyString(),
             any())
         ).willReturn(Collections.singletonList(CaseDetails.builder().id(1L).data(caseDataMap).build()));
+
+        // Override for 1 create case
+        given(coreCaseDataApi.searchForCaseworker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(ImmutableMap.of("case.caseReference", "SC068/17/00004")))
+        ).willReturn(new ArrayList<>());
 
         given(coreCaseDataApi.startEventForCaseWorker(
             anyString(),

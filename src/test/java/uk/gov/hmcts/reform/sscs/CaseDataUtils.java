@@ -3,25 +3,7 @@ package uk.gov.hmcts.reform.sscs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 
 public final class CaseDataUtils {
     private CaseDataUtils() {
@@ -32,9 +14,6 @@ public final class CaseDataUtils {
             .title("Mr")
             .firstName("User")
             .lastName("Test")
-            .build();
-        Address address = Address.builder()
-            .postcode("L17 7AE")
             .build();
         Contact contact = Contact.builder()
             .email("mail@email.com")
@@ -47,7 +26,6 @@ public final class CaseDataUtils {
             .build();
         Appellant appellant = Appellant.builder()
             .name(name)
-            .address(address)
             .contact(contact)
             .identity(identity)
             .build();

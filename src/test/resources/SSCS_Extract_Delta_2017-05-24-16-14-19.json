@@ -414,16 +414,25 @@
             ],
             "Extract_Time_UTC":"2017-05-24T15:12:04.2+01:00",
             "Appeal_Case_BF_Date":"2017-06-28T00:00:00+01:00",
-            "Parties":{
-               "INITIALS":"G",
-               "PTTP_ID":498608,
-               "Title":"Mr.",
-               "Attending":"N",
-               "Disability_Needs":"N",
-               "Surname":"Goji",
-               "Postcode":"L1 3GH",
-               "Role_Id":4
-            },
+            "Parties":[{
+              "INITIALS":"G",
+              "PTTP_ID":498608,
+              "Title":"Mr.",
+              "Attending":"N",
+              "Disability_Needs":"N",
+              "Surname":"Goji",
+              "Postcode":"L1 3GH",
+              "Role_Id":4
+            }, {
+              "INITIALS": "B",
+              "PTTP_ID": 234534,
+              "Title": "Mr.",
+              "Attending": "N",
+              "Disability_Needs": "N",
+              "Surname": "Orange",
+              "Postcode": "L12 7AB",
+              "Role_Id": 5
+            }],
             "Tribunal_Type_Id":1,
             "Appeal_Case_NINO":"AB 56 21 41 B",
             "Appeal_Case_Id":330914,

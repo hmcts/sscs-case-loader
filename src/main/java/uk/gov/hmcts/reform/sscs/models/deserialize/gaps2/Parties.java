@@ -15,6 +15,7 @@ public class Parties {
     private String disabilityNeeds;
     private String interpreterSignerId;
     private String dob;
+    private Integer roleId;
 
     public Parties(@JsonProperty("INITIALS") String initials,
             @JsonProperty("Title") String title,
@@ -25,7 +26,8 @@ public class Parties {
             @JsonProperty("Postcode") String postCode,
             @JsonProperty("Disability_Needs") String disabilityNeeds,
             @JsonProperty("Interpreter_Signer_Id") String interpreterSignerId,
-            @JsonProperty("DOB") String dob) {
+            @JsonProperty("DOB") String dob,
+            @JsonProperty("Role_Id") Integer roleId) {
         this.initials = initials;
         this.title = title;
         this.surname = surname;
@@ -36,5 +38,6 @@ public class Parties {
         this.disabilityNeeds = disabilityNeeds;
         this.interpreterSignerId = interpreterSignerId;
         this.dob = dob;
+        this.roleId = roleId;
     }
 }
