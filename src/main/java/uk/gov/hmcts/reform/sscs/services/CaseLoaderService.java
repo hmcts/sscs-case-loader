@@ -95,7 +95,6 @@ public class CaseLoaderService {
     }
 
     private void sendUpdateCcdCases(List<CaseData> caseDataList) {
-        CaseDetails caseDetails;
         for (CaseData caseData : caseDataList) {
             log.info("*** case-loader *** Found potential case to update in Delta: {}", caseData.getCaseReference());
             List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
@@ -105,16 +104,27 @@ public class CaseLoaderService {
             if (!cases.isEmpty()) {
                 String latestEventType = caseData.getLatestEventType();
                 if (latestEventType != null) {
-                    CaseDetails existingCase = cases.get(0);
-                    checkNewEvidenceReceived(caseData, existingCase);
-
-                    log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
-                    caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(),
-                        caseData.getLatestEventType());
-                    log.info("*** case-loader *** Update case in CCD successfully: {}", caseDetails);
+                    CaseDetails existingCcdCase = cases.get(0);
+                    checkNewEvidenceReceived(caseData, existingCcdCase);
+                    ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase);
                 }
             }
         }
+    }
+
+    private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase) {
+        //        List<Events> newEvents = caseData.getEvents();
+        //        System.out.println("newEvents: " + newEvents);
+        //        System.out.println("newEvents.size" + newEvents.size());
+        //        List<Events> existingEvents = (List<Events>) existingCcdCase.getData().get("events");
+        //        System.out.println("existingEvents: " + existingEvents);
+        //        System.out.println("existingEvents.size:" + existingEvents.size());
+
+        CaseDetails caseDetails;
+        log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
+        caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
+            caseData.getLatestEventType());
+        log.info("*** case-loader *** Update case in CCD successfully: {}", caseDetails);
     }
 
     public void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase) {
@@ -128,8 +138,9 @@ public class CaseLoaderService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Evidence buildExistingEvidence(CaseDetails existingCase) {
-        List<HashMap<String, Object>> documents = (List<HashMap<String, Object>>)(
+        List<HashMap<String, Object>> documents = (List<HashMap<String, Object>>) (
             (HashMap) existingCase.getData().get("evidence")).get("documents");
 
         List<Documents> documentList = new ArrayList<>();

@@ -51,7 +51,6 @@ public class CaseDataBuilder {
     }
 
     public List<Events> buildEvent(AppealCase appealCase) {
-
         List<Events> events = new ArrayList<>();
         for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
             GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
