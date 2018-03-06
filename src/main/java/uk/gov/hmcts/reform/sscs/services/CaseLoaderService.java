@@ -99,7 +99,7 @@ public class CaseLoaderService {
         for (CaseData caseData : caseDataList) {
             log.info("*** case-loader *** Found potential case to update in Delta: {}", caseData.getCaseReference());
             List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
-            log.info("*** case-loader *** Found cases with caseRef: {} in CCD: {}", caseData.getCaseReference(),
+            log.info("*** case-loader *** Cases found with caseRef: {} in CCD: {}", caseData.getCaseReference(),
                 printCaseDetailsInJson(cases));
 
             if (!cases.isEmpty()) {
@@ -111,7 +111,6 @@ public class CaseLoaderService {
                     log.info("*** case-loader *** About to update case into CCD: {}", printCaseDetailsInJson(caseData));
                     caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(),
                         caseData.getLatestEventType());
-
                     log.info("*** case-loader *** Update case in CCD successfully: {}", caseDetails);
                 }
             }
