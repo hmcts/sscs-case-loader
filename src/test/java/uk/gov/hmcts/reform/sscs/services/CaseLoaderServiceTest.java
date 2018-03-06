@@ -15,7 +15,12 @@ import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +33,13 @@ import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
@@ -54,6 +65,8 @@ public class CaseLoaderServiceTest {
     private SearchCoreCaseDataService searchCoreCaseDataService;
     @Mock
     private UpdateCoreCaseDataService updateCoreCaseDataService;
+    @Mock
+    private CcdCasesSender ccdCasesSender;
 
     private CaseLoaderService caseLoaderService;
 
@@ -61,8 +74,8 @@ public class CaseLoaderServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         caseLoaderService = new CaseLoaderService(sftpSshService, xmlValidator, transformXmlFilesToJsonFiles,
-            transformJsonCasesToCaseData, createCoreCaseDataService,
-            searchCoreCaseDataService, updateCoreCaseDataService);
+            transformJsonCasesToCaseData,
+            ccdCasesSender);
     }
 
     @Test
