@@ -13,9 +13,6 @@
           "firstName": "User",
           "lastName": "Test"
         },
-        "address": {
-          "postcode": "L17 7AE"
-        },
         "contact": {
           "email": "mail@email.com",
           "phone": "01234567890",

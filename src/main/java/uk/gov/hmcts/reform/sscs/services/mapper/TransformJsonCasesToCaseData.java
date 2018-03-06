@@ -4,12 +4,15 @@ import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
+@Slf4j
 public class TransformJsonCasesToCaseData {
 
     private static final String YES = "Yes";
@@ -62,21 +66,36 @@ public class TransformJsonCasesToCaseData {
     }
 
     private CaseData fromAppealCaseToCaseData(AppealCase appealCase) {
-        Name name = getName(appealCase);
-        Address address = getAddress(appealCase);
-        Contact contact = getContact(appealCase);
-        Identity identity = getIdentity(appealCase);
+        List<Parties> parties = appealCase.getParties();
+        Optional<Parties> party = parties.stream().filter(f -> f.getRoleId().intValue() == 4).findFirst();
+
+        Name name = null;
+        Contact contact = null;
+        Identity identity = null;
+        HearingOptions hearingOptions = null;
+        String generatedNino = "";
+        String generatedSurname = "";
+        String generatedEmail = "";
+        String generatedMobile = "";
+
+        if (party.isPresent()) {
+            name = getName(party.get());
+            contact = getContact(party.get());
+            identity = getIdentity(party.get(), appealCase);
+            hearingOptions = getHearingOptions(party.get());
+            generatedNino = identity.getNino();
+            generatedSurname = name.getLastName();
+            generatedEmail = contact.getEmail();
+            generatedMobile = contact.getMobile();
+        }
 
         Appellant appellant = Appellant.builder()
             .name(name)
-            .address(address)
             .contact(contact)
             .identity(identity)
             .build();
 
         BenefitType benefitType = getBenefitType(appealCase);
-
-        HearingOptions hearingOptions = getHearingOptions(appealCase);
 
         Appeal appeal = Appeal.builder()
             .appellant(appellant)
@@ -97,10 +116,10 @@ public class TransformJsonCasesToCaseData {
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(buildEvent(appealCase))
-            .generatedNino(identity.getNino())
-            .generatedSurname(name.getLastName())
-            .generatedEmail(contact.getEmail())
-            .generatedMobile(contact.getMobile())
+            .generatedNino(generatedNino)
+            .generatedSurname(generatedSurname)
+            .generatedEmail(generatedEmail)
+            .generatedMobile(generatedMobile)
             .build();
     }
 
@@ -125,33 +144,26 @@ public class TransformJsonCasesToCaseData {
         return events;
     }
 
-    private Identity getIdentity(AppealCase appealCase) {
+    private Identity getIdentity(Parties party, AppealCase appealCase) {
         return Identity.builder()
-            .dob(getValidDate(appealCase.getParties().getDob()))
+            .dob(getValidDate(party.getDob()))
             .nino(appealCase.getAppealCaseNino())
             .build();
     }
 
-    private Name getName(AppealCase appealCase) {
-        Parties parties = appealCase.getParties();
+    private Name getName(Parties party) {
         return Name.builder()
-            .title(parties.getTitle())
-            .firstName(parties.getInitials())
-            .lastName(parties.getSurname())
+            .title(party.getTitle())
+            .firstName(party.getInitials())
+            .lastName(party.getSurname())
             .build();
     }
 
-    private Address getAddress(AppealCase appealCase) {
-        return Address.builder()
-            .postcode(appealCase.getParties().getPostCode())
-            .build();
-    }
-
-    private Contact getContact(AppealCase appealCase) {
+    private Contact getContact(Parties party) {
         return Contact.builder()
-            .email(appealCase.getParties().getEmail())
-            .phone(appealCase.getParties().getPhone1())
-            .mobile(appealCase.getParties().getPhone2())
+            .email(party.getEmail())
+            .phone(party.getPhone1())
+            .mobile(party.getPhone2())
             .build();
     }
 
@@ -161,9 +173,9 @@ public class TransformJsonCasesToCaseData {
             .build();
     }
 
-    private HearingOptions getHearingOptions(AppealCase appealCase) {
+    private HearingOptions getHearingOptions(Parties party) {
         return HearingOptions.builder()
-            .other(Y.equals(appealCase.getParties().getDisabilityNeeds()) ? YES : NO)
+            .other(Y.equals(party.getDisabilityNeeds()) ? YES : NO)
             .build();
     }
 
@@ -172,34 +184,39 @@ public class TransformJsonCasesToCaseData {
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
-            VenueDetails venueDetails = referenceDataService.getVenueDetails(appealCase.getHearing().getVenueId());
+            for (uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing hearing : appealCase.getHearing()) {
 
-            Address address = Address.builder()
-                .line1(venueDetails.getVenAddressLine1())
-                .line2(venueDetails.getVenAddressLine2())
-                .town(venueDetails.getVenAddressTown())
-                .county(venueDetails.getVenAddressCounty())
-                .postcode(venueDetails.getVenAddressPostcode())
-                .build();
+                VenueDetails venueDetails = referenceDataService.getVenueDetails(hearing.getVenueId());
 
-            Venue venue = Venue.builder()
-                .name(venueDetails.getVenName())
-                .address(address)
-                .googleMapLink(venueDetails.getUrl())
-                .build();
+                if (venueDetails != null) {
+                    Address address = Address.builder()
+                        .line1(venueDetails.getVenAddressLine1())
+                        .line2(venueDetails.getVenAddressLine2())
+                        .town(venueDetails.getVenAddressTown())
+                        .county(venueDetails.getVenAddressCounty())
+                        .postcode(venueDetails.getVenAddressPostcode())
+                        .build();
 
-            hearings = HearingDetails.builder()
-                .venue(venue)
-                .hearingDate(getValidDate(appealCase.getHearing().getSessionDate()))
-                .time(getValidTime(appealCase.getHearing().getAppealTime()))
-                .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
-                .build();
+                    Venue venue = Venue.builder()
+                        .name(venueDetails.getVenName())
+                        .address(address)
+                        .googleMapLink(venueDetails.getUrl())
+                        .build();
 
-            Hearing value = Hearing.builder()
-                .value(hearings)
-                .build();
+                    hearings = HearingDetails.builder()
+                        .venue(venue)
+                        .hearingDate(hearing.getSessionDate().withZoneSameInstant(
+                            ZoneId.of("Europe/London")).toLocalDate().toString())
+                        .time(getValidTime(hearing.getAppealTime()))
+                        .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
+                        .build();
 
-            hearingsList.add(value);
+                    hearingsList.add(Hearing.builder().value(hearings).build());
+                } else {
+                    log.info("*** case-loader *** venue missing: " + appealCase.getHearing().get(0).getVenueId());
+                    return null;
+                }
+            }
         }
 
         return hearingsList;
@@ -210,12 +227,14 @@ public class TransformJsonCasesToCaseData {
         Doc doc;
 
         if (appealCase.getFurtherEvidence() != null) {
-            doc = Doc.builder()
-                .dateReceived(getValidDate(appealCase.getFurtherEvidence().getFeDateReceived()))
-                .description(appealCase.getFurtherEvidence().getFeTypeofEvidenceId())
-                .build();
-            Documents documents = Documents.builder().value(doc).build();
-            documentsList.add(documents);
+            for (FurtherEvidence furtherEvidence : appealCase.getFurtherEvidence()) {
+                doc = Doc.builder()
+                    .dateReceived(getValidDate(furtherEvidence.getFeDateReceived()))
+                    .description(furtherEvidence.getFeTypeofEvidenceId())
+                    .build();
+                Documents documents = Documents.builder().value(doc).build();
+                documentsList.add(documents);
+            }
         }
 
         return Evidence.builder()

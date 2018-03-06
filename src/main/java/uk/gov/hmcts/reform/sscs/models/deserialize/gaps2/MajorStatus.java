@@ -9,7 +9,6 @@ public class MajorStatus {
     private String bfDate;
     private String statusId;
     private String dateClosed;
-
     private ZonedDateTime dateSet;
 
     public MajorStatus(@JsonProperty("BF_Date") String bfDate,

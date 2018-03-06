@@ -8,9 +8,6 @@
           "firstName": "E",
           "lastName": "Elderberry"
         },
-        "address": {
-          "postcode": "L17 7AE"
-        },
         "contact": {
           "email": null,
           "phone": null,
@@ -140,9 +137,6 @@
           "title": "Mr.",
           "firstName": "M",
           "lastName": "Mango"
-        },
-        "address": {
-          "postcode": "L3 6AB"
         },
         "contact": {
           "email": null,
