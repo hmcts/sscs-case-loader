@@ -63,8 +63,7 @@ public class CaseLoaderService {
         log.info("*** case-loader *** Reading xml files from SFTP...");
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
-        List<CaseData> casesToCreate = new ArrayList<>();
-        List<CaseData> casesToUpdate = new ArrayList<>();
+
         for (GapsInputStream gapsInputStream : inputStreamList) {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
@@ -73,14 +72,14 @@ public class CaseLoaderService {
             if ("Delta".equals(type)) {
                 JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
                 log.info("*** case-loader *** Transform XML to JSON successfully");
-                casesToCreate = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
+                List<CaseData> casesToCreate = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
                 log.info("*** case-loader *** Transform json to cases to create successfully");
-                casesToUpdate = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
+                List<CaseData> casesToUpdate = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
                 log.info("*** case-loader *** Transform json to cases to update successfully");
+                sendCreateCcdCases(casesToCreate);
+                sendUpdateCcdCases(casesToUpdate);
             }
         }
-        sendCreateCcdCases(casesToCreate);
-        sendUpdateCcdCases(casesToUpdate);
     }
 
     private void sendCreateCcdCases(List<CaseData> caseDataList) {
