@@ -30,7 +30,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
-import uk.gov.hmcts.reform.sscs.services.date.DateUtility;
+import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
@@ -41,12 +41,10 @@ public class CaseDataBuilder {
     private static final String NO = "No";
     private static final String Y = "Y";
 
-    private final DateUtility dateUtility;
     private final ReferenceDataService referenceDataService;
 
     @Autowired
-    public CaseDataBuilder(DateUtility dateUtility, ReferenceDataService referenceDataService) {
-        this.dateUtility = dateUtility;
+    public CaseDataBuilder(ReferenceDataService referenceDataService) {
         this.referenceDataService = referenceDataService;
     }
 
@@ -72,7 +70,7 @@ public class CaseDataBuilder {
 
     public Identity buildIdentity(Parties party, AppealCase appealCase) {
         return Identity.builder()
-            .dob(dateUtility.getValidDate(party.getDob()))
+            .dob(DateHelper.getValidDateOrTime(party.getDob(), true))
             .nino(appealCase.getAppealCaseNino())
             .build();
     }
@@ -133,7 +131,7 @@ public class CaseDataBuilder {
                         .venue(venue)
                         .hearingDate(hearing.getSessionDate().withZoneSameInstant(
                             ZoneId.of("Europe/London")).toLocalDate().toString())
-                        .time(dateUtility.getValidTime(hearing.getAppealTime()))
+                        .time(DateHelper.getValidDateOrTime(hearing.getAppealTime(), false))
                         .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
                         .build();
 
@@ -155,7 +153,7 @@ public class CaseDataBuilder {
         if (appealCase.getFurtherEvidence() != null) {
             for (FurtherEvidence furtherEvidence : appealCase.getFurtherEvidence()) {
                 doc = Doc.builder()
-                    .dateReceived(dateUtility.getValidDate(furtherEvidence.getFeDateReceived()))
+                    .dateReceived(DateHelper.getValidDateOrTime(furtherEvidence.getFeDateReceived(), true))
                     .description(furtherEvidence.getFeTypeofEvidenceId())
                     .build();
                 Documents documents = Documents.builder().value(doc).build();
