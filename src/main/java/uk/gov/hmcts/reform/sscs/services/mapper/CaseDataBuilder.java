@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
+import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
@@ -27,20 +28,25 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 import uk.gov.hmcts.reform.sscs.services.date.DateUtility;
+import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
 public class CaseDataBuilder {
+
     private static final String YES = "Yes";
     private static final String NO = "No";
     private static final String Y = "Y";
+
     private final DateUtility dateUtility;
+    private final ReferenceDataService referenceDataService;
 
     @Autowired
-    public CaseDataBuilder(DateUtility dateUtility) {
+    public CaseDataBuilder(DateUtility dateUtility, ReferenceDataService referenceDataService) {
         this.dateUtility = dateUtility;
+        this.referenceDataService = referenceDataService;
     }
 
-    public List<Events> buildEvents(AppealCase appealCase) {
+    public List<Events> buildEvent(AppealCase appealCase) {
 
         List<Events> events = new ArrayList<>();
         for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
@@ -108,8 +114,24 @@ public class CaseDataBuilder {
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
+            VenueDetails venueDetails = referenceDataService.getVenueDetails(appealCase.getHearing().getVenueId());
+
+            Address address = Address.builder()
+                .line1(venueDetails.getVenAddressLine1())
+                .line2(venueDetails.getVenAddressLine2())
+                .town(venueDetails.getVenAddressTown())
+                .county(venueDetails.getVenAddressCounty())
+                .postcode(venueDetails.getVenAddressPostcode())
+                .build();
+
+            Venue venue = Venue.builder()
+                .name(venueDetails.getVenName())
+                .address(address)
+                .googleMapLink(venueDetails.getUrl())
+                .build();
+
             hearings = HearingDetails.builder()
-                .venue(Venue.builder().venueTown("Aberdeen").build())
+                .venue(venue)
                 .hearingDate(dateUtility.getValidDate(appealCase.getHearing().getSessionDate()))
                 .time(dateUtility.getValidTime(appealCase.getHearing().getAppealTime()))
                 .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)

@@ -62,7 +62,11 @@ public class TransformAppealCaseToCaseData {
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(caseDataBuilder.buildEvents(appealCase))
+            .events(caseDataBuilder.buildEvent(appealCase))
+            .generatedNino(identity.getNino())
+            .generatedSurname(name.getLastName())
+            .generatedEmail(contact.getEmail())
+            .generatedMobile(contact.getMobile())
             .build();
     }
 
