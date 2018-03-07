@@ -36,7 +36,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
 
-    private static final String CASE_DETAILS_JSON = "src/test/resources/CaseDetails.json";
+    private static final String CASE_DETAILS_JSON = "src/test/resources/CaseDetailsWithOneEventAndNoEvidence.json";
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
         "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
     @Mock
@@ -77,14 +77,39 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenLatestEventIsNull_shouldNotUpdateCcd() {
+    @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
+        "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
+    public void givenThereIsNoEventChange_shouldNoUpdateCcd(GapsEvent gapsEvent) throws Exception {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
-            .thenReturn(Collections.singletonList(CaseDetails.builder().build()));
+            .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
 
-        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(CaseData.builder().build()));
+        CaseData caseData = CaseData.builder()
+            .events(Collections.singletonList(Events.builder()
+                .value(Event.builder()
+                    .type(gapsEvent.getType())
+                    .date("2017-05-23T13:18:15.073")
+                    .description("Appeal received")
+                    .build())
+                .build()))
+            .build();
+
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(caseData));
 
         verify(updateCoreCaseDataService, times(0))
-            .updateCase(any(CaseData.class), anyLong(), anyString());
+            .updateCase(eq(caseData), anyLong(), any());
+    }
+
+    @Test
+    public void givenNewEventIseNull_shouldNotUpdateCcd() throws Exception {
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
+            .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
+
+        CaseData caseData = CaseData.builder().build();
+
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(caseData));
+
+        verify(updateCoreCaseDataService, times(0))
+            .updateCase(eq(caseData), anyLong(), any());
     }
 
     @Test
@@ -141,7 +166,7 @@ public class CcdCasesSenderTest {
         verify(updateCoreCaseDataService, times(1))
             .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
 
-        verify(updateCoreCaseDataService, times(1))
+        verify(updateCoreCaseDataService, times(0))
             .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
     }
 

@@ -62,14 +62,22 @@ public class CcdCasesSender {
     }
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase) {
-        CaseDetails caseDetails;
         log.info("*** case-loader *** About to update case in CCD: {}",
             JsonHelper.printCaseDetailsInJson(caseData));
+        if (isThereAnEventChange(caseData, existingCcdCase)) {
+            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
+                caseData.getLatestEventType());
+            log.info("*** case-loader *** case events updated in CCD successfully: {}",
+                JsonHelper.printCaseDetailsInJson(caseDetails));
+        } else {
+            log.info("*** case-loader *** No case update needed: {}");
+        }
 
-        caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
-            caseData.getLatestEventType());
-        log.info("*** case-loader *** case events updated in CCD successfully: {}",
-            JsonHelper.printCaseDetailsInJson(caseDetails));
+    }
+
+    private boolean isThereAnEventChange(CaseData caseData, CaseDetails existingCcdCase) {
+        List eventObjects = (ArrayList) existingCcdCase.getData().get("events");
+        return eventObjects == null || caseData.getEvents().size() != eventObjects.size();
     }
 
     private void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase) {
