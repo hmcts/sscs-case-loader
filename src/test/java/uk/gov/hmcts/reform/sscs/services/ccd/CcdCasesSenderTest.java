@@ -8,10 +8,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +40,9 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
 
+    private static final String CASE_DETAILS_JSON = "src/test/resources/caseDetails.json";
+    private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
+        "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
     @Mock
     private UpdateCoreCaseDataService updateCoreCaseDataService;
     @Mock
@@ -62,7 +65,7 @@ public class CcdCasesSenderTest {
         "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
     public void givenThereIsAnEventChange_shouldUpdateCcd(GapsEvent gapsEvent) throws Exception {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
-            .thenReturn(Collections.singletonList(getCaseDetails()));
+            .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
 
         ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(buildUpdateCaseData(gapsEvent)));
 
@@ -70,14 +73,54 @@ public class CcdCasesSenderTest {
             .updateCase(eq(buildUpdateCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()));
     }
 
-    private CaseDetails getCaseDetails() throws IOException {
-        String caseDetailsJson = FileUtils.readFileToString(new File("src/test/resources/caseDetails.json"),
+    private CaseDetails getCaseDetails(String caseDetails) throws Exception {
+        String caseDetailsJson = FileUtils.readFileToString(new File(caseDetails),
             StandardCharsets.UTF_8.name());
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
         return mapper.readerFor(CaseDetails.class).readValue(caseDetailsJson);
     }
 
-    private void setupUpdateCaseMocks(GapsEvent event) throws IOException {
+    @Test
+    public void givenLatestEventIsNull_shouldNotUpdateCcd() {
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
+            .thenReturn(Collections.singletonList(CaseDetails.builder().build()));
+
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(CaseData.builder().build()));
+
+        verify(updateCoreCaseDataService, times(0))
+            .updateCase(any(CaseData.class), anyLong(), anyString());
+    }
+
+
+    @Test
+    public void givenFileWithFurtherEvidence_shouldUpdateCcdTwice() throws Exception {
+        CaseData caseData = CaseData.builder()
+            .evidence(buildEvidence())
+            .events(Collections.singletonList(Events.builder()
+                .value(Event.builder()
+                    .type(APPEAL_RECEIVED.getType())
+                    .date("2017-05-23T13:18:15.073")
+                    .description("Appeal received")
+                    .build())
+                .build()))
+            .build();
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
+
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
+            .thenReturn(Collections.singletonList(existingCaseDetails));
+
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(caseData));
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+
+        verify(updateCoreCaseDataService, times(1))
+            .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
+    }
+
+
+    private void setupUpdateCaseMocks(GapsEvent event) {
 
         CaseData caseData = buildUpdateCaseData(event);
 
@@ -141,16 +184,5 @@ public class CcdCasesSenderTest {
 
         return Evidence.builder().documents(documents).build();
 
-    }
-
-    @Test
-    public void givenLatestEventIsNull_shouldNotUpdateCcd() {
-        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
-            .thenReturn(Collections.singletonList(CaseDetails.builder().build()));
-
-        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(CaseData.builder().build()));
-
-        verify(updateCoreCaseDataService, times(0))
-            .updateCase(any(CaseData.class), anyLong(), anyString());
     }
 }

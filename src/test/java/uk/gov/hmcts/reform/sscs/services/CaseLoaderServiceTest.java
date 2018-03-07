@@ -22,8 +22,6 @@ import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
-import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -41,10 +39,6 @@ public class CaseLoaderServiceTest {
     private TransformJsonCasesToCaseData transformJsonCasesToCaseData;
     @Mock
     private CreateCoreCaseDataService createCoreCaseDataService;
-    @Mock
-    private SearchCoreCaseDataService searchCoreCaseDataService;
-    @Mock
-    private UpdateCoreCaseDataService updateCoreCaseDataService;
     @Mock
     private CcdCasesSender ccdCasesSender;
 
@@ -70,35 +64,7 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
     }
 
-    //    @Test
-    //    public void givenFileWithFurtherEvidence_shouldUpdateCcdTwice() throws IOException {
-    //        when(sftpSshService.readExtractFiles()).thenReturn(buildGapsInputStreams());
-    //        doNothing().when(xmlValidator).validateXml(anyString(), anyString());
-    //        when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
     //
-    //        CaseData caseData = buildUpdateCaseData(APPEAL_RECEIVED);
-    //
-    //        List<CaseData> caseDataList = Collections.singletonList(caseData);
-    //        when(transformJsonCasesToCaseData.transformUpdateCases(anyString())).thenReturn(caseDataList);
-    //
-    //        CaseDetails existingCaseDetails = CaseDetails.builder().data(buildCcdDataMap()).build();
-    //        List<CaseDetails> caseDetailsList = new ArrayList<>();
-    //        caseDetailsList.add(existingCaseDetails);
-    //
-    //        when(searchCoreCaseDataService.findCaseByCaseRef(anyString())).thenReturn(caseDetailsList);
-    //
-    //        doReturn(existingCaseDetails)
-    //            .when(updateCoreCaseDataService).updateCase(any(CaseData.class), anyLong(),
-    // eq(APPEAL_RECEIVED.getType()));
-    //
-    //        caseLoaderService.process();
-    //
-    //        verify(updateCoreCaseDataService, times(1))
-    //            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
-    //
-    //        verify(updateCoreCaseDataService, times(1))
-    //            .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
-    //    }
     //
     //    @Test
     //    public void givenFurtherEvidenceReceived_shouldUpdateCcdCorrectly() {
@@ -146,7 +112,6 @@ public class CaseLoaderServiceTest {
     //        verify(updateCoreCaseDataService, times(0))
     //            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
     //    }
-
 
 
     private List<GapsInputStream> buildGapsInputStreams() throws IOException {
