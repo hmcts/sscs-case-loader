@@ -142,4 +142,15 @@ public class CcdCasesSenderTest {
         return Evidence.builder().documents(documents).build();
 
     }
+
+    @Test
+    public void givenLatestEventIsNull_shouldNotUpdateCcd() {
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
+            .thenReturn(Collections.singletonList(CaseDetails.builder().build()));
+
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(CaseData.builder().build()));
+
+        verify(updateCoreCaseDataService, times(0))
+            .updateCase(any(CaseData.class), anyLong(), anyString());
+    }
 }

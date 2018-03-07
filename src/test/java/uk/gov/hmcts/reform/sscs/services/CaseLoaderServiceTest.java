@@ -1,18 +1,14 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
@@ -151,28 +147,7 @@ public class CaseLoaderServiceTest {
     //            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
     //    }
 
-    @Test
-    public void givenLatestEventIsNull_shouldNotUpdateCcd() throws IOException {
-        when(sftpSshService.readExtractFiles()).thenReturn(buildGapsInputStreams());
-        doNothing().when(xmlValidator).validateXml(anyString(), anyString());
-        when(transformXmlFilesToJsonFiles.transform(anyString())).thenReturn(mock(JSONObject.class));
 
-        CaseData caseData = CaseData.builder().build();
-
-        List<CaseData> caseDataList = Collections.singletonList(caseData);
-        when(transformJsonCasesToCaseData.transformUpdateCases(anyString())).thenReturn(caseDataList);
-
-        CaseDetails caseDetails = CaseDetails.builder().build();
-        List<CaseDetails> caseDetailsList = new ArrayList<>();
-        caseDetailsList.add(caseDetails);
-
-        when(searchCoreCaseDataService.findCaseByCaseRef(anyString())).thenReturn(caseDetailsList);
-
-        caseLoaderService.process();
-
-        verify(updateCoreCaseDataService, times(0))
-            .updateCase(any(CaseData.class), anyLong(), anyString());
-    }
 
     private List<GapsInputStream> buildGapsInputStreams() throws IOException {
         GapsInputStream refStream = GapsInputStream.builder()
