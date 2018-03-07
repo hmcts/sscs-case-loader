@@ -65,6 +65,7 @@ public class CcdCasesSender {
         CaseDetails caseDetails;
         log.info("*** case-loader *** About to update case in CCD: {}",
             JsonHelper.printCaseDetailsInJson(caseData));
+
         caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
             caseData.getLatestEventType());
         log.info("*** case-loader *** case events updated in CCD successfully: {}",

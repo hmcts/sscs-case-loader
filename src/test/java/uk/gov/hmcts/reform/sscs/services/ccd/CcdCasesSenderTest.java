@@ -36,7 +36,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
 
-    private static final String CASE_DETAILS_JSON = "src/test/resources/caseDetails.json";
+    private static final String CASE_DETAILS_JSON = "src/test/resources/CaseDetails.json";
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
         "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
     @Mock

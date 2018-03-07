@@ -54,7 +54,7 @@ public class CaseDetailsTest {
 
     @Test
     public void givenCaseDetailsJson_shouldSerialiseEvents() throws Exception {
-        String caseDetailsJson = FileUtils.readFileToString(new File("src/test/resources/caseDetails.json"),
+        String caseDetailsJson = FileUtils.readFileToString(new File("src/test/resources/CaseDetails.json"),
             StandardCharsets.UTF_8.name());
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
         CaseDetails caseDetails = mapper.readerFor(CaseDetails.class).readValue(caseDetailsJson);
@@ -72,7 +72,7 @@ public class CaseDetailsTest {
 
     @Test
     public void givenCaseDetailsJson_shouldSerialiseEvidence() throws Exception {
-        String caseDetailsJson = FileUtils.readFileToString(new File("src/test/resources/caseDetails.json"),
+        String caseDetailsJson = FileUtils.readFileToString(new File("src/test/resources/CaseDetails.json"),
             StandardCharsets.UTF_8.name());
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
         CaseDetails caseDetails = mapper.readerFor(CaseDetails.class).readValue(caseDetailsJson);
