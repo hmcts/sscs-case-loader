@@ -64,56 +64,6 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
     }
 
-    //
-    //
-    //    @Test
-    //    public void givenFurtherEvidenceReceived_shouldUpdateCcdCorrectly() {
-    //
-    //        CaseData newCaseData = CaseData.builder().evidence(buildEvidence()).build();
-    //
-    //        CaseDetails existingCaseDetails = CaseDetails.builder().data(buildCcdDataMap()).build();
-    //
-    //        caseLoaderService.checkNewEvidenceReceived(newCaseData, existingCaseDetails);
-    //
-    //        verify(updateCoreCaseDataService, times(1))
-    //            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
-    //    }
-
-    //    @Test
-    //    public void givenNoNewFurtherEvidenceReceived_shouldNotUpdateCcd() {
-    //        Map<String, Object> valueMap = new LinkedHashMap<>();
-    //        Map<String, String> evidenceData = new LinkedHashMap<>();
-    //        evidenceData.put("description", "1");
-    //        evidenceData.put("dateReceived", "2017-05-24");
-    //        valueMap.put("value", evidenceData);
-    //
-    //        List<Map<String, Object>> documentsMap = new ArrayList<>();
-    //        documentsMap.add(valueMap);
-    //
-    //        Map<String, Object> evidenceMap = new LinkedHashMap<>();
-    //        evidenceMap.put("documents", documentsMap);
-    //        Map<String, Object> caseDataMap = new HashMap<>(1);
-    //        caseDataMap.put("evidence", evidenceMap);
-    //
-    //        CaseDetails existingCaseDetails = CaseDetails.builder().data(caseDataMap).build();
-    //
-    //        Documents doc = Documents.builder()
-    //            .value(Doc.builder()
-    //                .description("1")
-    //                .dateReceived("2017-05-24")
-    //                .build())
-    //            .build();
-    //
-    //        Evidence evidence = Evidence.builder().documents(Collections.singletonList(doc)).build();
-    //        CaseData newCaseData = CaseData.builder().evidence(evidence).build();
-    //
-    //        caseLoaderService.checkNewEvidenceReceived(newCaseData, existingCaseDetails);
-    //
-    //        verify(updateCoreCaseDataService, times(0))
-    //            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
-    //    }
-
-
     private List<GapsInputStream> buildGapsInputStreams() throws IOException {
         GapsInputStream refStream = GapsInputStream.builder()
             .isDelta(false)

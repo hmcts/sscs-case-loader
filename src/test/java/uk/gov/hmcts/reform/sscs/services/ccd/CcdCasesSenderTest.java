@@ -4,7 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,10 +14,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.commons.io.FileUtils;
@@ -91,6 +87,36 @@ public class CcdCasesSenderTest {
             .updateCase(any(CaseData.class), anyLong(), anyString());
     }
 
+    @Test
+    public void givenNoNewFurtherEvidenceReceived_shouldNotUpdateCcd() throws Exception {
+        CaseData caseData = CaseData.builder()
+            .evidence(Evidence.builder()
+                .documents(Collections.singletonList(Documents.builder()
+                    .value(Doc.builder()
+                        .dateReceived("2017-05-24")
+                        .description("1")
+                        .build())
+                    .build()))
+                .build())
+            .events(Collections.singletonList(Events.builder()
+                .value(Event.builder()
+                    .type(APPEAL_RECEIVED.getType())
+                    .date("2017-05-23T13:18:15.073")
+                    .description("Appeal received")
+                    .build())
+                .build()))
+            .build();
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
+
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
+            .thenReturn(Collections.singletonList(existingCaseDetails));
+
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(caseData));
+
+        verify(updateCoreCaseDataService, times(0))
+            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+    }
 
     @Test
     public void givenFileWithFurtherEvidence_shouldUpdateCcdTwice() throws Exception {
@@ -117,27 +143,6 @@ public class CcdCasesSenderTest {
 
         verify(updateCoreCaseDataService, times(1))
             .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
-    }
-
-
-    private void setupUpdateCaseMocks(GapsEvent event) {
-
-        CaseData caseData = buildUpdateCaseData(event);
-
-        Map<String, Object> caseDataMap = new HashMap<>(1);
-        Map<String, Object> evidenceMap = new LinkedHashMap<>();
-        evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
-        caseDataMap.put("evidence", evidenceMap);
-
-        CaseDetails caseDetails = CaseDetails.builder().data(caseDataMap).build();
-
-        List<CaseDetails> caseDetailsList = new ArrayList<>();
-        caseDetailsList.add(caseDetails);
-
-        when(searchCoreCaseDataService.findCaseByCaseRef(anyString())).thenReturn(caseDetailsList);
-
-        doReturn(caseDetails)
-            .when(updateCoreCaseDataService).updateCase(any(CaseData.class), anyLong(), eq(event.getType()));
     }
 
     private CaseData buildUpdateCaseData(GapsEvent event) {
