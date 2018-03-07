@@ -44,7 +44,6 @@ public class CaseLoaderService {
         log.info("*** case-loader *** Reading xml files from SFTP...");
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
-
         for (GapsInputStream gapsInputStream : inputStreamList) {
             String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
             String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";

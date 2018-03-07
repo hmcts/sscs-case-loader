@@ -22,7 +22,6 @@ public class CcdCasesSender {
     private final SearchCoreCaseDataService searchCoreCaseDataService;
     private final UpdateCoreCaseDataService updateCoreCaseDataService;
 
-
     @Autowired
     public CcdCasesSender(CreateCoreCaseDataService createCoreCaseDataService,
                           SearchCoreCaseDataService searchCoreCaseDataService,
@@ -51,7 +50,6 @@ public class CcdCasesSender {
             List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
             log.info("*** case-loader *** Cases found with caseRef: {} in CCD: {}", caseData.getCaseReference(),
                 JsonHelper.printCaseDetailsInJson(cases));
-
             if (!cases.isEmpty()) {
                 String latestEventType = caseData.getLatestEventType();
                 if (latestEventType != null) {
@@ -64,29 +62,23 @@ public class CcdCasesSender {
     }
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase) {
-        //        List<Events> newEvents = caseData.getEvents();
-        //        System.out.println("newEvents: " + newEvents);
-        //        System.out.println("newEvents.size" + newEvents.size());
-        //        List<Events> existingEvents = (List<Events>) existingCcdCase.getData().get("events");
-        //        System.out.println("existingEvents: " + existingEvents);
-        //        System.out.println("existingEvents.size:" + existingEvents.size());
-
         CaseDetails caseDetails;
-        log.info("*** case-loader *** About to update case into CCD: {}",
+        log.info("*** case-loader *** About to update case in CCD: {}",
             JsonHelper.printCaseDetailsInJson(caseData));
         caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
             caseData.getLatestEventType());
-        log.info("*** case-loader *** Update case in CCD successfully: {}", caseDetails);
+        log.info("*** case-loader *** case events updated in CCD successfully: {}",
+            JsonHelper.printCaseDetailsInJson(caseDetails));
     }
 
-    public void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase) {
+    private void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase) {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
-
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
             CaseDetails caseDetails = updateCoreCaseDataService
                 .updateCase(caseData, existingCase.getId(), "evidenceReceived");
-            log.info("*** case-loader *** New evidence received event: {}", caseDetails);
+            log.info("*** case-loader *** New evidence received event: {}",
+                JsonHelper.printCaseDetailsInJson(caseDetails));
         }
     }
 
@@ -109,5 +101,4 @@ public class CcdCasesSender {
 
         return Evidence.builder().documents(documentList).build();
     }
-
 }
