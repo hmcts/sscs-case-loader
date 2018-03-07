@@ -3,8 +3,9 @@ package uk.gov.hmcts.reform.sscs.refdata;
 import static com.google.common.collect.Maps.newHashMap;
 
 import com.opencsv.CSVReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -16,16 +17,17 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 @Slf4j
 public class VenueDataLoader {
 
-    private static final String CSV_FILE_PATH = "src/main/resources/reference-data/sscs-venues.csv";
-    private final Map<String, VenueDetails> venueDetailsList = newHashMap();
+    private static final String CSV_FILE_PATH = "reference-data/sscs-venues.csv";
+    private final Map<String, VenueDetails> venueDetailsMap = newHashMap();
 
     @PostConstruct
     private void init() {
-        try (CSVReader reader = new CSVReader(new FileReader(CSV_FILE_PATH))) {
+        InputStream is = getClass().getClassLoader().getResourceAsStream(CSV_FILE_PATH);
+        try (CSVReader reader = new CSVReader(new InputStreamReader(is))) {
 
             List<String[]> linesList = reader.readAll();
             linesList.forEach(line ->
-                venueDetailsList.put(line[0],
+                venueDetailsMap.put(line[0],
                     VenueDetails.builder()
                         .venueId(line[0])
                         .threeDigitReference(line[1])
@@ -47,6 +49,6 @@ public class VenueDataLoader {
     }
 
     public Map<String, VenueDetails> getVenueDetailsMap() {
-        return venueDetailsList;
+        return venueDetailsMap;
     }
 }

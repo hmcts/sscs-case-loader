@@ -29,7 +29,7 @@ public class ReferenceDataServiceTest {
 
     @Before
     public void setUp() {
-        referenceDataService = new ReferenceDataService(venueDataLoader, refDataRepo);
+        referenceDataService = new ReferenceDataService(venueDataLoader);
     }
 
     @Test
