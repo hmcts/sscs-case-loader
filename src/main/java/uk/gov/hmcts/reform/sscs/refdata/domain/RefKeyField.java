@@ -104,4 +104,5 @@ public enum RefKeyField {
     POSTPONE_REASON_ID,
     PPR_CODE,
     PPR_DESC,
+    BENEFIT_DESC,
 }
