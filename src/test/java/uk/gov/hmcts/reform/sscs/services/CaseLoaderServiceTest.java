@@ -231,13 +231,13 @@ public class CaseLoaderServiceTest {
         Event appealCreatedEvent = Event.builder()
             .type("appealCreated")
             .description("Appeal Created")
-            .date("2018-01-14T21:59:43.10-05:00")
+            .date("2018-01-14T21:59:43.10")
             .build();
 
         Event updateEvent = Event.builder()
             .type(event.getType())
             .description(event.getDescription())
-            .date("2018-01-15T21:59:43.10-05:00")
+            .date("2018-01-15T21:59:43.10")
             .build();
 
         List<Events> events = new ArrayList<>();
