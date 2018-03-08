@@ -79,6 +79,7 @@ module "sscs-case-loader" {
     GAPS2_SFTP_DIR = "${var.gaps2_sftp_dir}"
 
     SSCS_CASE_LOADER_CRON_SCHEDULE = "${var.sscs_case_loader_cron_schedule}"
+    IGNORE_CASES_BEFORE_DATE = "${var.ignore_cases_before_date}"
 
     # addtional log
     ROOT_LOGGING_LEVEL = "${var.root_logging_level}"

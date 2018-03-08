@@ -64,6 +64,10 @@ variable "sscs_case_loader_cron_schedule" {
   default = "0 0/5 * * * ?"
 }
 
+variable "ignore_cases_before_date" {
+  default = "2018-07-01"
+}
+
 variable "root_logging_level" {
   default = "INFO"
 }
