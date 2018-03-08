@@ -33,7 +33,7 @@ sftp:
 
 spring.application.name: CaseLoader Insights WebApp
 
-sscs.case.loader.cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0/10 * * * * ?}
+sscs.case.loader.cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0 0/5 * * * ?}
 sscs.case.loader.ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:2018-07-01}
 
 logging.level:
