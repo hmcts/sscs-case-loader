@@ -19,11 +19,6 @@ public final class DateHelper {
         return "";
     }
 
-    public static LocalDate convertStringToDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        return LocalDate.parse(date, formatter);
-    }
-
     public static LocalDate convertEventDateToUkLocalDateTime(String dateTimeinUtc) {
         return ZonedDateTime.parse(dateTimeinUtc + "Z").toInstant().atZone(ZoneId.of("Europe/London")).toLocalDate();
     }

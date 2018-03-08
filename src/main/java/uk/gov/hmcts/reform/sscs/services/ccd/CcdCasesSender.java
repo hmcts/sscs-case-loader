@@ -39,7 +39,7 @@ public class CcdCasesSender {
 
     public void sendCreateCcdCases(List<CaseData> caseDataList) {
 
-        LocalDate ignoreCasesBeforeDate = DateHelper.convertStringToDate(ignoreCasesBeforeDateProperty);
+        LocalDate ignoreCasesBeforeDate = LocalDate.parse(ignoreCasesBeforeDateProperty);
         caseDataList.forEach(caseData -> {
 
             LocalDate eventDate = DateHelper.convertEventDateToUkLocalDateTime(caseData.getLatestEvent().getDate());

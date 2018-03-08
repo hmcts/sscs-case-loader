@@ -56,7 +56,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender = new CcdCasesSender(createCoreCaseDataService, searchCoreCaseDataService,
             updateCoreCaseDataService);
 
-        ReflectionTestUtils.setField(ccdCasesSender, "ignoreCasesBeforeDateProperty", "01/01/2018");
+        ReflectionTestUtils.setField(ccdCasesSender, "ignoreCasesBeforeDateProperty", "2018-01-01");
     }
 
     @Test
@@ -72,7 +72,7 @@ public class CcdCasesSenderTest {
 
     @Test
     public void givenThereIsANewCaseBeforeIgnoreCasesBeforeDateProperty_shouldNotCreateInCcd() {
-        ReflectionTestUtils.setField(ccdCasesSender, "ignoreCasesBeforeDateProperty", "01/07/2019");
+        ReflectionTestUtils.setField(ccdCasesSender, "ignoreCasesBeforeDateProperty", "2019-01-01");
 
         ccdCasesSender.sendCreateCcdCases(Collections.singletonList(buildCaseData(APPEAL_RECEIVED)));
 

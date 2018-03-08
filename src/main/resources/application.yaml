@@ -6,7 +6,6 @@ core_case_data:
   userId: ${CORE_CASE_DATA_USER_ID:16}
   jurisdictionId: ${CORE_CASE_DATA_JURISDICTION_ID:SSCS}
   caseTypeId: ${CORE_CASE_DATA_CASE_TYPE_ID:Benefit}
-  eventId: ${CORE_CASE_DATA_EVENT_ID:appealCreated}
 
 idam:
   url: ${IDAM_URL:http://localhost:4501}
@@ -59,12 +58,10 @@ sftp:
   username: ${GAPS2_SFTP_USER:sftp}
   inputDirectory: ${GAPS2_SFTP_DIR:incoming}
 
-spring.application.name: case loader app
-
+spring.application.name: CaseLoader Insights WebApp
 
 sscs.case.loader.cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0/10 * * * * ?}
-sscs.case.loader.ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:01/07/2018}
-
+sscs.case.loader.ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:2018-07-01}
 
 logging.level:
     org.springframework.web: DEBUG

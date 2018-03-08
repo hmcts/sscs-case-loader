@@ -39,7 +39,7 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration
-@TestPropertySource(properties = { "sscs.case.loader.ignoreCasesBeforeDate=01/01/2017" })
+@TestPropertySource(properties = { "sscs.case.loader.ignoreCasesBeforeDate=2017-01-01" })
 public class ProcessCaseTest {
 
     private static final int EXPECTED_NUMBER_OF_CASES_TO_CREATE_IN_CCD = 1;
