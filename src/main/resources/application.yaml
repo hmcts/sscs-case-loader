@@ -37,8 +37,8 @@ sscs.case.loader.cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0 0/5 * * * ?}
 sscs.case.loader.ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:2018-07-01}
 
 logging.level:
-    org.springframework.web: DEBUG
-    uk.gov.hmcts.reform.sscs: DEBUG
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
+    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
 
 ---
