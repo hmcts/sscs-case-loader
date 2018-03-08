@@ -40,7 +40,6 @@ logging.level:
     org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
     uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
-
 ---
 spring:
     profiles: development
