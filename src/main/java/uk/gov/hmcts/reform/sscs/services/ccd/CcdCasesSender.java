@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.json.JsonHelper;
 
 @Service
@@ -41,10 +39,10 @@ public class CcdCasesSender {
 
     public void sendCreateCcdCases(List<CaseData> caseDataList) {
 
-        LocalDate ignoreCasesBeforeDate = convertStringToDate(ignoreCasesBeforeDateProperty);
+        LocalDate ignoreCasesBeforeDate = DateHelper.convertStringToDate(ignoreCasesBeforeDateProperty);
         caseDataList.forEach(caseData -> {
 
-            LocalDate eventDate = convertEventDateToUkLocalDateTime(caseData.getLatestEvent().getDate());
+            LocalDate eventDate = DateHelper.convertEventDateToUkLocalDateTime(caseData.getLatestEvent().getDate());
 
             if (eventDate.isAfter(ignoreCasesBeforeDate) || eventDate.isEqual(ignoreCasesBeforeDate)) {
                 log.info("*** case-loader *** About to save case into CCD: {}",
@@ -57,15 +55,6 @@ public class CcdCasesSender {
                 }
             }
         });
-    }
-
-    private static LocalDate convertEventDateToUkLocalDateTime(String dateTimeinUtc) {
-        return ZonedDateTime.parse(dateTimeinUtc + "Z").toInstant().atZone(ZoneId.of("Europe/London")).toLocalDate();
-    }
-
-    private LocalDate convertStringToDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        return LocalDate.parse(date, formatter);
     }
 
     public void sendUpdateCcdCases(List<CaseData> caseDataList) {

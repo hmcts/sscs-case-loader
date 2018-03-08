@@ -62,7 +62,7 @@ public class CcdCasesSenderTest {
     @Test
     public void givenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty_shouldCreateInCcd() {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
-            .thenReturn(Collections.EMPTY_LIST);
+            .thenReturn(Collections.emptyList());
 
         ccdCasesSender.sendCreateCcdCases(Collections.singletonList(buildCaseData(APPEAL_RECEIVED)));
 
