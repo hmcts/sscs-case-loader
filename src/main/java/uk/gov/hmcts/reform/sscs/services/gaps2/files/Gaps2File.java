@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.gaps2.files;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class Gaps2File implements Comparable<Gaps2File> {
 

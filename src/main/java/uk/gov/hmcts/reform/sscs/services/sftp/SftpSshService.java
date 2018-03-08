@@ -45,7 +45,8 @@ public class SftpSshService {
                 stream = channel.get(sftpSshProperties.getInputDirectory() + "/"
                     + file.getName());
             } catch (SftpException e) {
-                throw new SftpCustomException(String.format("SFTP Failed to get stream for file: %s", file.getName()), e);
+                throw new SftpCustomException(
+                    String.format("SFTP Failed to get stream for file: %s", file.getName()), e);
             }
 
             inputStreams.add(GapsInputStream.builder()
