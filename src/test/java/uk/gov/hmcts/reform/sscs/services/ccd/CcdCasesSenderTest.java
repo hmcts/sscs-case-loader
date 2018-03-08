@@ -77,16 +77,14 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
-        "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
-    public void givenThereIsNoEventChange_shouldNoUpdateCcd(GapsEvent gapsEvent) throws Exception {
+    public void givenThereIsNoEventChange_shouldNoUpdateCcd() throws Exception {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
             .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
 
         CaseData caseData = CaseData.builder()
             .events(Collections.singletonList(Events.builder()
                 .value(Event.builder()
-                    .type(gapsEvent.getType())
+                    .type(APPEAL_RECEIVED.getType())
                     .date("2017-05-23T13:18:15.073")
                     .description("Appeal received")
                     .build())
@@ -100,7 +98,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenNewEventIseNull_shouldNotUpdateCcd() throws Exception {
+    public void givenNewEventIsNull_shouldNotUpdateCcd() throws Exception {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
             .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
 
