@@ -15,7 +15,7 @@ public class ProcessFileAndSaveIntoCcd {
     private CaseLoaderService caseLoaderService;
 
     @Test
-    public void givenACase_shouldBeSaveIntoCcd() throws Exception {
+    public void givenACase_shouldBeSaveIntoCcd() {
         caseLoaderService.process();
     }
 
