@@ -1,17 +1,20 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.json.JsonHelper;
 
 @Service
@@ -21,6 +24,9 @@ public class CcdCasesSender {
     private final CreateCoreCaseDataService createCoreCaseDataService;
     private final SearchCoreCaseDataService searchCoreCaseDataService;
     private final UpdateCoreCaseDataService updateCoreCaseDataService;
+
+    @Value("${sscs.case.loader.ignoreCasesBeforeDate}")
+    private String ignoreCasesBeforeDateProperty;
 
     @Autowired
     public CcdCasesSender(CreateCoreCaseDataService createCoreCaseDataService,
@@ -32,14 +38,21 @@ public class CcdCasesSender {
     }
 
     public void sendCreateCcdCases(List<CaseData> caseDataList) {
+
+        LocalDate ignoreCasesBeforeDate = LocalDate.parse(ignoreCasesBeforeDateProperty);
         caseDataList.forEach(caseData -> {
-            log.info("*** case-loader *** About to save case into CCD: {}",
-                JsonHelper.printCaseDetailsInJson(caseData));
-            List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
-            if (cases.isEmpty()) {
-                CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
-                log.info("*** case-loader *** Save case into CCD successfully: {}",
-                    JsonHelper.printCaseDetailsInJson(caseDetails));
+
+            LocalDate eventDate = DateHelper.convertEventDateToUkLocalDateTime(caseData.getLatestEvent().getDate());
+
+            if (eventDate.isAfter(ignoreCasesBeforeDate) || eventDate.isEqual(ignoreCasesBeforeDate)) {
+                log.info("*** case-loader *** About to save case into CCD: {}",
+                    JsonHelper.printCaseDetailsInJson(caseData));
+                List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
+                if (cases.isEmpty()) {
+                    CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
+                    log.info("*** case-loader *** Save case into CCD successfully: {}",
+                        JsonHelper.printCaseDetailsInJson(caseDetails));
+                }
             }
         });
     }

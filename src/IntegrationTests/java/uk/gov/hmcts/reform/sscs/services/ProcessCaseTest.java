@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
@@ -36,6 +38,8 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ContextConfiguration
+@TestPropertySource(properties = { "sscs.case.loader.ignoreCasesBeforeDate=2017-01-01" })
 public class ProcessCaseTest {
 
     private static final int EXPECTED_NUMBER_OF_CASES_TO_CREATE_IN_CCD = 1;

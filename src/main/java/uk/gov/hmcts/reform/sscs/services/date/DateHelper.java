@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.date;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,10 @@ public final class DateHelper {
             return isDate ? result.toLocalDate().toString() : result.toLocalTime().toString();
         }
         return "";
+    }
+
+    public static LocalDate convertEventDateToUkLocalDateTime(String dateTimeinUtc) {
+        return ZonedDateTime.parse(dateTimeinUtc + "Z").toInstant().atZone(ZoneId.of("Europe/London")).toLocalDate();
     }
 
 }
