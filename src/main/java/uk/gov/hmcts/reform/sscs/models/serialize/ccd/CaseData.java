@@ -20,7 +20,13 @@ public class CaseData {
     private String generatedMobile;
 
     @JsonIgnore
+    public Event getLatestEvent() {
+        return events != null && !events.isEmpty() ? events.get(0).getValue() : null;
+    }
+
+    @JsonIgnore
     public String getLatestEventType() {
-        return events != null && !events.isEmpty() ? events.get(0).getValue().getType() : null;
+        Event latestEvent = getLatestEvent();
+        return latestEvent != null ? latestEvent.getType() : null;
     }
 }

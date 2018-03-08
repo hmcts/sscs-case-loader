@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
@@ -54,6 +55,29 @@ public class CcdCasesSenderTest {
         MockitoAnnotations.initMocks(this);
         ccdCasesSender = new CcdCasesSender(createCoreCaseDataService, searchCoreCaseDataService,
             updateCoreCaseDataService);
+
+        ReflectionTestUtils.setField(ccdCasesSender, "ignoreCasesBeforeDateProperty", "01/01/2018");
+    }
+
+    @Test
+    public void givenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty_shouldCreateInCcd() {
+        when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
+            .thenReturn(Collections.EMPTY_LIST);
+
+        ccdCasesSender.sendCreateCcdCases(Collections.singletonList(buildCaseData(APPEAL_RECEIVED)));
+
+        verify(createCoreCaseDataService, times(1))
+            .createCcdCase(eq(buildCaseData(APPEAL_RECEIVED)));
+    }
+
+    @Test
+    public void givenThereIsANewCaseBeforeIgnoreCasesBeforeDateProperty_shouldNotCreateInCcd() {
+        ReflectionTestUtils.setField(ccdCasesSender, "ignoreCasesBeforeDateProperty", "01/07/2019");
+
+        ccdCasesSender.sendCreateCcdCases(Collections.singletonList(buildCaseData(APPEAL_RECEIVED)));
+
+        verify(createCoreCaseDataService, times(0))
+            .createCcdCase(eq(buildCaseData(APPEAL_RECEIVED)));
     }
 
     @Test
@@ -63,10 +87,10 @@ public class CcdCasesSenderTest {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
             .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
 
-        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(buildUpdateCaseData(gapsEvent)));
+        ccdCasesSender.sendUpdateCcdCases(Collections.singletonList(buildCaseData(gapsEvent)));
 
         verify(updateCoreCaseDataService, times(1))
-            .updateCase(eq(buildUpdateCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()));
+            .updateCase(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()));
     }
 
     private CaseDetails getCaseDetails(String caseDetails) throws Exception {
@@ -77,7 +101,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenThereIsNoEventChange_shouldNoUpdateCcd() throws Exception {
+    public void givenThereIsNoEventChange_shouldNotUpdateCcd() throws Exception {
         when(searchCoreCaseDataService.findCaseByCaseRef(anyString()))
             .thenReturn(Collections.singletonList(getCaseDetails(CASE_DETAILS_JSON)));
 
@@ -168,17 +192,17 @@ public class CcdCasesSenderTest {
             .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
     }
 
-    private CaseData buildUpdateCaseData(GapsEvent event) {
+    private CaseData buildCaseData(GapsEvent event) {
         Event appealCreatedEvent = Event.builder()
             .type("appealCreated")
             .description("Appeal Created")
-            .date("2018-01-14T21:59:43.10-05:00")
+            .date("2018-01-14T21:59:43.10")
             .build();
 
         Event updateEvent = Event.builder()
             .type(event.getType())
             .description(event.getDescription())
-            .date("2018-01-15T21:59:43.10-05:00")
+            .date("2018-01-15T21:59:43.10")
             .build();
 
         List<Events> events = new ArrayList<>();
