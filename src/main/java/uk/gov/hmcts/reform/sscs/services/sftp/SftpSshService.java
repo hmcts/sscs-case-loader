@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.sftp;
 
-import com.jcraft.jsch.Channel;
+import static com.google.common.collect.Lists.newArrayList;
+
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
+import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 
 @Service
 @Slf4j
@@ -22,9 +24,6 @@ public class SftpSshService {
 
     private final JSch jschSshChannel;
     private final SftpSshProperties sftpSshProperties;
-    private static final String SSCS_SFTP = "SSCS-SFTP";
-    private static final String DELTA_FILE_START = "SSCS_Extract_Delta";
-    private static final String REFERENCE_FILE_START = "SSCS_Extract_Reference";
 
     @Autowired
     public SftpSshService(JSch jschSshChannel, SftpSshProperties sftpSshProperties) {
@@ -33,12 +32,54 @@ public class SftpSshService {
     }
 
     public List<GapsInputStream> readExtractFiles() {
-        return getFilesAsInputStreams(connect());
+        ChannelSftp channel = getSftpChannel();
+
+        List<Gaps2File> listOfGaps2Files = getFiles();
+
+        List<GapsInputStream> inputStreams = new ArrayList<>();
+
+        for (Gaps2File file : listOfGaps2Files) {
+            log.info("Sftp file: {}", file.getName());
+            InputStream stream;
+            try {
+                stream = channel.get(sftpSshProperties.getInputDirectory() + "/"
+                    + file.getName());
+            } catch (SftpException e) {
+                throw new SftpCustomException(String.format("SFTP Failed to get stream for file: %s", file.getName()), e);
+            }
+
+            inputStreams.add(GapsInputStream.builder()
+                .isDelta(file.isDelta())
+                .isReference(!file.isDelta())
+                .inputStream(stream)
+                .build());
+        }
+        return inputStreams;
     }
 
-    private Session connect() {
+    public List<Gaps2File> getFiles() {
+        ChannelSftp channel = getSftpChannel();
+
+        List<ChannelSftp.LsEntry> ls;
         try {
-            jschSshChannel.addIdentity(SSCS_SFTP, sftpSshProperties.getKeyLocation().getBytes(),
+            ls = channel.ls(sftpSshProperties.getInputDirectory() + "/*.xml");
+        } catch (SftpException e) {
+            throw new SftpCustomException("SFTP Failed reading incoming directory", e);
+        }
+        List<Gaps2File> fileList = newArrayList();
+        for (ChannelSftp.LsEntry entry : ls) {
+            fileList.add(new Gaps2File(entry.getFilename()));
+        }
+        return fileList;
+    }
+
+    public void move(Gaps2File file, boolean success) {
+        // TODO: move loaded file to processed or failed directory
+    }
+
+    private ChannelSftp getSftpChannel() {
+        try {
+            jschSshChannel.addIdentity("SSCS-SFTP", sftpSshProperties.getKeyLocation().getBytes(),
                 null, null);
 
             Session sesConnection = jschSshChannel.getSession(
@@ -48,52 +89,9 @@ public class SftpSshService {
             sesConnection.setConfig("StrictHostKeyChecking", "no");
             sesConnection.connect(60000);
 
-            return sesConnection;
+            return (ChannelSftp) sesConnection.openChannel("sftp");
         } catch (JSchException e) {
             throw new SftpCustomException("Oops...something went wrong...", e);
         }
-    }
-
-    private List<GapsInputStream> getFilesAsInputStreams(Session sesConnection) {
-        try {
-            Channel channel = sesConnection.openChannel("sftp");
-            channel.connect();
-            ChannelSftp channelSftp = (ChannelSftp) channel;
-
-            List fileList = channelSftp.ls(sftpSshProperties.getInputDirectory() + "/*.xml");
-
-            List<String> listOfGaps2Files = getOrderedListOfGaps2FilesByDateTime(fileList);
-
-            List<GapsInputStream> inputStreams = new ArrayList<>();
-
-            for (String fileName : listOfGaps2Files) {
-                log.info("Sftp file: {}", fileName);
-                InputStream stream = channelSftp.get(sftpSshProperties.getInputDirectory() + "/"
-                    + fileName);
-
-                inputStreams.add(GapsInputStream.builder()
-                    .isDelta(isFileType(fileName, DELTA_FILE_START))
-                    .isReference(isFileType(fileName, REFERENCE_FILE_START))
-                    .inputStream(stream)
-                    .build());
-            }
-            return inputStreams;
-        } catch (JSchException | SftpException e) {
-            throw new SftpCustomException("Oops...something went wrong...", e);
-        }
-    }
-
-    private List<String> getOrderedListOfGaps2FilesByDateTime(List fileList) {
-        List<String> fileNameList = new ArrayList<>();
-
-        for (Object lsEntry: fileList) {
-            fileNameList.add(((ChannelSftp.LsEntry) lsEntry).getFilename());
-        }
-
-        return Gaps2FileUtils.getOrderByDateAndTime(fileNameList);
-    }
-
-    private Boolean isFileType(String fileName, String startPath) {
-        return fileName.startsWith(startPath);
     }
 }
