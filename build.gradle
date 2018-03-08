@@ -67,7 +67,7 @@ def springBootVersion = plugins.getPlugin('org.springframework.boot').class.pack
 
 repositories {
   maven {
-    url  "https://dl.bintray.com/hmcts/hmcts-maven"
+    url "https://dl.bintray.com/hmcts/hmcts-maven"
   }
 
   jcenter()
@@ -178,19 +178,20 @@ dependencies {
 
   testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
-  run {
-    def debug = System.getProperty("debug")
-    if (debug == 'true') {
-      jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
-    }
-  }
 
-  task smoke(type: Test) {
-    group = 'verification'
-    description = 'Executes non-destructive smoke tests against a running case loader'
-    setTestClassesDirs(sourceSets.e2e.output.classesDirs)
-    setClasspath(sourceSets.e2e.runtimeClasspath)
-    include "uk/gov/hmcts/reform/sscs/**"
-  }
+}
 
+run {
+  def debug = System.getProperty("debug")
+  if (debug == 'true') {
+    jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+  }
+}
+
+task smoke(type: Test) {
+  group = 'verification'
+  description = 'Executes non-destructive smoke tests against a running case loader'
+  setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+  setClasspath(sourceSets.e2e.runtimeClasspath)
+  include "uk/gov/hmcts/reform/sscs/**"
 }
