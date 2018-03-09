@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
+import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 
 @Configuration
 @Validated
@@ -58,5 +59,13 @@ public class SftpSshProperties {
 
     public void setKeyLocation(String keyLocation) {
         this.keyLocation = keyLocation;
+    }
+
+    public String getProcessedFile(Gaps2File file) {
+        return String.format("%s/%s/%s", getInputDirectory(), "processed", file.getName());
+    }
+
+    public String getFailedFile(Gaps2File file) {
+        return String.format("%s/%s/%s", getInputDirectory(), "failed", file.getName());
     }
 }

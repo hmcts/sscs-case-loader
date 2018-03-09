@@ -75,7 +75,12 @@ public class SftpSshService {
     }
 
     public void move(Gaps2File file, boolean success) {
-        // TODO: move loaded file to processed or failed directory
+        String fileName = success ? sftpSshProperties.getProcessedFile(file) : sftpSshProperties.getFailedFile(file);
+        try {
+            getSftpChannel().put("", fileName);
+        } catch (SftpException e) {
+            throw new SftpCustomException("SFTP Failed writing to " + fileName, e);
+        }
     }
 
     private ChannelSftp getSftpChannel() {

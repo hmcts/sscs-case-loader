@@ -9,11 +9,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 import java.util.List;
 import java.util.Vector;
 import org.junit.Before;
@@ -44,23 +40,22 @@ public class SftpSshServiceTest {
     @Mock
     private ChannelSftp channelSftp;
 
-    @Mock
-    private SftpSshProperties sftpSshProperties;
+    private SftpSshProperties sftpSshProperties = new SftpSshProperties();
 
     private SftpSshService service;
 
     @Before
     public void setUp() throws JSchException {
-        when(sftpSshProperties.getUsername()).thenReturn(USERNAME);
-        when(sftpSshProperties.getHost()).thenReturn(HOST);
-        when(sftpSshProperties.getPort()).thenReturn(PORT);
-        when(sftpSshProperties.getInputDirectory()).thenReturn(INPUT_DIR);
+        sftpSshProperties.setUsername(USERNAME);
+        sftpSshProperties.setHost(HOST);
+        sftpSshProperties.setPort(PORT);
+        sftpSshProperties.setInputDirectory(INPUT_DIR);
+        sftpSshProperties.setKeyLocation("key");
 
         stub(jschSshChannel.getSession(anyString(), anyString(), anyInt())).toReturn(sesConnection);
         stub(sesConnection.openChannel(anyString())).toReturn(channelSftp);
 
         service = new SftpSshService(jschSshChannel, sftpSshProperties);
-        when(sftpSshProperties.getKeyLocation()).thenReturn("key");
     }
 
     @Test
@@ -71,7 +66,7 @@ public class SftpSshServiceTest {
         rows.add(row1);
         rows.add(row2);
 
-        when(channelSftp.ls(anyString())).thenReturn(rows);
+        when(channelSftp.ls(INPUT_DIR + "/*.xml")).thenReturn(rows);
         when(row1.getFilename()).thenReturn(DELTA_FILENAME);
         when(row2.getFilename()).thenReturn(REF_FILENAME);
 
@@ -87,9 +82,19 @@ public class SftpSshServiceTest {
     }
 
     @Test
-    public void shouldMoveFileToProcessedDirectoryGivenSuccessfullyLoaded() {
+    public void shouldMoveFileToProcessedDirectoryGivenSuccessfullyLoaded() throws SftpException {
         Gaps2File file = new Gaps2File(DELTA_FILENAME);
         service.move(file, true);
+
+        verify(channelSftp).put("", INPUT_DIR + "/processed/" + DELTA_FILENAME);
+    }
+
+    @Test
+    public void shouldMoveFileToFailedDirectoryGivenLoadFailed() throws SftpException {
+        Gaps2File file = new Gaps2File(DELTA_FILENAME);
+        service.move(file, false);
+
+        verify(channelSftp).put("", INPUT_DIR + "/failed/" + DELTA_FILENAME);
     }
 
     private void mockSftpInternalServices(String fileName) throws Exception {
