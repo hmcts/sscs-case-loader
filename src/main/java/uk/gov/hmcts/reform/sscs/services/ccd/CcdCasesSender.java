@@ -100,7 +100,8 @@ public class CcdCasesSender {
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
             log.info("*** case-loader *** About to update case with evidence received in CCD for case reference: {}",
                 caseData.getCaseReference());
-            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(), "evidenceReceived");
+            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(),
+                "evidenceReceived");
             log.info("*** case-loader *** New evidence received event updated in CCD for case: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         }
