@@ -11,9 +11,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.AppellantSubscription;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.SupporterSubscription;
 
 public class CaseDataContentToJsonTest {
 
@@ -47,36 +44,10 @@ public class CaseDataContentToJsonTest {
         String jsonSubscription = FileUtils.readFileToString(
             new File("src/test/resources/Subscriptions.json"), StandardCharsets.UTF_8);
 
-        CaseData caseData = buildCaseDataWithSubscription();
+        CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
 
         assertThatJson(caseData).node("subscriptions").isEqualTo(jsonSubscription);
     }
 
-    private CaseData buildCaseDataWithSubscription() {
-        AppellantSubscription appellantSubscription = AppellantSubscription.builder()
-            .tya("")
-            .email("")
-            .mobile("")
-            .subscribeEmail("yes/no")
-            .subscribeSms("yes/no")
-            .reason("")
-            .build();
-        SupporterSubscription supporterSubscription = SupporterSubscription.builder()
-            .tya("")
-            .email("")
-            .mobile("")
-            .subscribeEmail("")
-            .subscribeSms("")
-            .reason("")
-            .build();
-        Subscriptions subscriptions = Subscriptions.builder()
-            .appellantSubscription(appellantSubscription)
-            .supporterSubscription(supporterSubscription)
-            .build();
-
-        return CaseData.builder()
-            .subscriptions(subscriptions)
-            .build();
-    }
 
 }
