@@ -19,19 +19,20 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 @RunWith(MockitoJUnitRunner.class)
 public class Gaps2FileLoaderTest {
 
-    private Gaps2File delta1 = new Gaps2File("SSCS_Extract_Delta_2018-01-01-01-01-01.xml");
-    private Gaps2File delta2 = new Gaps2File("SSCS_Extract_Delta_2018-01-02-01-01-01.xml");
-    private Gaps2File delta3 = new Gaps2File("SSCS_Extract_Delta_2018-01-03-01-01-01.xml");
+    private final Gaps2File delta1 = new Gaps2File("SSCS_Extract_Delta_2018-01-01-01-01-01.xml");
+    private final Gaps2File delta2 = new Gaps2File("SSCS_Extract_Delta_2018-01-02-01-01-01.xml");
+    private final Gaps2File delta3 = new Gaps2File("SSCS_Extract_Delta_2018-01-03-01-01-01.xml");
 
-    private Gaps2File ref1 = new Gaps2File("SSCS_Extract_Reference_2018-01-01-01-01-01.xml");
-    private Gaps2File ref2 = new Gaps2File("SSCS_Extract_Reference_2018-01-02-01-01-01.xml");
-    private Gaps2File ref3 = new Gaps2File("SSCS_Extract_Reference_2018-01-03-01-01-01.xml");
+    private final Gaps2File ref1 = new Gaps2File("SSCS_Extract_Reference_2018-01-01-01-01-01.xml");
+    private final Gaps2File ref2 = new Gaps2File("SSCS_Extract_Reference_2018-01-02-01-01-01.xml");
+    private final Gaps2File ref3 = new Gaps2File("SSCS_Extract_Reference_2018-01-03-01-01-01.xml");
 
     @Mock
     private SftpSshService sftp;
 
+    private final String ignoreCasesBeforeDateProperty = "2018-01-02";
+
     private Gaps2FileLoader loader;
-    private String ignoreCasesBeforeDateProperty = "2018-01-02";
 
     @Before
     public void setUp() {

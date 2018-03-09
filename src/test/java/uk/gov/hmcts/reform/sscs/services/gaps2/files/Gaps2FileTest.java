@@ -11,9 +11,9 @@ import org.junit.Test;
 
 public class Gaps2FileTest {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
-    private LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    private final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
     private String deltaFile;
     private String refFile;

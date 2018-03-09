@@ -2,11 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.sftp;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.*;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +65,13 @@ public class SftpSshService {
         }
         List<Gaps2File> fileList = newArrayList();
         for (ChannelSftp.LsEntry entry : ls) {
-            fileList.add(new Gaps2File(entry.getFilename()));
+            fileList.add(newFile(entry.getFilename()));
         }
         return fileList;
+    }
+
+    private Gaps2File newFile(String filename) {
+        return new Gaps2File(filename);
     }
 
     public void move(Gaps2File file, boolean success) {
@@ -90,7 +90,9 @@ public class SftpSshService {
             sesConnection.setConfig("StrictHostKeyChecking", "no");
             sesConnection.connect(60000);
 
-            return (ChannelSftp) sesConnection.openChannel("sftp");
+            Channel channel = sesConnection.openChannel("sftp");
+            channel.connect();
+            return (ChannelSftp) channel;
         } catch (JSchException e) {
             throw new SftpCustomException("Oops...something went wrong...", e);
         }

@@ -12,7 +12,7 @@ public class Gaps2FileLoader {
 
     private final LocalDate ignoreDate;
 
-    private SftpSshService sftp;
+    private final SftpSshService sftp;
 
     @Autowired
     public Gaps2FileLoader(@Value("${sscs.case.loader.ignoreCasesBeforeDate}") String ignoreCasesBeforeDateProperty,

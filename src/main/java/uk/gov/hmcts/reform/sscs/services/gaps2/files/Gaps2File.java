@@ -41,7 +41,7 @@ public class Gaps2File implements Comparable<Gaps2File> {
     @Override
     public int compareTo(Gaps2File o) {
         int result = date.compareTo(o.getDate());
-        if (result != 0 || (isDelta() == o.isDelta())) {
+        if (result != 0 || isDelta() == o.isDelta()) {
             return result;
         }
         return isDelta() ? 1 : -1;
