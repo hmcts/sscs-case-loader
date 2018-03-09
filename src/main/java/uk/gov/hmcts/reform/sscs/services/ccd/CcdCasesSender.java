@@ -45,12 +45,12 @@ public class CcdCasesSender {
             LocalDate eventDate = DateHelper.convertEventDateToUkLocalDateTime(caseData.getLatestEvent().getDate());
 
             if (eventDate.isAfter(ignoreCasesBeforeDate) || eventDate.isEqual(ignoreCasesBeforeDate)) {
-                log.info("*** case-loader *** About to save case into CCD: {}",
-                    JsonHelper.printCaseDetailsInJson(caseData));
+                log.info("*** case-loader *** About to save case into CCD for case reference: {}",
+                    caseData.getCaseReference());
                 List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
                 if (cases.isEmpty()) {
                     CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
-                    log.info("*** case-loader *** Save case into CCD successfully: {}",
+                    log.info("*** case-loader *** Saved case into CCD successfully: {}",
                         JsonHelper.printCaseDetailsInJson(caseDetails));
                 }
             }
@@ -59,11 +59,13 @@ public class CcdCasesSender {
 
     public void sendUpdateCcdCases(List<CaseData> caseDataList) {
         for (CaseData caseData : caseDataList) {
-            log.info("*** case-loader *** Found potential case to update in Delta: {}", caseData.getCaseReference());
+            log.info("*** case-loader *** Found potential case to update in Delta for case reference: {}",
+                caseData.getCaseReference());
             List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference());
-            log.info("*** case-loader *** Cases found with caseRef: {} in CCD: {}", caseData.getCaseReference(),
-                JsonHelper.printCaseDetailsInJson(cases));
             if (!cases.isEmpty()) {
+                log.info("*** case-loader *** {} Cases found with caseRef: {} in CCD",
+                    cases.size(), caseData.getCaseReference());
+
                 String latestEventType = caseData.getLatestEventType();
                 if (latestEventType != null) {
                     CaseDetails existingCcdCase = cases.get(0);
@@ -75,17 +77,16 @@ public class CcdCasesSender {
     }
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase) {
-        log.info("*** case-loader *** About to update case in CCD: {}",
-            JsonHelper.printCaseDetailsInJson(caseData));
         if (isThereAnEventChange(caseData, existingCcdCase)) {
+            log.info("*** case-loader *** About to update case with new event in CCD for case reference: {}",
+                caseData.getCaseReference());
             CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
                 caseData.getLatestEventType());
             log.info("*** case-loader *** case events updated in CCD successfully: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         } else {
-            log.info("*** case-loader *** No case update needed: {}");
+            log.info("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
-
     }
 
     private boolean isThereAnEventChange(CaseData caseData, CaseDetails existingCcdCase) {
@@ -97,9 +98,10 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            CaseDetails caseDetails = updateCoreCaseDataService
-                .updateCase(caseData, existingCase.getId(), "evidenceReceived");
-            log.info("*** case-loader *** New evidence received event: {}",
+            log.info("*** case-loader *** About to update case with evidence received in CCD for case reference: {}",
+                caseData.getCaseReference());
+            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(), "evidenceReceived");
+            log.info("*** case-loader *** New evidence received event updated in CCD for case: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         }
     }
