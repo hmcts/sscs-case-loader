@@ -19,8 +19,8 @@ public final class DateHelper {
         return "";
     }
 
-    public static LocalDate convertEventDateToUkLocalDateTime(String dateTimeinUtc) {
-        return ZonedDateTime.parse(dateTimeinUtc + "Z").toInstant().atZone(ZoneId.of("Europe/London")).toLocalDate();
+    public static LocalDate convertEventDateToUkLocalDateTime(String dateTimeInUtc) {
+        return ZonedDateTime.parse(dateTimeInUtc + "Z").toInstant().atZone(ZoneId.of("Europe/London")).toLocalDate();
     }
 
 }
