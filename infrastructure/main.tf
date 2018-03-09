@@ -88,3 +88,13 @@ module "sscs-case-loader" {
 
   }
 }
+ module "sscs-case-loader-vault" {
+  source              = "git@github.com:contino/moj-module-key-vault?ref=master"
+  name                = "sscs-case-loader-${var.env}"
+  product             = "${var.product}"
+  env                 = "${var.env}"
+  tenant_id           = "${var.tenant_id}"
+  object_id           = "${var.jenkins_AAD_objectId}"
+  resource_group_name = "${module.sscs-case-loader.resource_group_name}"
+  product_group_object_id = ""
+}
