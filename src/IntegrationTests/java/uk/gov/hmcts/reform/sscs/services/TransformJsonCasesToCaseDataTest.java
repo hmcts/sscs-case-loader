@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
@@ -67,8 +69,7 @@ public class TransformJsonCasesToCaseDataTest {
     }
 
     @Test
-    public void givenJsonCases_shouldBeMappedIntoUpdateCaseData()
-        throws IOException {
+    public void givenJsonCases_shouldBeMappedIntoUpdateCaseData() throws Exception {
 
         String jsonCasesPath = "src/test/resources/SSCS_Extract_Delta_2017-05-25-08-24-12_With_Update_Snapshot.json";
         String expectedCaseDataPath = "src/test/resources/CaseDataArrayWithUpdates.json";

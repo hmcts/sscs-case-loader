@@ -21,11 +21,12 @@ public class CaseDataContentToJsonTest {
     public void givenACaseDataContent_ShouldBeTransformedToJson() throws Exception {
         // given
         CaseDataContent caseDataContent = getCaseDataContent();
-
         // should
         File caseDataContentFile = new File("src/test/resources/CaseDataContent.json");
+
         String expectedCaseDataContentJson = FileUtils.readFileToString(caseDataContentFile,
             StandardCharsets.UTF_8.name());
+
         assertJsonEquals(expectedCaseDataContentJson, caseDataContent);
     }
 
@@ -42,27 +43,16 @@ public class CaseDataContentToJsonTest {
     }
 
     @Test
-    public void givenJsonSubscriptions_shouldDeserialize() {
-        String jsonSubscription = "{\n" +
-            "    \"appellantSubscription\" : {\n" +
-            "      \"tya\" : \"\",\n" +
-            "      \"email\" : \"\",\n" +
-            "      \"mobile\" : \"\",\n" +
-            "      \"subscribeEmail\" : \"yes/no\",\n" +
-            "      \"subscribeSms\" : \"yes/no\",\n" +
-            "      \"reason\" : \"\"\n" +
-            "    },\n" +
-            "    \"supporterSubscription\" : {\n" +
-            "      \"tya\" : \"\",\n" +
-            "      \"email\" : \"\",\n" +
-            "      \"mobile\" : \"\",\n" +
-            "      \"subscribeEmail\" : \"\",\n" +
-            "      \"subscribeSms\" : \"\",\n" +
-            "      \"reason\" : \"\"\n" +
-            "    }\n" +
-            "  }";
+    public void givenJsonSubscriptions_shouldDeserialize() throws Exception {
+        String jsonSubscription = FileUtils.readFileToString(
+            new File("src/test/resources/Subscriptions.json"), StandardCharsets.UTF_8);
 
+        CaseData caseData = buildCaseDataWithSubscription();
 
+        assertThatJson(caseData).node("subscriptions").isEqualTo(jsonSubscription);
+    }
+
+    private CaseData buildCaseDataWithSubscription() {
         AppellantSubscription appellantSubscription = AppellantSubscription.builder()
             .tya("")
             .email("")
@@ -84,11 +74,9 @@ public class CaseDataContentToJsonTest {
             .supporterSubscription(supporterSubscription)
             .build();
 
-        CaseData caseData = CaseData.builder()
+        return CaseData.builder()
             .subscriptions(subscriptions)
             .build();
-
-        assertThatJson(caseData).node("subscriptions").isEqualTo(jsonSubscription);
     }
 
 }

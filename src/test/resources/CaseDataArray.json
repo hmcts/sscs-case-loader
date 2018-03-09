@@ -42,7 +42,8 @@
     "generatedNino": "AB 56 21 41 B",
     "generatedSurname": "Goji",
     "generatedEmail": null,
-    "generatedMobile": null
+    "generatedMobile": null,
+    "subscriptions" : null
   },
   {
     "caseReference": "SC068/17/00008",
@@ -93,6 +94,7 @@
     "generatedNino": "AB 89 08 08 C",
     "generatedSurname": "Rasberry",
     "generatedEmail": null,
-    "generatedMobile": null
+    "generatedMobile": null,
+    "subscriptions" : null
   }
 ]

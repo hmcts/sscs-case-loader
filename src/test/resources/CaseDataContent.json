@@ -1,88 +1,81 @@
 {
-  "event": {
-    "id": "appealCreated",
-    "summary": "SSCS - appeal created event",
-    "description": "Created SSCS case with token"
+  "event" : {
+    "id" : "appealCreated",
+    "summary" : "SSCS - appeal created event",
+    "description" : "Created SSCS case with token"
   },
-  "data": {
-    "caseReference": "SC068/17/00013",
-    "appeal": {
-      "appellant": {
-        "name": {
-          "title": "Mr",
-          "firstName": "User",
-          "lastName": "Test"
+  "data" : {
+    "caseReference" : "SC068/17/00013",
+    "appeal" : {
+      "appellant" : {
+        "name" : {
+          "title" : "Mr",
+          "firstName" : "User",
+          "lastName" : "Test"
         },
-        "contact": {
-          "email": "mail@email.com",
-          "phone": "01234567890",
-          "mobile": "01234567890"
+        "contact" : {
+          "email" : "mail@email.com",
+          "phone" : "01234567890",
+          "mobile" : "01234567890"
         },
-        "identity": {
-          "dob": "1904-03-10",
-          "nino": "AB 22 55 66 B"
+        "identity" : {
+          "dob" : "1904-03-10",
+          "nino" : "AB 22 55 66 B"
         }
       },
-      "benefitType": {
-        "code": "1325"
+      "benefitType" : {
+        "code" : "1325"
       },
-      "hearingOptions": {
-        "other": "No"
+      "hearingOptions" : {
+        "other" : "No"
       }
     },
-    "hearings": [
-      {
-        "value": {
-          "venue": {
-            "name": "The venue",
-            "address": {
-              "line1": "12 The Road Avenue",
-              "line2": "Village",
-              "town": "Aberdeen",
-              "county": "Aberdeenshire",
-              "postcode": "AB12 0HN"
-            },
-            "googleMapLink": "http://www.googlemaps.com/aberdeenvenue"
+    "hearings" : [ {
+      "value" : {
+        "venue" : {
+          "name" : "The venue",
+          "address" : {
+            "line1" : "12 The Road Avenue",
+            "line2" : "Village",
+            "town" : "Aberdeen",
+            "county" : "Aberdeenshire",
+            "postcode" : "AB12 0HN"
           },
-          "hearingDate": "2017-05-24",
-          "time": "10:45",
-          "adjourned": "Yes"
-        }
+          "googleMapLink" : "http://www.googlemaps.com/aberdeenvenue"
+        },
+        "hearingDate" : "2017-05-24",
+        "time" : "10:45",
+        "adjourned" : "Yes"
       }
-    ],
-    "evidence": {
-      "documents": [
-        {
-          "value": {
-            "dateReceived": "2017-05-24",
-            "description": "1"
-          }
+    } ],
+    "evidence" : {
+      "documents" : [ {
+        "value" : {
+          "dateReceived" : "2017-05-24",
+          "description" : "1"
         }
-      ]
+      } ]
     },
-    "dwpTimeExtension": [
-      {
-        "value": {
-          "requested": "Yes",
-          "granted": "Yes"
-        }
+    "dwpTimeExtension" : [ {
+      "value" : {
+        "requested" : "Yes",
+        "granted" : "Yes"
       }
-    ],
-    "events": [
-      {
-        "value": {
-          "date": "2001-12-14T21:59:43.10",
-          "type": "appealCreated",
-          "description": "Appeal Created"
-        }
+    } ],
+    "events" : [ {
+      "value" : {
+        "date" : "2001-12-14T21:59:43.10",
+        "type" : "appealCreated",
+        "description" : "Appeal Created"
       }
-    ],
-    "generatedNino": "AB 22 55 66 B",
-    "generatedSurname": "Test",
-    "generatedEmail": "mail@email.com",
-    "generatedMobile": "01234567890"
+    } ],
+    "generatedNino" : "AB 22 55 66 B",
+    "generatedSurname" : "Test",
+    "generatedEmail" : "mail@email.com",
+    "generatedMobile" : "01234567890",
+    "subscriptions" : null
   },
-  "security_classification": null,
-  "event_token": "user token",
-  "ignore_warning": false
+  "security_classification" : null,
+  "event_token" : "user token",
+  "ignore_warning" : false
 }
