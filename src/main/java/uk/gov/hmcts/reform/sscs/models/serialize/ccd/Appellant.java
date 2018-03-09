@@ -6,7 +6,6 @@ import lombok.Value;
 @Value
 @Builder
 public class Appellant {
-
     private Name name;
     private Contact contact;
     private Identity identity;

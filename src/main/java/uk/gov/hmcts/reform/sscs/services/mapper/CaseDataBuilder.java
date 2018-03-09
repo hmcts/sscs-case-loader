@@ -1,10 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import java.security.SecureRandom;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.CharacterPredicates;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -30,6 +33,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
@@ -138,7 +143,7 @@ public class CaseDataBuilder {
                     hearingsList.add(Hearing.builder().value(hearings).build());
                 } else {
                     log.info("*** case-loader *** venue missing: " + appealCase.getHearing().get(0).getVenueId());
-                    return null;
+                    return Collections.emptyList();
                 }
             }
         }
@@ -191,4 +196,35 @@ public class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
+    public Subscriptions buildSubscriptions() {
+        Subscription appellantSubscription = Subscription.builder()
+            .email("")
+            .mobile("")
+            .reason("")
+            .subscribeEmail("")
+            .subscribeSms("")
+            .tya(generateAppealNumber())
+            .build();
+        Subscription supporterSubscription = Subscription.builder()
+            .email("")
+            .mobile("")
+            .reason("")
+            .subscribeEmail("")
+            .subscribeSms("")
+            .tya("")
+            .build();
+        return Subscriptions.builder()
+            .appellantSubscription(appellantSubscription)
+            .supporterSubscription(supporterSubscription)
+            .build();
+    }
+
+    private String generateAppealNumber() {
+        SecureRandom random = new SecureRandom();
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+            .withinRange('0', 'z')
+            .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS).usingRandom(random::nextInt)
+            .build();
+        return generator.generate(10);
+    }
 }

@@ -37,8 +37,7 @@ public class RefDataFactoryTest {
         + "      <OFFICE_ID>1959</OFFICE_ID>\n"
         + "      <OFF_NAME>Liverpool</OFF_NAME>\n"
         + "  </Office>"
-        + "</Reference_Tables>\n"
-        + "";
+        + "</Reference_Tables>\n";
 
     @Before
     public void setUp() {
@@ -47,7 +46,7 @@ public class RefDataFactoryTest {
     }
 
     @Test
-    public void shouldLoadReferenceDataGivenInptStream() throws XMLStreamException {
+    public void shouldLoadReferenceDataGivenInputStream() throws XMLStreamException {
 
         factory.extract(is);
 
