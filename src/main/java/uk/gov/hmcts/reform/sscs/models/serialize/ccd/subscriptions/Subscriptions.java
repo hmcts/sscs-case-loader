@@ -6,6 +6,6 @@ import lombok.Value;
 @Value
 @Builder
 public class Subscriptions {
-    AppellantSubscription appellantSubscription;
-    SupporterSubscription supporterSubscription;
+    Subscription appellantSubscription;
+    Subscription supporterSubscription;
 }

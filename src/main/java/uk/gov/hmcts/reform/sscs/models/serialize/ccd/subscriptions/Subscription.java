@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class AppellantSubscription {
+public class Subscription {
     String tya;
     String email;
     String mobile;

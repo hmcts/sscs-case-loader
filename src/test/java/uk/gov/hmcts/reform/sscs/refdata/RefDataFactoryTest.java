@@ -27,7 +27,7 @@ public class RefDataFactoryTest {
     private RefDataFactory factory;
     private InputStream is;
 
-    private String refData = "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
+    private final String refData = "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
         + "<Reference_Tables>\n"
         + "  <Case_Code>\n"
         + "    <CASE_CODE_ID>1</CASE_CODE_ID>\n"

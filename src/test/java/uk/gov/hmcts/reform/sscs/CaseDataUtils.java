@@ -22,9 +22,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.AppellantSubscription;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.SupporterSubscription;
 
 public final class CaseDataUtils {
     private CaseDataUtils() {
@@ -120,7 +119,7 @@ public final class CaseDataUtils {
             .value(event)
             .build();
 
-        AppellantSubscription appellantSubscription = AppellantSubscription.builder()
+        Subscription appellantSubscription = Subscription.builder()
             .tya("")
             .email("")
             .mobile("")
@@ -128,7 +127,7 @@ public final class CaseDataUtils {
             .subscribeSms("yes/no")
             .reason("")
             .build();
-        SupporterSubscription supporterSubscription = SupporterSubscription.builder()
+        Subscription supporterSubscription = Subscription.builder()
             .tya("")
             .email("")
             .mobile("")
