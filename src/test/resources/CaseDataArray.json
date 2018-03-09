@@ -43,7 +43,24 @@
     "generatedSurname": "Goji",
     "generatedEmail": null,
     "generatedMobile": null,
-    "subscriptions" : null
+    "subscriptions": {
+      "appellantSubscription": {
+        "tya": "${json-unit.ignore}",
+        "email": "",
+        "mobile": "",
+        "subscribeEmail": "",
+        "subscribeSms": "",
+        "reason": ""
+      },
+      "supporterSubscription": {
+        "tya": "",
+        "email": "",
+        "mobile": "",
+        "subscribeEmail": "",
+        "subscribeSms": "",
+        "reason": ""
+      }
+    }
   },
   {
     "caseReference": "SC068/17/00008",
@@ -83,7 +100,8 @@
           "type": "appealReceived",
           "description": "Appeal received"
         }
-      },{
+      },
+      {
         "value": {
           "date": "2017-05-23T12:01:47.620",
           "type": "appealReceived",
@@ -95,6 +113,23 @@
     "generatedSurname": "Rasberry",
     "generatedEmail": null,
     "generatedMobile": null,
-    "subscriptions" : null
+    "subscriptions": {
+      "appellantSubscription": {
+        "tya": "${json-unit.ignore}",
+        "email": "",
+        "mobile": "",
+        "subscribeEmail": "",
+        "subscribeSms": "",
+        "reason": ""
+      },
+      "supporterSubscription": {
+        "tya": "",
+        "email": "",
+        "mobile": "",
+        "subscribeEmail": "",
+        "subscribeSms": "",
+        "reason": ""
+      }
+    }
   }
 ]

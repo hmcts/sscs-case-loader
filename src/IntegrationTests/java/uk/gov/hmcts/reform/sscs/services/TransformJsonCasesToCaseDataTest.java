@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,7 +51,7 @@ public class TransformJsonCasesToCaseDataTest {
             + "src/test/resources/CaseDataArrayWithOptionalFields.json"
     })
     public void givenJsonCases_shouldBeMappedIntoCreateCaseData(String jsonCasesPath, String expectedCaseDataPath)
-        throws IOException {
+        throws Exception {
         // Given
         String jsonCases = FileUtils.readFileToString(new File(jsonCasesPath), StandardCharsets.UTF_8.name());
 
@@ -68,7 +67,6 @@ public class TransformJsonCasesToCaseDataTest {
 
     @Test
     public void givenJsonCases_shouldBeMappedIntoUpdateCaseData() throws Exception {
-
         String jsonCasesPath = "src/test/resources/SSCS_Extract_Delta_2017-05-25-08-24-12_With_Update_Snapshot.json";
         String expectedCaseDataPath = "src/test/resources/CaseDataArrayWithUpdates.json";
 
