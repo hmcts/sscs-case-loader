@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
@@ -12,10 +13,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,6 @@ public class ProcessCaseTest {
 
     private static final int EXPECTED_NUMBER_OF_CASES_TO_CREATE_IN_CCD = 1;
     private static final int EXPECTED_NUMBER_OF_CASES_TO_UPDATE_IN_CCD = 16;
-    private static final String DELTA_XML = "src/test/resources/SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
 
     @MockBean
     private JSch jschSshChannel;
@@ -63,7 +62,7 @@ public class ProcessCaseTest {
     private CaseLoaderService caseLoaderService;
 
     @Test
-    public void givenDeltaXmlInSftp_shouldBeSavedIntoCcd() throws Exception {
+    public void shouldBeSavedIntoCcdGivenDeltaXmlInSftp() throws JSchException, SftpException, IOException {
         mockSftp();
 
         given(authTokenGenerator.generate()).willReturn("s2s token");
@@ -187,17 +186,20 @@ public class ProcessCaseTest {
             anyInt())
         ).willReturn(session);
 
+        String deltaFileName = "SSCS_Extract_Delta_2017-05-24-16-14-19.xml";
+        InputStream deltaStream = getClass().getClassLoader().getResourceAsStream(deltaFileName);
+
         ChannelSftp channelSftp = mock(ChannelSftp.class);
         given(session.openChannel(anyString())).willReturn(channelSftp);
-        given(channelSftp.get(anyString())).willReturn(FileUtils.openInputStream(new File(DELTA_XML)));
+        given(channelSftp.get(anyString())).willReturn(deltaStream);
 
         ChannelSftp.LsEntry file = mock(ChannelSftp.LsEntry.class);
-        given(file.getFilename()).willReturn("SSCS_Extract_Delta_2017-05-24-16-14-19.xml");
+        given(file.getFilename()).willReturn(deltaFileName);
 
-        Vector<ChannelSftp.LsEntry> fileList = new Vector<>();
+        List<ChannelSftp.LsEntry> fileList = newArrayList();
         fileList.add(file);
 
-        given(channelSftp.ls(anyString())).willReturn(fileList);
+        given(channelSftp.ls(anyString())).willReturn(new Vector(fileList));
     }
 
 }
