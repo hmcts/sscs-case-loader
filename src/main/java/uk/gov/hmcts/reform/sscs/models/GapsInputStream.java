@@ -11,4 +11,5 @@ public class GapsInputStream {
     private Boolean isDelta;
     private Boolean isReference;
     private InputStream inputStream;
+    private String fileName;
 }

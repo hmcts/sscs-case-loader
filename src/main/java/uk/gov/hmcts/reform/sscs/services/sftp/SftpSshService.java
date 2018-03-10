@@ -49,6 +49,7 @@ public class SftpSshService {
                 .isDelta(file.isDelta())
                 .isReference(!file.isDelta())
                 .inputStream(stream)
+                .fileName(file.getName())
                 .build());
         }
         return inputStreams;
