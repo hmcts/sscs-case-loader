@@ -90,7 +90,7 @@ module "sscs-case-loader" {
 }
  module "sscs-case-loader-vault" {
   source              = "git@github.com:contino/moj-module-key-vault?ref=master"
-  name                = "sscs-caseloader-${var.env}"
+  name                = "sscs-case-loader-${var.env}"
   product             = "${var.product}"
   env                 = "${var.env}"
   tenant_id           = "${var.tenant_id}"
