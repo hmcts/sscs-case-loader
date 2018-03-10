@@ -45,19 +45,26 @@ public class CaseLoaderService {
         List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
         for (GapsInputStream gapsInputStream : inputStreamList) {
-            String xmlAsString = fromInputStreamToString(gapsInputStream.getInputStream());
-            String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
-            xmlValidator.validateXml(xmlAsString, type);
-            log.info("*** case-loader *** Validate " + type + " xml file successfully");
-            if ("Delta".equals(type)) {
-                JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
-                log.info("*** case-loader *** Transform XML to JSON successfully");
-                List<CaseData> casesToCreate = transformJsonCasesToCaseData.transformCreateCases(jsonCases.toString());
-                log.info("*** case-loader *** Transform json to cases to create successfully");
-                List<CaseData> casesToUpdate = transformJsonCasesToCaseData.transformUpdateCases(jsonCases.toString());
-                log.info("*** case-loader *** Transform json to cases to update successfully");
-                ccdCasesSender.sendCreateCcdCases(casesToCreate);
-                ccdCasesSender.sendUpdateCcdCases(casesToUpdate);
+            try (InputStream inputStream = gapsInputStream.getInputStream()) {
+                String xmlAsString = fromInputStreamToString(inputStream);
+                String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
+                xmlValidator.validateXml(xmlAsString, type);
+                log.info("*** case-loader *** Validate " + type + " xml file successfully");
+                if ("Delta".equals(type)) {
+                    JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
+                    log.info("*** case-loader *** Transform XML to JSON successfully");
+                    List<CaseData> casesToCreate = transformJsonCasesToCaseData
+                        .transformCreateCases(jsonCases.toString());
+                    log.info("*** case-loader *** Transform json to cases to create successfully");
+                    List<CaseData> casesToUpdate = transformJsonCasesToCaseData
+                        .transformUpdateCases(jsonCases.toString());
+                    log.info("*** case-loader *** Transform json to cases to update successfully");
+                    ccdCasesSender.sendCreateCcdCases(casesToCreate);
+                    ccdCasesSender.sendUpdateCcdCases(casesToUpdate);
+                }
+            } catch (IOException e) {
+                log.error("Error in processing gaps2 extract file : {}", gapsInputStream.getFileName(), e);
+                throw new RuntimeException(e);
             }
         }
     }
