@@ -30,7 +30,7 @@ public class Gaps2FileLoaderTest {
     @Mock
     private SftpSshService sftp;
 
-    private final String ignoreCasesBeforeDateProperty = "2018-01-02";
+    private static final String ignoreCasesBeforeDateProperty = "2018-01-02";
 
     private Gaps2FileLoader loader;
 

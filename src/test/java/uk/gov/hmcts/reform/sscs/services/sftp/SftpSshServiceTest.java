@@ -40,7 +40,7 @@ public class SftpSshServiceTest {
     @Mock
     private ChannelSftp channelSftp;
 
-    private SftpSshProperties sftpSshProperties = new SftpSshProperties();
+    private final SftpSshProperties sftpSshProperties = new SftpSshProperties();
 
     private SftpSshService service;
 

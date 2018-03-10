@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.models;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
 public class CaseDataContentToJsonTest {
 
@@ -16,11 +18,12 @@ public class CaseDataContentToJsonTest {
     public void givenACaseDataContent_ShouldBeTransformedToJson() throws Exception {
         // given
         CaseDataContent caseDataContent = getCaseDataContent();
-
         // should
         File caseDataContentFile = new File("src/test/resources/CaseDataContent.json");
+
         String expectedCaseDataContentJson = FileUtils.readFileToString(caseDataContentFile,
             StandardCharsets.UTF_8.name());
+
         assertJsonEquals(expectedCaseDataContentJson, caseDataContent);
     }
 
@@ -35,4 +38,16 @@ public class CaseDataContentToJsonTest {
             .data(CaseDataUtils.buildCaseData("SC068/17/00013"))
             .build();
     }
+
+    @Test
+    public void givenJsonSubscriptions_shouldDeserialize() throws Exception {
+        String jsonSubscription = FileUtils.readFileToString(
+            new File("src/test/resources/Subscriptions.json"), StandardCharsets.UTF_8);
+
+        CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
+
+        assertThatJson(caseData).node("subscriptions").isEqualTo(jsonSubscription);
+    }
+
+
 }

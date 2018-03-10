@@ -1,0 +1,18 @@
+{
+  "appellantSubscription": {
+    "tya": "",
+    "email": "",
+    "mobile": "",
+    "subscribeEmail": "yes/no",
+    "subscribeSms": "yes/no",
+    "reason": ""
+  },
+  "supporterSubscription": {
+    "tya": "",
+    "email": "",
+    "mobile": "",
+    "subscribeEmail": "",
+    "subscribeSms": "",
+    "reason": ""
+  }
+}
