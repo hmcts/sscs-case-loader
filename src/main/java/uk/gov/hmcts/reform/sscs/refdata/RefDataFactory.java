@@ -9,6 +9,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.refdata.domain.RefKey;
@@ -16,9 +17,10 @@ import uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
+@Slf4j
 public class RefDataFactory {
 
-    private ReferenceDataService service;
+    private final ReferenceDataService service;
 
     @Autowired
     public RefDataFactory(ReferenceDataService service) {
@@ -44,7 +46,7 @@ public class RefDataFactory {
                     try {
                         key = RefKey.valueOf(localName);
                     } catch (IllegalArgumentException e) {
-                        // Not a reference tag name
+                        log.debug("Not a reference tag name");
                     }
                     break;
 
@@ -61,7 +63,7 @@ public class RefDataFactory {
                         }
                         repo.add(key, keyId, keyField, tagContent);
                     } catch (IllegalArgumentException e) {
-                        // Not a reference field tag name
+                        log.debug("Not a reference field tag name");
                     }
                     break;
                 default:

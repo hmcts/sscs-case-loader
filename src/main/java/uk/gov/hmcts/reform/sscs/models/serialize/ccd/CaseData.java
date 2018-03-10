@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
 @Value
 @Builder
@@ -18,6 +19,7 @@ public class CaseData {
     private String generatedSurname;
     private String generatedEmail;
     private String generatedMobile;
+    private Subscriptions subscriptions;
 
     @JsonIgnore
     public Event getLatestEvent() {

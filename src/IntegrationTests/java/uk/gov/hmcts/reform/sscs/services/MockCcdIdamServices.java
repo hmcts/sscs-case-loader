@@ -2,14 +2,27 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
-import com.jcraft.jsch.*;
-import java.io.IOException;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -122,7 +135,8 @@ public abstract class MockCcdIdamServices {
 
     }
 
-    void mockSftp() throws JSchException, SftpException, IOException {
+    @SuppressWarnings("unchecked")
+    void mockSftp() throws JSchException, SftpException {
         Session session = mock(Session.class);
         given(jsch.getSession(
             anyString(),

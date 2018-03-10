@@ -55,6 +55,7 @@ public class SftpSshService {
         return inputStreams;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Gaps2File> getFiles() {
         ChannelSftp channel = getSftpChannel();
 

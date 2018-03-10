@@ -83,6 +83,7 @@ public class TransformAppealCaseToCaseData {
             .generatedSurname(generatedSurname)
             .generatedEmail(generatedEmail)
             .generatedMobile(generatedMobile)
+            .subscriptions(caseDataBuilder.buildSubscriptions())
             .build();
 
     }

@@ -27,7 +27,7 @@ public class RefDataFactoryTest {
     private RefDataFactory factory;
     private InputStream is;
 
-    private String refData = "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
+    private final String refData = "<?xml version=\"1.0\" standalone=\"yes\"?>\n"
         + "<Reference_Tables>\n"
         + "  <Case_Code>\n"
         + "    <CASE_CODE_ID>1</CASE_CODE_ID>\n"
@@ -37,8 +37,7 @@ public class RefDataFactoryTest {
         + "      <OFFICE_ID>1959</OFFICE_ID>\n"
         + "      <OFF_NAME>Liverpool</OFF_NAME>\n"
         + "  </Office>"
-        + "</Reference_Tables>\n"
-        + "";
+        + "</Reference_Tables>\n";
 
     @Before
     public void setUp() {
@@ -47,7 +46,7 @@ public class RefDataFactoryTest {
     }
 
     @Test
-    public void shouldLoadReferenceDataGivenInptStream() throws XMLStreamException {
+    public void shouldLoadReferenceDataGivenInputStream() throws XMLStreamException {
 
         factory.extract(is);
 

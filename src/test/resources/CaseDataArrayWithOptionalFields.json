@@ -70,25 +70,29 @@
           "type": "hearingBooked",
           "description": "Hearing booked"
         }
-      }, {
+      },
+      {
         "value": {
           "date": "2017-05-24T13:51:15.877",
           "type": "responseReceived",
           "description": "Response received"
         }
-      }, {
+      },
+      {
         "value": {
           "date": "2017-05-23T14:18:35.147",
           "type": "hearingBooked",
           "description": "Hearing booked"
         }
-      }, {
+      },
+      {
         "value": {
           "date": "2017-05-23T14:15:25.150",
           "type": "responseReceived",
           "description": "Response received"
         }
-      }, {
+      },
+      {
         "value": {
           "date": "2017-05-23T13:27:09.613",
           "type": "appealReceived",
@@ -99,6 +103,24 @@
     "generatedNino": "AB 22 55 66 B",
     "generatedSurname": "Elderberry",
     "generatedEmail": "mail@email.com",
-    "generatedMobile": "01234567890"
+    "generatedMobile": "01234567890",
+    "subscriptions": {
+      "appellantSubscription": {
+        "tya": "${json-unit.ignore}",
+        "email": "",
+        "mobile": "",
+        "subscribeEmail": "",
+        "subscribeSms": "",
+        "reason": ""
+      },
+      "supporterSubscription": {
+        "tya": "",
+        "email": "",
+        "mobile": "",
+        "subscribeEmail": "",
+        "subscribeSms": "",
+        "reason": ""
+      }
+    }
   }
 ]
