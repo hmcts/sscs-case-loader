@@ -27,7 +27,7 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('IdamAuthCid','IDAM_OAUTH2_CLIENT_ID'),
   secret('IdamAuthSecret','IDAM_OAUTH2_CLIENT_SECRET'),
   secret('IdamAuthUrl','IDAM_OAUTH2_REDIRECT_URL'),
-  secret('Gaps2Key','GAPS2_KEY_LOCATION'),
+  key('Gaps2Key','GAPS2_KEY_LOCATION'),
   secret('Gaps2Host','GAPS2_SFTP_HOST'),
   secret('Gaps2Port','GAPS2_SFTP_PORT'),
   secret('Gaps2User','GAPS2_SFTP_USER'),
