@@ -30,8 +30,8 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('Gaps2Key','GAPS2_KEY_LOCATION'),
   secret('Gaps2Host','GAPS2_SFTP_HOST'),
   secret('Gaps2Port','GAPS2_SFTP_PORT'),
-  secret('Gaps2Sftp','GAPS2_SFTP_USER'),
-  secret('Gaps2Sftp','GAPS2_SFTP_DIR'),
+  secret('Gaps2User','GAPS2_SFTP_USER'),
+  secret('Gaps2Folder','GAPS2_SFTP_DIR'),
   secret('SscsCron','SSCS_CASE_LOADER_CRON_SCHEDULE'),
   secret('SscsIgnore','IGNORE_CASES_BEFORE_DATE')
 ]
