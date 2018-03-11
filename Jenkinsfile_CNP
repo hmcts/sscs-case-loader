@@ -11,7 +11,7 @@ def product = "sscs"
 def app = "case-loader"
 
 List<LinkedHashMap<String, Object>> keys = [
-  secret('Gaps2Key','GAPS2_KEY_LOCATION')
+  key('Gaps2Key','GAPS2_KEY_LOCATION')
 ]
 
 List<LinkedHashMap<String, Object>> secrets = [
@@ -41,6 +41,15 @@ List<LinkedHashMap<String, Object>> secrets = [
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [ $class: 'AzureKeyVaultSecret',
     secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
+
+static LinkedHashMap<String, Object> key(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Key',
     name: secretName,
     version: '',
     envVariable: envVar
