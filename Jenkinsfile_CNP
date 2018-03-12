@@ -49,7 +49,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 static LinkedHashMap<String, Object> key(String secretName, String envVar) {
   [ $class: 'AzureKeyVaultSecret',
-    secretType: 'Key',
+    secretType: 'Certificate',
     name: secretName,
     version: '',
     envVariable: envVar
