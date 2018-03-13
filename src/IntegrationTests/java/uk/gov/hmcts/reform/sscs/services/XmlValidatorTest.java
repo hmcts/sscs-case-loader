@@ -26,7 +26,7 @@ public class XmlValidatorTest {
 
     @Test
     public void shouldValidateContentGivenValidDeltaInputStream() throws IOException {
-        validator.validateXml(FileUtils.readFileToString(new File( DELTA_PATH), StandardCharsets.UTF_8.name()),
+        validator.validateXml(FileUtils.readFileToString(new File(DELTA_PATH), StandardCharsets.UTF_8.name()),
             true);
     }
 

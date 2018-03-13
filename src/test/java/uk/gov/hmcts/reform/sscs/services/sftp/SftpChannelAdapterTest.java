@@ -35,9 +35,10 @@ public class SftpChannelAdapterTest {
     private ChannelSftp channel;
 
     @Mock
-    ChannelSftp.LsEntry entry;
+    private ChannelSftp.LsEntry entry;
 
-    private SftpSshProperties props = new SftpSshProperties();
+    private final SftpSshProperties props = new SftpSshProperties();
+
     private String fname1 = "SSCS_Extract_Delta_2000-01-01-01-01-01.xml";
     private String fname2 = "SSCS_Extract_Delta_2000-01-01-01-01-02.xml";
     private String fname3 = "SSCS_Extract_Delta_2000-01-01-01-01-03.xml";
@@ -73,6 +74,7 @@ public class SftpChannelAdapterTest {
         verifyNoMoreInteractions(jsch, session, channel);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldReturnListOfFilesGivenPath() throws SftpException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry, entry);

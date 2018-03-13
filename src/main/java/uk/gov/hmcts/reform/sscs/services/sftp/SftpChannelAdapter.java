@@ -58,6 +58,7 @@ public class SftpChannelAdapter {
         return (ChannelSftp) channel;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Gaps2File> list(String path) {
         ChannelSftp channel = getSftpChannel();
         List<ChannelSftp.LsEntry> ls;
