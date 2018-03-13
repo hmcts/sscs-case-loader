@@ -10,9 +10,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
-import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
+import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformJsonCasesToCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformXmlFilesToJsonFiles;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -42,15 +42,14 @@ public class CaseLoaderService {
 
     public void process() {
         log.info("*** case-loader *** Reading xml files from SFTP...");
-        List<GapsInputStream> inputStreamList = sftpSshService.readExtractFiles();
+        List<Gaps2File> files = sftpSshService.getFiles();
         log.info("*** case-loader *** Read xml files from SFTP successfully");
-        for (GapsInputStream gapsInputStream : inputStreamList) {
-            try (InputStream inputStream = gapsInputStream.getInputStream()) {
+        for (Gaps2File file : files) {
+            try (InputStream inputStream = sftpSshService.readExtractFile(file)) {
                 String xmlAsString = fromInputStreamToString(inputStream);
-                String type = gapsInputStream.getIsDelta() ? "Delta" : "Reference";
-                xmlValidator.validateXml(xmlAsString, type);
-                log.info("*** case-loader *** Validate " + type + " xml file successfully");
-                if ("Delta".equals(type)) {
+                xmlValidator.validateXml(xmlAsString, file.isDelta());
+                log.info("*** case-loader *** Validate delta xml file successfully");
+                if (file.isDelta()) {
                     JSONObject jsonCases = transformXmlFilesToJsonFiles.transform(xmlAsString);
                     log.info("*** case-loader *** Transform XML to JSON successfully");
                     List<CaseData> casesToCreate = transformJsonCasesToCaseData
@@ -63,8 +62,8 @@ public class CaseLoaderService {
                     ccdCasesSender.sendUpdateCcdCases(casesToUpdate);
                 }
             } catch (IOException e) {
-                log.error("Error in processing gaps2 extract file : {}", gapsInputStream.getFileName(), e);
-                throw new RuntimeException(e);
+                log.error("Error in processing gaps2 extract file : {}", file.getName(), e);
+                throw new TransformException("Error processing delta file", e);
             }
         }
     }

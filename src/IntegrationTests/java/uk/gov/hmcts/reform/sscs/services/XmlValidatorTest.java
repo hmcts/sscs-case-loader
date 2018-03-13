@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -24,21 +25,21 @@ public class XmlValidatorTest {
     private XmlValidator validator;
 
     @Test
-    public void givenValidDeltaInputStream_shouldValidateContent() throws Exception {
+    public void shouldValidateContentGivenValidDeltaInputStream() throws IOException {
         validator.validateXml(FileUtils.readFileToString(new File(DELTA_PATH), StandardCharsets.UTF_8.name()),
-            "Delta");
+            true);
     }
 
     @Test
-    public void givenValidRefXmlInputStream_shouldPassValidator() throws Exception {
+    public void shouldPassValidatorGivenValidRefXmlInputStream() throws IOException {
         validator.validateXml(FileUtils.readFileToString(new File(REF_PATH), StandardCharsets.UTF_8.name()),
-            "Reference");
+            false);
     }
 
 
     @Test(expected = GapsValidationException.class)
-    public void givenInvalidRefXmlFile_shouldFailValidator() throws Exception {
+    public void shouldFailValidatorGivenInvalidRefXmlFile() throws IOException {
         validator.validateXml(FileUtils.readFileToString(new File(INVALID_DELTA_PATH), StandardCharsets.UTF_8.name()),
-            "Delta");
+            true);
     }
 }

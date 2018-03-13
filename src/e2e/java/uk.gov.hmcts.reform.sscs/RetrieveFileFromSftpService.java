@@ -5,6 +5,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.sscs.models.GapsInputStream;
+import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 
 @RunWith(SpringRunner.class)
@@ -26,13 +27,13 @@ public class RetrieveFileFromSftpService {
     private SftpSshService service;
 
     @Test
-    public void givenAnSftpFile_shouldBeRetrievedAndConvertedToAnInputStream() throws Exception {
+    public void shouldBeRetrievedAndConvertedToAnInputStreamGivenAnSftpFile() throws IOException {
 
-        List<GapsInputStream> result = service.readExtractFiles();
+        List<Gaps2File> files = service.getFiles();
 
-        assertThat(result, hasSize(2));
+        assertThat(files, hasSize(2));
         InputStream stream;
-        stream = result.get(0).getInputStream();
+        stream = service.readExtractFile(files.get(0));
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             assertEquals(br.readLine(), "<?xml version=\"1.0\" standalone=\"yes\"?>");
         } finally {
