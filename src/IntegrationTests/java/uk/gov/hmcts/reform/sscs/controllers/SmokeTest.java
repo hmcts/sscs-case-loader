@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.controllers;
 
-
 import static org.assertj.core.api.BDDAssertions.then;
 
 import org.junit.Test;

@@ -107,7 +107,8 @@ public class CcdCasesSender {
             log.info("*** case-loader *** New evidence received event updated in CCD for case: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         } else {
-            log.info("*** case-loader *** No evidence update needed for case reference: {}", caseData.getCaseReference());
+            log.info("*** case-loader *** No evidence update needed for case reference: {}",
+                caseData.getCaseReference());
         }
     }
 
