@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(properties = { "sscs.case.loader.ignoreCasesBeforeDate=2017-01-01" })
 @ActiveProfiles("development")
 public class ProcessFileAndSaveIntoCcd {
 
