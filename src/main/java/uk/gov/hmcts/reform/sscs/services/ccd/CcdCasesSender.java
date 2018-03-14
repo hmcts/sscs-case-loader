@@ -38,12 +38,9 @@ public class CcdCasesSender {
     }
 
     public void sendCreateCcdCases(List<CaseData> caseDataList) {
-
         LocalDate ignoreCasesBeforeDate = LocalDate.parse(ignoreCasesBeforeDateProperty);
         caseDataList.forEach(caseData -> {
-
             LocalDate eventDate = DateHelper.convertEventDateToUkLocalDateTime(caseData.getLatestEvent().getDate());
-
             if (eventDate.isAfter(ignoreCasesBeforeDate) || eventDate.isEqual(ignoreCasesBeforeDate)) {
                 log.info("*** case-loader *** About to save case into CCD for case reference: {}",
                     caseData.getCaseReference());
@@ -52,6 +49,9 @@ public class CcdCasesSender {
                     CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
                     log.info("*** case-loader *** Saved case into CCD successfully: {}",
                         JsonHelper.printCaseDetailsInJson(caseDetails));
+                } else {
+                    log.info("*** case-loader *** Case is not saved because already exists in CDD: {}",
+                        caseData.getCaseReference());
                 }
             }
         });
@@ -65,13 +65,15 @@ public class CcdCasesSender {
             if (!cases.isEmpty()) {
                 log.info("*** case-loader *** {} Cases found with caseRef: {} in CCD",
                     cases.size(), caseData.getCaseReference());
-
                 String latestEventType = caseData.getLatestEventType();
                 if (latestEventType != null) {
                     CaseDetails existingCcdCase = cases.get(0);
                     checkNewEvidenceReceived(caseData, existingCcdCase);
                     ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase);
                 }
+            } else {
+                log.info("*** case-loader *** Case Reference not found in CCD: {}",
+                    caseData.getCaseReference());
             }
         }
     }
@@ -85,7 +87,7 @@ public class CcdCasesSender {
             log.info("*** case-loader *** case events updated in CCD successfully: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         } else {
-            log.info("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
+            log.info("*** case-loader *** No event update needed for case reference: {}", caseData.getCaseReference());
         }
     }
 
@@ -104,6 +106,9 @@ public class CcdCasesSender {
                 "evidenceReceived");
             log.info("*** case-loader *** New evidence received event updated in CCD for case: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
+        } else {
+            log.info("*** case-loader *** No evidence update needed for case reference: {}",
+                caseData.getCaseReference());
         }
     }
 
@@ -111,11 +116,9 @@ public class CcdCasesSender {
     private Evidence buildExistingEvidence(CaseDetails existingCase) {
         List<HashMap<String, Object>> documents = (List<HashMap<String, Object>>) (
             (HashMap) existingCase.getData().get("evidence")).get("documents");
-
         List<Documents> documentList = new ArrayList<>();
         for (HashMap doc : documents) {
             Map<String, Object> docValue = (HashMap<String, Object>) doc.get("value");
-
             documentList.add(Documents.builder().value(
                 Doc.builder()
                     .dateReceived((String) docValue.get("dateReceived"))
@@ -123,7 +126,6 @@ public class CcdCasesSender {
                     .build())
                 .build());
         }
-
         return Evidence.builder().documents(documentList).build();
     }
 }
