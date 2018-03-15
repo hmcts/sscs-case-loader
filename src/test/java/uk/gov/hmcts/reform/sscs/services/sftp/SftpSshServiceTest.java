@@ -26,13 +26,20 @@ public class SftpSshServiceTest {
     private Gaps2File file;
 
     @Mock
+    private Gaps2File processed;
+
+    @Mock
+    private Gaps2File failed;
+
+    @Mock
     private InputStream is;
 
     private SftpSshService service;
 
     @Before
     public void setUp() {
-        when(channelAdapter.list("/*.xml")).thenReturn(newArrayList(file, file));
+        when(channelAdapter.listProcessed()).thenReturn(newArrayList(processed));
+        when(channelAdapter.listIncoming()).thenReturn(newArrayList(processed, file, file));
         when(file.getName()).thenReturn("xxx");
         when(channelAdapter.getInputStream("xxx")).thenReturn(is);
 
@@ -55,13 +62,13 @@ public class SftpSshServiceTest {
     @Test
     public void shouldMoveFileToProcessedDirectoryGivenSuccessfullyLoaded() throws SftpException {
         service.move(file, true);
-        verify(channelAdapter).move("/processed/xxx");
+        verify(channelAdapter).move(true, "xxx");
     }
 
     @Test
     public void shouldMoveFileToFailedDirectoryGivenLoadFailed() throws SftpException {
         service.move(file, false);
-        verify(channelAdapter).move("/failed/xxx");
+        verify(channelAdapter).move(false, "xxx");
     }
 
     @Test

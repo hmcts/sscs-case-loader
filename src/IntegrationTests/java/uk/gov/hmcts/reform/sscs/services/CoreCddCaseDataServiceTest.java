@@ -10,10 +10,11 @@ import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 
-public class CoreCddCaseDataServiceTest extends MockCcdIdamServices {
+public class CoreCddCaseDataServiceTest extends MockCcdIdamSftpServices {
 
     @Autowired
     private CreateCoreCaseDataService createCoreCaseDataService;
+
     @Autowired
     private UpdateCoreCaseDataService updateCoreCaseDataService;
 
@@ -23,24 +24,11 @@ public class CoreCddCaseDataServiceTest extends MockCcdIdamServices {
         createCoreCaseDataService.createCcdCase(CaseDataUtils.buildCaseData("SC068/17/00013"));
 
         verify(coreCaseDataApi).startForCaseworker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString()
-        );
+            anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 
         verify(coreCaseDataApi).submitForCaseworker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            eq(true),
-            any(CaseDataContent.class)
-        );
-
+            anyString(), anyString(), anyString(), anyString(), anyString(),
+            eq(true), any(CaseDataContent.class));
     }
 
     @Test
@@ -50,25 +38,10 @@ public class CoreCddCaseDataServiceTest extends MockCcdIdamServices {
             .buildCaseData("SC068/17/00013"), 123L, "appealReceived");
 
         verify(coreCaseDataApi).startEventForCaseWorker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString()
-        );
+            anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 
         verify(coreCaseDataApi).submitEventForCaseWorker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            eq(true),
-            any(CaseDataContent.class)
-        );
-
+            anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+            eq(true), any(CaseDataContent.class));
     }
 }

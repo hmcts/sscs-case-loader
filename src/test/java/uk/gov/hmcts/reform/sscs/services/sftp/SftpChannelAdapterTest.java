@@ -57,7 +57,7 @@ public class SftpChannelAdapterTest {
             "host",
             123)).toReturn(session);
         stub(session.openChannel("sftp")).toReturn(channel);
-        stub(channel.get("in/xxx")).toReturn(new ByteArrayInputStream("abc".getBytes()));
+        stub(channel.get("xxx")).toReturn(new ByteArrayInputStream("abc".getBytes()));
 
         sftp = new SftpChannelAdapter(jsch, props);
     }
@@ -67,11 +67,32 @@ public class SftpChannelAdapterTest {
         verify(jsch).addIdentity("SSCS-SFTP", "key".getBytes(),null, null);
         verify(jsch).getSession("user", "host", 123);
         verify(channel).connect();
+        verify(channel).cd("in");
         verify(session).setConfig("StrictHostKeyChecking", "no");
         verify(session).connect(60000);
         verify(session).openChannel("sftp");
 
         verifyNoMoreInteractions(jsch, session, channel);
+    }
+
+    @Test
+    public void shouldCheckDirectoriesGivenInitialising() throws SftpException {
+        sftp.init();
+        verify(channel).stat("processed/");
+        verify(channel).stat("failed/");
+    }
+
+    @Test
+    public void shouldCreateDirectoriesGivenNoneSet() throws SftpException {
+        doThrow(new SftpException(1, "")).when(channel).stat("processed/");
+        doThrow(new SftpException(1, "")).when(channel).stat("failed/");
+
+        sftp.init();
+
+        verify(channel).stat("processed/");
+        verify(channel).stat("failed/");
+        verify(channel).mkdir("processed/");
+        verify(channel).mkdir("failed/");
     }
 
     @SuppressWarnings("unchecked")
@@ -82,15 +103,46 @@ public class SftpChannelAdapterTest {
         when(entry.getFilename()).thenReturn(fname1)
             .thenReturn(fname2)
             .thenReturn(fname3);
-        when(channel.ls("in/xxx")).thenReturn(new Vector(lsEntries));
+        when(channel.ls("*.xml")).thenReturn(new Vector(lsEntries));
 
-        List<Gaps2File> list = sftp.list("/xxx");
+        List<Gaps2File> list = sftp.listIncoming();
         assertThat(list.size(), is(3));
         assertThat(list.get(0).getName(), is(fname1));
         assertThat(list.get(1).getName(), is(fname2));
         assertThat(list.get(2).getName(), is(fname3));
 
-        verify(channel).ls("in/xxx");
+        verify(channel).ls("*.xml");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException {
+        List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry);
+
+        when(entry.getFilename()).thenReturn(fname1).thenReturn(fname2);
+        when(channel.ls("processed/*.xml")).thenReturn(new Vector(lsEntries));
+
+        List<Gaps2File> list = sftp.listProcessed();
+        assertThat(list.size(), is(2));
+        assertThat(list.get(0).getName(), is(fname1));
+        assertThat(list.get(1).getName(), is(fname2));
+
+        verify(channel).ls("processed/*.xml");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldReturnFileGivenFailedFileExists() throws SftpException {
+        List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry);
+
+        when(entry.getFilename()).thenReturn(fname1);
+        when(channel.ls("failed/*.xml")).thenReturn(new Vector(lsEntries));
+
+        List<Gaps2File> list = sftp.listFailed();
+        assertThat(list.size(), is(1));
+        assertThat(list.get(0).getName(), is(fname1));
+
+        verify(channel).ls("failed/*.xml");
     }
 
     @Test
@@ -98,13 +150,13 @@ public class SftpChannelAdapterTest {
         InputStream is = sftp.getInputStream("xxx");
         assertThat(IOUtils.toString(is, Charset.defaultCharset()), is("abc"));
 
-        verify(channel).get("in/xxx");
+        verify(channel).get("xxx");
     }
 
     @Test
     public void shouldMoveAFileGivenTheDestination() throws SftpException, JSchException {
-        sftp.move("xxx");
+        sftp.move(true, "xxx");
         verify(channel).connect();
-        verify(channel).put("", "in/xxx");
+        verify(channel).put(SftpChannelAdapter.DUMMY, "processed/xxx");
     }
 }

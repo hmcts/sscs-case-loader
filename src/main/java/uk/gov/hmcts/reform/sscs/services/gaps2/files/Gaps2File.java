@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.sscs.services.gaps2.files;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class Gaps2File implements Comparable<Gaps2File> {
 
@@ -40,6 +38,9 @@ public class Gaps2File implements Comparable<Gaps2File> {
 
     @Override
     public int compareTo(Gaps2File o) {
+        if (this.equals(o)) {
+            return 0;
+        }
         int result = date.compareTo(o.getDate());
         if (result != 0 || isDelta() == o.isDelta()) {
             return result;
@@ -57,19 +58,11 @@ public class Gaps2File implements Comparable<Gaps2File> {
             return false;
         }
 
-        Gaps2File gaps2File = (Gaps2File) o;
-
-        return new EqualsBuilder()
-            .append(name, gaps2File.name)
-            .append(date, gaps2File.date)
-            .isEquals();
+        return name.equals(((Gaps2File) o).name);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-            .append(name)
-            .append(date)
-            .toHashCode();
+        return name.hashCode();
     }
 }

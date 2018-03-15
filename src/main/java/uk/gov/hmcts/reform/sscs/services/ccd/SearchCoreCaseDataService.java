@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Service
 public class SearchCoreCaseDataService {
+
     private final CoreCaseDataApi coreCaseDataApi;
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final IdamService idamService;
