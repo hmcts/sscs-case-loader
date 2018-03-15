@@ -35,6 +35,7 @@ spring.application.name: CaseLoader Insights WebApp
 
 sscs.case.loader.cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0 0/5 * * * ?}
 sscs.case.loader.ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:2017-07-01}
+caseloaderinstance: ${TEST_URL:http://localhost:8082}
 
 logging.level:
     org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
