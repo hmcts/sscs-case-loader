@@ -21,10 +21,15 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
+import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SearchCoreCaseDataServiceTest {
+
+    public static final String CASE_REF = "SC068/17/00013";
+    @MockBean
+    SftpChannelAdapter channelAdapter;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -44,7 +49,7 @@ public class SearchCoreCaseDataServiceTest {
             anyString(),
             anyString(),
             anyString(),
-            eq(ImmutableMap.of("case.caseReference", "SC068/17/00013"))
+            eq(ImmutableMap.of("case.caseReference", CASE_REF))
             )
         ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
 
@@ -65,7 +70,7 @@ public class SearchCoreCaseDataServiceTest {
 
         given(authTokenGenerator.generate()).willReturn("s2sToken");
 
-        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef("SC068/17/00013");
+        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF);
 
         verify(coreCaseDataApi).searchForCaseworker(
             anyString(),
@@ -73,7 +78,7 @@ public class SearchCoreCaseDataServiceTest {
             anyString(),
             anyString(),
             anyString(),
-            eq(ImmutableMap.of("case.caseReference", "SC068/17/00013"))
+            eq(ImmutableMap.of("case.caseReference", CASE_REF))
         );
 
         assertEquals("expected one case only", 1, cases.size());

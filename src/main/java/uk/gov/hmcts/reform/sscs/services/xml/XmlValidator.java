@@ -5,33 +5,50 @@ import static javax.xml.validation.SchemaFactory.newInstance;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Validator;
-import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
+import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
+import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 
 @Service
 public class XmlValidator {
 
-    public void validateXml(String xmlAsString, boolean isDelta) {
-        try {
-            InputStream xmlAsInputStream = IOUtils.toInputStream(xmlAsString, StandardCharsets.UTF_8.name());
-            String schemaPath = isDelta ? XmlSchemas.DELTA.getPath() : XmlSchemas.REF.getPath();
+    private final SftpSshService sftpSshService;
+
+    @Autowired
+    public XmlValidator(SftpSshService sftpSshService) {
+        this.sftpSshService = sftpSshService;
+    }
+
+    public void validateXml(Gaps2File xmlFile) {
+        boolean failure = true;
+        try (InputStream xmlAsInputStream = sftpSshService.readExtractFile(xmlFile)) {
+            String schemaPath = xmlFile.isDelta() ? XmlSchemas.DELTA.getPath() : XmlSchemas.REF.getPath();
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
             Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
             XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
             validator.validate(new StAXSource(xmlStreamReader));
-        } catch (IOException | SAXException | XMLStreamException e) {
-            throw new GapsValidationException("Oops...something went wrong, ", e);
+            failure = false;
+        } catch (IOException e) {
+            throw new GapsValidationException("Failed to read stream for xml file " + xmlFile.getName(), e);
+        } catch (SAXException e) {
+            throw new GapsValidationException("Failed to read schema", e);
+        } catch (XMLStreamException e) {
+            throw new GapsValidationException("Failed to parse xml file " + xmlFile.getName(), e);
+        } finally {
+            if (failure) {
+                sftpSshService.move(xmlFile, false);
+            }
         }
     }
 }

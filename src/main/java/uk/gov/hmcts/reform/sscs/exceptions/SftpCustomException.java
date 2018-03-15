@@ -6,6 +6,6 @@ public class SftpCustomException extends RuntimeException {
     }
 
     public SftpCustomException(String message, String fileName, Throwable cause) {
-        this(String.format("%s - file name: %s", message, fileName), cause);
+        this(String.format("%s - name: %s", message, fileName), cause);
     }
 }

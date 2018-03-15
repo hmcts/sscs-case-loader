@@ -1,24 +1,15 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.stub;
-import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
@@ -30,26 +21,21 @@ import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
-@ContextConfiguration
-@TestPropertySource(properties = {"sscs.case.loader.ignoreCasesBeforeDate=2017-01-01"})
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ProcessCaseTest {
+public abstract class MockCcdIdamSftpServices {
 
     @MockBean
-    private AuthTokenGenerator authTokenGenerator;
+    AuthTokenGenerator authTokenGenerator;
 
     @MockBean
-    private CoreCaseDataApi coreCaseDataApi;
+    CoreCaseDataApi coreCaseDataApi;
 
     @MockBean
-    private IdamApiClient idamApiClient;
+    IdamApiClient idamApiClient;
 
     @MockBean
     private SftpChannelAdapter channelAdapter;
-
-    @Autowired
-    private CaseLoaderService caseLoaderService;
 
     @Before
     public void setUp() {
@@ -59,23 +45,10 @@ public class ProcessCaseTest {
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
 
-        String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
-
-        stub(channelAdapter.listFailed()).toReturn(newArrayList());
-        stub(channelAdapter.listProcessed()).toReturn(newArrayList());
-        stub(channelAdapter.listIncoming()).toReturn(newArrayList(new Gaps2File(deltaFilename)));
-
-        stub(channelAdapter.getInputStream(deltaFilename)).toAnswer(x ->
-            getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
+        stub(authTokenGenerator.generate()).toReturn("s2s token");
 
         stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("url", "code", ""));
-
-        given(authTokenGenerator.generate()).willReturn("s2s token");
-
-        stub(coreCaseDataApi.searchForCaseworker(
-            anyString(), anyString(), anyString(), anyString(), anyString(), any()))
-            .toReturn(newArrayList());
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("", "", "accessToken"));
@@ -88,6 +61,10 @@ public class ProcessCaseTest {
             anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(Boolean.TRUE), any(CaseDataContent.class)))
             .toReturn(CaseDetails.builder().data(caseDataMap).build());
+
+        stub(coreCaseDataApi.searchForCaseworker(
+            anyString(), anyString(), anyString(), anyString(), anyString(), any()))
+            .toReturn(Collections.singletonList(CaseDetails.builder().id(1L).data(caseDataMap).build()));
 
         stub(coreCaseDataApi.searchForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(),
@@ -103,14 +80,13 @@ public class ProcessCaseTest {
             anyBoolean(), any(CaseDataContent.class)))
             .toReturn(CaseDetails.builder().build());
 
+        String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
+
+        stub(channelAdapter.listIncoming()).toReturn(newArrayList(new Gaps2File(deltaFilename)));
+        stub(channelAdapter.getInputStream(deltaFilename)).toAnswer(x ->
+                getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
+        stub(channelAdapter.listProcessed()).toReturn(newArrayList());
+        stub(channelAdapter.listFailed()).toReturn(newArrayList());
     }
 
-    @Test
-    public void shouldBeSavedIntoCcdGivenDeltaXmlInSftp() {
-
-        caseLoaderService.process();
-
-        verify(coreCaseDataApi).searchForCaseworker(
-            anyString(), anyString(), anyString(), anyString(), anyString(), any());
-    }
 }
