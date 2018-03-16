@@ -57,7 +57,7 @@ static LinkedHashMap<String, Object> key(String secretName, String envVar) {
 }
 
 withPipeline(type, product, app) {
-    loadVaultSecrets(secrets)
-    loadVaultSecrets(keys)
+//    loadVaultSecrets(secrets)
+//    loadVaultSecrets(keys)
     enableSlackNotifications('#sscs-tech')
 }
