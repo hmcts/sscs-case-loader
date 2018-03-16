@@ -29,7 +29,7 @@ public class GetSavedCase {
             .then()
             .statusCode(HttpStatus.OK.value())
             .and()
-            .assertThat().body("case_data.caseReference", equalTo("SC068/18/01217"));
+            .assertThat().body("[0].case_data.caseReference", equalTo("SC068/18/01217"));
     }
 }
 
