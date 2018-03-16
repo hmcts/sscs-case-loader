@@ -80,3 +80,7 @@ variable "log_level_sscs" {
   default = "INFO"
 }
 
+variable "max_capacity" {
+  default = "1"
+}
+
