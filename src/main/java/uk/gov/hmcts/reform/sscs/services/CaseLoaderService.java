@@ -42,19 +42,26 @@ public class CaseLoaderService {
     }
 
     public void process() {
+        log.debug("*** case-loader *** reading files from sFTP...");
         List<Gaps2File> files = sftpSshService.getFiles();
-
+        log.debug("*** case-loader *** About to start processing files: {}", files);
         for (Gaps2File file : files) {
+            log.debug("*** case-loader *** file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
+            log.debug("*** case-loader *** file validated successfully: {}", file.getName());
             if (file.isDelta()) {
                 List<CaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-
+                log.debug("*** case-loader *** file transformed to Cases successfully");
                 for (CaseData caseData : cases) {
-                    List<CaseDetails> caseByCaseRef = ccdCaseService.findCaseByCaseRef(caseData.getCaseReference());
-                    if (caseByCaseRef.isEmpty()) {
+                    log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
+                    List<CaseDetails> casesByCaseRef = ccdCaseService.findCaseByCaseRef(caseData.getCaseReference());
+                    log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
+                    if (casesByCaseRef.isEmpty()) {
+                        log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
                         ccdCasesSender.sendCreateCcdCases(caseData);
                     } else {
-                        ccdCasesSender.sendUpdateCcdCases(caseData, caseByCaseRef.get(0));
+                        log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
+                        ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0));
                     }
                 }
                 sftpSshService.move(file, true);

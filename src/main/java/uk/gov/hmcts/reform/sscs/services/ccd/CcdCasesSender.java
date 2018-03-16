@@ -42,14 +42,14 @@ public class CcdCasesSender {
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase) {
         if (isThereAnEventChange(caseData, existingCcdCase)) {
-            log.info("*** case-loader *** About to update case with new event in CCD for case reference: {}",
+            log.debug("*** case-loader *** About to update case with new event in CCD for case reference: {}",
                 caseData.getCaseReference());
             CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
                 caseData.getLatestEventType());
-            log.info("*** case-loader *** case events updated in CCD successfully: {}",
+            log.debug("*** case-loader *** case events updated in CCD successfully: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         } else {
-            log.info("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
+            log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
     }
 
@@ -62,11 +62,11 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            log.info("*** case-loader *** About to update case with evidence received in CCD for case reference: {}",
+            log.debug("*** case-loader *** About to update case with evidence received in CCD for case reference: {}",
                 caseData.getCaseReference());
             CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(),
                 "evidenceReceived");
-            log.info("*** case-loader *** New evidence received event updated in CCD for case: {}",
+            log.debug("*** case-loader *** New evidence received event updated in CCD for case: {}",
                 JsonHelper.printCaseDetailsInJson(caseDetails));
         }
     }

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs;
+package uk.gov.hmcts.reform.sscs.functional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
