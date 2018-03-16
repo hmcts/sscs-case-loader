@@ -43,13 +43,14 @@ locals {
 }
 
 module "sscs-case-loader" {
-  source       = "git@github.com:contino/moj-module-webapp?ref=master"
+  source       = "git@github.com:contino/moj-module-webapp?ref=capacity-param"
   product      = "${var.product}-case-loader"
   location     = "${var.location}"
   env          = "${var.env}"
   ilbIp        = "${var.ilbIp}"
   is_frontend  = false
   subscription = "${var.subscription}"
+  max_capacity = "${var.max_capacity}"
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
