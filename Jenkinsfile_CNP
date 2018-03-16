@@ -10,54 +10,6 @@ def type = "java"
 def product = "sscs"
 def app = "case-loader"
 
-List<LinkedHashMap<String, Object>> keys = [
-  key('Gaps2Key','GAPS2_KEY_LOCATION')
-]
-
-List<LinkedHashMap<String, Object>> secrets = [
-  secret('ManagementSecEnabled', 'MANAGEMENT_SECURITY_ENABLED'),
-  secret('CcdApi', 'CORE_CASE_DATA_API_URL'),
-  secret('CcdUid', 'CORE_CASE_DATA_USER_ID'),
-  secret('CcdJid', 'CORE_CASE_DATA_JURISDICTION_ID'),
-  secret('CcdCtid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
-  secret('CcdDeid', 'CORE_CASE_DATA_EVENT_ID'),
-  secret('IdamUrl', 'IDAM_URL'),
-  secret('IdamS2sSecret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-  secret('IdamS2sAuth', 'IDAM.S2S-AUTH'),
-  secret('IdamS2sAuthMicro', 'IDAM.S2S-AUTH.MICROSERVICE'),
-  secret('IdamSscsUser', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
-  secret('IdamSscsPass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
-  secret('IdamAuthCid','IDAM_OAUTH2_CLIENT_ID'),
-  secret('IdamAuthSecret','IDAM_OAUTH2_CLIENT_SECRET'),
-  secret('IdamAuthUrl','IDAM_OAUTH2_REDIRECT_URL'),
-  secret('Gaps2Host','GAPS2_SFTP_HOST'),
-  secret('Gaps2Port','GAPS2_SFTP_PORT'),
-  secret('Gaps2User','GAPS2_SFTP_USER'),
-  secret('Gaps2Folder','GAPS2_SFTP_DIR'),
-  secret('SscsCron','SSCS_CASE_LOADER_CRON_SCHEDULE'),
-  secret('SscsIgnore','IGNORE_CASES_BEFORE_DATE')
-]
-
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
-    secretType: 'Secret',
-    name: secretName,
-    version: '',
-    envVariable: envVar
-  ]
-}
-
-static LinkedHashMap<String, Object> key(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
-    secretType: 'Certificate',
-    name: secretName,
-    version: '',
-    envVariable: envVar
-  ]
-}
-
 withPipeline(type, product, app) {
-//    loadVaultSecrets(secrets)
-//    loadVaultSecrets(keys)
     enableSlackNotifications('#sscs-tech')
 }
