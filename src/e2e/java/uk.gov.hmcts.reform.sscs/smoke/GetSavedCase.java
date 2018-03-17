@@ -1,21 +1,23 @@
 package uk.gov.hmcts.reform.sscs.smoke;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-import static org.assertj.core.api.Assertions.assertThat;
+
 
 
 
 public class GetSavedCase {
     public String sscsCasePattern = "SC068/18/01217";
 
-    private String caseloaderinstance = System.getenv("TEST_URL");
+    private final String caseloaderinstance = System.getenv("TEST_URL");
 
     @Test
-    public void retrievecasefromCCD() {
-        RestAssured.baseURI=caseloaderinstance;
+    public void retrievecasefromCcd() {
+        RestAssured.baseURI = caseloaderinstance;
 
 
         String response = RestAssured
