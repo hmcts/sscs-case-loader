@@ -50,7 +50,7 @@ module "sscs-case-loader" {
   ilbIp        = "${var.ilbIp}"
   is_frontend  = false
   subscription = "${var.subscription}"
-  max_capacity = "${var.max_capacity}"
+  capacity     = "1"
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
