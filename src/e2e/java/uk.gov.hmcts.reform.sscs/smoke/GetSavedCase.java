@@ -1,35 +1,37 @@
-
-
 package uk.gov.hmcts.reform.sscs.smoke;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("development")
+
+
+
 public class GetSavedCase {
+    public String sscsCasePattern = "SC068/18/01217";
 
-    @Value("${sscs.case.loader.url}")
-    private String caseLoaderUrl;
+    private final String caseloaderinstance = System.getenv("TEST_URL");
 
     @Test
-    public void retrieveCaseFromCcd() {
-        RestAssured.baseURI = caseLoaderUrl;
-        RestAssured.get("/smoke-test/")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .and()
-            .assertThat().body("[0].case_data.caseReference", equalTo("SC068/18/01217"));
+    public void retrievecasefromCcd() {
+        RestAssured.baseURI = caseloaderinstance;
+
+
+        String response = RestAssured
+                .given()
+                .when()
+                .get("/smoke-test/")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .and()
+                .extract().body().asString();
+        System.out.println(response);
+        assertThat(response).contains(sscsCasePattern);
+
+
     }
 }
 
