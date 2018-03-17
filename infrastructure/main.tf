@@ -50,7 +50,7 @@ module "sscs-case-loader" {
   ilbIp        = "${var.ilbIp}"
   is_frontend  = false
   subscription = "${var.subscription}"
-  max_capacity = "${var.max_capacity}"
+  capacity     = "1"
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
@@ -88,4 +88,15 @@ module "sscs-case-loader" {
     LOG_LEVEL_SSCS = "${var.log_level_sscs}"
 
   }
+}
+
+module "sscs-case-loader-vault" {
+  source              = "git@github.com:contino/moj-module-key-vault?ref=master"
+  name                = "sscs-case-loader-${var.env}"
+  product             = "${var.product}"
+  env                 = "${var.env}"
+  tenant_id           = "${var.tenant_id}"
+  object_id           = "${var.jenkins_AAD_objectId}"
+  resource_group_name = "${module.sscs-case-loader.resource_group_name}"
+  product_group_object_id = "87099fce-881e-4654-88d2-7c36b634e622"
 }
