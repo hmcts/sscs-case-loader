@@ -1,3 +1,7 @@
+provider "azurerm" {
+  version = "<= 1.2.0"
+}
+
 provider "vault" {
   address = "https://vault.reform.hmcts.net:6200"
 }
