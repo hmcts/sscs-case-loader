@@ -18,6 +18,7 @@ public class GetSavedCase {
     @Test
     public void retrievecasefromCcd() {
         RestAssured.baseURI = caseloaderinstance;
+        RestAssured.useRelaxedHTTPSValidation();
 
 
         String response = RestAssured
