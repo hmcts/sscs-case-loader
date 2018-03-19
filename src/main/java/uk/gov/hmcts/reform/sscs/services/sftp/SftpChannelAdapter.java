@@ -113,8 +113,9 @@ public class SftpChannelAdapter {
     }
 
     public void move(boolean success, String fileName) {
+        ChannelSftp sftpChannel = getSftpChannel();
         try {
-            getSftpChannel().put(DUMMY, String.format("%s%s", success ? PROCESSED_DIR : FAILED_DIR, fileName));
+            sftpChannel.put(DUMMY, String.format("%s%s", success ? PROCESSED_DIR : FAILED_DIR, fileName));
         } catch (SftpException e) {
             throw new SftpCustomException("Failed moving file", fileName, e);
         }

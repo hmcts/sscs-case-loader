@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.sftp;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 import com.jcraft.jsch.*;
@@ -20,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
+import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -63,27 +65,27 @@ public class SftpChannelAdapterTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws JSchException, SftpException {
         verify(jsch).addIdentity("SSCS-SFTP", "key".getBytes(),null, null);
         verify(jsch).getSession("user", "host", 123);
-        verify(channel).connect();
-        verify(channel).cd("in");
         verify(session).setConfig("StrictHostKeyChecking", "no");
         verify(session).connect(60000);
         verify(session).openChannel("sftp");
+        verify(channel).connect();
+        verify(channel).cd("in");
 
         verifyNoMoreInteractions(jsch, session, channel);
     }
 
     @Test
-    public void shouldCheckDirectoriesGivenInitialising() throws SftpException {
+    public void shouldCheckDirectoriesGivenInitialising() throws SftpException, JSchException {
         sftp.init();
         verify(channel).stat("processed/");
         verify(channel).stat("failed/");
     }
 
     @Test
-    public void shouldCreateDirectoriesGivenNoneSet() throws SftpException {
+    public void shouldCreateDirectoriesGivenNoneSet() throws SftpException, JSchException {
         doThrow(new SftpException(1, "")).when(channel).stat("processed/");
         doThrow(new SftpException(1, "")).when(channel).stat("failed/");
 
@@ -97,7 +99,7 @@ public class SftpChannelAdapterTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnListOfFilesGivenPath() throws SftpException {
+    public void shouldReturnListOfFilesGivenPath() throws SftpException, JSchException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry, entry);
 
         when(entry.getFilename()).thenReturn(fname1)
@@ -116,7 +118,7 @@ public class SftpChannelAdapterTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException {
+    public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException, JSchException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry);
 
         when(entry.getFilename()).thenReturn(fname1).thenReturn(fname2);
@@ -132,7 +134,7 @@ public class SftpChannelAdapterTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnFileGivenFailedFileExists() throws SftpException {
+    public void shouldReturnFileGivenFailedFileExists() throws SftpException, JSchException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry);
 
         when(entry.getFilename()).thenReturn(fname1);
@@ -146,7 +148,7 @@ public class SftpChannelAdapterTest {
     }
 
     @Test
-    public void shouldReturnInputStreamGivenAFileName() throws IOException, SftpException {
+    public void shouldReturnInputStreamGivenAFileName() throws IOException, SftpException, JSchException {
         InputStream is = sftp.getInputStream("xxx");
         assertThat(IOUtils.toString(is, Charset.defaultCharset()), is("abc"));
 
@@ -154,9 +156,26 @@ public class SftpChannelAdapterTest {
     }
 
     @Test
+    public void shouldThrowExceptionGettingIsGivenGetFails() throws SftpException {
+        doThrow(new SftpCustomException("", null)).when(channel).get("xxx");
+        try {
+            sftp.getInputStream("xxx");
+            fail();
+        } catch (SftpCustomException e) {
+            verify(channel).get("xxx");
+        }
+    }
+
+    @Test
     public void shouldMoveAFileGivenTheDestination() throws SftpException, JSchException {
         sftp.move(true, "xxx");
         verify(channel).connect();
         verify(channel).put(SftpChannelAdapter.DUMMY, "processed/xxx");
+    }
+
+    @Test(expected = SftpCustomException.class)
+    public void shouldThrowExceptionGivenMoveFails() throws SftpException {
+        doThrow(new SftpCustomException("", null)).when(channel).cd("in");
+        sftp.move(true, "xxx");
     }
 }

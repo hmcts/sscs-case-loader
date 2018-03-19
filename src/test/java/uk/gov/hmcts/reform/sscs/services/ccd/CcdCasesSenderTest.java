@@ -32,35 +32,32 @@ public class CcdCasesSenderTest {
         "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
 
     @Mock
-    private UpdateCoreCaseDataService updateCoreCaseDataService;
-    @Mock
-    private CreateCoreCaseDataService createCoreCaseDataService;
+    private CcdApiWrapper ccdApiWrapper;
     @Mock
     private CcdCasesSender ccdCasesSender;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ccdCasesSender = new CcdCasesSender(createCoreCaseDataService,
-            updateCoreCaseDataService);
+        ccdCasesSender = new CcdCasesSender(ccdApiWrapper);
     }
 
     @Test
-    public void givenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty_shouldCreateInCcd() {
+    public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
         ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED));
 
-        verify(createCoreCaseDataService, times(1))
-            .createCcdCase(eq(buildCaseData(APPEAL_RECEIVED)));
+        verify(ccdApiWrapper, times(1))
+            .create(eq(APPEAL_RECEIVED.getType()), eq(buildCaseData(APPEAL_RECEIVED)));
     }
 
     @Test
     @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
         "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
-    public void givenThereIsAnEventChange_shouldUpdateCcd(GapsEvent gapsEvent) throws Exception {
+    public void shouldUpdateCcdGivenThereIsAnEventChange(GapsEvent gapsEvent) throws Exception {
         ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent), getCaseDetails(CASE_DETAILS_JSON));
 
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()));
+        verify(ccdApiWrapper, times(1))
+            .update(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()));
     }
 
     private CaseDetails getCaseDetails(String caseDetails) throws Exception {
@@ -71,7 +68,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenThereIsNoEventChange_shouldNotUpdateCcd() throws Exception {
+    public void shouldNotUpdateCcdGivenThereIsNoEventChange() throws Exception {
         CaseData caseData = CaseData.builder()
             .events(Collections.singletonList(Events.builder()
                 .value(Event.builder()
@@ -84,22 +81,22 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON));
 
-        verify(updateCoreCaseDataService, times(0))
-            .updateCase(eq(caseData), anyLong(), any());
+        verify(ccdApiWrapper, times(0))
+            .update(eq(caseData), anyLong(), any());
     }
 
     @Test
-    public void givenNewEventIsNull_shouldNotUpdateCcd() throws Exception {
+    public void shouldNotUpdateCcdGivenNewEventIsNull() throws Exception {
         CaseData caseData = CaseData.builder().build();
 
         ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON));
 
-        verify(updateCoreCaseDataService, times(0))
-            .updateCase(eq(caseData), anyLong(), any());
+        verify(ccdApiWrapper, times(0))
+            .update(eq(caseData), anyLong(), any());
     }
 
     @Test
-    public void givenNoNewFurtherEvidenceReceived_shouldNotUpdateCcd() throws Exception {
+    public void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceived() throws Exception {
         CaseData caseData = CaseData.builder()
             .evidence(Evidence.builder()
                 .documents(Collections.singletonList(Documents.builder()
@@ -122,12 +119,12 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails);
 
-        verify(updateCoreCaseDataService, times(0))
-            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+        verify(ccdApiWrapper, times(0))
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"));
     }
 
     @Test
-    public void givenFileWithFurtherEvidence_shouldUpdateCcdTwice() throws Exception {
+    public void shouldUpdateCcdTwiceGivenFileWithFurtherEvidence() throws Exception {
         CaseData caseData = CaseData.builder()
             .evidence(buildEvidence())
             .events(Collections.singletonList(Events.builder()
@@ -143,11 +140,11 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails);
 
-        verify(updateCoreCaseDataService, times(1))
-            .updateCase(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+        verify(ccdApiWrapper, times(1))
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"));
 
-        verify(updateCoreCaseDataService, times(0))
-            .updateCase(any(CaseData.class), anyLong(), eq("appealReceived"));
+        verify(ccdApiWrapper, times(0))
+            .update(any(CaseData.class), anyLong(), eq("appealReceived"));
     }
 
     private CaseData buildCaseData(GapsEvent event) {
