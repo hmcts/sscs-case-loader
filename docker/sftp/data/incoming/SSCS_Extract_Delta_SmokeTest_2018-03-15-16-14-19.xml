@@ -29,6 +29,15 @@
     <Interpreter_Signer_Id>206</Interpreter_Signer_Id>
     <DOB>1982-12-10T00:00:00+00:00</DOB>
     </Parties>
+    <Hearing>
+      <Hearing_Id>289784</Hearing_Id>
+      <Date_Hearing_Notification>2017-05-24T00:00:00+01:00</Date_Hearing_Notification>
+      <Date_Outcome_Decision_Notification>2017-05-24T00:00:00+01:00</Date_Outcome_Decision_Notification>
+      <Session_Date>2017-05-24T00:00:00+01:00</Session_Date>
+      <Appeal_Time>2017-05-24T11:00:00+01:00</Appeal_Time>
+      <Venue_Id>68</Venue_Id>
+      <Outcome_Id>9</Outcome_Id>
+    </Hearing>
     <Major_Status>
         <Status_Id>24</Status_Id>
         <Date_Set>2018-03-08T07:33:56.07+00:00</Date_Set>
