@@ -103,6 +103,6 @@ public class CcdApiWrapperTest {
             eq(true),
             any(CaseDataContent.class))).thenReturn(caseDetails);
 
-        assertThat(apiWrapper.update(caseData, 123L, EVENT_ID, OAUTH2), is(caseDetails));
+        assertThat(apiWrapper.update(caseData, 123L, EVENT_ID, OAUTH2, S2SAUTH), is(caseDetails));
     }
 }

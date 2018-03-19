@@ -67,7 +67,8 @@ public class CaseLoaderService {
                         ccdCasesSender.sendCreateCcdCases(caseData, idamOauth2Token, serviceAuthorization);
                     } else {
                         log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
-                        ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamOauth2Token);
+                        ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamOauth2Token,
+                            serviceAuthorization);
                     }
                 }
                 sftpSshService.move(file, true);
