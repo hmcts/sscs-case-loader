@@ -6,27 +6,23 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Service
 public class SearchCoreCaseDataService {
 
     private final CoreCaseDataApi coreCaseDataApi;
     private final CoreCaseDataProperties coreCaseDataProperties;
-    private final IdamService idamService;
 
-    public SearchCoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
-                                     IdamService idamService) {
+    public SearchCoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties) {
         this.coreCaseDataApi = coreCaseDataApi;
         this.coreCaseDataProperties = coreCaseDataProperties;
-        this.idamService = idamService;
     }
 
 
-    public List<CaseDetails> findCaseByCaseRef(String caseRef, String idamOauth2Token) {
+    public List<CaseDetails> findCaseByCaseRef(String caseRef, String idamOauth2Token, String serviceAuthorization) {
         return coreCaseDataApi.searchForCaseworker(
             idamOauth2Token,
-            idamService.generateServiceAuthorization(),
+            serviceAuthorization,
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),

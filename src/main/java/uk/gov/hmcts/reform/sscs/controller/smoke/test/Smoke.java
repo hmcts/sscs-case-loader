@@ -21,7 +21,9 @@ public class Smoke {
     @ResponseBody
     public List<CaseDetails> smoke() {
         String idamOauth2Token = idamService.getIdamOauth2Token();
-        return searchCoreCaseDataService.findCaseByCaseRef("SC068/18/01217", idamOauth2Token);
+        String serviceAuthorization = idamService.generateServiceAuthorization();
+        return searchCoreCaseDataService.findCaseByCaseRef("SC068/18/01217", idamOauth2Token,
+            serviceAuthorization);
     }
 
 }

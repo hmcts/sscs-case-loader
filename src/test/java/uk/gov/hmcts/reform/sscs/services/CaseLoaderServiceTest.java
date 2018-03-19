@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -84,12 +83,17 @@ public class CaseLoaderServiceTest {
         when(sftpSshService.readExtractFile(file)).thenReturn(is);
         when(file.isDelta()).thenReturn(true);
         CaseDetails caseDetails = CaseDetails.builder().build();
-        when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), anyString())).thenReturn(newArrayList(caseDetails));
+        when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), eq("idamOauth2Token"),
+            eq("serviceAuthorization"))).thenReturn(newArrayList(caseDetails));
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
+        when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
+        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
 
         caseLoaderService.process();
 
         verify(xmlValidator).validateXml(file);
+        verify(ccdCaseService).findCaseByCaseRef(eq("caseRef"), eq("idamOauth2Token"),
+            eq("serviceAuthorization"));
     }
 
     @Test

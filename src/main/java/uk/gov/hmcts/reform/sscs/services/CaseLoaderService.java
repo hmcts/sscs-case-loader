@@ -49,6 +49,7 @@ public class CaseLoaderService {
         List<Gaps2File> files = sftpSshService.getFiles();
         log.debug("*** case-loader *** About to start processing files: {}", files);
         String idamOauth2Token = idamService.getIdamOauth2Token();
+        String serviceAuthorization = idamService.generateServiceAuthorization();
         for (Gaps2File file : files) {
             log.debug("*** case-loader *** file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
@@ -59,7 +60,7 @@ public class CaseLoaderService {
                 for (CaseData caseData : cases) {
                     log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
                     List<CaseDetails> casesByCaseRef = ccdCaseService.findCaseByCaseRef(caseData.getCaseReference(),
-                        idamOauth2Token);
+                        idamOauth2Token, serviceAuthorization);
                     log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
                     if (casesByCaseRef.isEmpty()) {
                         log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);

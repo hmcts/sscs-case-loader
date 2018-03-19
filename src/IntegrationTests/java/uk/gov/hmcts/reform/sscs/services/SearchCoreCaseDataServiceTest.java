@@ -52,10 +52,8 @@ public class SearchCoreCaseDataServiceTest {
             )
         ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
 
-        given(authTokenGenerator.generate()).willReturn("s2sToken");
-
         List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF,
-            "idamOauth2Token");
+            "idamOauth2Token", "serviceAuthorization");
 
         verify(coreCaseDataApi).searchForCaseworker(
             anyString(),
