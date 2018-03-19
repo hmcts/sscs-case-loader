@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +25,7 @@ public class CcdCasesSender {
     }
 
     public void sendCreateCcdCases(CaseData caseData) {
-        ccdApiWrapper.create(APPEAL_RECEIVED.getType(), caseData);
+        ccdApiWrapper.create(caseData);
     }
 
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase) {

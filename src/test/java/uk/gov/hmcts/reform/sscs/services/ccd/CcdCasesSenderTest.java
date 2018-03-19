@@ -47,7 +47,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED));
 
         verify(ccdApiWrapper, times(1))
-            .create(eq(APPEAL_RECEIVED.getType()), eq(buildCaseData(APPEAL_RECEIVED)));
+            .create(eq(buildCaseData(APPEAL_RECEIVED)));
     }
 
     @Test

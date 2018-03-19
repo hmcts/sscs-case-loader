@@ -26,9 +26,8 @@ public class CcdApiWrapperTest {
 
     public static final String OAUTH2 = "token";
     public static final String S2SAUTH = "auth";
-    public static final String EVENT_ID = "eventId";
+    public static final String EVENT_ID = "appealCreated";
     public static final String CCD_TOKEN = "ccdToken";
-    public static final String APPEAL_RECEIVED = "appealReceived";
     public static final String CCD_EVENT = "ccdEvent";
 
     @Mock
@@ -83,7 +82,7 @@ public class CcdApiWrapperTest {
             eq(true),
             captor.capture())).thenReturn(caseDetails);
 
-        CaseDetails actual = apiWrapper.create(EVENT_ID, caseData);
+        CaseDetails actual = apiWrapper.create(caseData);
 
         CaseDataContent content = captor.getValue();
         assertThat(content.getEvent().getSummary(), is("GAPS2 Case"));

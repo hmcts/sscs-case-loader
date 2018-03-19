@@ -26,7 +26,7 @@ public class SaveAndUpdateSimpleCaseInCcd {
     @Test
     public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
-        CaseDetails caseDetails = ccdApiWrapper.create("appealReceived", caseData);
+        CaseDetails caseDetails = ccdApiWrapper.create(caseData);
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
         CaseDetails updatedCaseDetails = ccdApiWrapper.update(updatedCaseData, caseDetails.getId(),
