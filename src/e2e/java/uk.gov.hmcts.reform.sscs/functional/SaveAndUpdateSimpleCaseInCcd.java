@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.ccd.CreateCoreCaseDataService;
-import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.CcdApiWrapper;
 
 
 @RunWith(SpringRunner.class)
@@ -22,18 +21,15 @@ import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCoreCaseDataService;
 public class SaveAndUpdateSimpleCaseInCcd {
 
     @Autowired
-    private CreateCoreCaseDataService createCoreCaseDataService;
-
-    @Autowired
-    private UpdateCoreCaseDataService updateCoreCaseDataService;
+    private CcdApiWrapper ccdApiWrapper;
 
     @Test
-    public void givenACase_shouldBeSavedAndThenUpdatedIntoCcd() {
+    public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
-        CaseDetails caseDetails = createCoreCaseDataService.createCcdCase(caseData);
+        CaseDetails caseDetails = ccdApiWrapper.create(caseData);
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
-        CaseDetails updatedCaseDetails = updateCoreCaseDataService.updateCase(updatedCaseData, caseDetails.getId(),
+        CaseDetails updatedCaseDetails = ccdApiWrapper.update(updatedCaseData, caseDetails.getId(),
             "appealReceived");
         assertEquals("SC123/12/78765", updatedCaseDetails.getData().get("caseReference"));
     }

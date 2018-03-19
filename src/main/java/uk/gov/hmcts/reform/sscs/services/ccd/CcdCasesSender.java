@@ -12,24 +12,20 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
-import uk.gov.hmcts.reform.sscs.services.json.JsonHelper;
 
 @Service
 @Slf4j
 public class CcdCasesSender {
 
-    private final CreateCoreCaseDataService createCoreCaseDataService;
-    private final UpdateCoreCaseDataService updateCoreCaseDataService;
+    private final CcdApiWrapper ccdApiWrapper;
 
     @Autowired
-    public CcdCasesSender(CreateCoreCaseDataService createCoreCaseDataService,
-                          UpdateCoreCaseDataService updateCoreCaseDataService) {
-        this.createCoreCaseDataService = createCoreCaseDataService;
-        this.updateCoreCaseDataService = updateCoreCaseDataService;
+    public CcdCasesSender(CcdApiWrapper ccdApiWrapper) {
+        this.ccdApiWrapper = ccdApiWrapper;
     }
 
     public void sendCreateCcdCases(CaseData caseData) {
-        createCoreCaseDataService.createCcdCase(caseData);
+        ccdApiWrapper.create(caseData);
     }
 
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase) {
@@ -42,12 +38,7 @@ public class CcdCasesSender {
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase) {
         if (isThereAnEventChange(caseData, existingCcdCase)) {
-            log.debug("*** case-loader *** About to update case with new event in CCD for case reference: {}",
-                caseData.getCaseReference());
-            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCcdCase.getId(),
-                caseData.getLatestEventType());
-            log.debug("*** case-loader *** case events updated in CCD successfully: {}",
-                JsonHelper.printCaseDetailsInJson(caseDetails));
+            ccdApiWrapper.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType());
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
@@ -62,12 +53,7 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            log.debug("*** case-loader *** About to update case with evidence received in CCD for case reference: {}",
-                caseData.getCaseReference());
-            CaseDetails caseDetails = updateCoreCaseDataService.updateCase(caseData, existingCase.getId(),
-                "evidenceReceived");
-            log.debug("*** case-loader *** New evidence received event updated in CCD for case: {}",
-                JsonHelper.printCaseDetailsInJson(caseDetails));
+            ccdApiWrapper.update(caseData, existingCase.getId(), "evidenceReceived");
         }
     }
 
