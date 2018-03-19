@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdApiWrapper;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 
 @RunWith(SpringRunner.class)
@@ -22,11 +23,14 @@ public class SaveAndUpdateSimpleCaseInCcd {
 
     @Autowired
     private CcdApiWrapper ccdApiWrapper;
+    @Autowired
+    private IdamService idamService;
 
     @Test
     public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
-        CaseDetails caseDetails = ccdApiWrapper.create(caseData);
+        String idamOauth2Token = idamService.getIdamOauth2Token();
+        CaseDetails caseDetails = ccdApiWrapper.create(caseData, idamOauth2Token);
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
         CaseDetails updatedCaseDetails = ccdApiWrapper.update(updatedCaseData, caseDetails.getId(),

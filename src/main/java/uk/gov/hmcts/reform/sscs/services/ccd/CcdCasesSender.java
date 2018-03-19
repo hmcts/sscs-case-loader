@@ -20,12 +20,12 @@ public class CcdCasesSender {
     private final CcdApiWrapper ccdApiWrapper;
 
     @Autowired
-    public CcdCasesSender(CcdApiWrapper ccdApiWrapper) {
+    CcdCasesSender(CcdApiWrapper ccdApiWrapper) {
         this.ccdApiWrapper = ccdApiWrapper;
     }
 
-    public void sendCreateCcdCases(CaseData caseData) {
-        ccdApiWrapper.create(caseData);
+    public void sendCreateCcdCases(CaseData caseData, String idamOauth2Token) {
+        ccdApiWrapper.create(caseData, idamOauth2Token);
     }
 
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase) {

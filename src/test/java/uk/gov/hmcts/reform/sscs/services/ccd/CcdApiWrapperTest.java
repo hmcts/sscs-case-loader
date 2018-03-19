@@ -82,7 +82,7 @@ public class CcdApiWrapperTest {
             eq(true),
             captor.capture())).thenReturn(caseDetails);
 
-        CaseDetails actual = apiWrapper.create(caseData);
+        CaseDetails actual = apiWrapper.create(caseData, OAUTH2);
 
         CaseDataContent content = captor.getValue();
         assertThat(content.getEvent().getSummary(), is("GAPS2 Case"));

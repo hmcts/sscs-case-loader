@@ -63,7 +63,7 @@ public class CaseLoaderService {
                     log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
                     if (casesByCaseRef.isEmpty()) {
                         log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
-                        ccdCasesSender.sendCreateCcdCases(caseData);
+                        ccdCasesSender.sendCreateCcdCases(caseData, idamOauth2Token);
                     } else {
                         log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
                         ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0));

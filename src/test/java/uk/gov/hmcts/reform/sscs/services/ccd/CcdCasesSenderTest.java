@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
@@ -22,7 +24,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
@@ -44,10 +51,10 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
-        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED));
+        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), "idamOauth2Token");
 
         verify(ccdApiWrapper, times(1))
-            .create(eq(buildCaseData(APPEAL_RECEIVED)));
+            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq("idamOauth2Token"));
     }
 
     @Test

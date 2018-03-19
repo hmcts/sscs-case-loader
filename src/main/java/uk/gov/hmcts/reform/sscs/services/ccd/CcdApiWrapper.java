@@ -16,26 +16,22 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 @Slf4j
 public class CcdApiWrapper {
 
-    public static final String APPEAL_CREATED = "appealCreated";
+    private static final String APPEAL_CREATED = "appealCreated";
 
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final IdamService idamService;
     private final CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
-    public CcdApiWrapper(CoreCaseDataProperties properties, IdamService idam, CoreCaseDataApi ccd) {
+    CcdApiWrapper(CoreCaseDataProperties properties, IdamService idam, CoreCaseDataApi ccd) {
         this.coreCaseDataProperties = properties;
         this.idamService = idam;
         this.coreCaseDataApi = ccd;
     }
 
-    public CaseDetails create(CaseData caseData) {
-
+    public CaseDetails create(CaseData caseData, String idamOauth2Token) {
         String serviceAuthorization = idamService.generateServiceAuthorization();
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-
         StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, APPEAL_CREATED);
-
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -45,7 +41,6 @@ public class CcdApiWrapper {
                 .build())
             .data(caseData)
             .build();
-
         return coreCaseDataApi.submitForCaseworker(
             idamOauth2Token,
             serviceAuthorization,
