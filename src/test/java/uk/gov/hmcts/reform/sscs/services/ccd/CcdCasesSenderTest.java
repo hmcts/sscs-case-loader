@@ -37,6 +37,7 @@ public class CcdCasesSenderTest {
     private static final String CASE_DETAILS_JSON = "src/test/resources/CaseDetailsWithOneEventAndNoEvidence.json";
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
         "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
+    private static final String IDAM_OAUTH_2_TOKEN = "idamOauth2Token";
 
     @Mock
     private CcdApiWrapper ccdApiWrapper;
@@ -51,20 +52,21 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
-        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), "idamOauth2Token");
+        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), IDAM_OAUTH_2_TOKEN);
 
         verify(ccdApiWrapper, times(1))
-            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq("idamOauth2Token"));
+            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(IDAM_OAUTH_2_TOKEN));
     }
 
     @Test
     @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
         "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
     public void shouldUpdateCcdGivenThereIsAnEventChange(GapsEvent gapsEvent) throws Exception {
-        ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent), getCaseDetails(CASE_DETAILS_JSON));
+        ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent), getCaseDetails(CASE_DETAILS_JSON),
+            IDAM_OAUTH_2_TOKEN);
 
         verify(ccdApiWrapper, times(1))
-            .update(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()));
+            .update(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()), eq(IDAM_OAUTH_2_TOKEN));
     }
 
     private CaseDetails getCaseDetails(String caseDetails) throws Exception {
@@ -86,20 +88,20 @@ public class CcdCasesSenderTest {
                 .build()))
             .build();
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON));
+        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), IDAM_OAUTH_2_TOKEN);
 
         verify(ccdApiWrapper, times(0))
-            .update(eq(caseData), anyLong(), any());
+            .update(eq(caseData), anyLong(), any(), eq(IDAM_OAUTH_2_TOKEN));
     }
 
     @Test
     public void shouldNotUpdateCcdGivenNewEventIsNull() throws Exception {
         CaseData caseData = CaseData.builder().build();
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON));
+        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), IDAM_OAUTH_2_TOKEN);
 
         verify(ccdApiWrapper, times(0))
-            .update(eq(caseData), anyLong(), any());
+            .update(eq(caseData), anyLong(), any(), eq(IDAM_OAUTH_2_TOKEN));
     }
 
     @Test
@@ -125,10 +127,10 @@ public class CcdCasesSenderTest {
 
         CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails);
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, IDAM_OAUTH_2_TOKEN);
 
         verify(ccdApiWrapper, times(0))
-            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(IDAM_OAUTH_2_TOKEN));
     }
 
     @Test
@@ -146,13 +148,13 @@ public class CcdCasesSenderTest {
 
         CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails);
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, IDAM_OAUTH_2_TOKEN);
 
         verify(ccdApiWrapper, times(1))
-            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"));
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(IDAM_OAUTH_2_TOKEN));
 
         verify(ccdApiWrapper, times(0))
-            .update(any(CaseData.class), anyLong(), eq("appealReceived"));
+            .update(any(CaseData.class), anyLong(), eq("appealReceived"), eq(IDAM_OAUTH_2_TOKEN));
     }
 
     private CaseData buildCaseData(GapsEvent event) {

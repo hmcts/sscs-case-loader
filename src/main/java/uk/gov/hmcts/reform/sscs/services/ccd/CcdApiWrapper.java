@@ -51,13 +51,9 @@ public class CcdApiWrapper {
             caseDataContent);
     }
 
-    public CaseDetails update(CaseData caseData, Long caseId, String eventType) {
-
+    public CaseDetails update(CaseData caseData, Long caseId, String eventType, String idamOauth2Token) {
         String serviceAuthorization = idamService.generateServiceAuthorization();
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-
         StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, eventType);
-
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -67,7 +63,6 @@ public class CcdApiWrapper {
                 .build())
             .data(caseData)
             .build();
-
         return coreCaseDataApi.submitEventForCaseWorker(
             idamOauth2Token,
             serviceAuthorization,

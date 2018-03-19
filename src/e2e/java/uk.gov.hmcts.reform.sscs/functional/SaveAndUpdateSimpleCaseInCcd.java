@@ -34,7 +34,7 @@ public class SaveAndUpdateSimpleCaseInCcd {
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
         CaseDetails updatedCaseDetails = ccdApiWrapper.update(updatedCaseData, caseDetails.getId(),
-            "appealReceived");
+            "appealReceived", idamOauth2Token);
         assertEquals("SC123/12/78765", updatedCaseDetails.getData().get("caseReference"));
     }
 
