@@ -23,9 +23,9 @@ public class SearchCoreCaseDataService {
     }
 
 
-    public List<CaseDetails> findCaseByCaseRef(String caseRef) {
+    public List<CaseDetails> findCaseByCaseRef(String caseRef, String idamOauth2Token) {
         return coreCaseDataApi.searchForCaseworker(
-            idamService.getIdamOauth2Token(),
+            idamOauth2Token,
             idamService.generateServiceAuthorization(),
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),

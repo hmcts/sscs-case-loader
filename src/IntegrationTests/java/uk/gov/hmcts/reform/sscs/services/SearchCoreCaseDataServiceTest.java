@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -27,7 +26,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @SpringBootTest
 public class SearchCoreCaseDataServiceTest {
 
-    public static final String CASE_REF = "SC068/17/00013";
+    private static final String CASE_REF = "SC068/17/00013";
     @MockBean
     SftpChannelAdapter channelAdapter;
 
@@ -53,24 +52,10 @@ public class SearchCoreCaseDataServiceTest {
             )
         ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
 
-        given(idamApiClient.authorizeCodeType(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString())
-        ).willReturn(new Authorize("url", "code", ""));
-
-        given(idamApiClient.authorizeToken(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString())
-        ).willReturn(new Authorize("", "", "accessToken"));
-
         given(authTokenGenerator.generate()).willReturn("s2sToken");
 
-        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF);
+        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF,
+            "idamOauth2Token");
 
         verify(coreCaseDataApi).searchForCaseworker(
             anyString(),

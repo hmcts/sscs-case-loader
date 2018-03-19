@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +21,7 @@ import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
@@ -41,6 +44,8 @@ public class CaseLoaderServiceTest {
     private InputStream is;
     @Mock
     private SearchCoreCaseDataService ccdCaseService;
+    @Mock
+    private IdamService idamService;
 
     private CaseData caseData;
 
@@ -53,7 +58,8 @@ public class CaseLoaderServiceTest {
             transformService,
             ccdCaseService,
             ccdCasesSender,
-            refDataFactory);
+            refDataFactory,
+            idamService);
 
         caseData = CaseData.builder()
             .caseReference("caseRef")
@@ -78,7 +84,7 @@ public class CaseLoaderServiceTest {
         when(sftpSshService.readExtractFile(file)).thenReturn(is);
         when(file.isDelta()).thenReturn(true);
         CaseDetails caseDetails = CaseDetails.builder().build();
-        when(ccdCaseService.findCaseByCaseRef("caseRef")).thenReturn(newArrayList(caseDetails));
+        when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), anyString())).thenReturn(newArrayList(caseDetails));
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
 
         caseLoaderService.process();

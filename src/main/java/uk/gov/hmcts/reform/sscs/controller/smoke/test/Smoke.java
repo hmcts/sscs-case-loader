@@ -7,17 +7,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Controller
 public class Smoke {
 
     @Autowired
     private SearchCoreCaseDataService searchCoreCaseDataService;
+    @Autowired
+    private IdamService idamService;
 
     @GetMapping("/smoke-test")
     @ResponseBody
     public List<CaseDetails> smoke() {
-        return searchCoreCaseDataService.findCaseByCaseRef("SC068/18/01217");
+        String idamOauth2Token = idamService.getIdamOauth2Token();
+        return searchCoreCaseDataService.findCaseByCaseRef("SC068/18/01217", idamOauth2Token);
     }
 
 }
