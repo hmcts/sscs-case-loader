@@ -66,7 +66,7 @@ public class CcdApiWrapperTest {
 
         caseData = CaseData.builder().build();
 
-        apiWrapper = new CcdApiWrapper(ccdProperties, idamService, ccdApi);
+        apiWrapper = new CcdApiWrapper(ccdProperties, ccdApi);
     }
 
     @Test

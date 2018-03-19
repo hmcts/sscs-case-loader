@@ -4,22 +4,22 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
@@ -27,15 +27,11 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class SearchCoreCaseDataServiceTest {
 
     private static final String CASE_REF = "SC068/17/00013";
-    @MockBean
-    SftpChannelAdapter channelAdapter;
 
     @MockBean
+    SftpChannelAdapter channelAdapter;
+    @MockBean
     private CoreCaseDataApi coreCaseDataApi;
-    @MockBean
-    private IdamApiClient idamApiClient;
-    @MockBean
-    private AuthTokenGenerator authTokenGenerator;
 
     @Autowired
     private SearchCoreCaseDataService searchCoreCaseDataService;
@@ -66,4 +62,14 @@ public class SearchCoreCaseDataServiceTest {
 
         assertEquals("expected one case only", 1, cases.size());
     }
+
+    @Test
+    @Ignore
+    public void givenFindCaseByCaseRefThowsException_shouldRetry3Times() {
+        searchCoreCaseDataService.findCaseByCaseRef(CASE_REF, "idamOauth2Token",
+            "serviceAuthorization");
+        verify(searchCoreCaseDataService, times(3))
+            .findCaseByCaseRef(anyString(), anyString(), anyString());
+    }
+
 }

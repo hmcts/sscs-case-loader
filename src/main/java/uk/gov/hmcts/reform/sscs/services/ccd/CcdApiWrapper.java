@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Component
 @Slf4j
@@ -19,13 +18,11 @@ public class CcdApiWrapper {
     private static final String APPEAL_CREATED = "appealCreated";
 
     private final CoreCaseDataProperties coreCaseDataProperties;
-    private final IdamService idamService;
     private final CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
-    CcdApiWrapper(CoreCaseDataProperties properties, IdamService idam, CoreCaseDataApi ccd) {
+    CcdApiWrapper(CoreCaseDataProperties properties, CoreCaseDataApi ccd) {
         this.coreCaseDataProperties = properties;
-        this.idamService = idam;
         this.coreCaseDataApi = ccd;
     }
 
