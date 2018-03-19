@@ -29,8 +29,7 @@ public class CcdApiWrapper {
         this.coreCaseDataApi = ccd;
     }
 
-    public CaseDetails create(CaseData caseData, String idamOauth2Token) {
-        String serviceAuthorization = idamService.generateServiceAuthorization();
+    public CaseDetails create(CaseData caseData, String idamOauth2Token, String serviceAuthorization) {
         StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, APPEAL_CREATED);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())

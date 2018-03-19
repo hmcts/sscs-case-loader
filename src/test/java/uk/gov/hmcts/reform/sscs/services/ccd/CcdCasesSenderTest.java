@@ -38,6 +38,7 @@ public class CcdCasesSenderTest {
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
         "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
     private static final String IDAM_OAUTH_2_TOKEN = "idamOauth2Token";
+    public static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
 
     @Mock
     private CcdApiWrapper ccdApiWrapper;
@@ -52,10 +53,10 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
-        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), IDAM_OAUTH_2_TOKEN);
+        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), IDAM_OAUTH_2_TOKEN, SERVICE_AUTHORIZATION);
 
         verify(ccdApiWrapper, times(1))
-            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(IDAM_OAUTH_2_TOKEN));
+            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
     }
 
     @Test

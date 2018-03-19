@@ -24,11 +24,11 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 @RunWith(MockitoJUnitRunner.class)
 public class CcdApiWrapperTest {
 
-    public static final String OAUTH2 = "token";
-    public static final String S2SAUTH = "auth";
-    public static final String EVENT_ID = "appealCreated";
-    public static final String CCD_TOKEN = "ccdToken";
-    public static final String CCD_EVENT = "ccdEvent";
+    private static final String OAUTH2 = "token";
+    private static final String S2SAUTH = "auth";
+    private static final String EVENT_ID = "appealCreated";
+    private static final String CCD_TOKEN = "ccdToken";
+    private static final String CCD_EVENT = "ccdEvent";
 
     @Mock
     private IdamService idamService;
@@ -82,7 +82,7 @@ public class CcdApiWrapperTest {
             eq(true),
             captor.capture())).thenReturn(caseDetails);
 
-        CaseDetails actual = apiWrapper.create(caseData, OAUTH2);
+        CaseDetails actual = apiWrapper.create(caseData, OAUTH2, S2SAUTH);
 
         CaseDataContent content = captor.getValue();
         assertThat(content.getEvent().getSummary(), is("GAPS2 Case"));

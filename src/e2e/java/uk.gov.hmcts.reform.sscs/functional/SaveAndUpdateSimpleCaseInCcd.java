@@ -30,7 +30,8 @@ public class SaveAndUpdateSimpleCaseInCcd {
     public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
         String idamOauth2Token = idamService.getIdamOauth2Token();
-        CaseDetails caseDetails = ccdApiWrapper.create(caseData, idamOauth2Token);
+        String serviceAuthorization = idamService.generateServiceAuthorization();
+        CaseDetails caseDetails = ccdApiWrapper.create(caseData, idamOauth2Token, serviceAuthorization);
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
         CaseDetails updatedCaseDetails = ccdApiWrapper.update(updatedCaseData, caseDetails.getId(),

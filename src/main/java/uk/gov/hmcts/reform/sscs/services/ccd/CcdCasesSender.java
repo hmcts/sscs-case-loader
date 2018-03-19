@@ -24,8 +24,8 @@ public class CcdCasesSender {
         this.ccdApiWrapper = ccdApiWrapper;
     }
 
-    public void sendCreateCcdCases(CaseData caseData, String idamOauth2Token) {
-        ccdApiWrapper.create(caseData, idamOauth2Token);
+    public void sendCreateCcdCases(CaseData caseData, String idamOauth2Token, String serviceAuthorization) {
+        ccdApiWrapper.create(caseData, idamOauth2Token, serviceAuthorization);
     }
 
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, String idamOauth2Token) {
