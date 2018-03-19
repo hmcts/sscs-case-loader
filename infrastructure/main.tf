@@ -43,7 +43,7 @@ locals {
 }
 
 module "sscs-case-loader" {
-  source       = "git@github.com:contino/moj-module-webapp?ref=capacity-param"
+  source       = "git@github.com:contino/moj-module-webapp?ref=master"
   product      = "${var.product}-case-loader"
   location     = "${var.location}"
   env          = "${var.env}"
