@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.when;
@@ -68,7 +67,7 @@ public class CcdApiWrapperTest {
 
         caseData = CaseData.builder().build();
 
-        apiWrapper = new CcdApiWrapper(ccdProperties, ccdApi, idamService);
+        apiWrapper = new CcdApiWrapper(ccdProperties, ccdApi);
 
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
@@ -98,18 +97,4 @@ public class CcdApiWrapperTest {
         assertThat(actual, is(caseDetails));
     }
 
-    @Test
-    public void shouldCallCcdUpdateMethodsGivenUpdatedCase() {
-
-        when(ccdApi.submitEventForCaseWorker(eq(OAUTH2),
-            eq(S2SAUTH),
-            eq(ccdProperties.getUserId()),
-            eq(ccdProperties.getJurisdictionId()),
-            eq(ccdProperties.getCaseTypeId()),
-            eq("123"),
-            eq(true),
-            any(CaseDataContent.class))).thenReturn(caseDetails);
-
-        assertThat(apiWrapper.update(caseData, 123L, EVENT_ID, idamTokens), is(caseDetails));
-    }
 }

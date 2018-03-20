@@ -40,8 +40,8 @@ public class SearchCoreCaseDataService {
     }
 
     @Recover
-    public List<CaseDetails> findCaseByCaseRefRecoveryMethodIfException(String caseRef,
-                                                                        IdamTokens idamTokens) {
+    public List<CaseDetails> requestNewTokensAndTryToFindCaseAgain(String caseRef,
+                                                                   IdamTokens idamTokens) {
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
         return coreCaseDataApi.searchForCaseworker(

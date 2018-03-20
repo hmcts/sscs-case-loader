@@ -19,10 +19,12 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 public class CcdCasesSender {
 
     private final CcdApiWrapper ccdApiWrapper;
+    private final UpdateCcdService updateCcdService;
 
     @Autowired
-    CcdCasesSender(CcdApiWrapper ccdApiWrapper) {
+    CcdCasesSender(CcdApiWrapper ccdApiWrapper, UpdateCcdService updateCcdService) {
         this.ccdApiWrapper = ccdApiWrapper;
+        this.updateCcdService = updateCcdService;
     }
 
     public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
@@ -40,7 +42,7 @@ public class CcdCasesSender {
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
                                                      IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCase)) {
-            ccdApiWrapper.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
+            updateCcdService.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
@@ -55,7 +57,7 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            ccdApiWrapper.update(caseData, existingCase.getId(), "evidenceReceived", idamTokens);
+            updateCcdService.update(caseData, existingCase.getId(), "evidenceReceived", idamTokens);
         }
     }
 
