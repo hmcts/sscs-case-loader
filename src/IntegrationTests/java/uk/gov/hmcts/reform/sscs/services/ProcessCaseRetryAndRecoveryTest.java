@@ -101,11 +101,11 @@ public class ProcessCaseRetryAndRecoveryTest {
 
         caseLoaderService.process();
 
-        verify(searchCoreCaseDataService, times(3))
-            .findCaseByCaseRef(anyString(), any(IdamTokens.class));
-        verify(searchCoreCaseDataService, times(1))
-            .findCaseByCaseRefRecoveryMethodIfException(anyString(), any(IdamTokens.class));
+        verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully();
+        verifyCcdApiRetries3TimesWhenAFailureUpdatingACaseAndRecoverSuccessfully();
+    }
 
+    private void verifyCcdApiRetries3TimesWhenAFailureUpdatingACaseAndRecoverSuccessfully() {
         verify(coreCaseDataApi, times(3))
             .submitEventForCaseWorker(
                 eq("Bearer accessToken2"),
@@ -127,6 +127,13 @@ public class ProcessCaseRetryAndRecoveryTest {
                 anyString(),
                 anyBoolean(),
                 any(CaseDataContent.class));
+    }
+
+    private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
+        verify(searchCoreCaseDataService, times(3))
+            .findCaseByCaseRef(anyString(), any(IdamTokens.class));
+        verify(searchCoreCaseDataService, times(1))
+            .findCaseByCaseRefRecoveryMethodIfException(anyString(), any(IdamTokens.class));
     }
 
     private void mockCcdApiToSucceedWhenUpdatingACase() {
