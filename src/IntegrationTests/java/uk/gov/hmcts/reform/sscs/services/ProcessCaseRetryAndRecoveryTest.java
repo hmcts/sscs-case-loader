@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.services;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -33,7 +32,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
@@ -122,29 +120,6 @@ public class ProcessCaseRetryAndRecoveryTest {
         verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully();
     }
 
-    private void verifyCcdApiRetries3TimesWhenAFailureUpdatingACaseAndRecoverSuccessfully() {
-        verify(coreCaseDataApi, times(3))
-            .submitEventForCaseWorker(
-                eq("Bearer accessToken2"),
-                eq("s2s token2"),
-                anyString(),
-                anyString(),
-                anyString(),
-                anyString(),
-                anyBoolean(),
-                any(CaseDataContent.class));
-
-        verify(coreCaseDataApi, times(1))
-            .submitEventForCaseWorker(
-                eq("Bearer accessToken3"),
-                eq("s2s token3"),
-                anyString(),
-                anyString(),
-                anyString(),
-                anyString(),
-                anyBoolean(),
-                any(CaseDataContent.class));
-    }
 
     private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
         verify(coreCaseDataApi, times(3)).searchForCaseworker(
@@ -162,35 +137,6 @@ public class ProcessCaseRetryAndRecoveryTest {
             anyString(),
             anyString(),
             any());
-    }
-
-    private void mockCcdApiToSucceedWhenUpdatingACase() {
-        when(coreCaseDataApi.submitEventForCaseWorker(
-            eq("Bearer accessToken3"),
-            eq("s2s token3"),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyBoolean(),
-            any(CaseDataContent.class)))
-            .thenReturn(CaseDetails.builder().build());
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockCcdApiToThrowExceptionWhenUpdatingACase() {
-        when(coreCaseDataApi.submitEventForCaseWorker(
-            eq("Bearer accessToken2"),
-            eq("s2s token2"),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyBoolean(),
-            any(CaseDataContent.class)))
-            .thenThrow(Exception.class)
-            .thenThrow(Exception.class)
-            .thenThrow(Exception.class);
     }
 
     private void mockCcdApiToReturnResultWhenCalled() {
