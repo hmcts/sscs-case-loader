@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.ccd.CcdApiWrapper;
+import uk.gov.hmcts.reform.sscs.services.ccd.CreateCcdService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 public class SaveAndUpdateSimpleCaseInCcd {
 
     @Autowired
-    private CcdApiWrapper ccdApiWrapper;
+    private CreateCcdService createCcdService;
     @Autowired
     private UpdateCcdService updateCcdService;
     @Autowired
@@ -37,7 +37,7 @@ public class SaveAndUpdateSimpleCaseInCcd {
             .authenticationService(idamService.generateServiceAuthorization())
             .idamOauth2Token(idamService.getIdamOauth2Token())
             .build();
-        CaseDetails caseDetails = ccdApiWrapper.create(caseData, idamTokens);
+        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
         CaseDetails updatedCaseDetails = updateCcdService.update(updatedCaseData, caseDetails.getId(),

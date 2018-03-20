@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CcdApiWrapperTest {
+public class CreateCcdServiceTest {
 
     private static final String OAUTH2 = "token";
     private static final String S2SAUTH = "auth";
@@ -43,7 +43,7 @@ public class CcdApiWrapperTest {
     private CaseData caseData;
     private IdamTokens idamTokens;
 
-    private CcdApiWrapper apiWrapper;
+    private CreateCcdService apiWrapper;
 
     @Before
     public void setUp() {
@@ -67,7 +67,7 @@ public class CcdApiWrapperTest {
 
         caseData = CaseData.builder().build();
 
-        apiWrapper = new CcdApiWrapper(ccdProperties, ccdApi);
+        apiWrapper = new CreateCcdService(ccdProperties, ccdApi);
 
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)

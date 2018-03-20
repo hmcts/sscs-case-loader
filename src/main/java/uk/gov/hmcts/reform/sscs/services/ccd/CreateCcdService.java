@@ -15,13 +15,13 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
 @Component
 @Slf4j
-public class CcdApiWrapper {
+public class CreateCcdService {
 
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
-    CcdApiWrapper(CoreCaseDataProperties properties, CoreCaseDataApi ccd) {
+    CreateCcdService(CoreCaseDataProperties properties, CoreCaseDataApi ccd) {
         this.coreCaseDataProperties = properties;
         this.coreCaseDataApi = ccd;
     }

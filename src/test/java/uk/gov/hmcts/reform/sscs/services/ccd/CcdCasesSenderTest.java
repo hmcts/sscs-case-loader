@@ -42,7 +42,7 @@ public class CcdCasesSenderTest {
     private static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
 
     @Mock
-    private CcdApiWrapper ccdApiWrapper;
+    private CreateCcdService createCcdService;
     @Mock
     private UpdateCcdService updateCcdService;
 
@@ -52,7 +52,7 @@ public class CcdCasesSenderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ccdCasesSender = new CcdCasesSender(ccdApiWrapper, updateCcdService);
+        ccdCasesSender = new CcdCasesSender(createCcdService, updateCcdService);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(IDAM_OAUTH_2_TOKEN)
             .authenticationService(SERVICE_AUTHORIZATION)
@@ -63,7 +63,7 @@ public class CcdCasesSenderTest {
     public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
         ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);
 
-        verify(ccdApiWrapper, times(1))
+        verify(createCcdService, times(1))
             .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(idamTokens));
     }
 

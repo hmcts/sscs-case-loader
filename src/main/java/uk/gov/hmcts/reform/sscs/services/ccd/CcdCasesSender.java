@@ -18,17 +18,17 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 @Slf4j
 public class CcdCasesSender {
 
-    private final CcdApiWrapper ccdApiWrapper;
+    private final CreateCcdService createCcdService;
     private final UpdateCcdService updateCcdService;
 
     @Autowired
-    CcdCasesSender(CcdApiWrapper ccdApiWrapper, UpdateCcdService updateCcdService) {
-        this.ccdApiWrapper = ccdApiWrapper;
+    CcdCasesSender(CreateCcdService createCcdService, UpdateCcdService updateCcdService) {
+        this.createCcdService = createCcdService;
         this.updateCcdService = updateCcdService;
     }
 
     public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
-        ccdApiWrapper.create(caseData, idamTokens);
+        createCcdService.create(caseData, idamTokens);
     }
 
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
