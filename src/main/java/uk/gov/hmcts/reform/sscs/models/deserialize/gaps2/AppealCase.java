@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import lombok.Builder;
 import lombok.Value;
 
 @Value
+@Builder
 public class AppealCase {
 
     private static List<String> appealRecieved = newArrayList(
