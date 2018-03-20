@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
@@ -32,8 +33,9 @@ public class CcdApiWrapper {
     }
 
     @Retryable
-    public CaseDetails create(CaseData caseData, String idamOauth2Token, String serviceAuthorization) {
-        StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, APPEAL_CREATED);
+    public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
+        StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
+            idamTokens.getIdamOauth2Token(), APPEAL_CREATED);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -44,8 +46,8 @@ public class CcdApiWrapper {
             .data(caseData)
             .build();
         return coreCaseDataApi.submitForCaseworker(
-            idamOauth2Token,
-            serviceAuthorization,
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
@@ -54,9 +56,9 @@ public class CcdApiWrapper {
     }
 
     @Retryable
-    public CaseDetails update(CaseData caseData, Long caseId, String eventType, String idamOauth2Token,
-                              String serviceAuthorization) {
-        StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, eventType);
+    public CaseDetails update(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
+        StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
+            idamTokens.getIdamOauth2Token(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -67,8 +69,8 @@ public class CcdApiWrapper {
             .data(caseData)
             .build();
         return coreCaseDataApi.submitEventForCaseWorker(
-            idamOauth2Token,
-            serviceAuthorization,
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
@@ -79,8 +81,11 @@ public class CcdApiWrapper {
 
     @Recover
     public CaseDetails updateRecoveryMethodIfException(CaseData caseData, Long caseId, String eventType,
-                                                       String idamOauth2Token, String serviceAuthorization) {
-        StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, eventType);
+                                                       IdamTokens idamTokens) {
+        idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+        idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
+        StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
+            idamTokens.getIdamOauth2Token(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -90,11 +95,9 @@ public class CcdApiWrapper {
                 .build())
             .data(caseData)
             .build();
-        String authorisation = idamService.generateServiceAuthorization();
-        String idamOauth2Token1 = idamService.getIdamOauth2Token();
         return coreCaseDataApi.submitEventForCaseWorker(
-            idamOauth2Token1,
-            authorisation,
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),

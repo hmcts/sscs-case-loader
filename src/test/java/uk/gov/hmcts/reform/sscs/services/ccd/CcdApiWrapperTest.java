@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
@@ -41,6 +42,7 @@ public class CcdApiWrapperTest {
 
     private CoreCaseDataProperties ccdProperties;
     private CaseData caseData;
+    private IdamTokens idamTokens;
 
     private CcdApiWrapper apiWrapper;
 
@@ -67,6 +69,11 @@ public class CcdApiWrapperTest {
         caseData = CaseData.builder().build();
 
         apiWrapper = new CcdApiWrapper(ccdProperties, ccdApi, idamService);
+
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token(OAUTH2)
+            .authenticationService(S2SAUTH)
+            .build();
     }
 
     @Test
@@ -82,7 +89,7 @@ public class CcdApiWrapperTest {
             eq(true),
             captor.capture())).thenReturn(caseDetails);
 
-        CaseDetails actual = apiWrapper.create(caseData, OAUTH2, S2SAUTH);
+        CaseDetails actual = apiWrapper.create(caseData, idamTokens);
 
         CaseDataContent content = captor.getValue();
         assertThat(content.getEvent().getSummary(), is("GAPS2 Case"));
@@ -103,6 +110,6 @@ public class CcdApiWrapperTest {
             eq(true),
             any(CaseDataContent.class))).thenReturn(caseDetails);
 
-        assertThat(apiWrapper.update(caseData, 123L, EVENT_ID, OAUTH2, S2SAUTH), is(caseDetails));
+        assertThat(apiWrapper.update(caseData, 123L, EVENT_ID, idamTokens), is(caseDetails));
     }
 }

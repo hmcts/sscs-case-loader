@@ -26,24 +26,21 @@ public class CcdCasesSender {
     }
 
     public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
-        ccdApiWrapper.create(caseData, idamTokens.getIdamOauth2Token(), idamTokens.getAuthenticationService());
+        ccdApiWrapper.create(caseData, idamTokens);
     }
 
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
-            checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens.getIdamOauth2Token(),
-                idamTokens.getAuthenticationService());
-            ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase,
-                idamTokens.getIdamOauth2Token(), idamTokens.getAuthenticationService());
+            checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
+            ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase, idamTokens);
         }
     }
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
-                                                     String idamOauth2Token, String serviceAuthorization) {
+                                                     IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCase)) {
-            ccdApiWrapper.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamOauth2Token,
-                serviceAuthorization);
+            ccdApiWrapper.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
@@ -54,13 +51,11 @@ public class CcdCasesSender {
         return eventObjects == null || caseData.getEvents().size() != eventObjects.size();
     }
 
-    private void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase, String idamOauth2Token,
-                                          String serviceAuthorization) {
+    private void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase, IdamTokens idamTokens) {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            ccdApiWrapper.update(caseData, existingCase.getId(), "evidenceReceived", idamOauth2Token,
-                serviceAuthorization);
+            ccdApiWrapper.update(caseData, existingCase.getId(), "evidenceReceived", idamTokens);
         }
     }
 

@@ -62,7 +62,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);
 
         verify(ccdApiWrapper, times(1))
-            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
+            .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(idamTokens));
     }
 
     @Test
@@ -72,8 +72,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent), getCaseDetails(CASE_DETAILS_JSON), idamTokens);
 
         verify(ccdApiWrapper, times(1))
-            .update(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()), eq(IDAM_OAUTH_2_TOKEN),
-                eq(SERVICE_AUTHORIZATION));
+            .update(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()), eq(idamTokens));
     }
 
     private CaseDetails getCaseDetails(String caseDetails) throws Exception {
@@ -98,7 +97,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), idamTokens);
 
         verify(ccdApiWrapper, times(0))
-            .update(eq(caseData), anyLong(), any(), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
+            .update(eq(caseData), anyLong(), any(), eq(idamTokens));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), idamTokens);
 
         verify(ccdApiWrapper, times(0))
-            .update(eq(caseData), anyLong(), any(), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
+            .update(eq(caseData), anyLong(), any(), eq(idamTokens));
     }
 
     @Test
@@ -137,8 +136,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
         verify(ccdApiWrapper, times(0))
-            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(IDAM_OAUTH_2_TOKEN),
-                eq(SERVICE_AUTHORIZATION));
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(idamTokens));
     }
 
     @Test
@@ -159,12 +157,10 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
         verify(ccdApiWrapper, times(1))
-            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(IDAM_OAUTH_2_TOKEN),
-                eq(SERVICE_AUTHORIZATION));
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(idamTokens));
 
         verify(ccdApiWrapper, times(0))
-            .update(any(CaseData.class), anyLong(), eq("appealReceived"), eq(IDAM_OAUTH_2_TOKEN),
-                eq(SERVICE_AUTHORIZATION));
+            .update(any(CaseData.class), anyLong(), eq("appealReceived"), eq(idamTokens));
     }
 
     private CaseData buildCaseData(GapsEvent event) {

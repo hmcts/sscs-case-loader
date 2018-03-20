@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdApiWrapper;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
@@ -29,13 +30,15 @@ public class SaveAndUpdateSimpleCaseInCcd {
     @Test
     public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-        String serviceAuthorization = idamService.generateServiceAuthorization();
-        CaseDetails caseDetails = ccdApiWrapper.create(caseData, idamOauth2Token, serviceAuthorization);
+        IdamTokens idamTokens = IdamTokens.builder()
+            .authenticationService(idamService.generateServiceAuthorization())
+            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .build();
+        CaseDetails caseDetails = ccdApiWrapper.create(caseData, idamTokens);
         assertNotNull(caseDetails);
         CaseData updatedCaseData = CaseDataUtils.buildCaseData("SC123/12/78765");
         CaseDetails updatedCaseDetails = ccdApiWrapper.update(updatedCaseData, caseDetails.getId(),
-            "appealReceived", idamOauth2Token, serviceAuthorization);
+            "appealReceived", idamTokens);
         assertEquals("SC123/12/78765", updatedCaseDetails.getData().get("caseReference"));
     }
 
