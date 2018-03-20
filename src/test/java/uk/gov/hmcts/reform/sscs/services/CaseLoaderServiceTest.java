@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
@@ -83,8 +84,12 @@ public class CaseLoaderServiceTest {
         when(sftpSshService.readExtractFile(file)).thenReturn(is);
         when(file.isDelta()).thenReturn(true);
         CaseDetails caseDetails = CaseDetails.builder().build();
-        when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), eq("idamOauth2Token"),
-            eq("serviceAuthorization"))).thenReturn(newArrayList(caseDetails));
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("idamOauth2Token")
+            .authenticationService("serviceAuthorization")
+            .build();
+        when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), eq(idamTokens)))
+            .thenReturn(newArrayList(caseDetails));
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
@@ -92,8 +97,7 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator).validateXml(file);
-        verify(ccdCaseService).findCaseByCaseRef(eq("caseRef"), eq("idamOauth2Token"),
-            eq("serviceAuthorization"));
+        verify(ccdCaseService).findCaseByCaseRef(eq("caseRef"), eq(idamTokens));
     }
 
     @Test

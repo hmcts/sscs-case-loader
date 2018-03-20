@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
@@ -20,10 +21,11 @@ public class Smoke {
     @GetMapping("/smoke-test")
     @ResponseBody
     public List<CaseDetails> smoke() {
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-        String serviceAuthorization = idamService.generateServiceAuthorization();
-        return searchCoreCaseDataService.findCaseByCaseRef("SC068/18/01217", idamOauth2Token,
-            serviceAuthorization);
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .idamOauth2Token(idamService.generateServiceAuthorization())
+            .build();
+        return searchCoreCaseDataService.findCaseByCaseRef("SC068/18/01217", idamTokens);
     }
 
 }

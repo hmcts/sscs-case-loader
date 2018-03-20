@@ -46,7 +46,7 @@ public class RefDataFactory {
                     try {
                         key = RefKey.valueOf(localName);
                     } catch (IllegalArgumentException e) {
-                        log.debug("Not a reference tag name");
+                        log.trace("Not a reference tag name");
                     }
                     break;
 
@@ -63,7 +63,7 @@ public class RefDataFactory {
                         }
                         repo.add(key, keyId, keyField, tagContent);
                     } catch (IllegalArgumentException e) {
-                        log.debug("Not a reference field tag name");
+                        log.trace("Not a reference field tag name");
                     }
                     break;
                 default:

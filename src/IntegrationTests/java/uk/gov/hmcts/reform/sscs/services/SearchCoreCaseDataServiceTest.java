@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -46,8 +47,12 @@ public class SearchCoreCaseDataServiceTest {
             )
         ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
 
-        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF,
-            "idamOauth2Token", "serviceAuthorization");
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("idamOauth2Token")
+            .idamOauth2Token("serviceAuthorization")
+            .build();
+
+        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF, idamTokens);
 
         verify(coreCaseDataApi).searchForCaseworker(
             anyString(),

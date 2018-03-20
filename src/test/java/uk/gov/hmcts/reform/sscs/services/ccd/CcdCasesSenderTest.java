@@ -24,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
@@ -44,16 +45,21 @@ public class CcdCasesSenderTest {
     private CcdApiWrapper ccdApiWrapper;
     @Mock
     private CcdCasesSender ccdCasesSender;
+    private IdamTokens idamTokens;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         ccdCasesSender = new CcdCasesSender(ccdApiWrapper);
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token(IDAM_OAUTH_2_TOKEN)
+            .authenticationService(SERVICE_AUTHORIZATION)
+            .build();
     }
 
     @Test
     public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
-        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), IDAM_OAUTH_2_TOKEN, SERVICE_AUTHORIZATION);
+        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);
 
         verify(ccdApiWrapper, times(1))
             .create(eq(buildCaseData(APPEAL_RECEIVED)), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
@@ -63,8 +69,7 @@ public class CcdCasesSenderTest {
     @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
         "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
     public void shouldUpdateCcdGivenThereIsAnEventChange(GapsEvent gapsEvent) throws Exception {
-        ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent), getCaseDetails(CASE_DETAILS_JSON),
-            IDAM_OAUTH_2_TOKEN, SERVICE_AUTHORIZATION);
+        ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent), getCaseDetails(CASE_DETAILS_JSON), idamTokens);
 
         verify(ccdApiWrapper, times(1))
             .update(eq(buildCaseData(gapsEvent)), anyLong(), eq(gapsEvent.getType()), eq(IDAM_OAUTH_2_TOKEN),
@@ -90,8 +95,7 @@ public class CcdCasesSenderTest {
                 .build()))
             .build();
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), IDAM_OAUTH_2_TOKEN,
-            SERVICE_AUTHORIZATION);
+        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), idamTokens);
 
         verify(ccdApiWrapper, times(0))
             .update(eq(caseData), anyLong(), any(), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
@@ -101,8 +105,7 @@ public class CcdCasesSenderTest {
     public void shouldNotUpdateCcdGivenNewEventIsNull() throws Exception {
         CaseData caseData = CaseData.builder().build();
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), IDAM_OAUTH_2_TOKEN,
-            SERVICE_AUTHORIZATION);
+        ccdCasesSender.sendUpdateCcdCases(caseData, getCaseDetails(CASE_DETAILS_JSON), idamTokens);
 
         verify(ccdApiWrapper, times(0))
             .update(eq(caseData), anyLong(), any(), eq(IDAM_OAUTH_2_TOKEN), eq(SERVICE_AUTHORIZATION));
@@ -131,7 +134,7 @@ public class CcdCasesSenderTest {
 
         CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, IDAM_OAUTH_2_TOKEN, SERVICE_AUTHORIZATION);
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
         verify(ccdApiWrapper, times(0))
             .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(IDAM_OAUTH_2_TOKEN),
@@ -153,7 +156,7 @@ public class CcdCasesSenderTest {
 
         CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, IDAM_OAUTH_2_TOKEN, SERVICE_AUTHORIZATION);
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
         verify(ccdApiWrapper, times(1))
             .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(IDAM_OAUTH_2_TOKEN),

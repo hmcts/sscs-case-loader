@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
@@ -24,16 +25,17 @@ public class CcdCasesSender {
         this.ccdApiWrapper = ccdApiWrapper;
     }
 
-    public void sendCreateCcdCases(CaseData caseData, String idamOauth2Token, String serviceAuthorization) {
-        ccdApiWrapper.create(caseData, idamOauth2Token, serviceAuthorization);
+    public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
+        ccdApiWrapper.create(caseData, idamTokens.getIdamOauth2Token(), idamTokens.getAuthenticationService());
     }
 
-    public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, String idamOauth2Token,
-                                   String serviceAuthorization) {
+    public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
-            checkNewEvidenceReceived(caseData, existingCcdCase, idamOauth2Token, serviceAuthorization);
-            ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase, idamOauth2Token, serviceAuthorization);
+            checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens.getIdamOauth2Token(),
+                idamTokens.getAuthenticationService());
+            ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase,
+                idamTokens.getIdamOauth2Token(), idamTokens.getAuthenticationService());
         }
     }
 

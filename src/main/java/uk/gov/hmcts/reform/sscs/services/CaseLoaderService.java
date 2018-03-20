@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
@@ -23,7 +24,7 @@ public class CaseLoaderService {
     private final SftpSshService sftpSshService;
     private final XmlValidator xmlValidator;
     private final TransformationService transformService;
-    private final SearchCoreCaseDataService ccdCaseService;
+    private final SearchCoreCaseDataService searchCoreCaseDataService;
     private final CcdCasesSender ccdCasesSender;
     private final RefDataFactory refDataFactory;
     private final IdamService idamService;
@@ -35,7 +36,7 @@ public class CaseLoaderService {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformService = transformService;
-        this.ccdCaseService = ccdCaseService;
+        this.searchCoreCaseDataService = ccdCaseService;
         this.ccdCasesSender = ccdCasesSender;
         this.refDataFactory = refDataFactory;
         this.idamService = idamService;
@@ -45,8 +46,10 @@ public class CaseLoaderService {
         log.debug("*** case-loader *** reading files from sFTP...");
         List<Gaps2File> files = sftpSshService.getFiles();
         log.debug("*** case-loader *** About to start processing files: {}", files);
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-        String serviceAuthorization = idamService.generateServiceAuthorization();
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .authenticationService(idamService.generateServiceAuthorization())
+            .build();
         for (Gaps2File file : files) {
             log.debug("*** case-loader *** file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
@@ -56,16 +59,15 @@ public class CaseLoaderService {
                 log.debug("*** case-loader *** file transformed to Cases successfully");
                 for (CaseData caseData : cases) {
                     log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
-                    List<CaseDetails> casesByCaseRef = ccdCaseService.findCaseByCaseRef(caseData.getCaseReference(),
-                        idamOauth2Token, serviceAuthorization);
+                    List<CaseDetails> casesByCaseRef = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference(),
+                        idamTokens);
                     log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
                     if (casesByCaseRef.isEmpty()) {
                         log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
-                        ccdCasesSender.sendCreateCcdCases(caseData, idamOauth2Token, serviceAuthorization);
+                        ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
                     } else {
                         log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
-                        ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamOauth2Token,
-                            serviceAuthorization);
+                        ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamTokens);
                     }
                 }
                 sftpSshService.move(file, true);
