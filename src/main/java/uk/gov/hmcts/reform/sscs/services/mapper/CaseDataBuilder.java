@@ -49,7 +49,7 @@ public class CaseDataBuilder {
     private final ReferenceDataService referenceDataService;
 
     @Autowired
-    public CaseDataBuilder(ReferenceDataService referenceDataService) {
+    CaseDataBuilder(ReferenceDataService referenceDataService) {
         this.referenceDataService = referenceDataService;
     }
 

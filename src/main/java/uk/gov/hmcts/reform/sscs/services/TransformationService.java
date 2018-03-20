@@ -31,8 +31,8 @@ public class TransformationService {
     private final TransformAppealCaseToCaseData transformAppealCaseToCaseData;
     private ObjectMapper mapper;
 
-    public TransformationService(TransformAppealCaseToCaseData transformAppealCaseToCaseData,
-                                 @Value("${sscs.case.loader.ignoreCasesBeforeDate}") String ignoreDate) {
+    TransformationService(TransformAppealCaseToCaseData transformAppealCaseToCaseData,
+                          @Value("${sscs.case.loader.ignoreCasesBeforeDate}") String ignoreDate) {
         this.transformAppealCaseToCaseData = transformAppealCaseToCaseData;
         this.ignoreCasesBeforeDate = LocalDate.parse(ignoreDate);
         mapper = Jackson2ObjectMapperBuilder.json().indentOutput(true).build();
