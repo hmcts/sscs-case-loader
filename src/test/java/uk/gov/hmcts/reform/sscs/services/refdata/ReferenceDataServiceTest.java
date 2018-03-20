@@ -55,4 +55,22 @@ public class ReferenceDataServiceTest {
 
         assertThat(referenceDataService.getBenefitType("1"), is("POP"));
     }
+
+    @Test
+    public void shouldReturnEvidenceTypeGivenTypeOfEvidenceId() {
+        when(refDataRepo.find(RefKey.FUR_EVID_TYPE, "1", RefKeyField.FET_DESC)).thenReturn("Medical Evidence");
+
+        referenceDataService.setRefDataRepo(refDataRepo);
+
+        assertThat(referenceDataService.getEvidenceType("1"), is("Medical Evidence"));
+    }
+
+    @Test
+    public void shouldReturnRoleTypeGivenRoleId() {
+        when(refDataRepo.find(RefKey.PTTP_ROLE, "1", RefKeyField.PTR_DESC)).thenReturn("Appellant");
+
+        referenceDataService.setRefDataRepo(refDataRepo);
+
+        assertThat(referenceDataService.getRoleType("1"), is("Appellant"));
+    }
 }

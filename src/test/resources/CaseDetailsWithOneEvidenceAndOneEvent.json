@@ -45,7 +45,8 @@
       "documents": [{
         "value": {
           "dateReceived": "2017-05-24",
-          "description": "1"
+          "evidenceType": "Medical evidence",
+          "evidenceProvidedBy": "Appellant"
         },
         "id": "2da62dc2-da43-44d3-be7e-0fc4ff69f82b"
       }]

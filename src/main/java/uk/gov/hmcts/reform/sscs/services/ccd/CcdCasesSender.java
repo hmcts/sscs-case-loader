@@ -69,7 +69,8 @@ public class CcdCasesSender {
             documentList.add(Documents.builder().value(
                 Doc.builder()
                     .dateReceived((String) docValue.get("dateReceived"))
-                    .description((String) docValue.get("description"))
+                    .evidenceProvidedBy((String) docValue.get("evidenceProvidedBy"))
+                    .evidenceType((String) docValue.get("evidenceType"))
                     .build())
                 .build());
         }

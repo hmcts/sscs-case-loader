@@ -159,7 +159,8 @@ public class CaseDataBuilder {
             for (FurtherEvidence furtherEvidence : appealCase.getFurtherEvidence()) {
                 doc = Doc.builder()
                     .dateReceived(DateHelper.getValidDateOrTime(furtherEvidence.getFeDateReceived(), true))
-                    .description(furtherEvidence.getFeTypeofEvidenceId())
+                    .evidenceType(referenceDataService.getEvidenceType(furtherEvidence.getFeTypeofEvidenceId()))
+                    .evidenceProvidedBy(referenceDataService.getRoleType(furtherEvidence.getFeRoleId()))
                     .build();
                 Documents documents = Documents.builder().value(doc).build();
                 documentsList.add(documents);
