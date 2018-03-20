@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.sftp;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
@@ -32,7 +36,7 @@ public class SftpChannelAdapter {
     @PostConstruct
     public void init() {
         ChannelSftp sftp = getSftpChannel();
-        for (String dirName : new String[] {PROCESSED_DIR, FAILED_DIR}) {
+        for (String dirName : new String[]{PROCESSED_DIR, FAILED_DIR}) {
             try {
                 sftp.stat(dirName);
             } catch (SftpException e) {
@@ -78,7 +82,6 @@ public class SftpChannelAdapter {
         return channel;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Gaps2File> listIncoming() {
         return list("");
     }
@@ -91,12 +94,12 @@ public class SftpChannelAdapter {
         return list(PROCESSED_DIR);
     }
 
+    @SuppressWarnings("unchecked")
     private List<Gaps2File> list(String path) {
         ChannelSftp channel = getSftpChannel();
         List<ChannelSftp.LsEntry> ls;
-        path = String.format("%s*.xml", path);
         try {
-            ls = channel.ls(path);
+            ls = channel.ls(String.format("%s*.xml", path));
         } catch (SftpException e) {
             throw new SftpCustomException("Failed reading incoming directory", e);
         }

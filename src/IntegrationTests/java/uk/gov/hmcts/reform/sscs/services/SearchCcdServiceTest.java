@@ -28,7 +28,8 @@ public class SearchCcdServiceTest {
     private static final String CASE_REF = "SC068/17/00013";
 
     @MockBean
-    SftpChannelAdapter channelAdapter;
+    private SftpChannelAdapter channelAdapter;
+
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
 

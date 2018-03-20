@@ -4,9 +4,17 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,9 +49,9 @@ public class SftpChannelAdapterTest {
 
     private final SftpSshProperties props = new SftpSshProperties();
 
-    private String fname1 = "SSCS_Extract_Delta_2000-01-01-01-01-01.xml";
-    private String fname2 = "SSCS_Extract_Delta_2000-01-01-01-01-02.xml";
-    private String fname3 = "SSCS_Extract_Delta_2000-01-01-01-01-03.xml";
+    private static final String fname1 = "SSCS_Extract_Delta_2000-01-01-01-01-01.xml";
+    private static final String fname2 = "SSCS_Extract_Delta_2000-01-01-01-01-02.xml";
+    private static final String fname3 = "SSCS_Extract_Delta_2000-01-01-01-01-03.xml";
     private SftpChannelAdapter sftp;
 
     @Before
@@ -66,7 +74,7 @@ public class SftpChannelAdapterTest {
 
     @After
     public void tearDown() throws JSchException, SftpException {
-        verify(jsch).addIdentity("SSCS-SFTP", "key".getBytes(),null, null);
+        verify(jsch).addIdentity("SSCS-SFTP", "key".getBytes(), null, null);
         verify(jsch).getSession("user", "host", 123);
         verify(session).setConfig("StrictHostKeyChecking", "no");
         verify(session).connect(60000);
@@ -78,14 +86,14 @@ public class SftpChannelAdapterTest {
     }
 
     @Test
-    public void shouldCheckDirectoriesGivenInitialising() throws SftpException, JSchException {
+    public void shouldCheckDirectoriesGivenInitialising() throws SftpException {
         sftp.init();
         verify(channel).stat("processed/");
         verify(channel).stat("failed/");
     }
 
     @Test
-    public void shouldCreateDirectoriesGivenNoneSet() throws SftpException, JSchException {
+    public void shouldCreateDirectoriesGivenNoneSet() throws SftpException {
         doThrow(new SftpException(1, "")).when(channel).stat("processed/");
         doThrow(new SftpException(1, "")).when(channel).stat("failed/");
 
@@ -99,13 +107,13 @@ public class SftpChannelAdapterTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnListOfFilesGivenPath() throws SftpException, JSchException {
+    public void shouldReturnListOfFilesGivenPath() throws SftpException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry, entry);
 
         when(entry.getFilename()).thenReturn(fname1)
             .thenReturn(fname2)
             .thenReturn(fname3);
-        when(channel.ls("*.xml")).thenReturn(new Vector(lsEntries));
+        when(channel.ls("*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listIncoming();
         assertThat(list.size(), is(3));
@@ -118,11 +126,11 @@ public class SftpChannelAdapterTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException, JSchException {
+    public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry);
 
         when(entry.getFilename()).thenReturn(fname1).thenReturn(fname2);
-        when(channel.ls("processed/*.xml")).thenReturn(new Vector(lsEntries));
+        when(channel.ls("processed/*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listProcessed();
         assertThat(list.size(), is(2));
@@ -134,11 +142,11 @@ public class SftpChannelAdapterTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnFileGivenFailedFileExists() throws SftpException, JSchException {
+    public void shouldReturnFileGivenFailedFileExists() throws SftpException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry);
 
         when(entry.getFilename()).thenReturn(fname1);
-        when(channel.ls("failed/*.xml")).thenReturn(new Vector(lsEntries));
+        when(channel.ls("failed/*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listFailed();
         assertThat(list.size(), is(1));
@@ -148,7 +156,7 @@ public class SftpChannelAdapterTest {
     }
 
     @Test
-    public void shouldReturnInputStreamGivenAFileName() throws IOException, SftpException, JSchException {
+    public void shouldReturnInputStreamGivenAFileName() throws IOException, SftpException {
         InputStream is = sftp.getInputStream("xxx");
         assertThat(IOUtils.toString(is, Charset.defaultCharset()), is("abc"));
 

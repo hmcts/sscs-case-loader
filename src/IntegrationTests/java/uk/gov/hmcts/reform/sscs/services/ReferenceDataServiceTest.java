@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class ReferenceDataServiceTest {
 
     @MockBean
-    SftpChannelAdapter channelAdapter;
+    private SftpChannelAdapter channelAdapter;
 
     @Autowired
     private VenueDataLoader venueDataLoader;

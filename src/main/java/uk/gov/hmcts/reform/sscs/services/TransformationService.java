@@ -29,7 +29,7 @@ public class TransformationService {
     private final LocalDate ignoreCasesBeforeDate;
 
     private final TransformAppealCaseToCaseData transformAppealCaseToCaseData;
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     TransformationService(TransformAppealCaseToCaseData transformAppealCaseToCaseData,
                           @Value("${sscs.case.loader.ignoreCasesBeforeDate}") String ignoreDate) {

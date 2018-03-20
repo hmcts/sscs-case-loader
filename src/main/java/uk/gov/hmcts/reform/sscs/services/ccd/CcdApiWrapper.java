@@ -17,8 +17,6 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 @Slf4j
 public class CcdApiWrapper {
 
-    private static final String APPEAL_CREATED = "appealCreated";
-
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final CoreCaseDataApi coreCaseDataApi;
 
@@ -31,7 +29,7 @@ public class CcdApiWrapper {
     @Retryable
     public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), APPEAL_CREATED);
+            idamTokens.getIdamOauth2Token(), "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()

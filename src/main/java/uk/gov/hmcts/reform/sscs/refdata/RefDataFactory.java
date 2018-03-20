@@ -23,7 +23,7 @@ public class RefDataFactory {
     private final ReferenceDataService service;
 
     @Autowired
-    public RefDataFactory(ReferenceDataService service) {
+    RefDataFactory(ReferenceDataService service) {
         this.service = service;
     }
 
@@ -45,8 +45,8 @@ public class RefDataFactory {
                     String localName = reader.getLocalName().toUpperCase(Locale.getDefault());
                     try {
                         key = RefKey.valueOf(localName);
-                    } catch (IllegalArgumentException e) {
-                        log.trace("Not a reference tag name");
+                    } catch (IllegalArgumentException e) { //NOPMD
+
                     }
                     break;
 
@@ -62,8 +62,8 @@ public class RefDataFactory {
                             keyId = tagContent;
                         }
                         repo.add(key, keyId, keyField, tagContent);
-                    } catch (IllegalArgumentException e) {
-                        log.trace("Not a reference field tag name");
+                    } catch (IllegalArgumentException e) { //NOPMD
+
                     }
                     break;
                 default:
