@@ -6,6 +6,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,9 +35,11 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
+import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -61,6 +64,9 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     @MockBean
     private RefDataRepository refDataRepository;
+
+    @MockBean
+    private CcdCasesSender ccdCasesSender;
 
     @Autowired
     private ReferenceDataService referenceDataService;
@@ -102,32 +108,18 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void givenCcdApiThrowExceptions_shouldRequestIdamTokensAndSucceed() {
+    public void givenCcdApiThrowsExceptionWhenFindingCaseByCaseRef_shouldRequestIdamTokensAndSucceed() {
         mockIdamApi();
 
         mockCcdApiToThrowExceptionWhenFindingCaseByRefIsCalled();
         mockCcdApiToReturnResultWhenCalled();
 
-        when(coreCaseDataApi.startForCaseworker(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString()
-        )).thenReturn(StartEventResponse.builder()
-            .caseDetails(CaseDetails.builder().build())
-            .eventId("appealReceived")
-            .token("token")
-            .build());
-
-        mockCcdApiToThrowExceptionWhenUpdatingACase();
-        mockCcdApiToSucceedWhenUpdatingACase();
+        doNothing().when(ccdCasesSender).sendUpdateCcdCases(any(CaseData.class), any(CaseDetails.class),
+            any(IdamTokens.class));
 
         caseLoaderService.process();
 
-        //        verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully();
-        verifyCcdApiRetries3TimesWhenAFailureUpdatingACaseAndRecoverSuccessfully();
+        verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully();
     }
 
     private void verifyCcdApiRetries3TimesWhenAFailureUpdatingACaseAndRecoverSuccessfully() {
@@ -154,12 +146,23 @@ public class ProcessCaseRetryAndRecoveryTest {
                 any(CaseDataContent.class));
     }
 
-    //    private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
-    //        verify(searchCoreCaseDataService, times(3))
-    //            .findCaseByCaseRef(anyString(), any(IdamTokens.class));
-    //        verify(searchCoreCaseDataService, times(1))
-    //            .findCaseByCaseRefRecoveryMethodIfException(anyString(), any(IdamTokens.class));
-    //    }
+    private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
+        verify(coreCaseDataApi, times(3)).searchForCaseworker(
+            eq("Bearer accessToken"),
+            eq("s2s token"),
+            anyString(),
+            anyString(),
+            anyString(),
+            any());
+
+        verify(coreCaseDataApi, times(1)).searchForCaseworker(
+            eq("Bearer accessToken2"),
+            eq("s2s token2"),
+            anyString(),
+            anyString(),
+            anyString(),
+            any());
+    }
 
     private void mockCcdApiToSucceedWhenUpdatingACase() {
         when(coreCaseDataApi.submitEventForCaseWorker(
@@ -220,8 +223,7 @@ public class ProcessCaseRetryAndRecoveryTest {
 
         when(authTokenGenerator.generate())
             .thenReturn("s2s token")
-            .thenReturn("s2s token2")
-            .thenReturn("s2s token3");
+            .thenReturn("s2s token2");
 
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", "accessToken"))
