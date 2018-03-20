@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -24,19 +24,19 @@ public class CaseLoaderService {
     private final SftpSshService sftpSshService;
     private final XmlValidator xmlValidator;
     private final TransformationService transformService;
-    private final SearchCoreCaseDataService searchCoreCaseDataService;
+    private final SearchCcdService searchCcdService;
     private final CcdCasesSender ccdCasesSender;
     private final RefDataFactory refDataFactory;
     private final IdamService idamService;
 
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
-                      SearchCoreCaseDataService ccdCaseService, CcdCasesSender ccdCasesSender,
+                      SearchCcdService ccdCaseService, CcdCasesSender ccdCasesSender,
                       RefDataFactory refDataFactory, IdamService idamService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformService = transformService;
-        this.searchCoreCaseDataService = ccdCaseService;
+        this.searchCcdService = ccdCaseService;
         this.ccdCasesSender = ccdCasesSender;
         this.refDataFactory = refDataFactory;
         this.idamService = idamService;
@@ -59,7 +59,7 @@ public class CaseLoaderService {
                 log.debug("*** case-loader *** file transformed to Cases successfully");
                 for (CaseData caseData : cases) {
                     log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
-                    List<CaseDetails> casesByCaseRef = searchCoreCaseDataService.findCaseByCaseRef(
+                    List<CaseDetails> casesByCaseRef = searchCcdService.findCaseByCaseRef(
                         caseData.getCaseReference(), idamTokens);
                     log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
                     if (casesByCaseRef.isEmpty()) {

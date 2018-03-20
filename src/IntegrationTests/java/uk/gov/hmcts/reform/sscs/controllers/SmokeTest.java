@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -25,7 +25,7 @@ public class SmokeTest {
     @MockBean
     private SftpChannelAdapter channelAdapter;
     @MockBean
-    private SearchCoreCaseDataService searchCoreCaseDataService;
+    private SearchCcdService searchCcdService;
     @MockBean
     private IdamService idamService;
     @Autowired

@@ -14,14 +14,14 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Service
 @Slf4j
-public class SearchCoreCaseDataService {
+public class SearchCcdService {
 
     private final CoreCaseDataApi coreCaseDataApi;
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final IdamService idamService;
 
-    public SearchCoreCaseDataService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
-                                     IdamService idamService) {
+    public SearchCcdService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
+                            IdamService idamService) {
         this.coreCaseDataApi = coreCaseDataApi;
         this.coreCaseDataProperties = coreCaseDataProperties;
         this.idamService = idamService;

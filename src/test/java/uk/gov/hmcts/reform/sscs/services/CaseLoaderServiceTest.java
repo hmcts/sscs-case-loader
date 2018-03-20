@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
@@ -43,7 +43,7 @@ public class CaseLoaderServiceTest {
     @Mock
     private InputStream is;
     @Mock
-    private SearchCoreCaseDataService ccdCaseService;
+    private SearchCcdService ccdCaseService;
     @Mock
     private IdamService idamService;
 

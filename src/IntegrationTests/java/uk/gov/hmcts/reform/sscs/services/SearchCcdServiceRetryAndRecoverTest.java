@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -39,7 +39,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
     private IdamService idamService;
 
     @Autowired
-    private SearchCoreCaseDataService searchCoreCaseDataService;
+    private SearchCcdService searchCcdService;
 
     @Test
     public void givenFindCaseByRefFails_shouldRetryAndRecover() {
@@ -73,7 +73,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
             .authenticationService("serviceAuthorization")
             .build();
 
-        List<CaseDetails> result = searchCoreCaseDataService.findCaseByCaseRef("caseRef", idamTokens);
+        List<CaseDetails> result = searchCcdService.findCaseByCaseRef("caseRef", idamTokens);
 
         verify(coreCaseDataApi, times(3))
             .searchForCaseworker(
