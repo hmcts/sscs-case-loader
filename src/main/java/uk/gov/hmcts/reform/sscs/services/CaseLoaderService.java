@@ -59,8 +59,8 @@ public class CaseLoaderService {
                 log.debug("*** case-loader *** file transformed to Cases successfully");
                 for (CaseData caseData : cases) {
                     log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
-                    List<CaseDetails> casesByCaseRef = searchCoreCaseDataService.findCaseByCaseRef(caseData.getCaseReference(),
-                        idamTokens);
+                    List<CaseDetails> casesByCaseRef = searchCoreCaseDataService.findCaseByCaseRef(
+                        caseData.getCaseReference(), idamTokens);
                     log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
                     if (casesByCaseRef.isEmpty()) {
                         log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
