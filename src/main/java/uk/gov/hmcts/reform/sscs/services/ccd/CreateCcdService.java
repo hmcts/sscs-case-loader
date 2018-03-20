@@ -32,7 +32,6 @@ public class CreateCcdService {
 
     @Retryable
     public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
-        System.out.println("*** create");
         StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
             idamTokens.getIdamOauth2Token(), "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -55,8 +54,8 @@ public class CreateCcdService {
     }
 
     @Recover
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private CaseDetails requestNewTokensAndTryToCreateAgain(CaseData caseData, IdamTokens idamTokens) {
-        System.out.println("*** recover");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
         StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
@@ -81,7 +80,6 @@ public class CreateCcdService {
     }
 
     private StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String eventType) {
-        System.out.println("*** startEvent");
         return coreCaseDataApi.startForCaseworker(
             idamOauth2Token,
             serviceAuthorization,

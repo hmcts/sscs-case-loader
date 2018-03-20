@@ -100,4 +100,52 @@ public class CreateCcdServiceRetryAndRecoverTest {
             eq(true),
             any(CaseDataContent.class));
     }
+
+    @Test
+    public void givenCreateCcdApiFailsWhenSubmittingForCaseWorker_shouldRetryAndRecover() {
+        when(coreCaseDataApi.startForCaseworker(
+            eq("authorization"),
+            eq("serviceAuthorization"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()))
+            .thenReturn(StartEventResponse.builder().build());
+
+        when(coreCaseDataApi.submitForCaseworker(
+            eq("authorization"),
+            eq("serviceAuthorization"),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class)))
+            .thenThrow(new RuntimeException())
+            .thenThrow(new RuntimeException())
+            .thenThrow(new RuntimeException());
+
+        when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
+        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization2");
+
+        when(coreCaseDataApi.startForCaseworker(
+            eq("authorization2"),
+            eq("serviceAuthorization2"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()))
+            .thenReturn(StartEventResponse.builder().build());
+
+        when(coreCaseDataApi.submitForCaseworker(
+            eq("authorization2"),
+            eq("serviceAuthorization2"),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class)))
+            .thenReturn(CaseDetails.builder().build());
+
+        createCcdService.create(caseData, idamTokens);
+    }
 }
