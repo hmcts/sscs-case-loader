@@ -23,8 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
@@ -38,8 +36,6 @@ import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
-@ContextConfiguration
-@TestPropertySource(properties = {"sscs.case.loader.ignoreCasesBeforeDate=2017-01-01"})
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("development")
