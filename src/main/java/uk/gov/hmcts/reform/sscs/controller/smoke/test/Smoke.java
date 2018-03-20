@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.controllers.smoke.test;
+package uk.gov.hmcts.reform.sscs.controller.smoke.test;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
