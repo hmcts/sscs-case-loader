@@ -97,8 +97,9 @@ public class CaseDataBuilder {
     }
 
     public BenefitType buildBenefitType(AppealCase appealCase) {
+        String benefitType = referenceDataService.getBenefitType(appealCase.getAppealCaseCaseCodeId());
         return BenefitType.builder()
-            .code(appealCase.getAppealCaseCaseCodeId())
+            .code(benefitType)
             .build();
     }
 
