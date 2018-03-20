@@ -90,9 +90,11 @@ public class CcdApiWrapper {
                 .build())
             .data(caseData)
             .build();
+        String authorisation = idamService.generateServiceAuthorization();
+        String idamOauth2Token1 = idamService.getIdamOauth2Token();
         return coreCaseDataApi.submitEventForCaseWorker(
-            idamService.generateServiceAuthorization(),
-            idamService.getIdamOauth2Token(),
+            idamOauth2Token1,
+            authorisation,
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
