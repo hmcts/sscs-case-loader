@@ -67,7 +67,7 @@ public class CreateCcdServiceTest {
 
         caseData = CaseData.builder().build();
 
-        apiWrapper = new CreateCcdService(ccdProperties, ccdApi);
+        apiWrapper = new CreateCcdService(ccdProperties, ccdApi, idamService);
 
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
