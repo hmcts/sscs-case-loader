@@ -29,12 +29,9 @@ public class CaseLoaderService {
     private final IdamService idamService;
 
     @Autowired
-    public CaseLoaderService(SftpSshService sftpSshService,
-                             XmlValidator xmlValidator,
-                             TransformationService transformService,
-                             SearchCoreCaseDataService ccdCaseService,
-                             CcdCasesSender ccdCasesSender,
-                             RefDataFactory refDataFactory, IdamService idamService) {
+    CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
+                      SearchCoreCaseDataService ccdCaseService, CcdCasesSender ccdCasesSender,
+                      RefDataFactory refDataFactory, IdamService idamService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformService = transformService;

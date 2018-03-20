@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
-import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
@@ -20,7 +19,7 @@ public class SearchCoreCaseDataService {
         this.coreCaseDataProperties = coreCaseDataProperties;
     }
 
-    @Retryable(backoff = @Backoff(delay = 2000))
+    @Retryable
     public List<CaseDetails> findCaseByCaseRef(String caseRef, String idamOauth2Token, String serviceAuthorization) {
         return coreCaseDataApi.searchForCaseworker(
             idamOauth2Token,
