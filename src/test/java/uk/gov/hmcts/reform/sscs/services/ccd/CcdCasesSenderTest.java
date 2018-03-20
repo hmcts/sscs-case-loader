@@ -102,7 +102,8 @@ public class CcdCasesSenderTest {
                 .documents(Collections.singletonList(Documents.builder()
                     .value(Doc.builder()
                         .dateReceived("2017-05-24")
-                        .description("1")
+                        .evidenceType("Medical evidence")
+                        .evidenceProvidedBy("Appellant")
                         .build())
                     .build()))
                 .build())
@@ -175,12 +176,14 @@ public class CcdCasesSenderTest {
 
     private Evidence buildEvidence() {
         Doc document1 = Doc.builder()
-            .description("1")
+            .evidenceType("Medical evidence")
+            .evidenceProvidedBy("Appellant")
             .dateReceived("2017-05-24")
             .build();
 
         Doc document2 = Doc.builder()
-            .description("Second evidence")
+            .evidenceType("Medical evidence")
+            .evidenceProvidedBy("Appellant")
             .dateReceived("2017-05-25")
             .build();
 

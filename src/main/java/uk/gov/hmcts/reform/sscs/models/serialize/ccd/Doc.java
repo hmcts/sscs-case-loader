@@ -7,5 +7,6 @@ import lombok.Value;
 @Builder
 public class Doc {
     private String dateReceived;
-    private String description;
+    private String evidenceType;
+    private String evidenceProvidedBy;
 }

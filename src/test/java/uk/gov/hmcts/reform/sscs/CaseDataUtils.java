@@ -89,7 +89,8 @@ public final class CaseDataUtils {
 
         Doc doc = Doc.builder()
             .dateReceived("2017-05-24")
-            .description("1")
+            .evidenceType("Medical evidence")
+            .evidenceProvidedBy("Appellant")
             .build();
         Documents documents = Documents.builder()
             .value(doc)
