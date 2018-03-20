@@ -5,6 +5,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -26,8 +32,10 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
+import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
+import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @ContextConfiguration
@@ -47,6 +55,12 @@ public class ProcessCaseTest {
 
     @MockBean
     private SftpChannelAdapter channelAdapter;
+
+    @MockBean
+    private RefDataRepository refDataRepository;
+
+    @Autowired
+    private ReferenceDataService referenceDataService;
 
     @Autowired
     private CaseLoaderService caseLoaderService;
@@ -103,6 +117,11 @@ public class ProcessCaseTest {
             anyBoolean(), any(CaseDataContent.class)))
             .toReturn(CaseDetails.builder().build());
 
+        stub(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).toReturn("bat");
+        stub(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).toReturn("code");
+        stub(refDataRepository.find(BAT_CODE_MAP, "code", BENEFIT_DESC)).toReturn("PIP");
+
+        referenceDataService.setRefDataRepo(refDataRepository);
     }
 
     @Test
