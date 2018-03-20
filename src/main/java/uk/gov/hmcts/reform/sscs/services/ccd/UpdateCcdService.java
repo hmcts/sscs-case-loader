@@ -55,7 +55,8 @@ public class UpdateCcdService {
     }
 
     @Recover
-    public CaseDetails requestNewTokensAndTryToUpdateAgain(CaseData caseData, Long caseId, String eventType,
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private CaseDetails requestNewTokensAndTryToUpdateAgain(CaseData caseData, Long caseId, String eventType,
                                                            IdamTokens idamTokens) {
         System.out.println("*** recover");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());

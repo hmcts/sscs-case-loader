@@ -3,8 +3,11 @@ package uk.gov.hmcts.reform.sscs.services;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,20 @@ public class UpdateCcdServiceRetryAndRecoverTest {
 
     @Autowired
     private UpdateCcdService updateCcdService;
+
+    private CaseData caseData;
+    private IdamTokens idamTokens;
+
+    @Before
+    public void setUp() {
+        caseData = CaseData.builder()
+            .caseReference("SC068/17/00004")
+            .build();
+        idamTokens = IdamTokens.builder()
+            .authenticationService("serviceAuthorization")
+            .idamOauth2Token("authorization")
+            .build();
+    }
 
     @Test
     public void givenUpdateCcdApiFailsWhenStartEvent_shouldRetryAndRecover() {
@@ -75,14 +92,65 @@ public class UpdateCcdServiceRetryAndRecoverTest {
             any(CaseDataContent.class)))
             .thenReturn(CaseDetails.builder().build());
 
-        CaseData caseData = CaseData.builder()
-            .caseReference("SC068/17/00004")
-            .build();
+        updateCcdService.update(caseData, 1L, "appealReceived", idamTokens);
 
-        IdamTokens idamTokens = IdamTokens.builder()
-            .authenticationService("serviceAuthorization")
-            .idamOauth2Token("authorization")
-            .build();
+        verify(coreCaseDataApi, times(0)).submitEventForCaseWorker(
+            eq("authorization"),
+            eq("serviceAuthorization"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class));
+    }
+
+    @Test
+    public void givenUpdateCcdApiFailsWhenSubmittingEvent_shouldRetryAndRecover() {
+        when(coreCaseDataApi.startForCaseworker(
+            eq("authorization"),
+            eq("serviceAuthorization"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()))
+            .thenReturn(StartEventResponse.builder().build());
+
+        when(coreCaseDataApi.submitEventForCaseWorker(
+            eq("authorization"),
+            eq("serviceAuthorization"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class)))
+            .thenThrow(new RuntimeException())
+            .thenThrow(new RuntimeException())
+            .thenThrow(new RuntimeException());
+
+        when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
+        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization2");
+
+        when(coreCaseDataApi.startForCaseworker(
+            eq("authorization2"),
+            eq("serviceAuthorization2"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()))
+            .thenReturn(StartEventResponse.builder().build());
+
+        when(coreCaseDataApi.submitEventForCaseWorker(
+            eq("authorization2"),
+            eq("serviceAuthorization2"),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(true),
+            any(CaseDataContent.class)))
+            .thenReturn(CaseDetails.builder().build());
 
         updateCcdService.update(caseData, 1L, "appealReceived", idamTokens);
     }
