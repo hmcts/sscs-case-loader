@@ -80,3 +80,6 @@ variable "max_capacity" {
   default = "1"
 }
 
+variable "sftp_key_location" {
+  default = "gaps2_service_sftp_private_key"
+}
