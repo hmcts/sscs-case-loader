@@ -56,7 +56,7 @@ public class CaseLoaderService {
             log.debug("*** case-loader *** file validated successfully: {}", file.getName());
             if (file.isDelta()) {
                 List<CaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-                log.debug("*** case-loader *** file transformed to Cases successfully");
+                log.debug("*** case-loader *** file transformed to {} Cases successfully", cases.size());
                 for (CaseData caseData : cases) {
                     log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
                     List<CaseDetails> casesByCaseRef = searchCcdService.findCaseByCaseRef(
