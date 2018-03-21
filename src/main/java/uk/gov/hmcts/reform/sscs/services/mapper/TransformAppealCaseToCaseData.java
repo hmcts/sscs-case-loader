@@ -6,17 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 
 @Service
 public class TransformAppealCaseToCaseData {
@@ -72,13 +62,14 @@ public class TransformAppealCaseToCaseData {
 
         List<DwpTimeExtension> dwpTimeExtensionList = caseDataBuilder.buildDwpTimeExtensions(appealCase);
 
+        List<Events> events = caseDataBuilder.buildEvent(appealCase);
         return CaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
-            .events(caseDataBuilder.buildEvent(appealCase))
+            .events(events)
             .generatedNino(generatedNino)
             .generatedSurname(generatedSurname)
             .generatedEmail(generatedEmail)
