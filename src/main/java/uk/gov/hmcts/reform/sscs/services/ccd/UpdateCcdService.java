@@ -22,18 +22,20 @@ public class UpdateCcdService {
     private final CoreCaseDataProperties coreCaseDataProperties;
     private final CoreCaseDataApi coreCaseDataApi;
     private final IdamService idamService;
+    private final StartEventCcdService startEventCcdService;
 
     @Autowired
     public UpdateCcdService(CoreCaseDataProperties coreCaseDataProperties, CoreCaseDataApi coreCaseDataApi,
-                            IdamService idamService) {
+                            IdamService idamService, StartEventCcdService startEventCcdService) {
         this.coreCaseDataProperties = coreCaseDataProperties;
         this.coreCaseDataApi = coreCaseDataApi;
         this.idamService = idamService;
+        this.startEventCcdService = startEventCcdService;
     }
 
     @Retryable
     public CaseDetails update(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
+        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
             idamTokens.getIdamOauth2Token(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -62,7 +64,7 @@ public class UpdateCcdService {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
-        StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
+        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
             idamTokens.getIdamOauth2Token(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -85,13 +87,4 @@ public class UpdateCcdService {
 
     }
 
-    private StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String eventType) {
-        return coreCaseDataApi.startForCaseworker(
-            idamOauth2Token,
-            serviceAuthorization,
-            coreCaseDataProperties.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            eventType);
-    }
 }
