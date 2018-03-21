@@ -50,37 +50,48 @@ public class CaseLoaderService {
             .idamOauth2Token(idamService.getIdamOauth2Token())
             .authenticationService(idamService.generateServiceAuthorization())
             .build();
+        Gaps2File latestRef = null;
         for (Gaps2File file : files) {
             log.debug("*** case-loader *** file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
             log.debug("*** case-loader *** file validated successfully: {}", file.getName());
             if (file.isDelta()) {
-                List<CaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-                log.debug("*** case-loader *** file transformed to {} Cases successfully", cases.size());
-                for (CaseData caseData : cases) {
-                    log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
-                    List<CaseDetails> casesByCaseRef = searchCcdService.findCaseByCaseRef(
-                        caseData.getCaseReference(), idamTokens);
-                    log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
-                    if (casesByCaseRef.isEmpty()) {
-                        log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
-                        ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
-                    } else {
-                        log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
-                        ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamTokens);
-                    }
+                if (null == latestRef) {
+                    String message = String.format("No reference data processed for this delta: %s", file.getName());
+                    throw new TransformException(message);
                 }
+                processDelta(idamTokens, file);
                 sftpSshService.move(file, true);
+                sftpSshService.move(latestRef, true);
             } else {
+                latestRef = file;
                 try {
                     refDataFactory.extract(sftpSshService.readExtractFile(file));
-                    sftpSshService.move(file, true);
                 } catch (XMLStreamException e) {
                     log.error("Error processing reference file", e);
                     throw new TransformException("Error processing reference file", e);
                 }
             }
         }
+    }
+
+    private void processDelta(IdamTokens idamTokens, Gaps2File file) {
+        List<CaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
+        log.debug("*** case-loader *** file transformed to {} Cases successfully", cases.size());
+        for (CaseData caseData : cases) {
+            log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
+            List<CaseDetails> casesByCaseRef = searchCcdService.findCaseByCaseRef(
+                caseData.getCaseReference(), idamTokens);
+            log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
+            if (casesByCaseRef.isEmpty()) {
+                log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
+                ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
+            } else {
+                log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
+                ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamTokens);
+            }
+        }
+
     }
 
 }

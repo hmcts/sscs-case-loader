@@ -72,11 +72,17 @@ public class ProcessCaseTest {
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
 
+
+        String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
 
         stub(channelAdapter.listFailed()).toReturn(newArrayList());
         stub(channelAdapter.listProcessed()).toReturn(newArrayList());
-        stub(channelAdapter.listIncoming()).toReturn(newArrayList(new Gaps2File(deltaFilename)));
+        stub(channelAdapter.listIncoming())
+            .toReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+
+        stub(channelAdapter.getInputStream(refFilename)).toAnswer(x ->
+            getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
 
         stub(channelAdapter.getInputStream(deltaFilename)).toAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
