@@ -15,31 +15,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCoreCaseDataService;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SearchCoreCaseDataServiceTest {
+public class SearchCcdServiceTest {
 
-    public static final String CASE_REF = "SC068/17/00013";
+    private static final String CASE_REF = "SC068/17/00013";
+
     @MockBean
-    SftpChannelAdapter channelAdapter;
+    private SftpChannelAdapter channelAdapter;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
-    @MockBean
-    private IdamApiClient idamApiClient;
-    @MockBean
-    private AuthTokenGenerator authTokenGenerator;
 
     @Autowired
-    private SearchCoreCaseDataService searchCoreCaseDataService;
+    private SearchCcdService searchCcdService;
 
     @Test
     public void givenCaseRef_shouldFindTheCaseInCcd() {
@@ -53,24 +48,12 @@ public class SearchCoreCaseDataServiceTest {
             )
         ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
 
-        given(idamApiClient.authorizeCodeType(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString())
-        ).willReturn(new Authorize("url", "code", ""));
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("idamOauth2Token")
+            .idamOauth2Token("serviceAuthorization")
+            .build();
 
-        given(idamApiClient.authorizeToken(
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString(),
-            anyString())
-        ).willReturn(new Authorize("", "", "accessToken"));
-
-        given(authTokenGenerator.generate()).willReturn("s2sToken");
-
-        List<CaseDetails> cases = searchCoreCaseDataService.findCaseByCaseRef(CASE_REF);
+        List<CaseDetails> cases = searchCcdService.findCaseByCaseRef(CASE_REF, idamTokens);
 
         verify(coreCaseDataApi).searchForCaseworker(
             anyString(),
@@ -83,4 +66,5 @@ public class SearchCoreCaseDataServiceTest {
 
         assertEquals("expected one case only", 1, cases.size());
     }
+
 }

@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -9,33 +11,32 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Component
 @Slf4j
-public class CcdApiWrapper {
-
-    public static final String APPEAL_CREATED = "appealCreated";
+public class CreateCcdService {
 
     private final CoreCaseDataProperties coreCaseDataProperties;
-    private final IdamService idamService;
     private final CoreCaseDataApi coreCaseDataApi;
+    private final IdamService idamService;
+    private final StartEventCcdService startEventCcdService;
 
     @Autowired
-    public CcdApiWrapper(CoreCaseDataProperties properties, IdamService idam, CoreCaseDataApi ccd) {
+    CreateCcdService(CoreCaseDataProperties properties, CoreCaseDataApi ccd, IdamService idamService,
+                     StartEventCcdService startEventCcdService) {
         this.coreCaseDataProperties = properties;
-        this.idamService = idam;
         this.coreCaseDataApi = ccd;
+        this.idamService = idamService;
+        this.startEventCcdService = startEventCcdService;
     }
 
-    public CaseDetails create(CaseData caseData) {
-
-        String serviceAuthorization = idamService.generateServiceAuthorization();
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-
-        StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, APPEAL_CREATED);
-
+    @Retryable
+    public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
+        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
+            idamTokens.getIdamOauth2Token(), "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -45,10 +46,9 @@ public class CcdApiWrapper {
                 .build())
             .data(caseData)
             .build();
-
         return coreCaseDataApi.submitForCaseworker(
-            idamOauth2Token,
-            serviceAuthorization,
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
@@ -56,42 +56,31 @@ public class CcdApiWrapper {
             caseDataContent);
     }
 
-    public CaseDetails update(CaseData caseData, Long caseId, String eventType) {
-
-        String serviceAuthorization = idamService.generateServiceAuthorization();
-        String idamOauth2Token = idamService.getIdamOauth2Token();
-
-        StartEventResponse startEventResponse = startEvent(serviceAuthorization, idamOauth2Token, eventType);
-
+    @Recover
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private CaseDetails requestNewTokensAndTryToCreateAgain(CaseData caseData, IdamTokens idamTokens) {
+        log.info("*** case-loader *** Requesting new idam and s2s tokens");
+        idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+        idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
+        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
+            idamTokens.getIdamOauth2Token(), "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
                 .id(startEventResponse.getEventId())
                 .summary("GAPS2 Case")
-                .description("CaseLoader Case updated")
+                .description("CaseLoader Case created")
                 .build())
             .data(caseData)
             .build();
-
-        return coreCaseDataApi.submitEventForCaseWorker(
-            idamOauth2Token,
-            serviceAuthorization,
+        return coreCaseDataApi.submitForCaseworker(
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
-            caseId.toString(),
             true,
             caseDataContent);
     }
 
-    private StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String eventType) {
-
-        return coreCaseDataApi.startForCaseworker(
-            idamOauth2Token,
-            serviceAuthorization,
-            coreCaseDataProperties.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            eventType);
-    }
 }

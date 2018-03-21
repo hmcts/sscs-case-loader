@@ -40,10 +40,6 @@ variable "core_case_data_case_type_id"{
   default = "Benefit"
 }
 
-variable "core_case_data_event_id"{
-  default = "appealCreated"
-}
-
 variable "idam_s2s_auth_microservice"{
   default = "sscs"
 }

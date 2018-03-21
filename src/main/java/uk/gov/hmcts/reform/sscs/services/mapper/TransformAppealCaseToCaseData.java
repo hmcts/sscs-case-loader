@@ -24,7 +24,7 @@ public class TransformAppealCaseToCaseData {
     private final CaseDataBuilder caseDataBuilder;
 
     @Autowired
-    public TransformAppealCaseToCaseData(CaseDataBuilder caseDataBuilder) {
+    TransformAppealCaseToCaseData(CaseDataBuilder caseDataBuilder) {
         this.caseDataBuilder = caseDataBuilder;
     }
 

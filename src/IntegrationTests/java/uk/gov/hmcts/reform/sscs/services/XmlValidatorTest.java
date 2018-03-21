@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import org.junit.After;
@@ -23,10 +25,10 @@ import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 public class XmlValidatorTest {
 
     @MockBean
-    SftpSshService sftpSshService;
+    private SftpSshService sftpSshService;
 
     @MockBean
-    SftpChannelAdapter channelAdapter;
+    private SftpChannelAdapter channelAdapter;
 
     @Autowired
     private XmlValidator validator;
@@ -72,8 +74,8 @@ public class XmlValidatorTest {
         try {
             validator.validateXml(invalidDelta);
             fail();
-        } catch (GapsValidationException e) {
-            //
+        } catch (GapsValidationException e) { //NOPMD
+
         }
 
         verify(sftpSshService).readExtractFile(invalidDelta);

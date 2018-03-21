@@ -2,7 +2,10 @@ package uk.gov.hmcts.reform.sscs.services.gaps2.files;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,7 +63,7 @@ public class Gaps2FileTest {
         assertThat(files.get(5), is(delta3));
 
         assertTrue(delta1.equals(delta1));
-        assertFalse(delta1.equals(null));
+        assertNotNull(delta1);
 
         assertThat(delta2.hashCode(), is(delta2.getName().hashCode()));
     }
