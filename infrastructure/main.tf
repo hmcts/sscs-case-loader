@@ -19,7 +19,7 @@ data "vault_generic_secret" "idam_oauth2_client_secret" {
 }
 
 data "vault_generic_secret" "gaps2_key_location" {
-  path = "secret/${var.infrastructure_env}/sscs/gaps2_service_sftp_private_key"
+  path = "secret/${var.infrastructure_env}/sscs/${var.sftp_key_location}"
 }
 
 data "vault_generic_secret" "idam_api" {
