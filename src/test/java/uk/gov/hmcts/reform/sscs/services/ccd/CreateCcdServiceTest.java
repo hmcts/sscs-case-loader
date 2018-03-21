@@ -38,12 +38,14 @@ public class CreateCcdServiceTest {
     private StartEventResponse response;
     @Mock
     private CaseDetails caseDetails;
+    @Mock
+    private StartEventCcdService startEventCcdService;
 
     private CoreCaseDataProperties ccdProperties;
     private CaseData caseData;
     private IdamTokens idamTokens;
 
-    private CreateCcdService apiWrapper;
+    private CreateCcdService createCcdService;
 
     @Before
     public void setUp() {
@@ -55,19 +57,15 @@ public class CreateCcdServiceTest {
         ccdProperties.setJurisdictionId("SSCS");
         ccdProperties.setCaseTypeId("Benefits");
 
-        when(ccdApi.startForCaseworker(OAUTH2,
-            S2SAUTH,
-            ccdProperties.getUserId(),
-            ccdProperties.getJurisdictionId(),
-            ccdProperties.getCaseTypeId(),
-            EVENT_ID)).thenReturn(response);
+        when(startEventCcdService.startEvent(S2SAUTH, OAUTH2, EVENT_ID))
+            .thenReturn(response);
 
         when(response.getToken()).thenReturn(CCD_TOKEN);
         when(response.getEventId()).thenReturn(CCD_EVENT);
 
         caseData = CaseData.builder().build();
 
-        apiWrapper = new CreateCcdService(ccdProperties, ccdApi, idamService);
+        createCcdService = new CreateCcdService(ccdProperties, ccdApi, idamService, startEventCcdService);
 
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
@@ -88,7 +86,7 @@ public class CreateCcdServiceTest {
             eq(true),
             captor.capture())).thenReturn(caseDetails);
 
-        CaseDetails actual = apiWrapper.create(caseData, idamTokens);
+        CaseDetails actual = createCcdService.create(caseData, idamTokens);
 
         CaseDataContent content = captor.getValue();
         assertThat(content.getEvent().getSummary(), is("GAPS2 Case"));
