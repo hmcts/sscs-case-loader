@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Service
+@Slf4j
 public class UpdateCcdService {
 
     private final CoreCaseDataProperties coreCaseDataProperties;
@@ -56,7 +58,8 @@ public class UpdateCcdService {
     @Recover
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private CaseDetails requestNewTokensAndTryToUpdateAgain(CaseData caseData, Long caseId, String eventType,
-                                                           IdamTokens idamTokens) {
+                                                            IdamTokens idamTokens) {
+        log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
         StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),

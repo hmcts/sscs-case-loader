@@ -43,6 +43,7 @@ public class SearchCcdService {
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private List<CaseDetails> requestNewTokensAndTryToFindCaseAgain(String caseRef,
                                                                     IdamTokens idamTokens) {
+        log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
         return coreCaseDataApi.searchForCaseworker(

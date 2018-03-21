@@ -56,6 +56,7 @@ public class CreateCcdService {
     @Recover
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private CaseDetails requestNewTokensAndTryToCreateAgain(CaseData caseData, IdamTokens idamTokens) {
+        log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
         StartEventResponse startEventResponse = startEvent(idamTokens.getAuthenticationService(),
