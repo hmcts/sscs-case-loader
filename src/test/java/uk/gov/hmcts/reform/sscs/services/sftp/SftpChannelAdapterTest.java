@@ -49,9 +49,12 @@ public class SftpChannelAdapterTest {
 
     private final SftpSshProperties props = new SftpSshProperties();
 
-    private static final String fname1 = "SSCS_Extract_Delta_2000-01-01-01-01-01.xml";
-    private static final String fname2 = "SSCS_Extract_Delta_2000-01-01-01-01-02.xml";
-    private static final String fname3 = "SSCS_Extract_Delta_2000-01-01-01-01-03.xml";
+    private static final String rname1 = "SSCS_Extract_Reference_2000-01-01-01-01-01.xml";
+    private static final String rname2 = "SSCS_Extract_Reference_2000-01-01-01-01-02.xml";
+    private static final String rname3 = "SSCS_Extract_Reference_2000-01-01-01-01-03.xml";
+    private static final String dname1 = "SSCS_Extract_Delta_2000-01-01-01-01-01.xml";
+    private static final String dname2 = "SSCS_Extract_Delta_2000-01-01-01-01-02.xml";
+    private static final String dname3 = "SSCS_Extract_Delta_2000-01-01-01-01-03.xml";
     private SftpChannelAdapter sftp;
 
     @Before
@@ -108,18 +111,25 @@ public class SftpChannelAdapterTest {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldReturnListOfFilesGivenPath() throws SftpException {
-        List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry, entry);
+        List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry, entry, entry, entry, entry);
 
-        when(entry.getFilename()).thenReturn(fname1)
-            .thenReturn(fname2)
-            .thenReturn(fname3);
+        when(entry.getFilename())
+            .thenReturn(rname2)
+            .thenReturn(dname1)
+            .thenReturn(dname2)
+            .thenReturn(dname3)
+            .thenReturn(rname1)
+            .thenReturn(rname3);
         when(channel.ls("*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listIncoming();
-        assertThat(list.size(), is(3));
-        assertThat(list.get(0).getName(), is(fname1));
-        assertThat(list.get(1).getName(), is(fname2));
-        assertThat(list.get(2).getName(), is(fname3));
+        assertThat(list.size(), is(6));
+        assertThat(list.get(0).getName(), is(rname1));
+        assertThat(list.get(1).getName(), is(dname1));
+        assertThat(list.get(2).getName(), is(rname2));
+        assertThat(list.get(3).getName(), is(dname2));
+        assertThat(list.get(4).getName(), is(rname3));
+        assertThat(list.get(5).getName(), is(dname3));
 
         verify(channel).ls("*.xml");
     }
@@ -129,13 +139,13 @@ public class SftpChannelAdapterTest {
     public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry);
 
-        when(entry.getFilename()).thenReturn(fname1).thenReturn(fname2);
+        when(entry.getFilename()).thenReturn(dname1).thenReturn(dname2);
         when(channel.ls("processed/*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listProcessed();
         assertThat(list.size(), is(2));
-        assertThat(list.get(0).getName(), is(fname1));
-        assertThat(list.get(1).getName(), is(fname2));
+        assertThat(list.get(0).getName(), is(dname1));
+        assertThat(list.get(1).getName(), is(dname2));
 
         verify(channel).ls("processed/*.xml");
     }
@@ -145,12 +155,12 @@ public class SftpChannelAdapterTest {
     public void shouldReturnFileGivenFailedFileExists() throws SftpException {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry);
 
-        when(entry.getFilename()).thenReturn(fname1);
+        when(entry.getFilename()).thenReturn(dname1);
         when(channel.ls("failed/*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listFailed();
         assertThat(list.size(), is(1));
-        assertThat(list.get(0).getName(), is(fname1));
+        assertThat(list.get(0).getName(), is(dname1));
 
         verify(channel).ls("failed/*.xml");
     }
