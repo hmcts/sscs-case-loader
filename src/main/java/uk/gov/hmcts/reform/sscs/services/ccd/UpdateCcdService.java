@@ -36,7 +36,7 @@ public class UpdateCcdService {
     @Retryable
     public CaseDetails update(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), eventType);
+            idamTokens.getIdamOauth2Token(), caseId.toString(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -65,7 +65,7 @@ public class UpdateCcdService {
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
         StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), eventType);
+            idamTokens.getIdamOauth2Token(), caseId.toString(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()

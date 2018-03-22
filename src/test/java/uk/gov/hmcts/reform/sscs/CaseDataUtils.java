@@ -124,8 +124,8 @@ public final class CaseDataUtils {
             .tya("")
             .email("")
             .mobile("")
-            .subscribeEmail("yes/no")
-            .subscribeSms("yes/no")
+            .subscribeEmail("NO")
+            .subscribeSms("NO")
             .reason("")
             .build();
         Subscription supporterSubscription = Subscription.builder()

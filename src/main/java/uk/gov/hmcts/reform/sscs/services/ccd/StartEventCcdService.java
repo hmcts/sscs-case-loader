@@ -18,13 +18,24 @@ public class StartEventCcdService {
         this.coreCaseDataProperties = coreCaseDataProperties;
     }
 
-    public StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String eventType) {
+    public StartEventResponse startCase(String serviceAuthorization, String idamOauth2Token, String eventType) {
         return coreCaseDataApi.startForCaseworker(
             idamOauth2Token,
             serviceAuthorization,
             coreCaseDataProperties.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
+            eventType);
+    }
+
+    public StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String caseId, String eventType) {
+        return coreCaseDataApi.startEventForCaseWorker(
+            idamOauth2Token,
+            serviceAuthorization,
+            coreCaseDataProperties.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            caseId,
             eventType);
     }
 

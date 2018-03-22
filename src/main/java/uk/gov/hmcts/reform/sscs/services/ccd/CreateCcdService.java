@@ -35,7 +35,7 @@ public class CreateCcdService {
 
     @Retryable
     public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
+        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens.getAuthenticationService(),
             idamTokens.getIdamOauth2Token(), "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -62,7 +62,7 @@ public class CreateCcdService {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
-        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
+        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens.getAuthenticationService(),
             idamTokens.getIdamOauth2Token(), "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())

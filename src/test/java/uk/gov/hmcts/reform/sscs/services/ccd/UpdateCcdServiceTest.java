@@ -22,13 +22,14 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CreateCcdServiceTest {
+public class UpdateCcdServiceTest {
 
     private static final String OAUTH2 = "token";
     private static final String S2SAUTH = "auth";
-    private static final String EVENT_ID = "appealCreated";
+    private static final String EVENT_ID = "appealReceived";
     private static final String CCD_TOKEN = "ccdToken";
     private static final String CCD_EVENT = "ccdEvent";
+    private static final Long CASE_ID = 1L;
 
     @Mock
     private IdamService idamService;
@@ -45,7 +46,7 @@ public class CreateCcdServiceTest {
     private CaseData caseData;
     private IdamTokens idamTokens;
 
-    private CreateCcdService createCcdService;
+    private UpdateCcdService updateCcdService;
 
     @Before
     public void setUp() {
@@ -57,7 +58,7 @@ public class CreateCcdServiceTest {
         ccdProperties.setJurisdictionId("SSCS");
         ccdProperties.setCaseTypeId("Benefits");
 
-        when(startEventCcdService.startCase(S2SAUTH, OAUTH2, EVENT_ID))
+        when(startEventCcdService.startEvent(S2SAUTH, OAUTH2, CASE_ID.toString(), EVENT_ID))
             .thenReturn(response);
 
         when(response.getToken()).thenReturn(CCD_TOKEN);
@@ -65,7 +66,7 @@ public class CreateCcdServiceTest {
 
         caseData = CaseData.builder().build();
 
-        createCcdService = new CreateCcdService(ccdProperties, ccdApi, idamService, startEventCcdService);
+        updateCcdService = new UpdateCcdService(ccdProperties, ccdApi, idamService, startEventCcdService);
 
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
@@ -74,19 +75,20 @@ public class CreateCcdServiceTest {
     }
 
     @Test
-    public void shouldCallCcdCreateMethodsGivenNewCase() {
+    public void shouldCallCcdUpdateMethodsGivenUpdatedCase() {
 
         ArgumentCaptor<CaseDataContent> captor = ArgumentCaptor.forClass(CaseDataContent.class);
 
-        when(ccdApi.submitForCaseworker(eq(OAUTH2),
+        when(ccdApi.submitEventForCaseWorker(eq(OAUTH2),
             eq(S2SAUTH),
             eq(ccdProperties.getUserId()),
             eq(ccdProperties.getJurisdictionId()),
             eq(ccdProperties.getCaseTypeId()),
+            eq(CASE_ID.toString()),
             eq(true),
             captor.capture())).thenReturn(caseDetails);
 
-        CaseDetails actual = createCcdService.create(caseData, idamTokens);
+        CaseDetails actual = updateCcdService.update(caseData, CASE_ID, EVENT_ID, idamTokens);
 
         CaseDataContent content = captor.getValue();
         assertThat(content.getEvent().getSummary(), is("GAPS2 Case"));
