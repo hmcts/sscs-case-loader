@@ -28,7 +28,8 @@ public class StartEventCcdService {
             eventType);
     }
 
-    public StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String caseId, String eventType) {
+    public StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String caseId,
+                                         String eventType) {
         return coreCaseDataApi.startEventForCaseWorker(
             idamOauth2Token,
             serviceAuthorization,
