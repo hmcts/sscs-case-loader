@@ -6,7 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 
 @Service
 public class TransformAppealCaseToCaseData {
@@ -20,7 +31,9 @@ public class TransformAppealCaseToCaseData {
 
     public CaseData transform(AppealCase appealCase) {
         List<Parties> parties = appealCase.getParties();
-        Optional<Parties> party = parties.stream().filter(f -> f.getRoleId() == 4).findFirst();
+
+        Optional<Parties> party = (parties == null) ? Optional.empty() :
+            parties.stream().filter(f -> f.getRoleId() == 4).findFirst();
 
         Name name = null;
         Contact contact = null;
