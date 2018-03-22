@@ -51,8 +51,7 @@ public class ReferenceDataServiceTest {
         when(refDataRepo.find(eq(RefKey.BAT_CODE_MAP), anyString(), eq(BENEFIT_DESC)))
             .thenThrow(new RuntimeException());
         referenceDataService.setRefDataRepo(refDataRepo);
-        String result = referenceDataService.getBenefitType("1");
-        assertTrue(result.equals("ERR"));
+        assertTrue("ERR".equals(referenceDataService.getBenefitType("1")));
     }
 
     @Test
