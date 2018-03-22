@@ -48,6 +48,8 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @ActiveProfiles("development")
 public class ProcessCaseRetryAndRecoveryTest {
 
+    public static final String S2S_TOKEN = "s2s token";
+    public static final String S2S_TOKEN2 = "s2s token2";
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
 
@@ -80,11 +82,16 @@ public class ProcessCaseRetryAndRecoveryTest {
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
 
+        String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
 
         stub(channelAdapter.listFailed()).toReturn(newArrayList());
         stub(channelAdapter.listProcessed()).toReturn(newArrayList());
-        stub(channelAdapter.listIncoming()).toReturn(newArrayList(new Gaps2File(deltaFilename)));
+        stub(channelAdapter.listIncoming())
+            .toReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+
+        stub(channelAdapter.getInputStream(refFilename)).toAnswer(x ->
+            getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
 
         stub(channelAdapter.getInputStream(deltaFilename)).toAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
@@ -92,7 +99,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("url", "code", ""));
 
-        given(authTokenGenerator.generate()).willReturn("s2s token");
+        given(authTokenGenerator.generate()).willReturn(S2S_TOKEN);
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("", "", "accessToken"));
@@ -124,7 +131,7 @@ public class ProcessCaseRetryAndRecoveryTest {
     private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
         verify(coreCaseDataApi, times(3)).searchForCaseworker(
             eq("Bearer accessToken"),
-            eq("s2s token"),
+            eq(S2S_TOKEN),
             anyString(),
             anyString(),
             anyString(),
@@ -132,7 +139,7 @@ public class ProcessCaseRetryAndRecoveryTest {
 
         verify(coreCaseDataApi, times(1)).searchForCaseworker(
             eq("Bearer accessToken2"),
-            eq("s2s token2"),
+            eq(S2S_TOKEN2),
             anyString(),
             anyString(),
             anyString(),
@@ -146,7 +153,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         caseDataMap.put("evidence", evidenceMap);
 
 
-        when(coreCaseDataApi.searchForCaseworker(eq("Bearer accessToken2"), eq("s2s token2"),
+        when(coreCaseDataApi.searchForCaseworker(eq("Bearer accessToken2"), eq(S2S_TOKEN2),
             anyString(), anyString(), anyString(), any()))
             .thenReturn(Collections.singletonList(CaseDetails.builder()
                 .id(10L)
@@ -156,7 +163,7 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     @SuppressWarnings("unchecked")
     private void mockCcdApiToThrowExceptionWhenFindingCaseByRefIsCalled() {
-        when(coreCaseDataApi.searchForCaseworker(eq("Bearer accessToken"), eq("s2s token"),
+        when(coreCaseDataApi.searchForCaseworker(eq("Bearer accessToken"), eq(S2S_TOKEN),
             anyString(), anyString(), anyString(), any()))
             .thenThrow(Exception.class)
             .thenThrow(Exception.class)
@@ -168,8 +175,8 @@ public class ProcessCaseRetryAndRecoveryTest {
             .thenReturn(new Authorize("url", "code", ""));
 
         when(authTokenGenerator.generate())
-            .thenReturn("s2s token")
-            .thenReturn("s2s token2");
+            .thenReturn(S2S_TOKEN)
+            .thenReturn(S2S_TOKEN2);
 
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", "accessToken"))

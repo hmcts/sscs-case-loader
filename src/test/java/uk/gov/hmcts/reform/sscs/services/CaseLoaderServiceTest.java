@@ -2,9 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
@@ -53,6 +51,10 @@ public class CaseLoaderServiceTest {
 
     @Before
     public void setUp() {
+        when(sftpSshService.getFiles()).thenReturn(newArrayList(file, file));
+        stub(sftpSshService.readExtractFile(file)).toReturn(is);
+        when(file.isDelta()).thenReturn(false).thenReturn(true);
+
         caseLoaderService = new CaseLoaderService(sftpSshService,
             xmlValidator,
             transformService,
@@ -68,21 +70,16 @@ public class CaseLoaderServiceTest {
 
     @Test
     public void shouldLoadCasesGivenIncomingXmlFiles() {
-        when(sftpSshService.getFiles()).thenReturn(newArrayList(file));
-        when(sftpSshService.readExtractFile(file)).thenReturn(is);
-        when(file.isDelta()).thenReturn(true);
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
 
         caseLoaderService.process();
 
-        verify(xmlValidator).validateXml(file);
+        verify(xmlValidator, times(2)).validateXml(file);
+        verify(sftpSshService, times(2)).move(file, true);
     }
 
     @Test
     public void shouldUpdateCaseGivenIncomingXmlFiles() {
-        when(sftpSshService.getFiles()).thenReturn(newArrayList(file));
-        when(sftpSshService.readExtractFile(file)).thenReturn(is);
-        when(file.isDelta()).thenReturn(true);
         CaseDetails caseDetails = CaseDetails.builder().build();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
@@ -96,26 +93,22 @@ public class CaseLoaderServiceTest {
 
         caseLoaderService.process();
 
-        verify(xmlValidator).validateXml(file);
+        verify(xmlValidator, times(2)).validateXml(file);
         verify(ccdCaseService).findCaseByCaseRef(eq("caseRef"), eq(idamTokens));
+        verify(sftpSshService, times(2)).move(file, true);
     }
 
     @Test
     public void shouldProcessReferenceDataGivenFile() throws XMLStreamException {
-        when(sftpSshService.getFiles()).thenReturn(newArrayList(file));
-        when(sftpSshService.readExtractFile(file)).thenReturn(is);
-        when(file.isDelta()).thenReturn(false);
-
         caseLoaderService.process();
 
-        verify(xmlValidator).validateXml(file);
+        verify(xmlValidator, times(2)).validateXml(file);
         verify(refDataFactory).extract(is);
+        verify(sftpSshService, times(2)).move(file, true);
     }
 
     @Test(expected = TransformException.class)
     public void shouldThrowExceptionGivenReferenceExtractFails() throws XMLStreamException {
-        when(sftpSshService.getFiles()).thenReturn(newArrayList(file));
-        when(sftpSshService.readExtractFile(file)).thenReturn(is);
         when(file.isDelta()).thenReturn(false);
 
         doThrow(new XMLStreamException()).when(refDataFactory).extract(is);
@@ -123,5 +116,11 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator).validateXml(file);
+    }
+
+    @Test(expected = TransformException.class)
+    public void shouldThrowExceptionGivenNoReferenceFileLoaded() throws XMLStreamException {
+        when(file.isDelta()).thenReturn(true);
+        caseLoaderService.process();
     }
 }
