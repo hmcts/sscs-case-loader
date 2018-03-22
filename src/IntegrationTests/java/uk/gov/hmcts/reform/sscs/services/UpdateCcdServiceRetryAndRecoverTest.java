@@ -58,9 +58,10 @@ public class UpdateCcdServiceRetryAndRecoverTest {
 
     @Test
     public void givenUpdateCcdApiFailsWhenStartEvent_shouldRetryAndRecover() {
-        when(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
+            anyString(),
             anyString(),
             anyString(),
             anyString(),
@@ -72,9 +73,10 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization2");
 
-        when(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
+            anyString(),
             anyString(),
             anyString(),
             anyString(),
@@ -107,9 +109,10 @@ public class UpdateCcdServiceRetryAndRecoverTest {
 
     @Test
     public void givenUpdateCcdApiFailsWhenSubmittingEvent_shouldRetryAndRecover() {
-        when(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
+            anyString(),
             anyString(),
             anyString(),
             anyString(),
@@ -132,9 +135,10 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization2");
 
-        when(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
+            anyString(),
             anyString(),
             anyString(),
             anyString(),

@@ -3,8 +3,8 @@
     "tya": "",
     "email": "",
     "mobile": "",
-    "subscribeEmail": "yes/no",
-    "subscribeSms": "yes/no",
+    "subscribeEmail": "NO",
+    "subscribeSms": "NO",
     "reason": ""
   },
   "supporterSubscription": {
