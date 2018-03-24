@@ -26,7 +26,7 @@ public class SscsCaseLoaderScheduler {
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     public void run() {
-        if (!httpHost.contains("staging")) {
+        if (!httpHost.matches("sscs-case-loader-.*-staging.*")) {
             try {
                 log.info("SSCS Case loader scheduler started : {} ", LocalDateTime.now());
                 caseLoaderService.process();

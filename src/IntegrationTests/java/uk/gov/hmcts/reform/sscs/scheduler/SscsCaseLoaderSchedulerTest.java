@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -17,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class SscsCaseLoaderSchedulerTest {
 
     @MockBean
-    SftpChannelAdapter channelAdapter;
+    private SftpChannelAdapter channelAdapter;
 
     @MockBean
     private CaseLoaderService caseLoaderService;
@@ -27,7 +28,18 @@ public class SscsCaseLoaderSchedulerTest {
 
     @Test
     public void givenHttpPostIsStaging_shouldNotRunTheProcess() {
+        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "httpHost",
+            "sscs-case-loader-prod-staging.scm.service.core-compute-prod.internal");
         sscsCaseLoaderScheduler.run();
         verify(caseLoaderService, times(0)).process();
+
+    }
+
+    @Test
+    public void givenHttpPostIsNotStaging_shouldRunTheProcess() {
+        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "httpHost",
+            "sscs-case-loader-prod.scm.service.core-compute-prod.internal");
+        sscsCaseLoaderScheduler.run();
+        verify(caseLoaderService, times(1)).process();
     }
 }
