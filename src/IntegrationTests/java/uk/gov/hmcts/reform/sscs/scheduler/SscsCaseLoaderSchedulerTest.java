@@ -43,7 +43,7 @@ public class SscsCaseLoaderSchedulerTest {
         "sscs-case-loader-prod-staging.scm.service.core-compute-prod.internal, 0",
         "sscs-case-loader-prod.scm.service.core-compute-prod.internal, 1"
     })
-    public void givenHttpPostIsStaging_shouldNotRunTheProcess(String host, int times) {
+    public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction(String host, int times) {
         ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "httpHost",
             host);
         sscsCaseLoaderScheduler.run();
