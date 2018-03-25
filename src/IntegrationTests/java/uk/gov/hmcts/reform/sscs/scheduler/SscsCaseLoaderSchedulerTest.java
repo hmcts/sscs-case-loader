@@ -41,7 +41,9 @@ public class SscsCaseLoaderSchedulerTest {
     @Test
     @Parameters({
         "sscs-case-loader-prod-staging.scm.service.core-compute-prod.internal, 0",
-        "sscs-case-loader-prod.scm.service.core-compute-prod.internal, 1"
+        "sscs-case-loader-prod.scm.service.core-compute-prod.internal, 1",
+        "sscs-case-loader-prod-staging, 0",
+        " , 1"
     })
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction(String host, int times) {
         ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "httpHost",

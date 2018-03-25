@@ -42,7 +42,7 @@ logging.level:
     org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
     uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
-http.host: ${WEBSITE_HOSTNAME:dev}
+http.host: ${DUPLICATE_FIX:dev}
 
 ---
 spring:
