@@ -46,7 +46,7 @@ public class SscsCaseLoaderSchedulerTest {
         " , 1"
     })
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction(String host, int times) {
-        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "httpHost",
+        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "processData",
             host);
         sscsCaseLoaderScheduler.run();
         verify(caseLoaderService, times(times)).process();
