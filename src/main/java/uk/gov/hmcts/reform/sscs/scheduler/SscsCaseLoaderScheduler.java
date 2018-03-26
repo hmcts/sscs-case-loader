@@ -16,8 +16,8 @@ public class SscsCaseLoaderScheduler {
 
     private final CaseLoaderService caseLoaderService;
 
-    @Value("${http.host}")
-    private String httpHost;
+    @Value("${process.data}")
+    private String processData;
 
     @Autowired
     SscsCaseLoaderScheduler(CaseLoaderService caseLoaderService) {
@@ -26,8 +26,8 @@ public class SscsCaseLoaderScheduler {
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     public void run() {
-        log.info("*** case-loader *** http.host: {}", httpHost);
-        if (!httpHost.matches("sscs-case-loader-.*-staging.*")) {
+        log.info("*** case-loader to process data *** process.data: {}", processData);
+        if ("true".equals(processData)) {
             try {
                 log.info("SSCS Case loader scheduler started : {} ", LocalDateTime.now());
                 caseLoaderService.process();
