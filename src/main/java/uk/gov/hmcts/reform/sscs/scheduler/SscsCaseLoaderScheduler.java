@@ -26,7 +26,7 @@ public class SscsCaseLoaderScheduler {
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     public void run() {
-        log.info("*** case-loader *** process.data: {}", processData);
+        log.info("*** case-loader to process data *** process.data: {}", processData);
         if ("true".equals(processData)) {
             try {
                 log.info("SSCS Case loader scheduler started : {} ", LocalDateTime.now());
