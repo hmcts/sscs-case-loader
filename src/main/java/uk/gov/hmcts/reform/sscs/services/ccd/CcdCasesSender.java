@@ -34,6 +34,9 @@ public class CcdCasesSender {
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
+            // FIXME: 27/03/2018 set caseData subscription to null so that it does not cause an update
+            caseData.setSubscriptions(null);
+            System.out.println("**** subscriptions: " + caseData.getSubscriptions());
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
             ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase, idamTokens);
         }

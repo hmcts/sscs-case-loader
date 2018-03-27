@@ -1,13 +1,16 @@
 package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
-@Value
+@Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CaseData {
     private String caseReference;
     private Appeal appeal;
