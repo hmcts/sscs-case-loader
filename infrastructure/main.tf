@@ -51,6 +51,7 @@ module "sscs-case-loader" {
   is_frontend  = false
   subscription = "${var.subscription}"
   capacity     = "1"
+  additional_host_name = "no-url-backend.case-loader.platform.hmcts.net"
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
