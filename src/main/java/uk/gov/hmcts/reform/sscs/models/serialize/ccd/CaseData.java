@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
 @Data
@@ -25,7 +24,7 @@ public class CaseData {
     private Subscriptions subscriptions;
 
     @JsonIgnore
-    public Event getLatestEvent() {
+    private Event getLatestEvent() {
         return events != null && !events.isEmpty() ? events.get(0).getValue() : null;
     }
 
