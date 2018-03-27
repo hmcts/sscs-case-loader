@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
@@ -31,6 +32,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
@@ -57,6 +60,23 @@ public class CcdCasesSenderTest {
             .idamOauth2Token(IDAM_OAUTH_2_TOKEN)
             .authenticationService(SERVICE_AUTHORIZATION)
             .build();
+    }
+
+    @Test
+    public void givenACaseUpdate_shouldNotOverwriteSubscriptions() throws Exception {
+        CaseData caseData = buildTestCaseDataWithEventAndEvidence();
+        Subscriptions subscription = Subscriptions.builder()
+            .appellantSubscription(Subscription.builder()
+                .tya("001")
+                .build())
+            .build();
+        caseData.setSubscriptions(subscription);
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        assertNull(caseData.getSubscriptions());
     }
 
     @Test
@@ -114,7 +134,18 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceived() throws Exception {
-        CaseData caseData = CaseData.builder()
+        CaseData caseData = buildTestCaseDataWithEventAndEvidence();
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdService, times(0))
+            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(idamTokens));
+    }
+
+    private CaseData buildTestCaseDataWithEventAndEvidence() {
+        return CaseData.builder()
             .evidence(Evidence.builder()
                 .documents(Collections.singletonList(Documents.builder()
                     .value(Doc.builder()
@@ -132,13 +163,6 @@ public class CcdCasesSenderTest {
                     .build())
                 .build()))
             .build();
-
-        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdService, times(0))
-            .update(any(CaseData.class), anyLong(), eq("evidenceReceived"), eq(idamTokens));
     }
 
     @Test

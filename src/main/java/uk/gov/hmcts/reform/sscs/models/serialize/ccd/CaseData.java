@@ -1,13 +1,15 @@
 package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
-@Value
+@Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CaseData {
     private String caseReference;
     private Appeal appeal;
@@ -22,7 +24,7 @@ public class CaseData {
     private Subscriptions subscriptions;
 
     @JsonIgnore
-    public Event getLatestEvent() {
+    private Event getLatestEvent() {
         return events != null && !events.isEmpty() ? events.get(0).getValue() : null;
     }
 

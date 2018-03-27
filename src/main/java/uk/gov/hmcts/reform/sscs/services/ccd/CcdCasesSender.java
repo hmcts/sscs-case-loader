@@ -34,9 +34,14 @@ public class CcdCasesSender {
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
+            dontOverwriteSubscriptions(caseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
             ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase, idamTokens);
         }
+    }
+
+    private void dontOverwriteSubscriptions(CaseData caseData) {
+        caseData.setSubscriptions(null);
     }
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
