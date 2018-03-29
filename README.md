@@ -170,7 +170,7 @@ There is no need to remove postgres and java or similar core images.
 
 * Step 1: Clone the SSCS docker env
 ```bash
-git clone git@git.reform.hmcts.net:sscs/sscs-docker.git
+git clone git@github.com:hmcts/sscs-docker.git
 
 ```
 * Step 2: to bring up the Dockerised env
@@ -185,10 +185,16 @@ then
 ```bash
 ./bin/ccd-add-role.sh caseworker-sscs-systemupdate
 ```
-and the last one
+and then
 ```bash
 ./bin/ccd-add-role.sh caseworker-sscs-anonymouscitizen
 ```
+
+and finally
+```bash
+./bin/ccd-add-role.sh caseworker-sscs-callagent
+```
+
 * Step 4: Finally import the XLS definition file
 ```bash
 ./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
