@@ -57,8 +57,8 @@ public class CaseLoaderService {
             log.debug("*** case-loader *** file validated successfully: {}", file.getName());
             if (file.isDelta()) {
                 if (null == latestRef) {
-                    String message = String.format("No reference data processed for this delta: %s", file.getName());
-                    throw new TransformException(message);
+                    throw new TransformException(String.format("No reference data processed for this delta: %s",
+                        file.getName()));
                 }
                 processDelta(idamTokens, file);
                 sftpSshService.move(file, true);
@@ -68,7 +68,6 @@ public class CaseLoaderService {
                 try {
                     refDataFactory.extract(sftpSshService.readExtractFile(file));
                 } catch (XMLStreamException e) {
-                    log.error("Error processing reference file", e);
                     throw new TransformException("Error processing reference file", e);
                 }
             }
