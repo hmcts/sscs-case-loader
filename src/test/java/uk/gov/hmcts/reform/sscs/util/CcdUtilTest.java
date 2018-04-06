@@ -9,7 +9,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.exceptions.ApplicationErrorException;
+import uk.gov.hmcts.reform.sscs.exceptions.JsonMapperErrorException;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
@@ -28,7 +28,7 @@ public class CcdUtilTest {
 
     }
 
-    @Test(expected = ApplicationErrorException.class)
+    @Test(expected = JsonMapperErrorException.class)
     public void shouldThrowApplicationErrorExceptionIfItsNotAValidCaseJson() throws Exception {
         CcdUtil.getCaseData(GapsEvent.APPEAL_DORMANT);
     }

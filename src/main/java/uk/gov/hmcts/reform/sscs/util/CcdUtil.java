@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.gov.hmcts.reform.sscs.exceptions.ApplicationErrorException;
+import uk.gov.hmcts.reform.sscs.exceptions.JsonMapperErrorException;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
 public class CcdUtil {
@@ -19,7 +19,7 @@ public class CcdUtil {
         try {
             return mapper.convertValue(object, CaseData.class);
         } catch (Exception e) {
-            throw new ApplicationErrorException("Error occurred when CaseDetails are mapped into CaseData", e);
+            throw new JsonMapperErrorException("Error occurred when CaseDetails are mapped into CaseData", e);
         }
     }
 }
