@@ -24,7 +24,7 @@ public class XmlValidator {
     private final SftpSshService sftpSshService;
 
     @Autowired
-    public XmlValidator(SftpSshService sftpSshService) {
+    XmlValidator(SftpSshService sftpSshService) {
         this.sftpSshService = sftpSshService;
     }
 

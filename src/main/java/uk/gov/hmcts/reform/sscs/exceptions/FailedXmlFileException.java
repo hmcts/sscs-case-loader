@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.sscs.exceptions;
 
-public class FailedXmlFileException extends RuntimeException {
+import uk.gov.hmcts.reform.logging.exception.AlertLevel;
+import uk.gov.hmcts.reform.logging.exception.UnknownErrorCodeException;
+
+@SuppressWarnings("squid:MaximumInheritanceDepth")
+public class FailedXmlFileException extends UnknownErrorCodeException {
 
     public FailedXmlFileException(String fileName) {
-        super(String.format("Failed processing file - %s", fileName));
+        super(AlertLevel.P1, String.format("Failed processing file - %s", fileName));
     }
 }

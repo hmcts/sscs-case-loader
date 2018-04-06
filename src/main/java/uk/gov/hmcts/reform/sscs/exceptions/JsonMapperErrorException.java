@@ -4,8 +4,8 @@ import uk.gov.hmcts.reform.logging.exception.AlertLevel;
 import uk.gov.hmcts.reform.logging.exception.UnknownErrorCodeException;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class GapsValidationException extends UnknownErrorCodeException {
-    public GapsValidationException(String message, Throwable cause) {
-        super(AlertLevel.P1, message, cause);
+public class JsonMapperErrorException extends UnknownErrorCodeException {
+    public JsonMapperErrorException(String message, Throwable cause) {
+        super(AlertLevel.P4, message, cause);
     }
 }
