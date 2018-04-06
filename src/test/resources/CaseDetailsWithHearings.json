@@ -22,6 +22,25 @@
       "id": "ba6d93ac-4e3e-42d5-b4a4-552f9abfa952"
     }],
     "generatedNino": "CA 36 98 74 A",
+    "hearings": [{
+      "value": {
+        "venue": {
+          "name": "Prudential House",
+          "address": {
+            "line1": "36 Dale Street",
+            "line2": "",
+            "town": "Liverpool",
+            "county": "Merseyside",
+            "postcode": "L2 5UZ"
+          },
+          "googleMapLink": "https://www.google.com/maps/place/36+Dale+Street+Liverpool+Merseyside+L2+5UZ/@53.407820,-2.988509"
+        },
+        "hearingDate": "2017-05-24",
+        "time": "10:00",
+        "adjourned": "Yes"
+      },
+      "id": "e1ba468b-9a24-494b-8b7a-26cb3b75c890"
+    }],
     "evidence": {
       "documents": [ ]
     },

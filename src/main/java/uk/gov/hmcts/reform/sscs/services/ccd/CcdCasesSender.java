@@ -1,18 +1,17 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.util.CcdUtil;
+
 
 @Service
 @Slf4j
@@ -47,9 +46,42 @@ public class CcdCasesSender {
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
                                                      IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCase)) {
+            addMissingExistingHearings(caseData, existingCcdCase);
             updateCcdService.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
+        }
+    }
+
+    private void addMissingExistingHearings(CaseData caseData, CaseDetails existingCcdCase) {
+        List<Hearing> gaps2Hearings = caseData.getHearings();
+        CaseData ccdCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
+        List<Hearing> ccdCaseDataHearings = ccdCaseData.getHearings();
+        ArrayList<Hearing> hearingArrayList = new ArrayList<>();
+
+        if (null != ccdCaseDataHearings) {
+            if (null != gaps2Hearings) {
+                Set<String> gaps2HearingDateTime = gaps2Hearings
+                    .stream()
+                    .map(hearing -> hearing.getValue().getHearingDateTime())
+                    .collect(toSet());
+
+                List<Hearing> missingHearings = ccdCaseDataHearings
+                    .stream()
+                    .filter(hearing ->
+                    !gaps2HearingDateTime.contains(hearing.getValue().getHearingDateTime()))
+                    .collect(toList());
+
+                hearingArrayList.addAll(gaps2Hearings);
+                hearingArrayList.addAll(missingHearings);
+                caseData.setHearings(hearingArrayList);
+
+            } else {
+                hearingArrayList.addAll(ccdCaseDataHearings);
+                caseData.setHearings(hearingArrayList);
+
+            }
+
         }
     }
 

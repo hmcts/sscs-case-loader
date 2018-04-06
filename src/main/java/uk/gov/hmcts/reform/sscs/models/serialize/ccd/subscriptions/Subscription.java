@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Value
 @Builder
 public class Subscription {
@@ -12,4 +16,20 @@ public class Subscription {
     String subscribeEmail;
     String subscribeSms;
     String reason;
+
+    @JsonCreator
+    public Subscription(@JsonProperty("tya") String tya,
+                        @JsonProperty("email") String email,
+                        @JsonProperty("mobile") String mobile,
+                        @JsonProperty("subscribeEmail") String subscribeEmail,
+                        @JsonProperty("subscribeSms") String subscribeSms,
+                        @JsonProperty("reason") String reason) {
+        this.tya = tya;
+        this.email = email;
+        this.mobile = mobile;
+        this.subscribeEmail = subscribeEmail;
+        this.subscribeSms = subscribeSms;
+        this.reason = reason;
+    }
+
 }
