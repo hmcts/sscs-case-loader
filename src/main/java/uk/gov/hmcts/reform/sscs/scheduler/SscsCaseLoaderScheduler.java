@@ -16,7 +16,7 @@ public class SscsCaseLoaderScheduler {
 
     private final CaseLoaderService caseLoaderService;
 
-    @Valiue("${slot.name}")
+    @Value("${slot.name}")
     private String slotName;
 
     @Autowired
