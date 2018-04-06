@@ -40,12 +40,12 @@ public class SscsCaseLoaderSchedulerTest {
 
     @Test
     @Parameters({
-        "false, 0",
-        "true, 1",
-        " , 0"
+        "STAGING, 0",
+        "PRODUCTION, 1",
+        "dev , 0"
     })
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction(String host, int times) {
-        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "processData",
+        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "slotName",
             host);
         sscsCaseLoaderScheduler.run();
         verify(caseLoaderService, times(times)).process();

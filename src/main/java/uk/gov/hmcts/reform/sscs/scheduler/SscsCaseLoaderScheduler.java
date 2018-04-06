@@ -16,8 +16,8 @@ public class SscsCaseLoaderScheduler {
 
     private final CaseLoaderService caseLoaderService;
 
-    @Value("${process.data}")
-    private String processData;
+    @Value("${slot.name}")
+    private String slotName;
 
     @Autowired
     SscsCaseLoaderScheduler(CaseLoaderService caseLoaderService) {
@@ -26,8 +26,8 @@ public class SscsCaseLoaderScheduler {
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     public void run() {
-        log.info("*** case-loader to process data *** process.data: {}", processData);
-        if ("true".equals(processData)) {
+        log.info("*** case-loader to process data *** process.data: {}", slotName);
+        if ("PRODUCTION".equals(slotName)) {
             try {
                 log.info("SSCS Case loader scheduler started : {} ", LocalDateTime.now());
                 caseLoaderService.process();
