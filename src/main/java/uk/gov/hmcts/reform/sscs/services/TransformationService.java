@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,8 @@ public class TransformationService {
             throw new TransformException("Error transforming string to object", e);
         }
         List<AppealCase> appealCases = result.getAppealCases().getAppealCaseList();
-        return appealCases.stream()
+
+        return (appealCases == null) ? Collections.emptyList() : appealCases.stream()
             .filter(c -> c.getCreateDate() != null && ignoreCasesBeforeDate.isBefore(c.getCreateDate()))
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
