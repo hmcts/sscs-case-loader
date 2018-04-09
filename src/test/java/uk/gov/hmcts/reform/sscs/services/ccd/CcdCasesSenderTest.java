@@ -233,7 +233,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldAddExistingNewHearingDetailsFromCcdToCase() throws Exception {
+    public void shouldAddExistingNewHearingDetailsFromCcdToCaseWhenNoHearingDetailsinGaps2Xml() throws Exception {
 
         ArgumentCaptor<CaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(CaseData.class);
 
