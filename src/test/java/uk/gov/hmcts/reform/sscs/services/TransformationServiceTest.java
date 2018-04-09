@@ -19,23 +19,32 @@ import uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData;
 public class TransformationServiceTest {
 
     @Mock
-    private TransformAppealCaseToCaseData transform;
-
-    private InputStream is;
+    private TransformAppealCaseToCaseData transformAppealCaseToCaseData;
     private CaseData caseData;
+    private TransformationService transformationService;
+    private InputStream is;
+    private List<CaseData> caseDataList;
 
     @Before
     public void setUp() {
-        is = getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml");
+        transformationService = new TransformationService(transformAppealCaseToCaseData,
+            "2017-01-01");
         caseData = CaseData.builder().build();
-        when(transform.transform(any())).thenReturn(caseData);
+        when(transformAppealCaseToCaseData.transform(any())).thenReturn(caseData);
     }
 
     @Test
     public void shouldReturnListOfCasesGivenDeltaAsInputStream() {
-        TransformationService service = new TransformationService(transform, "2017-01-01");
-        List<CaseData> caseDataList = service.transform(is);
+        is = getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml");
+        caseDataList = transformationService.transform(is);
         assertThat(caseDataList.size(), is(1));
         assertThat(caseDataList.get(0), is(caseData));
+    }
+
+    @Test
+    public void givenDeltaWithNoCases_shouldReturnZeroCases() {
+        is = getClass().getClassLoader().getResourceAsStream("delta_with_no_cases.xml");
+        caseDataList = transformationService.transform(is);
+        assertThat(caseDataList.size(), is(0));
     }
 }
