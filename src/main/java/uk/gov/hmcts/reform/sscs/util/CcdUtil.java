@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.gov.hmcts.reform.sscs.exceptions.JsonMapperErrorException;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 
-public class CcdUtil {
+public final class CcdUtil {
 
     private CcdUtil() {
 
