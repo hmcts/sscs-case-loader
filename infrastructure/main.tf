@@ -45,7 +45,7 @@ locals {
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
 
   localIdamRedirect = "https://sscs-case-loader-${var.env}.service.${local.aseName}.internal"
-  IdamRediret = "${var.env == "preview" ? "https://sscs-case-loader-aat.service.core-compute-aat.internal" : local.localIdamRedirect}"
+  IdamRedirect = "${var.env == "preview" ? "https://sscs-case-loader-aat.service.core-compute-aat.internal" : local.localIdamRedirect}"
 }
 
 module "sscs-case-loader" {
