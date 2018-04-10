@@ -40,6 +40,12 @@ data "vault_generic_secret" "sftp_port" {
 
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
+
+  localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
+  CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
+
+  localIdamRedirect = "https://sscs-case-loader-${var.env}.service.${local.aseName}.internal"
+  IdamRediret = "${var.env == "preview" ? "https://sscs-case-loader-aat.service.core-compute-aat.internal" : local.localIdamRedirect}"
 }
 
 module "sscs-case-loader" {
@@ -55,7 +61,7 @@ module "sscs-case-loader" {
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
-    CORE_CASE_DATA_API_URL = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
+    CORE_CASE_DATA_API_URL = "${local.CcdApi}"
     CORE_CASE_DATA_USER_ID = "${var.core_case_data_user_id}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
@@ -71,7 +77,7 @@ module "sscs-case-loader" {
 
     IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
-    IDAM_OAUTH2_REDIRECT_URL = "https://sscs-case-loader-${var.env}.service.${local.aseName}.internal"
+    IDAM_OAUTH2_REDIRECT_URL = "${local.IdamRedirect}"
 
     GAPS2_KEY_LOCATION = "${data.vault_generic_secret.gaps2_key_location.data["value"]}"
     GAPS2_SFTP_HOST = "${data.vault_generic_secret.sftp_host.data["value"]}"
