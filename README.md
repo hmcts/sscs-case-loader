@@ -198,10 +198,17 @@ and finally
 * Step 4: Finally import the XLS definition file
 ```bash
 ./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
+link here -> https://tools.hmcts.net/confluence/display/SSCS/Case+Definitions
 ```
 * Step 5: Finally copy and paste the application.yml from
 ```bash
 https://tools.hmcts.net/confluence/display/SSCS/application.yml
+```
+
+* Step 6: Finally, I promise, run this command to be able to log in
+the CCD UI: 
+```bash
+./bin/idam-create-caseworker.sh caseworker-sscs  yourEmail@hmcts.net
 ```
 
 ### Setting up a Dockerised SFTP server for developing purpose
