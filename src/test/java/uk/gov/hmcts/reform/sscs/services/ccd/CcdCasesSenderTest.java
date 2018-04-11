@@ -1,48 +1,47 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.io.InputStream;
+import java.util.*;
+
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
 
-    private static final String CASE_DETAILS_JSON = "src/test/resources/CaseDetailsWithOneEventAndNoEvidence.json";
+    private static final String CASE_DETAILS_JSON = "CaseDetailsWithOneEventAndNoEvidence.json";
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
-        "src/test/resources/CaseDetailsWithOneEvidenceAndOneEvent.json";
+        "CaseDetailsWithOneEvidenceAndOneEvent.json";
     private static final String IDAM_OAUTH_2_TOKEN = "idamOauth2Token";
     private static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
+    public static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
+    public static final String CASE_DETAILS_WITH_NO_HEARINGS_JSON = "CaseDetailsWithNoHearings.json";
 
     @Mock
     private CreateCcdService createCcdService;
@@ -98,10 +97,9 @@ public class CcdCasesSenderTest {
     }
 
     private CaseDetails getCaseDetails(String caseDetails) throws Exception {
-        String caseDetailsJson = FileUtils.readFileToString(new File(caseDetails),
-            StandardCharsets.UTF_8.name());
+        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(caseDetails);
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
-        return mapper.readerFor(CaseDetails.class).readValue(caseDetailsJson);
+        return mapper.readerFor(CaseDetails.class).readValue(resourceAsStream);
     }
 
     @Test
@@ -187,6 +185,80 @@ public class CcdCasesSenderTest {
 
         verify(updateCcdService, times(0))
             .update(any(CaseData.class), anyLong(), eq("appealReceived"), eq(idamTokens));
+    }
+
+    @Test
+    public void shouldAddExistingHearingDetailsToTheCaseIfItsMissingInComingGaps2Xml() throws Exception {
+
+        ArgumentCaptor<CaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(CaseData.class);
+
+        CaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        caseData.setHearings(buildHearings());
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdService).update(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()), eq(idamTokens));
+
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(2));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().get(0).getValue().getHearingDateTime(),
+            equalTo("2018-04-0510:00:00"));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().get(1).getValue().getHearingDateTime(),
+            equalTo("2017-05-2410:00"));
+
+
+    }
+
+    @Test
+    public void shouldAddNewHearingDetailsFromGap2XmlToTheCcd() throws Exception {
+
+        ArgumentCaptor<CaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(CaseData.class);
+
+        CaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        caseData.setHearings(buildHearings());
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_NO_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdService).update(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()), eq(idamTokens));
+
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(1));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().get(0).getValue().getHearingDateTime(),
+            equalTo("2018-04-0510:00:00"));
+
+    }
+
+    @Test
+    public void shouldAddExistingNewHearingDetailsFromCcdToCaseWhenNoHearingDetailsinGaps2Xml() throws Exception {
+
+        ArgumentCaptor<CaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(CaseData.class);
+
+        CaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdService).update(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()), eq(idamTokens));
+
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(1));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().get(0).getValue().getHearingDateTime(),
+            equalTo("2017-05-2410:00"));
+
+
+    }
+
+
+    private List<Hearing> buildHearings() {
+        return Collections.singletonList(
+            Hearing.builder().value(
+                HearingDetails.builder().hearingDate("2018-04-05").time("10:00:00").build())
+                .build());
     }
 
     private CaseData buildCaseData(GapsEvent event) {
