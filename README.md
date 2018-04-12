@@ -166,51 +166,6 @@ docker image rm <image-id>
 
 There is no need to remove postgres and java or similar core images.
 
-### Setting up a Dockerised env to test the CaseLoader against CDD and rest of apps such as IDAM 
-
-* Step 1: Clone the SSCS docker env
-```bash
-git clone git@github.com:hmcts/sscs-docker.git
-
-```
-* Step 2: to bring up the Dockerised env
-```bash
-./compose-frontend.sh up -d
-```
-* Step 3: Add those roles in CDD
-```bash
-./bin/ccd-add-role.sh caseworker-sscs
-```
-then
-```bash
-./bin/ccd-add-role.sh caseworker-sscs-systemupdate
-```
-and then
-```bash
-./bin/ccd-add-role.sh caseworker-sscs-anonymouscitizen
-```
-
-and finally
-```bash
-./bin/ccd-add-role.sh caseworker-sscs-callagent
-```
-
-* Step 4: Finally import the XLS definition file
-```bash
-./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
-link here -> https://tools.hmcts.net/confluence/display/SSCS/Case+Definitions
-```
-* Step 5: Finally copy and paste the application.yml from
-```bash
-https://tools.hmcts.net/confluence/display/SSCS/application.yml
-```
-
-* Step 6: Finally, I promise, run this command to be able to log in
-the CCD UI: 
-```bash
-./bin/idam-create-caseworker.sh caseworker-sscs  yourEmail@hmcts.net
-```
-
 ### Setting up a Dockerised SFTP server for developing purpose
 * To build both the case-loader and SFTP server services 
 ```bash
