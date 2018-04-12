@@ -199,7 +199,7 @@ logging.level:
 docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
 ```
 * Open IntelliJ and import the Lombok plugin and enable annotation processing
-* Run this test within IntelliJ by right-clicking and run
+* Run this test within IntelliJ
 ```bash
 https://github.com/hmcts/sscs-case-loader/blob/master/src/e2e/java/uk.gov.hmcts.reform.sscs/functional/ProcessFileAndSaveIntoCcd.java#L20
 ```
