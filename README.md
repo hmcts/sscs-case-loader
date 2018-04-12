@@ -89,10 +89,6 @@ The project contains the following plugins:
 
 ## Building and deploying the application
 
-### Copy and paste application.yml from
-```bash
-https://tools.hmcts.net/confluence/display/SSCS/application.yml
-```
 ### Building the application
 
 The project uses [Gradle](https://gradle.org) as a build tool. It already contains
@@ -185,6 +181,31 @@ Connected to sscs-sftp.
 Changing to: /incoming
 sftp> dir
 SSCS_Extract_Reference_2017-06-30-09-01-31.xml
+```
+## Running e2e locally
+
+* Copy and paste application.yml from
+```bash
+https://tools.hmcts.net/confluence/display/SSCS/application.yml
+```
+* Turn on debugging by editing sscs-case-loader/src/main/resources/application.yaml
+```bash
+logging.level:
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+```
+* Bring up the SFTP server
+```bash
+docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
+```
+* Open IntelliJ and import the Lombok plugin and enable annotation processing
+* Run this test within IntelliJ by right-clicking and run
+```bash
+https://github.com/hmcts/sscs-case-loader/blob/master/src/e2e/java/uk.gov.hmcts.reform.sscs/functional/ProcessFileAndSaveIntoCcd.java#L20
+```
+* Refresh the browser to view the cases in CCD
+```bash
+http://localhost:3451
 ```
 
 ## Hystrix
