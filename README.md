@@ -89,6 +89,10 @@ The project contains the following plugins:
 
 ## Building and deploying the application
 
+### Copy and paste application.yml from
+```bash
+https://tools.hmcts.net/confluence/display/SSCS/application.yml
+```
 ### Building the application
 
 The project uses [Gradle](https://gradle.org) as a build tool. It already contains
@@ -137,6 +141,9 @@ You should get a response similar to this:
 ```
 
 ### Setting up a Dockerised SFTP server for developing purpose
+
+This setup is required if files need to be processed via sftp server
+
 * To build both the case-loader and SFTP server services 
 ```bash
 docker-compose rm -f && docker-compose build && docker-compose up
