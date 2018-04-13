@@ -102,6 +102,14 @@ To build the project execute the following command:
 
 ### Running the application
 
+Run the application by executing:
+
+```
+  ./gradlew bootRun
+```
+
+### Running the application in Docker
+
 Create the image of the application by executing the following command:
 
 ```bash
