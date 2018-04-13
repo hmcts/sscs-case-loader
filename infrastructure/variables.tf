@@ -19,7 +19,7 @@ variable "infrastructure_env" {
 
 variable "management_security_enabled" {
   type    = "string"
-  default = "true"
+  default = "false"
 }
 
 variable "subscription" {
