@@ -24,7 +24,7 @@ public enum GapsEvent {
     public static GapsEvent getGapsEventByStatus(String status) {
         GapsEvent e = null;
         for (GapsEvent event : GapsEvent.values()) {
-            if (event.status.toString().equals(status)) {
+            if (event.status.equals(status)) {
                 e = event;
             }
         }
