@@ -102,6 +102,14 @@ To build the project execute the following command:
 
 ### Running the application
 
+Run the application by executing:
+
+```
+  ./gradlew bootRun
+```
+
+### Running the application in Docker
+
 Create the image of the application by executing the following command:
 
 ```bash
@@ -136,82 +144,10 @@ You should get a response similar to this:
   {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
 ```
 
-### Alternative script to run application
-
-To skip all the setting up and building, just execute the following command:
-
-```bash
-./bin/run-in-docker.sh
-```
-
-For more information:
-
-```bash
-./bin/run-in-docker.sh -h
-```
-
-Script includes bare minimum environment variables necessary to start api instance. Whenever any variable is changed or any other script regarding docker image/container build, the suggested way to ensure all is cleaned up properly is by this command:
-
-```bash
-docker-compose rm
-```
-
-It clears stopped containers correctly. Might consider removing clutter of images too, especially the ones fiddled with:
-
-```bash
-docker images
-
-docker image rm <image-id>
-```
-
-There is no need to remove postgres and java or similar core images.
-
-### Setting up a Dockerised env to test the CaseLoader against CDD and rest of apps such as IDAM 
-
-* Step 1: Clone the SSCS docker env
-```bash
-git clone git@github.com:hmcts/sscs-docker.git
-
-```
-* Step 2: to bring up the Dockerised env
-```bash
-./compose-frontend.sh up -d
-```
-* Step 3: Add those roles in CDD
-```bash
-./bin/ccd-add-role.sh caseworker-sscs
-```
-then
-```bash
-./bin/ccd-add-role.sh caseworker-sscs-systemupdate
-```
-and then
-```bash
-./bin/ccd-add-role.sh caseworker-sscs-anonymouscitizen
-```
-
-and finally
-```bash
-./bin/ccd-add-role.sh caseworker-sscs-callagent
-```
-
-* Step 4: Finally import the XLS definition file
-```bash
-./bin/ccd-import-definition.sh ~/CCD_SSCSDefinition_VXX.xlsx
-link here -> https://tools.hmcts.net/confluence/display/SSCS/Case+Definitions
-```
-* Step 5: Finally copy and paste the application.yml from
-```bash
-https://tools.hmcts.net/confluence/display/SSCS/application.yml
-```
-
-* Step 6: Finally, I promise, run this command to be able to log in
-the CCD UI: 
-```bash
-./bin/idam-create-caseworker.sh caseworker-sscs  yourEmail@hmcts.net
-```
-
 ### Setting up a Dockerised SFTP server for developing purpose
+
+This setup is required if files need to be processed via sftp server
+
 * To build both the case-loader and SFTP server services 
 ```bash
 docker-compose rm -f && docker-compose build && docker-compose up
@@ -253,6 +189,31 @@ Connected to sscs-sftp.
 Changing to: /incoming
 sftp> dir
 SSCS_Extract_Reference_2017-06-30-09-01-31.xml
+```
+## Running e2e locally
+
+* Copy and paste application.yml from
+```bash
+https://tools.hmcts.net/confluence/display/SSCS/application.yml
+```
+* Turn on debugging by editing sscs-case-loader/src/main/resources/application.yaml
+```bash
+logging.level:
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+```
+* Bring up the SFTP server
+```bash
+docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
+```
+* Open IntelliJ and import the Lombok plugin and enable annotation processing
+* Run this test within IntelliJ
+```bash
+https://github.com/hmcts/sscs-case-loader/blob/master/src/e2e/java/uk.gov.hmcts.reform.sscs/functional/ProcessFileAndSaveIntoCcd.java#L20
+```
+* Refresh the browser to view the cases in CCD
+```bash
+http://localhost:3451
 ```
 
 ## Hystrix
