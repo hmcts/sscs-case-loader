@@ -12,6 +12,8 @@
     <notes>Does not apply as tomcat is not installed as a service</notes>
     <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed.*:.*$</gav>
     <cve>CVE-2016-6325</cve>
+    <cve>CVE-2018-1304</cve>
+    <cve>CVE-2018-1305</cve>
   </suppress>
   <suppress>
     <notes>Does not apply as tomcat is not installed as a service</notes>
@@ -25,6 +27,8 @@
       ]]></notes>
     <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
     <cve>CVE-2017-6056</cve>
+    <cve>CVE-2018-1304</cve>
+    <cve>CVE-2018-1305</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
