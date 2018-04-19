@@ -109,6 +109,8 @@
     <cve>CVE-2017-6056</cve>
     <cve>CVE-2016-6325</cve>
     <cve>CVE-2016-5425</cve>
+    <cve>CVE-2018-1305</cve>
+    <cve>CVE-2018-1304</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -174,14 +176,6 @@
    ]]></notes>
     <gav regex="true">^org\.codehaus\.groovy:groovy-json:.*$</gav>
     <cpe>cpe:/a:apache:groovy</cpe>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: tomcat-embed-websocket-8.5.27.jar
-   ]]></notes>
-    <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
-    <cve>CVE-2018-1305</cve>
-    <cve>CVE-2018-1304</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
