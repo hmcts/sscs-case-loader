@@ -30,7 +30,7 @@ management:
 
 
 sftp:
-  keyLocation:  |
+  keyLocation:  ${GAPS2_KEY_LOCATION:|
                 -----BEGIN RSA PRIVATE KEY-----
                 MIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl
                 6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P
@@ -57,7 +57,7 @@ sftp:
                 Gczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc
                 fVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V
                 jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
-                -----END RSA PRIVATE KEY-----
+                -----END RSA PRIVATE KEY-----}
   host: ${GAPS2_SFTP_HOST:localhost}
   port: ${GAPS2_SFTP_PORT:2222}
   username: ${GAPS2_SFTP_USER:sftp}
