@@ -27,10 +27,10 @@ import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 public class RegionalProcessingCenterService {
     private static final Logger LOG = getLogger(RegionalProcessingCenterService.class);
 
-    public static final String RPC_DATA_JSON = "reference-data/rpc-data.json";
+    private static final String RPC_DATA_JSON = "reference-data/rpc-data.json";
     private static final String CSV_FILE_PATH = "reference-data/sscs-venues.csv";
-    public static final char SEPARATOR_CHAR = '/';
-    public static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
+    private static final char SEPARATOR_CHAR = '/';
+    private static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
 
     private Map<String, RegionalProcessingCenter>  regionalProcessingCenterMap  = newHashMap();
     private final Map<String, String> sccodeRegionalProcessingCentermap = newHashMap();

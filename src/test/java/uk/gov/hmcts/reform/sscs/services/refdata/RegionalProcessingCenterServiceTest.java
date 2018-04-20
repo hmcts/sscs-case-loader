@@ -10,7 +10,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 
 public class RegionalProcessingCenterServiceTest {
 
-    public static final String SSCS_LIVERPOOL = "SSCS Liverpool";
+    private static final String SSCS_LIVERPOOL = "SSCS Liverpool";
 
     private RegionalProcessingCenterService regionalProcessingCenterService;
 

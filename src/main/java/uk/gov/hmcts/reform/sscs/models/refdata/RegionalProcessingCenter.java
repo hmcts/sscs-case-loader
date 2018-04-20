@@ -1,8 +1,13 @@
 package uk.gov.hmcts.reform.sscs.models.refdata;
 
-import lombok.Data;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
+@Value
+@Builder(builderClassName = "Builder")
+@JsonDeserialize(builder = RegionalProcessingCenter.Builder.class)
 public class RegionalProcessingCenter {
 
     private String faxNumber;
@@ -22,5 +27,9 @@ public class RegionalProcessingCenter {
     private String postcode;
 
     private String city;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static final class Builder {
+    }
 
 }
