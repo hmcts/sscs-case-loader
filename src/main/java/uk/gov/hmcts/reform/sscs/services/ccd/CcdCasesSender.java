@@ -116,8 +116,10 @@ public class CcdCasesSender {
     private void addRegionalProcessingCenter(CaseData caseData) {
         RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService
             .getByScReferenceCode(caseData.getCaseReference());
-        caseData.setRegion(regionalProcessingCenter.getName());
-        caseData.setRegionalProcessingCenter(regionalProcessingCenter);
+        if (null != regionalProcessingCenter) {
+            caseData.setRegion(regionalProcessingCenter.getName());
+            caseData.setRegionalProcessingCenter(regionalProcessingCenter);
+        }
     }
 
     @SuppressWarnings("unchecked")

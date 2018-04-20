@@ -327,6 +327,25 @@ public class CcdCasesSenderTest {
 
     }
 
+    @Test
+    public void shouldAddRegionalProcessingCenterOnlyIfItsPresent() throws Exception {
+        ArgumentCaptor<CaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(CaseData.class);
+
+        CaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
+            .thenReturn(null);
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdService).update(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()), eq(idamTokens));
+
+        assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(null));
+
+
+    }
 
     private RegionalProcessingCenter getRegionalProcessingCenter() {
         RegionalProcessingCenter regionalProcessingCenter = new RegionalProcessingCenter();
