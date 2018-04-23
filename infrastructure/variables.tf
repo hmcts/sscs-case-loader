@@ -83,3 +83,8 @@ variable "max_capacity" {
 variable "sftp_key_location" {
   default = "gaps2_service_sftp_private_key"
 }
+
+variable "idam_redirect_url" {
+  default = "https://sscs-case-loader-sandbox.service.core-compute-sandbox.internal"
+}
+
