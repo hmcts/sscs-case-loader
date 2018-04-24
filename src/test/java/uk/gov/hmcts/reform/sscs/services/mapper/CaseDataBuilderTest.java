@@ -2,21 +2,27 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -40,6 +46,7 @@ public class CaseDataBuilderTest {
             .appealCaseCaseCodeId("1")
             .majorStatus(getStatus())
             .hearing(getHearing())
+            .minorStatus(Collections.singletonList(MinorStatus.builder().build()))
             .build();
     }
 
@@ -60,6 +67,12 @@ public class CaseDataBuilderTest {
                 appealTime,
                 "id");
         return newArrayList(hearing);
+    }
+
+    @Test
+    public void shouldBuildAPostponedEventGivenMinorStatus() {
+        List<Events> events = caseDataBuilder.buildEvent(appeal);
+        assertTrue(events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
     }
 
     @Test
