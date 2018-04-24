@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
@@ -41,9 +42,9 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 @Slf4j
 public class CaseDataBuilder {
 
-    public static final String YES = "Yes";
-    public static final String NO = "No";
-    public static final String Y = "Y";
+    private static final String YES = "Yes";
+    static final String NO = "No";
+    private static final String Y = "Y";
 
     private final ReferenceDataService referenceDataService;
 
@@ -53,6 +54,24 @@ public class CaseDataBuilder {
     }
 
     public List<Events> buildEvent(AppealCase appealCase) {
+        if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
+            return Collections.singletonList(
+                Events.builder()
+                    .value(Event.builder()
+                        .type(GapsEvent.HEARING_POSTPONED.getType())
+                        .build())
+                    .build());
+        }
+        List<Events> events = buildMajorStatusEvents(appealCase);
+        events.sort(Collections.reverseOrder());
+        return events;
+    }
+
+    private boolean minorStatusIsNotNullAndIsNotEmpty(List<MinorStatus> minorStatusList) {
+        return minorStatusList != null && !minorStatusList.isEmpty();
+    }
+
+    private List<Events> buildMajorStatusEvents(AppealCase appealCase) {
         List<Events> events = new ArrayList<>();
         for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
             GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
@@ -68,7 +87,6 @@ public class CaseDataBuilder {
                     .build());
             }
         }
-        events.sort(Collections.reverseOrder());
         return events;
     }
 
