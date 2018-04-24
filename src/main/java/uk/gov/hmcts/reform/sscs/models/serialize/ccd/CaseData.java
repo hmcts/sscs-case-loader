@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,6 +25,8 @@ public class CaseData {
     private String generatedEmail;
     private String generatedMobile;
     private Subscriptions subscriptions;
+    private RegionalProcessingCenter regionalProcessingCenter;
+    private String region;
 
     @JsonIgnore
     private Event getLatestEvent() {
@@ -47,7 +50,9 @@ public class CaseData {
                     @JsonProperty("generatedSurname") String generatedSurname,
                     @JsonProperty("generatedEmail") String generatedEmail,
                     @JsonProperty("generatedMobile") String generatedMobile,
-                    @JsonProperty("subscriptions") Subscriptions subscriptions) {
+                    @JsonProperty("subscriptions") Subscriptions subscriptions,
+                    @JsonProperty("regionalProcessingCenter")  RegionalProcessingCenter regionalProcessingCenter,
+                    @JsonProperty("region") String region) {
         this.caseReference = caseReference;
         this.appeal = appeal;
         this.hearings = hearings;
@@ -59,5 +64,7 @@ public class CaseData {
         this.generatedEmail = generatedEmail;
         this.generatedMobile = generatedMobile;
         this.subscriptions = subscriptions;
+        this.regionalProcessingCenter = regionalProcessingCenter;
+        this.region = region;
     }
 }
