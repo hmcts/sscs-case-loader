@@ -59,6 +59,7 @@ public class CaseDataBuilder {
                 Events.builder()
                     .value(Event.builder()
                         .type(GapsEvent.HEARING_POSTPONED.getType())
+                        .date(appealCase.getMinorStatus().get(0).getDateSet().toString())
                         .build())
                     .build());
         }

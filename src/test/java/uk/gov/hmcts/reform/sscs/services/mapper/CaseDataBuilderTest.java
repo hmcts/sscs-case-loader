@@ -46,7 +46,10 @@ public class CaseDataBuilderTest {
             .appealCaseCaseCodeId("1")
             .majorStatus(getStatus())
             .hearing(getHearing())
-            .minorStatus(Collections.singletonList(MinorStatus.builder().build()))
+            .minorStatus(Collections.singletonList(MinorStatus.builder()
+                .statusId("26")
+                .dateSet(ZonedDateTime.parse("2017-05-24T00:00:00+01:00"))
+                .build()))
             .build();
     }
 
@@ -72,7 +75,13 @@ public class CaseDataBuilderTest {
     @Test
     public void shouldBuildAPostponedEventGivenMinorStatus() {
         List<Events> events = caseDataBuilder.buildEvent(appeal);
-        assertTrue(events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+        assertTrue("event is not of type Postponed",
+            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+
+        ZonedDateTime actualDateEvent = ZonedDateTime.parse(events.get(0).getValue().getDate());
+        ZonedDateTime expectedDateEvent = ZonedDateTime.parse("2017-05-24T00:00:00+01:00");
+        assertTrue("event date does not matches minor status date_set field",
+            actualDateEvent.isEqual(expectedDateEvent));
     }
 
     @Test
