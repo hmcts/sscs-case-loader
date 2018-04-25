@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
@@ -30,14 +32,13 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDataBuilderTest {
 
+    private static final String TEST_DATE = "2018-05-24T00:00:00+01:00";
+    private static final String TEST_DATE2 = "2017-05-24T00:00:00+01:00";
     @Mock
     private ReferenceDataService refDataService;
-
     private AppealCase appeal;
-
     private CaseDataBuilder caseDataBuilder;
-    private String sessionDate;
-    private String appealTime;
+    private List<Events> events;
 
     @Before
     public void setUp() {
@@ -48,40 +49,26 @@ public class CaseDataBuilderTest {
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(MinorStatus.builder()
                 .statusId("26")
-                .dateSet(ZonedDateTime.parse("2017-05-24T00:00:00+01:00"))
+                .dateSet(ZonedDateTime.parse(TEST_DATE))
                 .build()))
             .build();
     }
 
     private List<MajorStatus> getStatus() {
-        MajorStatus status = new MajorStatus("", "3", "", ZonedDateTime.now());
+        MajorStatus status = new MajorStatus("", "3", "", ZonedDateTime.parse(TEST_DATE2));
         return newArrayList(status);
     }
 
     private List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> getHearing() {
-        sessionDate = "2017-05-24T00:00:00+01:00";
-        appealTime = "2017-05-24T10:30:00+01:00";
         uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing hearing =
             new uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing("outcome",
                 "venue",
                 "outcomeDate",
                 "notificationDate",
-                sessionDate,
-                appealTime,
+                "2017-05-24T00:00:00+01:00",
+                "2017-05-24T10:30:00+01:00",
                 "id");
         return newArrayList(hearing);
-    }
-
-    @Test
-    public void shouldBuildAPostponedEventGivenMinorStatus() {
-        List<Events> events = caseDataBuilder.buildEvent(appeal);
-        assertTrue("event is not of type Postponed",
-            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
-
-        ZonedDateTime actualDateEvent = ZonedDateTime.parse(events.get(0).getValue().getDate());
-        ZonedDateTime expectedDateEvent = ZonedDateTime.parse("2017-05-24T00:00:00+01:00");
-        assertTrue("event date does not matches minor status date_set field",
-            actualDateEvent.isEqual(expectedDateEvent));
     }
 
     @Test
@@ -119,4 +106,41 @@ public class CaseDataBuilderTest {
         assertThat(hearing.getValue().getTime(), is("10:30:00"));
         assertThat(hearing.getValue().getVenue().getName(), is("name"));
     }
+
+    /**
+     * Building Event test coverage.
+     */
+    @Test
+    public void givenMinorStatusIsPresentInTheXmlCaseWhenBuildEventIsCalledThenAPostponedEventIsCreated() {
+        events = caseDataBuilder.buildEvent(appeal);
+        assertTrue("event is not of type Postponed",
+            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+
+        ZonedDateTime actualDateEvent = ZonedDateTime.parse(events.get(0).getValue().getDate());
+        assertTrue("event date does not matches minor status date_set field",
+            actualDateEvent.isEqual(ZonedDateTime.parse(TEST_DATE)));
+    }
+
+    @Test
+    public void whenBuildEventMethodIsCalledThenItReturnsAnEventListSortedByDateInDescOrder() {
+        events = caseDataBuilder.buildEvent(appeal);
+        assertTrue("events size only has 1 element", events.size() > 1);
+        Event actualMostRecentEvent = events.get(0).getValue();
+        assertTrue("expected most recent Event is wrong",
+            actualMostRecentEvent.getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+    }
+
+
+    @Test
+    @Ignore
+    public void givenAFewMinorStatuesShouldCreatePostponedEventFromTheLatestMinorStatus() {
+
+    }
+
+    @Test
+    @Ignore
+    public void givenAMinorStatusShouldCreatePostponedEventIfItDoesNotExistAlready() {
+
+    }
+
 }
