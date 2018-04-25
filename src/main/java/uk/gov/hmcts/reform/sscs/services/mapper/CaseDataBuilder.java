@@ -9,11 +9,9 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
@@ -24,7 +22,6 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
@@ -47,52 +44,18 @@ public class CaseDataBuilder {
     private static final String Y = "Y";
 
     private final ReferenceDataService referenceDataService;
+    private final CaseDataEventBuilder caseDataEventBuilder;
 
     @Autowired
-    CaseDataBuilder(ReferenceDataService referenceDataService) {
+    CaseDataBuilder(ReferenceDataService referenceDataService, CaseDataEventBuilder caseDataEventBuilder) {
         this.referenceDataService = referenceDataService;
+        this.caseDataEventBuilder = caseDataEventBuilder;
     }
 
     public List<Events> buildEvent(AppealCase appealCase) {
-        List<Events> events = buildPostponedEvent(appealCase);
-        events.addAll(buildMajorStatusEvents(appealCase));
+        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        events.addAll(caseDataEventBuilder.buildMajorStatusEvents(appealCase));
         events.sort(Collections.reverseOrder());
-        return events;
-    }
-
-    private List<Events> buildPostponedEvent(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
-        if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
-            events.add(Events.builder()
-                .value(Event.builder()
-                    .type(GapsEvent.HEARING_POSTPONED.getType())
-                    .date(appealCase.getMinorStatus().get(0).getDateSet().toLocalDateTime().toString())
-                    .description(GapsEvent.HEARING_POSTPONED.getDescription())
-                    .build())
-                .build());
-        }
-        return events;
-    }
-
-    private boolean minorStatusIsNotNullAndIsNotEmpty(List<MinorStatus> minorStatusList) {
-        return minorStatusList != null && !minorStatusList.isEmpty();
-    }
-
-    private List<Events> buildMajorStatusEvents(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
-        for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
-            GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
-            if (gapsEvent != null) {
-                Event event = Event.builder()
-                    .type(gapsEvent.getType())
-                    .description(gapsEvent.getDescription())
-                    .date(majorStatus.getDateSet().toLocalDateTime().toString())
-                    .build();
-                events.add(Events.builder()
-                    .value(event)
-                    .build());
-            }
-        }
         return events;
     }
 
