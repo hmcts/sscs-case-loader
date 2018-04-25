@@ -23,7 +23,7 @@ public class Smoke {
     public List<CaseDetails> smoke() {
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
-            .idamOauth2Token(idamService.generateServiceAuthorization())
+            .authenticationService(idamService.generateServiceAuthorization())
             .build();
         return searchCcdService.findCaseByCaseRef("SC068/18/01217", idamTokens);
     }
