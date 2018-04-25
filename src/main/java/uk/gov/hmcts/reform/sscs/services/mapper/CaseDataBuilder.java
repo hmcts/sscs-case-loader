@@ -54,17 +54,22 @@ public class CaseDataBuilder {
     }
 
     public List<Events> buildEvent(AppealCase appealCase) {
-        if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
-            return Collections.singletonList(
-                Events.builder()
-                    .value(Event.builder()
-                        .type(GapsEvent.HEARING_POSTPONED.getType())
-                        .date(appealCase.getMinorStatus().get(0).getDateSet().toString())
-                        .build())
-                    .build());
-        }
-        List<Events> events = buildMajorStatusEvents(appealCase);
+        List<Events> events = buildPostponedEvent(appealCase);
+        events.addAll(buildMajorStatusEvents(appealCase));
         events.sort(Collections.reverseOrder());
+        return events;
+    }
+
+    private List<Events> buildPostponedEvent(AppealCase appealCase) {
+        List<Events> events = new ArrayList<>();
+        if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
+            events.add(Events.builder()
+                .value(Event.builder()
+                    .type(GapsEvent.HEARING_POSTPONED.getType())
+                    .date(appealCase.getMinorStatus().get(0).getDateSet().toString())
+                    .build())
+                .build());
+        }
         return events;
     }
 
@@ -82,7 +87,6 @@ public class CaseDataBuilder {
                     .description(gapsEvent.getDescription())
                     .date(majorStatus.getDateSet().toLocalDateTime().toString())
                     .build();
-
                 events.add(Events.builder()
                     .value(event)
                     .build());
