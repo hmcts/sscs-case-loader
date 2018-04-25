@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -47,11 +48,10 @@ public class CaseDataBuilderTest {
             .appealCaseCaseCodeId("1")
             .majorStatus(getStatus())
             .hearing(getHearing())
-            .minorStatus(Collections.singletonList(MinorStatus.builder()
-                .statusId("26")
-                .dateSet(ZonedDateTime.parse(TEST_DATE))
-                .build()))
+            .minorStatus(Collections.singletonList(
+                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE))))
             .build();
+
     }
 
     private List<MajorStatus> getStatus() {
@@ -116,9 +116,9 @@ public class CaseDataBuilderTest {
         assertTrue("event is not of type Postponed",
             events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
 
-        ZonedDateTime actualDateEvent = ZonedDateTime.parse(events.get(0).getValue().getDate());
+        LocalDateTime actualDateEvent = LocalDateTime.parse(events.get(0).getValue().getDate());
         assertTrue("event date does not matches minor status date_set field",
-            actualDateEvent.isEqual(ZonedDateTime.parse(TEST_DATE)));
+            actualDateEvent.isEqual(ZonedDateTime.parse(TEST_DATE).toLocalDateTime()));
     }
 
     @Test
