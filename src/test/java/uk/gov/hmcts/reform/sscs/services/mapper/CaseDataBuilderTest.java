@@ -43,7 +43,8 @@ public class CaseDataBuilderTest {
 
     @Before
     public void setUp() {
-        caseDataBuilder = new CaseDataBuilder(refDataService);
+        CaseDataEventBuilder caseDataEventBuilder = new CaseDataEventBuilder();
+        caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(getStatus())
@@ -51,7 +52,6 @@ public class CaseDataBuilderTest {
             .minorStatus(Collections.singletonList(
                 new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE))))
             .build();
-
     }
 
     private List<MajorStatus> getStatus() {
@@ -107,9 +107,7 @@ public class CaseDataBuilderTest {
         assertThat(hearing.getValue().getVenue().getName(), is("name"));
     }
 
-    /**
-     * Building Event test coverage.
-     */
+    //fixme Move this test to the integrating test because it is testing other dependencies.
     @Test
     public void givenMinorStatusIsPresentInTheXmlCaseWhenBuildEventIsCalledThenAPostponedEventIsCreated() {
         events = caseDataBuilder.buildEvent(appeal);
