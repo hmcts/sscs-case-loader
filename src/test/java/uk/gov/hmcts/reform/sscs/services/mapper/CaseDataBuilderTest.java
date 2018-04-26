@@ -9,16 +9,12 @@ import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -73,29 +69,6 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         assertThat(hearing.getValue().getHearingDate(), is("2017-05-24"));
         assertThat(hearing.getValue().getTime(), is("10:30:00"));
         assertThat(hearing.getValue().getVenue().getName(), is("name"));
-    }
-
-    //fixme move to integration tests
-    @Test
-    @Ignore
-    public void whenBuildEventMethodIsCalledThenItReturnsAnEventListSortedByDateInDescOrder() {
-        List<Events> events = caseDataBuilder.buildEvent(super.getAppeal());
-        assertTrue("events size only has 1 element", events.size() > 1);
-        Event actualMostRecentEvent = events.get(0).getValue();
-        assertTrue("expected most recent Event is wrong",
-            actualMostRecentEvent.getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
-    }
-
-    @Test
-    @Ignore
-    public void givenAFewMinorStatuesShouldCreatePostponedEventFromTheLatestMinorStatus() {
-
-    }
-
-    @Test
-    @Ignore
-    public void givenAMinorStatusShouldCreatePostponedEventIfItDoesNotExistAlready() {
-
     }
 
 }
