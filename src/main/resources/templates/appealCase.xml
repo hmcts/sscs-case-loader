@@ -1,0 +1,16 @@
+    <Appeal_Case>
+        <Extract_Time_UTC>2017-07-26T18:06:43.24+01:00</Extract_Time_UTC>
+        <Appeal_Case_Id>%s</Appeal_Case_Id>
+        <Appeal_Case_RefNum>%s</Appeal_Case_RefNum>
+        <Appeal_Case_Case_Code_Id>1682</Appeal_Case_Case_Code_Id>
+        <Tribunal_Type_Id>2</Tribunal_Type_Id>
+        <Appeal_Case_Date_Appeal_Received>%s</Appeal_Case_Date_Appeal_Received>
+        <Appeal_Case_Date_of_Decision>%s</Appeal_Case_Date_of_Decision>
+        <Appeal_Case_Date_Appeal_Made>%s</Appeal_Case_Date_Appeal_Made>
+        <Appeal_Case_NINO>JA 00 00 00 A</Appeal_Case_NINO>
+        <Appeal_Case_Major_Id>%s</Appeal_Case_Major_Id>
+        <Appeal_Case_BF_Date>%s</Appeal_Case_BF_Date>
+        <Originating_Office_Id>1699</Originating_Office_Id>
+        <Admin_Team_Id>68</Admin_Team_Id>
+        %s
+    </Appeal_Case>

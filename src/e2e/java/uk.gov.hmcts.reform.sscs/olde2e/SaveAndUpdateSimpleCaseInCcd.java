@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.functional;
+package uk.gov.hmcts.reform.sscs.olde2e;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

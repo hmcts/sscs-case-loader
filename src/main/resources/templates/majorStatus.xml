@@ -1,0 +1,6 @@
+        <Major_Status>
+            <Status_Id>%s</Status_Id>
+            <Date_Set>%s</Date_Set>
+            %s
+            <BF_Date>%s</BF_Date>
+        </Major_Status>

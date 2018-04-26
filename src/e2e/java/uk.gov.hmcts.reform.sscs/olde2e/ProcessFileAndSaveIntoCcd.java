@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.functional;
+package uk.gov.hmcts.reform.sscs.olde2e;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
