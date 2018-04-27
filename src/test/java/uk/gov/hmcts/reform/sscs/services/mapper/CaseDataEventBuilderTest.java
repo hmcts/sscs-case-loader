@@ -5,14 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
-import org.junit.Ignore;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 
+@RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     private final CaseDataEventBuilder caseDataEventBuilder = new CaseDataEventBuilder();
@@ -79,14 +84,23 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     }
 
     @Test
-    @Ignore
-    public void whenMinorStatusIsNullThenPostponedEventIsNotCreated() {
+    @Parameters(method = "getMinotStatusListParameters")
+    public void whenMinorStatusIsNullOrEmptyThenPostponedEventIsNotCreated(List<MinorStatus> minorStatus) {
+        AppealCase appealWithMinorStatusNull = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(super.buildMajorStatusGivenStatuses(GapsEvent.APPEAL_RECEIVED, GapsEvent.HEARING_POSTPONED))
+            .minorStatus(minorStatus)
+            .build();
+
+        events = caseDataEventBuilder.buildPostponedEvent(appealWithMinorStatusNull);
+
+        assertTrue("No Postponed event should be created here", events.isEmpty());
 
     }
 
-    @Test
-    @Ignore
-    public void whenMinorStatusIsEmptyThenPostponedEventIsNotCreated() {
-
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object getMinotStatusListParameters() {
+        return new Object[]{new Object[]{null}, new Object[]{Collections.emptyList()}};
     }
+
 }

@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 public class XmlValidatorTest {
 
     @Mock
-    SftpSshService sftpSshService;
+    private SftpSshService sftpSshService;
 
     private XmlValidator validator;
 
@@ -65,8 +65,7 @@ public class XmlValidatorTest {
         try {
             validator.validateXml(invalidDelta);
             fail();
-        } catch (GapsValidationException e) {
-            //
+        } catch (GapsValidationException e) { //NOPMD
         }
 
         verify(sftpSshService).readExtractFile(invalidDelta);
