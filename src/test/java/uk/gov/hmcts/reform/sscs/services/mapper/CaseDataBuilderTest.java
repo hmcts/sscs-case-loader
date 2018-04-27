@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -13,6 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.sscs.models.GapsEvent;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
@@ -27,19 +30,36 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     @Mock
     private CaseDataEventBuilder caseDataEventBuilder;
     private CaseDataBuilder caseDataBuilder;
+    private AppealCase appeal;
 
-    @Override
     @Before
     public void setUp() {
-        super.setUp();
+        appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(buildMajorStatusGivenStatuses(GapsEvent.APPEAL_RECEIVED))
+            .hearing(getHearing())
+            .minorStatus(super.getMinorStatusId26())
+            .build();
         caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
+    }
+
+    public List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> getHearing() {
+        uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing hearing =
+            new uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing("outcome",
+                "venue",
+                "outcomeDate",
+                "notificationDate",
+                "2017-05-24T00:00:00+01:00",
+                "2017-05-24T10:30:00+01:00",
+                "id");
+        return newArrayList(hearing);
     }
 
     @Test
     public void shouldBuildBenefitTypeGivenAppealCase() {
         when(refDataService.getBenefitType("1")).thenReturn("A");
 
-        BenefitType benefitType = caseDataBuilder.buildBenefitType(super.getAppeal());
+        BenefitType benefitType = caseDataBuilder.buildBenefitType(appeal);
         assertThat(benefitType.getCode(), is("A"));
     }
 
@@ -61,7 +81,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
 
         when(refDataService.getVenueDetails("venue")).thenReturn(venue);
 
-        List<Hearing> hearings = caseDataBuilder.buildHearings(super.getAppeal());
+        List<Hearing> hearings = caseDataBuilder.buildHearings(appeal);
 
         Hearing hearing = hearings.get(0);
 
