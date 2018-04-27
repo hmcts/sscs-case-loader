@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
@@ -14,18 +17,30 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 public class CaseDataEventBuilder {
 
     public List<Events> buildPostponedEvent(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())
-            && minorStatusIdIsEqualTo26(appealCase)) {
-            events.add(Events.builder()
-                .value(Event.builder()
-                    .type(GapsEvent.HEARING_POSTPONED.getType())
-                    .date(appealCase.getMinorStatus().get(0).getDateSet().toLocalDateTime().toString())
-                    .description(GapsEvent.HEARING_POSTPONED.getDescription())
-                    .build())
-                .build());
+            && minorStatusIdIsEqualTo26(appealCase) && postponedEventIsNotPresentAlready(appealCase)) {
+            return buildNewPostponedEvent(appealCase);
         }
-        return events;
+        return Collections.emptyList();
+    }
+
+    private List<Events> buildNewPostponedEvent(AppealCase appealCase) {
+        return Collections.singletonList(Events.builder()
+            .value(Event.builder()
+                .type(GapsEvent.HEARING_POSTPONED.getType())
+                .date(appealCase.getMinorStatus().get(0).getDateSet().toLocalDateTime().toString())
+                .description(GapsEvent.HEARING_POSTPONED.getDescription())
+                .build())
+            .build());
+    }
+
+    private boolean postponedEventIsNotPresentAlready(AppealCase appealCase) {
+        ZonedDateTime minorStatusDate = appealCase.getMinorStatus().get(0).getDateSet();
+        return appealCase.getMajorStatus()
+            .stream()
+            .filter(majorStatus -> majorStatus.getStatusId().equals(GapsEvent.HEARING_POSTPONED.getStatus()))
+            .filter(majorStatus -> majorStatus.getDateSet().equals(minorStatusDate)).collect(Collectors.toList())
+            .isEmpty();
     }
 
     private boolean minorStatusIdIsEqualTo26(AppealCase appealCase) {

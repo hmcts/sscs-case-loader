@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.Ignore;
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -23,50 +22,46 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     @Test
     public void givenMinorStatusWithId26ThenAPostponedEventIsCreated() {
-        AppealCase appealCaseWithMinorStatusId26AndSomeMajorStatuses = super.getAppeal();
+        AppealCase appealCaseWithMinorStatusId26 = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(super.getAppealReceivedStatus())
+            .minorStatus(getMinorStatusId26())
+            .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(
-            appealCaseWithMinorStatusId26AndSomeMajorStatuses);
+            appealCaseWithMinorStatusId26);
 
         assertTrue("event is not of type Postponed",
             events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
 
         LocalDateTime actualDateEvent = LocalDateTime.parse(events.get(0).getValue().getDate());
+        LocalDateTime expectedDate = appealCaseWithMinorStatusId26.getMinorStatus().get(0).getDateSet()
+            .toLocalDateTime();
         assertTrue("event date does not match minor status date_set field",
-            actualDateEvent.isEqual(ZonedDateTime.parse(TEST_DATE2).toLocalDateTime()));
+            actualDateEvent.isEqual(expectedDate));
     }
 
     @Test
-    @Ignore
     public void givenAPostponedEventIsAlreadyPresentThenAnotherPostponedWithSameDateIsNotCreated() {
-        AppealCase appealWithPostponedAndMinorStatus = AppealCase.builder()
+        AppealCase appealWithPostponedEventAndMinorStatus = AppealCase.builder()
             .appealCaseCaseCodeId("1")
-            .majorStatus(getStatus())
-            .hearing(super.getHearing())
-            .minorStatus(getMinorStatus())
+            .majorStatus(getPostponedAndOtherMajorStatuses())
+            .minorStatus(getMinorStatusId26())
             .build();
 
-        events = caseDataEventBuilder.buildPostponedEvent(appealWithPostponedAndMinorStatus);
+        events = caseDataEventBuilder.buildPostponedEvent(appealWithPostponedEventAndMinorStatus);
 
-        List<Events> postponedEvents = events.stream()
-            .filter(event -> event.getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()))
-            .collect(Collectors.toList());
-
-        assertTrue("Same Postponed event created", postponedEvents.size() == 1);
-
-        String postponedDate = postponedEvents.get(0).getValue().getDate();
-        ZonedDateTime minorStatusId26Date = appealWithPostponedAndMinorStatus.getMinorStatus().get(0).getDateSet();
-        assertTrue(postponedDate.equals(minorStatusId26Date));
+        assertTrue("Postponed event should not be created here", events.isEmpty());
     }
 
-    private List<MinorStatus> getMinorStatus() {
+    private List<MinorStatus> getMinorStatusId26() {
         return Collections.singletonList(
             new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2)));
     }
 
-    public List<MajorStatus> getStatus() {
-        MajorStatus appealReceivedStatus = new MajorStatus("", "3", "",
-            ZonedDateTime.parse(TEST_DATE));
+    private List<MajorStatus> getPostponedAndOtherMajorStatuses() {
+        MajorStatus appealReceivedStatus = new MajorStatus("", GapsEvent.APPEAL_RECEIVED.getStatus(),
+            "", ZonedDateTime.parse(TEST_DATE));
         MajorStatus postponedStatus = new MajorStatus("", GapsEvent.HEARING_POSTPONED.getStatus(),
             "", ZonedDateTime.parse(TEST_DATE2));
         return newArrayList(appealReceivedStatus, postponedStatus);
