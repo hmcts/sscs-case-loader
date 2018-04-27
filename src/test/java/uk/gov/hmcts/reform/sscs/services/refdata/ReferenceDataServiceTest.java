@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
 
 import java.util.Map;
 import org.junit.Before;
@@ -48,7 +47,7 @@ public class ReferenceDataServiceTest {
     public void givenBenefitTypeIsNotFound_ReturnErr() {
         when(refDataRepo.find(RefKey.CASE_CODE, "1", RefKeyField.BEN_ASSESS_TYPE_ID)).thenReturn("123");
         when(refDataRepo.find(RefKey.BEN_ASSESS_TYPE, "123", RefKeyField.BAT_CODE)).thenReturn("007");
-        when(refDataRepo.find(eq(RefKey.BAT_CODE_MAP), anyString(), eq(BENEFIT_DESC)))
+        when(refDataRepo.find(eq(RefKey.BAT_CODE_MAP), anyString(), eq(RefKeyField.BENEFIT_DESC)))
             .thenThrow(new RuntimeException());
         referenceDataService.setRefDataRepo(refDataRepo);
         assertTrue("ERR".equals(referenceDataService.getBenefitType("1")));
