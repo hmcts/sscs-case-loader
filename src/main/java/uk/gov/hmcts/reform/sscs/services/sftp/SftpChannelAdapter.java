@@ -43,7 +43,7 @@ public class SftpChannelAdapter {
                 try {
                     sftp.mkdir(dirName);
                 } catch (SftpException e1) {
-                    throw new SftpCustomException("Error creating directory", dirName, e);
+                    throw new SftpCustomException("Error creating directory", dirName, e); //NOPMD
                 }
             }
         }
