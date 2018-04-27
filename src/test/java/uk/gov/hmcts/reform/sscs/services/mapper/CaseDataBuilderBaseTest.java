@@ -13,8 +13,8 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
 public class CaseDataBuilderBaseTest {
 
-    static final String TEST_DATE = "2018-05-24T00:00:00+01:00";
-    private static final String TEST_DATE2 = "2017-05-24T00:00:00+01:00";
+    static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
+    static final String TEST_DATE = "2017-05-24T00:00:00+01:00";
 
     private AppealCase appeal;
 
@@ -25,16 +25,16 @@ public class CaseDataBuilderBaseTest {
             .majorStatus(getStatus())
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE))))
+                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))))
             .build();
     }
 
-    private List<MajorStatus> getStatus() {
-        MajorStatus status = new MajorStatus("", "3", "", ZonedDateTime.parse(TEST_DATE2));
+    public List<MajorStatus> getStatus() {
+        MajorStatus status = new MajorStatus("", "3", "", ZonedDateTime.parse(TEST_DATE));
         return newArrayList(status);
     }
 
-    private List<Hearing> getHearing() {
+    public List<Hearing> getHearing() {
         Hearing hearing = new Hearing("outcome",
             "venue",
             "outcomeDate",
