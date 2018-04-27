@@ -53,8 +53,8 @@ public class CaseDataBuilder {
     }
 
     public List<Events> buildEvent(AppealCase appealCase) {
-        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
-        events.addAll(caseDataEventBuilder.buildMajorStatusEvents(appealCase));
+        List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
+        events.addAll(caseDataEventBuilder.buildPostponedEvent(appealCase));
         events.sort(Collections.reverseOrder());
         return events;
     }
