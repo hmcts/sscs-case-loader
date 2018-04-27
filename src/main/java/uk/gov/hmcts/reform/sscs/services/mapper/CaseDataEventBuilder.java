@@ -15,7 +15,8 @@ public class CaseDataEventBuilder {
 
     public List<Events> buildPostponedEvent(AppealCase appealCase) {
         List<Events> events = new ArrayList<>();
-        if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
+        if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())
+            && minorStatusIdIsEqualTo26(appealCase)) {
             events.add(Events.builder()
                 .value(Event.builder()
                     .type(GapsEvent.HEARING_POSTPONED.getType())
@@ -25,6 +26,10 @@ public class CaseDataEventBuilder {
                 .build());
         }
         return events;
+    }
+
+    private boolean minorStatusIdIsEqualTo26(AppealCase appealCase) {
+        return "26".equals(appealCase.getMinorStatus().get(0).getStatusId());
     }
 
     private boolean minorStatusIsNotNullAndIsNotEmpty(List<MinorStatus> minorStatusList) {
@@ -48,7 +53,6 @@ public class CaseDataEventBuilder {
         }
         return events;
     }
-
 
 
 }
