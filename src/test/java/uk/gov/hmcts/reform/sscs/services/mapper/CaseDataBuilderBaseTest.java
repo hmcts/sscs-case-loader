@@ -8,7 +8,6 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
-@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 class CaseDataBuilderBaseTest {
 
     private static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
@@ -18,15 +17,17 @@ class CaseDataBuilderBaseTest {
         ArrayList<MajorStatus> majorStatusList = new ArrayList<>(gapsEvents.length);
         for (GapsEvent gapsEvent : gapsEvents) {
             if (gapsEvent.equals(GapsEvent.APPEAL_RECEIVED)) {
-                majorStatusList.add(new MajorStatus("", gapsEvent.getStatus(), "",
-                    ZonedDateTime.parse(TEST_DATE))); //NOPMD
+                majorStatusList.add(buildMajorStatusGivenDate(gapsEvent.getStatus(), TEST_DATE));
             }
             if (gapsEvent.equals(GapsEvent.HEARING_POSTPONED)) {
-                majorStatusList.add(new MajorStatus("", gapsEvent.getStatus(), "",
-                    ZonedDateTime.parse(TEST_DATE2))); //NOPMD
+                majorStatusList.add(buildMajorStatusGivenDate(gapsEvent.getStatus(), TEST_DATE2));
             }
         }
         return majorStatusList;
+    }
+
+    private MajorStatus buildMajorStatusGivenDate(String status, String testDate) {
+        return new MajorStatus("", status, "", ZonedDateTime.parse(testDate));
     }
 
     List<MinorStatus> getMinorStatusId26() {
@@ -35,3 +36,4 @@ class CaseDataBuilderBaseTest {
     }
 
 }
+
