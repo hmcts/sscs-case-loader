@@ -10,8 +10,8 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
 class CaseDataBuilderBaseTest {
 
-    private static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
-    private static final String TEST_DATE = "2017-05-24T00:00:00+01:00";
+    static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
+    static final String TEST_DATE = "2017-05-24T00:00:00+01:00";
 
     List<MajorStatus> buildMajorStatusGivenStatuses(GapsEvent... gapsEvents) {
         ArrayList<MajorStatus> majorStatusList = new ArrayList<>(gapsEvents.length);
@@ -30,9 +30,9 @@ class CaseDataBuilderBaseTest {
         return new MajorStatus("", status, "", ZonedDateTime.parse(testDate));
     }
 
-    List<MinorStatus> getMinorStatusId26() {
+    List<MinorStatus> getMinorStatusId26(String testDate) {
         return Collections.singletonList(
-            new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2)));
+            new MinorStatus("", "26", ZonedDateTime.parse(testDate)));
     }
 
 }

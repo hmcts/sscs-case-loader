@@ -38,7 +38,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             .appealCaseCaseCodeId("1")
             .majorStatus(buildMajorStatusGivenStatuses(GapsEvent.APPEAL_RECEIVED))
             .hearing(getHearing())
-            .minorStatus(super.getMinorStatusId26())
+            .minorStatus(super.getMinorStatusId26(TEST_DATE2))
             .build();
         caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
     }
