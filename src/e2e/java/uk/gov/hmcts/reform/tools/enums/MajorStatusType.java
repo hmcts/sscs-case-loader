@@ -14,8 +14,9 @@ public enum MajorStatusType {
     private static final Map<String, MajorStatusType> lookup = new HashMap<>();
 
     static {
-        for (MajorStatusType m : EnumSet.allOf(MajorStatusType.class))
+        for (MajorStatusType m : EnumSet.allOf(MajorStatusType.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;

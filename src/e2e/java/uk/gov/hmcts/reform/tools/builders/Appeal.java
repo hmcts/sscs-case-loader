@@ -15,7 +15,7 @@ public class Appeal {
     public AppealMajorStatus majorStatus = new AppealMajorStatus();
     public AppealHearing hearing = new AppealHearing();
 
-    private XMLWriter xmlWriter;
+    private XmlWriter xmlWriter;
     private Map<String, String> appealHeaderStore = new HashMap<>();
     private List<Map<String, String>> appealPartiesStore = new ArrayList<>();
     private List<Map<String, String>> appealMajorStatusList = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Appeal {
     private Date prevDate = new Date();
     private Integer daysOffSet = 0;
 
-    public Appeal(XMLWriter xmlWriter) throws ParserConfigurationException {
+    public Appeal(XmlWriter xmlWriter) throws ParserConfigurationException {
         this.xmlWriter = xmlWriter;
     }
 
@@ -46,16 +46,16 @@ public class Appeal {
         return TestContainer.asGapsDate(futureDate);
     }
 
-    public String getCaseId(){
+    public String getCaseId() {
         return header.getAppealCaseId();
     }
 
-    public String getCaseRefNum(){
+    public String getCaseRefNum() {
         return header.getAppealCaseRefNum();
     }
 
 
-    public String getCaseRefNumber(){
+    public String getCaseRefNumber() {
         return header.getAppealCaseRefNum();
     }
 
@@ -92,7 +92,7 @@ public class Appeal {
         return this;
     }
 
-    public XMLWriter write() throws ParserConfigurationException, TransformerException, IOException {
+    public XmlWriter write() throws ParserConfigurationException, TransformerException, IOException {
         this.xmlWriter.setAppealCollection();
         this.xmlWriter.setHeader(appealHeaderStore);
         this.xmlWriter.setParties(appealPartiesStore);

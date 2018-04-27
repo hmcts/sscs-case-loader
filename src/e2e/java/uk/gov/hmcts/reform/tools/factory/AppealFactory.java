@@ -7,11 +7,14 @@ import javax.xml.transform.TransformerException;
 import uk.gov.hmcts.reform.tools.builders.Appeal;
 import uk.gov.hmcts.reform.tools.enums.*;
 import uk.gov.hmcts.reform.tools.utils.AppealRandomValues;
-import uk.gov.hmcts.reform.tools.utils.XMLWriter;
+import uk.gov.hmcts.reform.tools.utils.XmlWriter;
+
+@SuppressWarnings({"PMD", "checkstyle:hideutilityclassconstructor"})
 
 public class AppealFactory {
 
-    public XMLWriter selectAppeal(XMLWriter xmlWriter, AppealTemplate appealTemplate, int requiredNumber) throws IOException, TransformerException, ParserConfigurationException {
+    public XmlWriter selectAppeal(XmlWriter xmlWriter, AppealTemplate appealTemplate, int requiredNumber)
+            throws IOException, TransformerException, ParserConfigurationException {
 
         for (int i = 0; i < requiredNumber; i++) {
             selectAppeal(xmlWriter, appealTemplate);
@@ -19,7 +22,8 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    public XMLWriter selectAppeal(XMLWriter xmlWriter, AppealTemplate appealTemplate) throws IOException, TransformerException, ParserConfigurationException {
+    public XmlWriter selectAppeal(XmlWriter xmlWriter, AppealTemplate appealTemplate) throws
+            IOException, TransformerException, ParserConfigurationException {
 
         switch (appealTemplate) {
             case NEW_DIRECT_LODGEMENT:
@@ -32,11 +36,14 @@ public class AppealFactory {
                 return newListedForHearing(xmlWriter);
             case HEARD_FOR_DESTRUCTION:
                 return newHeardForDestruction(xmlWriter);
+            default:
+                break;
         }
         return xmlWriter;
     }
 
-    private XMLWriter newDirectLodgement(XMLWriter xmlWriter) throws ParserConfigurationException, TransformerException, IOException {
+    private XmlWriter newDirectLodgement(XmlWriter xmlWriter) throws
+            ParserConfigurationException, TransformerException, IOException {
 
         AppealRandomValues a = new AppealRandomValues("SC001/0");
 
@@ -46,7 +53,7 @@ public class AppealFactory {
 
         appeal.header
 
-                .setExtractTimeUTC(new Date())
+                .setExtractTimeUtc(new Date())
                 .setAppealCaseId(a.caseId)
                 .setAppealCaseRefNum(a.caseRefNumber)
                 .setAppealCaseConfidential("N")
@@ -55,16 +62,16 @@ public class AppealFactory {
                 .setAppealCaseDateAppealReceived(appeal.onDay(1))
                 .setAppealCaseDateOfDecision(appeal.getLastUpdatedDate())
                 .setAppealCaseDateAppealMade(appeal.onDay(0))
-                .setAppealCaseNINO("JA 00 00 00 A")
+                .setAppealCaseNino("JA 00 00 00 A")
                 .setAppealCaseMajorId(MajorStatusType.NEW_DIRECT_LODGEMENT)
-                .setAppealCaseBFDate(appeal.getLastUpdatedDate())
+                .setAppealCaseBfDate(appeal.getLastUpdatedDate())
                 .setOriginatingOfficeId(Office.NORTH_WEST_LEICSTERSHIRE_DC)
                 .setAdminTeamId(AdminTeam.LEICESTER_B);
 
         appeal.storeHeader();
 
         appeal.parties
-                .setPTTP_Id(PartyPPTP.APPELLANT)
+                .setPttp_Id(PartyPptp.APPELLANT)
                 .setTitle("Mr")
                 .setInitials("A")
                 .setSurname(a.sureName)
@@ -77,7 +84,7 @@ public class AppealFactory {
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.NEW_DIRECT_LODGEMENT)
                 .setDateSet(appeal.onDay(0))
-                .setBFDate(appeal.onDay(0));
+                .setBfDate(appeal.onDay(0));
         appeal.storeMajorStatus();
 
         xmlWriter = appeal.write();
@@ -87,7 +94,8 @@ public class AppealFactory {
 
     }
 
-    private XMLWriter newAppealAwaitingResponse(XMLWriter xmlWriter) throws ParserConfigurationException, TransformerException, IOException {
+    private XmlWriter newAppealAwaitingResponse(XmlWriter xmlWriter) throws
+            ParserConfigurationException, TransformerException, IOException {
         AppealRandomValues a = new AppealRandomValues("SC002/0");
 
         Appeal appeal = new Appeal(xmlWriter);
@@ -96,7 +104,7 @@ public class AppealFactory {
 
         appeal.header
 
-                .setExtractTimeUTC(new Date())
+                .setExtractTimeUtc(new Date())
                 .setAppealCaseId(a.caseId)
                 .setAppealCaseRefNum(a.caseRefNumber)
                 .setAppealCaseConfidential("N")
@@ -105,16 +113,16 @@ public class AppealFactory {
                 .setAppealCaseDateAppealReceived(appeal.onDay(1))
                 .setAppealCaseDateOfDecision(appeal.getLastUpdatedDate())
                 .setAppealCaseDateAppealMade(appeal.onDay(0))
-                .setAppealCaseNINO("JA 00 00 00 A")
+                .setAppealCaseNino("JA 00 00 00 A")
                 .setAppealCaseMajorId(MajorStatusType.AWAITING_RESPONSE)
-                .setAppealCaseBFDate(appeal.getLastUpdatedDate())
+                .setAppealCaseBfDate(appeal.getLastUpdatedDate())
                 .setOriginatingOfficeId(Office.NORTH_WEST_LEICSTERSHIRE_DC)
                 .setAdminTeamId(AdminTeam.LEICESTER_B);
 
         appeal.storeHeader();
 
         appeal.parties
-                .setPTTP_Id(PartyPPTP.APPELLANT)
+                .setPttp_Id(PartyPptp.APPELLANT)
                 .setTitle("Mr")
                 .setInitials("B")
                 .setSurname(a.sureName)
@@ -127,14 +135,14 @@ public class AppealFactory {
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.NEW_DIRECT_LODGEMENT)
                 .setDateSet(appeal.onDay(1))
-                .setBFDate(appeal.onDay(1))
+                .setBfDate(appeal.onDay(1))
                 .setDateClosed(appeal.onDay(0));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.AWAITING_RESPONSE)
                 .setDateSet(appeal.onDay(0))
-                .setBFDate(appeal.onDay(0));
+                .setBfDate(appeal.onDay(0));
         appeal.storeMajorStatus();
 
         xmlWriter = appeal.write();
@@ -144,7 +152,8 @@ public class AppealFactory {
 
     }
 
-    private XMLWriter newReadyToList(XMLWriter xmlWriter) throws ParserConfigurationException, TransformerException, IOException {
+    private XmlWriter newReadyToList(XmlWriter xmlWriter) throws
+            ParserConfigurationException, TransformerException, IOException {
 
         AppealRandomValues a = new AppealRandomValues("SC003/0");
 
@@ -154,7 +163,7 @@ public class AppealFactory {
 
         appeal.header
 
-                .setExtractTimeUTC(new Date())
+                .setExtractTimeUtc(new Date())
                 .setAppealCaseId(a.caseId)
                 .setAppealCaseRefNum(a.caseRefNumber)
                 .setAppealCaseConfidential("N")
@@ -163,16 +172,16 @@ public class AppealFactory {
                 .setAppealCaseDateAppealReceived(appeal.onDay(1))
                 .setAppealCaseDateOfDecision(appeal.getLastUpdatedDate())
                 .setAppealCaseDateAppealMade(appeal.onDay(0))
-                .setAppealCaseNINO("JA 00 00 00 A")
+                .setAppealCaseNino("JA 00 00 00 A")
                 .setAppealCaseMajorId(MajorStatusType.READY_TO_LIST)
-                .setAppealCaseBFDate(appeal.getLastUpdatedDate())
+                .setAppealCaseBfDate(appeal.getLastUpdatedDate())
                 .setOriginatingOfficeId(Office.NORTH_WEST_LEICSTERSHIRE_DC)
                 .setAdminTeamId(AdminTeam.LEICESTER_B);
 
         appeal.storeHeader();
 
         appeal.parties
-                .setPTTP_Id(PartyPPTP.APPELLANT)
+                .setPttp_Id(PartyPptp.APPELLANT)
                 .setTitle("Mr")
                 .setInitials("C")
                 .setSurname(a.sureName)
@@ -185,21 +194,21 @@ public class AppealFactory {
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.NEW_DIRECT_LODGEMENT)
                 .setDateSet(appeal.onDay(3))
-                .setBFDate(appeal.onDay(3))
+                .setBfDate(appeal.onDay(3))
                 .setDateClosed(appeal.onDay(2));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.AWAITING_RESPONSE)
                 .setDateSet(appeal.onDay(1))
-                .setBFDate(appeal.onDay(1))
+                .setBfDate(appeal.onDay(1))
                 .setDateClosed(appeal.onDay(0));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.READY_TO_LIST)
                 .setDateSet(appeal.onDay(0))
-                .setBFDate(appeal.onDay(0));
+                .setBfDate(appeal.onDay(0));
         appeal.storeMajorStatus();
 
         xmlWriter = appeal.write();
@@ -208,7 +217,8 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    public XMLWriter newListedForHearing(XMLWriter xmlWriter) throws ParserConfigurationException, TransformerException, IOException {
+    public XmlWriter newListedForHearing(XmlWriter xmlWriter) throws
+            ParserConfigurationException, TransformerException, IOException {
         AppealRandomValues a = new AppealRandomValues("SC004/0");
 
         Appeal appeal = new Appeal(xmlWriter);
@@ -216,7 +226,7 @@ public class AppealFactory {
         appeal.setUpdatedDaysAGo(0);
 
         appeal.header
-                .setExtractTimeUTC(new Date())
+                .setExtractTimeUtc(new Date())
                 .setAppealCaseId(a.caseId)
                 .setAppealCaseRefNum(a.caseRefNumber)
                 .setAppealCaseConfidential("N")
@@ -225,16 +235,16 @@ public class AppealFactory {
                 .setAppealCaseDateAppealReceived(appeal.onDay(1))
                 .setAppealCaseDateOfDecision(appeal.getLastUpdatedDate())
                 .setAppealCaseDateAppealMade(appeal.onDay(0))
-                .setAppealCaseNINO("JA 00 00 00 A")
+                .setAppealCaseNino("JA 00 00 00 A")
                 .setAppealCaseMajorId(MajorStatusType.LISTED_FOR_HEARING)
-                .setAppealCaseBFDate(appeal.getLastUpdatedDate())
+                .setAppealCaseBfDate(appeal.getLastUpdatedDate())
                 .setOriginatingOfficeId(Office.NORTH_WEST_LEICSTERSHIRE_DC)
                 .setAdminTeamId(AdminTeam.LEICESTER_B);
 
         appeal.storeHeader();
 
         appeal.parties
-                .setPTTP_Id(PartyPPTP.APPELLANT)
+                .setPttp_Id(PartyPptp.APPELLANT)
                 .setTitle("Mr")
                 .setInitials("D")
                 .setSurname(a.sureName)
@@ -259,28 +269,28 @@ public class AppealFactory {
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.NEW_DIRECT_LODGEMENT)
                 .setDateSet(appeal.onDay(1))
-                .setBFDate(appeal.onDay(1))
+                .setBfDate(appeal.onDay(1))
                 .setDateClosed(appeal.onDay(2));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.AWAITING_RESPONSE)
                 .setDateSet(appeal.onDay(2))
-                .setBFDate(appeal.onDay(3))
+                .setBfDate(appeal.onDay(3))
                 .setDateClosed(appeal.onDay(3));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.READY_TO_LIST)
                 .setDateSet(appeal.onDay(4))
-                .setBFDate(appeal.onDay(4))
+                .setBfDate(appeal.onDay(4))
                 .setDateClosed(appeal.onDay(3));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.LISTED_FOR_HEARING)
                 .setDateSet(appeal.onDay(0))
-                .setBFDate(appeal.onDay(0))
+                .setBfDate(appeal.onDay(0))
                 .setDateClosed(appeal.onDay(0));
         appeal.storeMajorStatus();
 
@@ -290,7 +300,8 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    public XMLWriter newHeardForDestruction(XMLWriter xmlWriter) throws ParserConfigurationException, TransformerException, IOException {
+    public XmlWriter newHeardForDestruction(XmlWriter xmlWriter) throws
+            ParserConfigurationException, TransformerException, IOException {
 
         AppealRandomValues a = new AppealRandomValues("SC005/0");
 
@@ -300,7 +311,7 @@ public class AppealFactory {
 
         appeal.header
 
-                .setExtractTimeUTC(new Date())
+                .setExtractTimeUtc(new Date())
                 .setAppealCaseId(a.caseId)
                 .setAppealCaseRefNum(a.caseRefNumber)
                 .setAppealCaseConfidential("N")
@@ -309,16 +320,16 @@ public class AppealFactory {
                 .setAppealCaseDateAppealReceived(appeal.onDay(1))
                 .setAppealCaseDateOfDecision(appeal.getLastUpdatedDate())
                 .setAppealCaseDateAppealMade(appeal.onDay(0))
-                .setAppealCaseNINO("JA 00 00 00 A")
+                .setAppealCaseNino("JA 00 00 00 A")
                 .setAppealCaseMajorId(MajorStatusType.DORMANT_APPEAL_HEARD_FOR_DESTRUCTION)
-                .setAppealCaseBFDate(appeal.getLastUpdatedDate())
+                .setAppealCaseBfDate(appeal.getLastUpdatedDate())
                 .setOriginatingOfficeId(Office.NORTH_WEST_LEICSTERSHIRE_DC)
                 .setAdminTeamId(AdminTeam.LEICESTER_B);
 
         appeal.storeHeader();
 
         appeal.parties
-                .setPTTP_Id(PartyPPTP.APPELLANT)
+                .setPttp_Id(PartyPptp.APPELLANT)
                 .setTitle("Mr")
                 .setInitials("E")
                 .setSurname(a.sureName)
@@ -343,35 +354,35 @@ public class AppealFactory {
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.NEW_DIRECT_LODGEMENT)
                 .setDateSet(appeal.onDay(1))
-                .setBFDate(appeal.onDay(1))
+                .setBfDate(appeal.onDay(1))
                 .setDateClosed(appeal.onDay(2));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.AWAITING_RESPONSE)
                 .setDateSet(appeal.onDay(2))
-                .setBFDate(appeal.onDay(2))
+                .setBfDate(appeal.onDay(2))
                 .setDateClosed(appeal.onDay(3));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.READY_TO_LIST)
                 .setDateSet(appeal.onDay(4))
-                .setBFDate(appeal.onDay(4))
+                .setBfDate(appeal.onDay(4))
                 .setDateClosed(appeal.onDay(5));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.LISTED_FOR_HEARING)
                 .setDateSet(appeal.onDay(5))
-                .setBFDate(appeal.onDay(5))
+                .setBfDate(appeal.onDay(5))
                 .setDateClosed(appeal.onDay(8));
         appeal.storeMajorStatus();
 
         appeal.majorStatus
                 .setStatusCode(MajorStatusType.DORMANT_APPEAL_HEARD_FOR_DESTRUCTION)
                 .setDateSet(appeal.onDay(8))
-                .setBFDate(appeal.onDay(8));
+                .setBfDate(appeal.onDay(8));
         appeal.storeMajorStatus();
 
         xmlWriter = appeal.write();

@@ -4,19 +4,20 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum PartyPPTP {
+public enum PartyPptp {
     APPELLANT(4);
 
-    private static final Map<String, PartyPPTP> lookup = new HashMap<>();
+    private static final Map<String, PartyPptp> lookup = new HashMap<>();
 
     static {
-        for (PartyPPTP m : EnumSet.allOf(PartyPPTP.class))
+        for (PartyPptp m : EnumSet.allOf(PartyPptp.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;
 
-    PartyPPTP(int code) {
+    PartyPptp(int code) {
         this.code = code;
 
     }
@@ -25,7 +26,7 @@ public enum PartyPPTP {
         return String.valueOf(code);
     }
 
-    public static PartyPPTP get(int code) {
+    public static PartyPptp get(int code) {
         return lookup.get(code);
     }
 }

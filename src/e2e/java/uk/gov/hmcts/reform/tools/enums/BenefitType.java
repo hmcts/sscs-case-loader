@@ -11,8 +11,9 @@ public enum BenefitType {
     private static final Map<String, BenefitType> lookup = new HashMap<>();
 
     static {
-        for (BenefitType m : EnumSet.allOf(BenefitType.class))
+        for (BenefitType m : EnumSet.allOf(BenefitType.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;

@@ -10,8 +10,9 @@ public enum AdminTeam {
     private static final Map<String, AdminTeam> lookup = new HashMap<>();
 
     static {
-        for (AdminTeam m : EnumSet.allOf(AdminTeam.class))
+        for (AdminTeam m : EnumSet.allOf(AdminTeam.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;

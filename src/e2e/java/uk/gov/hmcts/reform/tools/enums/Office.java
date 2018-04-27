@@ -10,8 +10,9 @@ public enum Office {
     private static final Map<String, Office> lookup = new HashMap<>();
 
     static {
-        for (Office m : EnumSet.allOf(Office.class))
+        for (Office m : EnumSet.allOf(Office.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;

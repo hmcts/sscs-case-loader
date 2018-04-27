@@ -1,13 +1,15 @@
 package uk.gov.hmcts.reform.tools.utils;
 
-public class XMLTags {
+@SuppressWarnings({"PMD", "checkstyle:hideutilityclassconstructor"})
+
+public class XmlTags {
 
     // Appeal Headers
     public static String extract_Time_UTC = "Extract_Time_UTC";
     public static String appeal_Case_Id = "Appeal_Case_Id";
     public static String appeal_Case_RefNum = "Appeal_Case_RefNum";
     public static String appeal_Case_Case_Code_Id = "Appeal_Case_Case_Code_Id";
-    public static String appeal_Case_Confidential="Appeal_Case_Confidential";
+    public static String appeal_Case_Confidential = "Appeal_Case_Confidential";
     public static String tribunal_Type_Id = "Tribunal_Type_Id";
     public static String appeal_Case_Date_Appeal_Received = "Appeal_Case_Date_Appeal_Received";
     public static String appeal_Case_Date_of_Decision = "Appeal_Case_Date_of_Decision";

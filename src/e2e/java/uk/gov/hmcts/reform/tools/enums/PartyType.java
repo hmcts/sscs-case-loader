@@ -11,8 +11,9 @@ public enum PartyType {
     private static final Map<String, PartyType> lookup = new HashMap<>();
 
     static {
-        for (PartyType m : EnumSet.allOf(PartyType.class))
+        for (PartyType m : EnumSet.allOf(PartyType.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;

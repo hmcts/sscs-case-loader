@@ -19,16 +19,18 @@ import org.junit.runners.MethodSorters;
 import uk.gov.hmcts.reform.tools.builders.Appeal;
 import uk.gov.hmcts.reform.tools.enums.AppealTemplate;
 import uk.gov.hmcts.reform.tools.factory.AppealFactory;
-import uk.gov.hmcts.reform.tools.utils.XMLWriter;
+import uk.gov.hmcts.reform.tools.utils.XmlWriter;
 
+
+@SuppressWarnings({"PMD", "checkstyle:hideutilityclassconstructor"})
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class generatexml {
+public class Generatexml {
 
     public static final String OUTPUT_DIR = "src/test/resources/updates";
     public static final String Incoming_dir = "docker/sftp/data/incoming";
 
-    private static XMLWriter xmlWriter;
+    private static XmlWriter xmlWriter;
 
     @BeforeClass
     public static void cleanUpOldFiles() throws IOException, ParserConfigurationException {
@@ -52,11 +54,12 @@ public class generatexml {
     }
 
 
-    public static void generatexmlforappeals() throws IOException, TransformerException, ParserConfigurationException {
+    public static void generatexmlforappeals() throws
+            IOException, TransformerException, ParserConfigurationException {
 
         String createPath = "CreateAppeals";
 
-        xmlWriter = new XMLWriter(createPath).newXMLWriter();
+        xmlWriter = new XmlWriter(createPath).newXmlWriter();
 
         AppealFactory appealFactory = new AppealFactory();
 
@@ -66,13 +69,14 @@ public class generatexml {
         appealFactory.selectAppeal(xmlWriter, AppealTemplate.LISTED_FOR_HEARING, 1);
         appealFactory.selectAppeal(xmlWriter, AppealTemplate.HEARD_FOR_DESTRUCTION, 1);
 
-        xmlWriter.writeXML(OUTPUT_DIR);
+        xmlWriter.writeXml(OUTPUT_DIR);
 
         List<Appeal> appeals = xmlWriter.getAppealWrittenToFile();
 
         for (Appeal appeal : appeals) {
 
-            System.out.println("Appeal [caseId : " + appeal.getCaseId() + ", caseRefNum: " + appeal.getCaseRefNumber() + "]");
+            System.out.println("Appeal [caseId : " + appeal.getCaseId() + ", "
+                    + "caseRefNum: " + appeal.getCaseRefNumber() + "]");
 
         }
     }

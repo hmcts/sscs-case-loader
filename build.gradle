@@ -71,6 +71,10 @@ dependencies {
 jacoco {
   toolVersion = "0.8.1"
 }
+task integration(type: Test) {
+  setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+  setClasspath(sourceSets.integrationTest.runtimeClasspath)
+}
 
 task functional(type: Test) {
   group = 'Functional Tests'
@@ -126,11 +130,11 @@ repositories {
 
 
 project.tasks['sonarqube'].dependsOn test, functional
-check.dependsOn functional
-checkstyleMain.shouldRunAfter(compileJava)
+check.dependsOn integration
+//checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
-functional.shouldRunAfter(checkstyleIntegrationTest)
-functional.shouldRunAfter(test)
+integration.shouldRunAfter(checkstyleIntegrationTest)
+integration.shouldRunAfter(test)
 
 sonarqube {
   properties {

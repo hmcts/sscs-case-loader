@@ -2,50 +2,51 @@ package uk.gov.hmcts.reform.tools.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-import uk.gov.hmcts.reform.tools.enums.PartyPPTP;
+import uk.gov.hmcts.reform.tools.enums.PartyPptp;
 import uk.gov.hmcts.reform.tools.enums.PartyType;
-import uk.gov.hmcts.reform.tools.utils.XMLTags;
+import uk.gov.hmcts.reform.tools.utils.XmlTags;
 
 public class AppealParties {
 
     private Map<String,String> appealParties = new HashMap<>();
 
-    public AppealParties setPTTP_Id(PartyPPTP partyPPTP) {
-        appealParties.put(XMLTags.pttp_id, partyPPTP.getCode());
+    public AppealParties setPttp_Id(PartyPptp partyPptp) {
+        appealParties.put(XmlTags.pttp_id, partyPptp.getCode());
         return this;
     }
 
-    public AppealParties setTitle(String value){
-        appealParties.put(XMLTags.title, value);
+    public AppealParties setTitle(String value) {
+        appealParties.put(XmlTags.title, value);
         return this;
     }
 
-    public AppealParties setInitials(String value){
-        appealParties.put(XMLTags.initials, value);
+    public AppealParties setInitials(String value) {
+        appealParties.put(XmlTags.initials, value);
         return this;
     }
 
-    public AppealParties setSurname(String value){
-        appealParties.put(XMLTags.surname, value);
+    public AppealParties setSurname(String value) {
+        appealParties.put(XmlTags.surname, value);
         return this;
     }
 
-    public AppealParties setPostcode(String value){
-        appealParties.put(XMLTags.postcode, value);
-        return this;
-    }
-    public AppealParties setRoleId(PartyType appellantType){
-        appealParties.put(XMLTags.roleId, appellantType.getCode());
+    public AppealParties setPostcode(String value) {
+        appealParties.put(XmlTags.postcode, value);
         return this;
     }
 
-    public AppealParties setAttending(String value){
-        appealParties.put(XMLTags.attending, value);
+    public AppealParties setRoleId(PartyType appellantType) {
+        appealParties.put(XmlTags.roleId, appellantType.getCode());
         return this;
     }
 
-    public AppealParties setDisabilityNeeds(String value){
-        appealParties.put(XMLTags.disabilityNeeds, value);
+    public AppealParties setAttending(String value) {
+        appealParties.put(XmlTags.attending, value);
+        return this;
+    }
+
+    public AppealParties setDisabilityNeeds(String value) {
+        appealParties.put(XmlTags.disabilityNeeds, value);
         return this;
     }
 

@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings({"PMD", "checkstyle:hideutilityclassconstructor"})
+
 public class TestContainer {
 
     public static String asGapsDate(Date date) {

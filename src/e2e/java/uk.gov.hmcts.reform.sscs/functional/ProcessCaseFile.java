@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
-import uk.gov.hmcts.reform.tools.generatexml;
+import uk.gov.hmcts.reform.tools.Generatexml;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,7 +27,7 @@ public class ProcessCaseFile {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
     String filename;
-    String OUTPUT_DIR="src/test/resources/updates";
+    String outputdir = "src/test/resources/updates";
 
 
     @Autowired
@@ -36,19 +36,20 @@ public class ProcessCaseFile {
 
     @Before
     public void setup() throws ParserConfigurationException, TransformerException, IOException, ConfigurationException {
-        generatexml.generatexmlforappeals();
-        copy(OUTPUT_DIR, filename);
+        Generatexml.generatexmlforappeals();
+        copy(outputdir, filename);
     }
+
     @After
     public void teardown() throws IOException, ParserConfigurationException {
-        generatexml.cleanUpOldFiles();
+        Generatexml.cleanUpOldFiles();
 
     }
 
-    public void copy(String OUTPUT_DIR, String filename) {
+    public void copy(String outputdir, String filename) {
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
         try {
-            File folder = new File(OUTPUT_DIR);
+            File folder = new File(outputdir);
             File[] files = folder.listFiles();
             InputStream ins = null;
             for (File file : files) {

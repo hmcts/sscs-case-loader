@@ -10,8 +10,9 @@ public enum OutcomeType {
     private static final Map<String, OutcomeType> lookup = new HashMap<>();
 
     static {
-        for (OutcomeType m : EnumSet.allOf(OutcomeType.class))
+        for (OutcomeType m : EnumSet.allOf(OutcomeType.class)) {
             lookup.put(m.getCode(), m);
+        }
     }
 
     private int code;
