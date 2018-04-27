@@ -22,14 +22,14 @@ public class CaseDataBuilderBaseTest {
     public void setUp() {
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
-            .majorStatus(getStatus())
+            .majorStatus(getAppealReceivedStatus())
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
                 new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))))
             .build();
     }
 
-    public List<MajorStatus> getStatus() {
+    public List<MajorStatus> getAppealReceivedStatus() {
         MajorStatus status = new MajorStatus("", "3", "", ZonedDateTime.parse(TEST_DATE));
         return newArrayList(status);
     }
