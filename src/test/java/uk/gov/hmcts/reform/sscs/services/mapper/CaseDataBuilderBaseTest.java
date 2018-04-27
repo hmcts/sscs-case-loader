@@ -1,51 +1,37 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
+import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
-public class CaseDataBuilderBaseTest {
+@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+class CaseDataBuilderBaseTest {
 
-    static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
-    static final String TEST_DATE = "2017-05-24T00:00:00+01:00";
+    private static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
+    private static final String TEST_DATE = "2017-05-24T00:00:00+01:00";
 
-    private AppealCase appeal;
-
-    @Before
-    public void setUp() {
-        appeal = AppealCase.builder()
-            .appealCaseCaseCodeId("1")
-            .majorStatus(getAppealReceivedStatus())
-            .hearing(getHearing())
-            .minorStatus(Collections.singletonList(
-                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))))
-            .build();
+    List<MajorStatus> buildMajorStatusGivenStatuses(GapsEvent... gapsEvents) {
+        ArrayList<MajorStatus> majorStatusList = new ArrayList<>(gapsEvents.length);
+        for (GapsEvent gapsEvent : gapsEvents) {
+            if (gapsEvent.equals(GapsEvent.APPEAL_RECEIVED)) {
+                majorStatusList.add(new MajorStatus("", gapsEvent.getStatus(), "",
+                    ZonedDateTime.parse(TEST_DATE))); //NOPMD
+            }
+            if (gapsEvent.equals(GapsEvent.HEARING_POSTPONED)) {
+                majorStatusList.add(new MajorStatus("", gapsEvent.getStatus(), "",
+                    ZonedDateTime.parse(TEST_DATE2))); //NOPMD
+            }
+        }
+        return majorStatusList;
     }
 
-    public List<MajorStatus> getAppealReceivedStatus() {
-        MajorStatus status = new MajorStatus("", "3", "", ZonedDateTime.parse(TEST_DATE));
-        return newArrayList(status);
+    List<MinorStatus> getMinorStatusId26() {
+        return Collections.singletonList(
+            new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2)));
     }
 
-    public List<Hearing> getHearing() {
-        Hearing hearing = new Hearing("outcome",
-            "venue",
-            "outcomeDate",
-            "notificationDate",
-            "2017-05-24T00:00:00+01:00",
-            "2017-05-24T10:30:00+01:00",
-            "id");
-        return newArrayList(hearing);
-    }
-
-    public AppealCase getAppeal() {
-        return appeal;
-    }
 }
