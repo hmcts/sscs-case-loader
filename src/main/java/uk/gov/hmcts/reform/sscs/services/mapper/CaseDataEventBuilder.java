@@ -38,7 +38,8 @@ public class CaseDataEventBuilder {
             .build();
     }
 
-    private boolean postponedEventIsNotPresentAlready(ZonedDateTime minorStatusDate, List<MajorStatus> majorStatusList) {
+    private boolean postponedEventIsNotPresentAlready(ZonedDateTime minorStatusDate,
+                                                      List<MajorStatus> majorStatusList) {
         return majorStatusList
             .stream()
             .filter(majorStatus -> majorStatus.getStatusId().equals(GapsEvent.HEARING_POSTPONED.getStatus()))
