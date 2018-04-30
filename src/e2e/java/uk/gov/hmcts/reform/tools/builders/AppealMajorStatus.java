@@ -7,7 +7,7 @@ import uk.gov.hmcts.reform.tools.utils.XmlTags;
 
 public class AppealMajorStatus {
 
-    private Map<String, String> appealMajorStatuses = new HashMap<>();
+    private final Map<String, String> appealMajorStatuses = new HashMap<>();
 
     public AppealMajorStatus setStatusCode(MajorStatusType majorStatusType) {
         appealMajorStatuses.put(XmlTags.status_Id, majorStatusType.getCode());

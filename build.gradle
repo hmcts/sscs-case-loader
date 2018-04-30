@@ -131,7 +131,7 @@ repositories {
 
 project.tasks['sonarqube'].dependsOn test, functional
 check.dependsOn integration
-//checkstyleMain.shouldRunAfter(compileJava)
+checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
 integration.shouldRunAfter(checkstyleIntegrationTest)
 integration.shouldRunAfter(test)

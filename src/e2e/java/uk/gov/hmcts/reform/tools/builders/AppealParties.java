@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.tools.utils.XmlTags;
 
 public class AppealParties {
 
-    private Map<String,String> appealParties = new HashMap<>();
+    private final Map<String,String> appealParties = new HashMap<>();
 
     public AppealParties setPttp_Id(PartyPptp partyPptp) {
         appealParties.put(XmlTags.pttp_id, partyPptp.getCode());

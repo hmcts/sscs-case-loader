@@ -51,13 +51,9 @@ public class ProcessCaseFile {
         try {
             File folder = new File(outputdir);
             File[] files = folder.listFiles();
-            InputStream ins = null;
             for (File file : files) {
-                filename = file.getName();
-                ins = new FileInputStream(file);
-
+                sftpChannel.put(new FileInputStream(file), file.getName());
             }
-            sftpChannel.put(ins, filename);
         } catch (SftpException e) {
             throw new SftpCustomException("Failed to copy generated xml to sftp", filename, e);
         } catch (FileNotFoundException e) {

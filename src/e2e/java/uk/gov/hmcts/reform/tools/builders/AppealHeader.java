@@ -12,12 +12,13 @@ import uk.gov.hmcts.reform.tools.utils.XmlTags;
 
 public class AppealHeader {
 
+    private final Date lastUpdatedDate = new Date();
+
     public AppealHeader setHeaderDetaults() {
         return setHeaderDefaults(new Date());
     }
 
-    private Map<String, String> appealHeader = new HashMap<>();
-    private Date lastUpdatedDate = new Date();
+    private final Map<String, String> appealHeader = new HashMap<>();
 
     public AppealHeader setHeaderDefaults(Date lastUpdated) {
         setAppealCaseId("3402297");

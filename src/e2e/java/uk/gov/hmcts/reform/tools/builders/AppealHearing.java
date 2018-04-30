@@ -7,7 +7,7 @@ import uk.gov.hmcts.reform.tools.utils.XmlTags;
 
 public class AppealHearing {
 
-    private Map<String, String> appealMajorStatuses = new HashMap<>();
+    private final Map<String, String> appealMajorStatuses = new HashMap<>();
 
     public AppealHearing setHearingId(String value) {
         appealMajorStatuses.put(XmlTags.hearing_Id, value);
