@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -157,13 +156,22 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         LocalDateTime actualEvenDate = LocalDateTime.parse(events.get(0).getValue().getDate());
         LocalDateTime expectedEventDate = ZonedDateTime.parse(TEST_DATE).toLocalDateTime();
         assertTrue("", actualEvenDate.equals(expectedEventDate));
-
-
     }
 
     @Test
-    @Ignore
     public void givenTwoMinorStatusWithTheSameDateAnoNoPostponedPresentThenOnlyOneNewPostponedIsCreated() {
+        AppealCase appealWithTwoMinorStatusesAndNoPostponed = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .minorStatus(Arrays.asList(
+                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE)),
+                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE))))
+            .build();
 
+        events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
+
+        assertTrue("Only one postponed should be created here", events.size() == 1);
     }
 }
