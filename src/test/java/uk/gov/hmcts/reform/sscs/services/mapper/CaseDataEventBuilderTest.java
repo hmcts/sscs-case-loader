@@ -120,14 +120,22 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
 
-        System.out.println(events);
         assertTrue("Two new postponed event should be created here", events.size() == 2);
-
+        LocalDateTime actualEvenDate = LocalDateTime.parse(events.get(0).getValue().getDate());
+        LocalDateTime expectedEventDate = ZonedDateTime.parse(TEST_DATE).toLocalDateTime();
+        assertTrue("", actualEvenDate.equals(expectedEventDate));
     }
 
     @Test
-    @Ignore
     public void givenTwoMinorStatusAndOneExistingPostponedEventArePresentThenOnlyOneNewPostponedEventIsCreated() {
+        AppealCase appealWithTwoMinorStatusesAndNoPostponed = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(super.buildMajorStatusGivenStatuses(GapsEvent.APPEAL_RECEIVED, GapsEvent.HEARING_POSTPONED))
+            .minorStatus(Arrays.asList(
+                getMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE)),
+                getMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))))
+            .build();
+
 
     }
 
