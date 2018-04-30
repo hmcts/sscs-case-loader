@@ -23,6 +23,7 @@ public class CaseDataEventBuilder {
                 .filter(minorStatus -> postponedEventIsNotPresentAlready(minorStatus.getDateSet(),
                     appealCase.getMajorStatus()))
                 .map(minorStatus -> buildNewPostponedEvent(minorStatus.getDateSet()))
+                .distinct()
                 .collect(Collectors.toList());
         }
         return Collections.emptyList();
