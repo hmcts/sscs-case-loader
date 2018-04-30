@@ -25,10 +25,6 @@ public class Functional {
     @GetMapping("/functional-test")
     @ResponseBody
     public void functional() {
-        IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .idamOauth2Token(idamService.generateServiceAuthorization())
-            .build();
         caseLoaderService.process();
     }
 

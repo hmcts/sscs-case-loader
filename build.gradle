@@ -86,7 +86,7 @@ task functional(type: Test) {
 }
 
 jacocoTestReport {
-  executionData(test, functional)
+  executionData(test, integration)
   reports {
     xml.enabled = true
     csv.enabled = false
@@ -129,7 +129,7 @@ repositories {
 }
 
 
-project.tasks['sonarqube'].dependsOn test, functional
+project.tasks['sonarqube'].dependsOn test, integration
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
