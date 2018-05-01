@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +92,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
                 new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))))
             .build();
 
-        List<Events> events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndMajorStatuses);
+        events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndMajorStatuses);
 
         assertTrue("events size only has 1 element", events.size() > 1);
         Event actualMostRecentEvent = events.get(0).getValue();
@@ -102,9 +101,23 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     }
 
     @Test
-    @Ignore
     public void givenAFewMinorStatuesShouldCreatePostponedEventFromTheLatestMinorStatus() {
+        AppealCase appealCaseWithTwoMinorStatusId26WithDifferentDates = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .hearing(getHearing())
+            .minorStatus(Arrays.asList(
+                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE)),
+                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))
+            ))
+            .build();
 
+        events = caseDataBuilder.buildEvent(appealCaseWithTwoMinorStatusId26WithDifferentDates);
+
+        assertTrue("latest event expected here is postponed",
+            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
     }
 
     private List<Hearing> getHearing() {
