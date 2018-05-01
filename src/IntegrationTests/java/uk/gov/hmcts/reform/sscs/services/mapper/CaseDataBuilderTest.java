@@ -121,8 +121,24 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
     }
 
+    @Test
+    public void givenThatThereIsAOutComeIdInHearingAndItsInRangeOf110To126ThenAAdjournedEventShouldBeCreated() {
+        AppealCase appealCase = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .hearing(newArrayList(Hearing.builder().outcomeId("110").sessionDate("2017-05-27T00:00:00+01:00").build()))
+            .build();
+
+        events = caseDataBuilder.buildEvent(appealCase);
+
+        assertTrue(events.get(0).getValue().getType().equals(GapsEvent.HEARING_ADJOURNED.getType()));
+
+    }
+
     private List<Hearing> getHearing() {
-        Hearing hearing = new Hearing("outcome",
+        Hearing hearing = new Hearing("1",
             "venue",
             "outcomeDate",
             "notificationDate",
