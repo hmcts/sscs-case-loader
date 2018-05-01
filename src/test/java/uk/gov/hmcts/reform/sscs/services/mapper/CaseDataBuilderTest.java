@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
@@ -43,7 +42,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
             .build();
         caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
     }

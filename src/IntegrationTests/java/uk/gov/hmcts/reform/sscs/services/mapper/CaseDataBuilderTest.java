@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -34,7 +33,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     private List<Events> events;
 
     @Test
-    public void givenAppealCaseHasAMinorStatusWithId26ThenAPostponedEvenIsCreated() {
+    public void givenAppealCaseHasAMinorStatusWithId26ThenAPostponedEventIsCreated() {
         AppealCase appealCaseWithMinorStatusId26AndMajorStatuses = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
@@ -42,7 +41,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
+            ))
             .build();
 
         events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndMajorStatuses);
@@ -62,7 +62,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
             ))
             .build();
 
@@ -89,7 +89,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
+            ))
             .build();
 
         events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndMajorStatuses);
@@ -109,8 +110,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .hearing(getHearing())
             .minorStatus(Arrays.asList(
-                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE)),
-                new MinorStatus("", "26", ZonedDateTime.parse(TEST_DATE2))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE),
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
             ))
             .build();
 
