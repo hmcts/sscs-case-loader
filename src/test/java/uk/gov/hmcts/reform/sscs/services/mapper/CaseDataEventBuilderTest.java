@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 
+
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
@@ -115,7 +116,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         events = caseDataEventBuilder.buildPostponedEvent(appealWithMinorStatusNull);
 
         assertTrue("No Postponed event should be created here", events.isEmpty());
-
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -196,7 +196,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
         assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
-
     }
 
     @Test
@@ -214,7 +213,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
         assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
-
     }
 
     @Test
