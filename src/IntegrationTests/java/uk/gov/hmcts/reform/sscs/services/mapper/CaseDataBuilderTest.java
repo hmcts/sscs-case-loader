@@ -67,7 +67,6 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
             .build();
 
         events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndPostponedWithSameDates);
-        System.out.println(events);
 
         assertTrue("Events size should be 2 here", events.size() == 2);
         int actualNumberOfPostponedEventsWithSameDate = events.stream()
