@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
@@ -95,4 +97,12 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         assertThat(hearing.getValue().getVenue().getName(), is("name"));
     }
 
+    @Test
+    public void shouldCallAdjournedEventsBuilder() {
+        AppealCase appealCase = AppealCase.builder().build();
+
+        caseDataBuilder.buildEvent(appealCase);
+
+        verify(caseDataEventBuilder, times(1)).buildAdjournedEvents(appealCase);
+    }
 }

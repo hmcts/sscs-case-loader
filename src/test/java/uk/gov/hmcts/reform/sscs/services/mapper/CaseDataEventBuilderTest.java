@@ -244,4 +244,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(events.size(), equalTo(0));
     }
+
+    @Test
+    public void shouldReturnEmptyListIfThereAreNoHearing() {
+        AppealCase appealCase = AppealCase.builder().build();
+
+        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+
+        assertThat(events, equalTo(Collections.EMPTY_LIST));
+    }
 }
