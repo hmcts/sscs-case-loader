@@ -14,15 +14,16 @@ import java.util.Collections;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-
 
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
@@ -268,6 +269,53 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events.size(), equalTo(1));
+    }
 
+    @Test
+    public void givenMinorStatusId27AndPostponedGrantedYesThenNewPostponedIsCreated() {
+        AppealCase appealWithMinorStatusId27AndPostponedGrantedY = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", TEST_DATE2)))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "Y", null, null, null)
+            ))
+            .build();
+
+        events = caseDataEventBuilder.buildPostponedEvent(appealWithMinorStatusId27AndPostponedGrantedY);
+
+        assertTrue("Events size expected is 1 here", events.size() == 1);
+        assertTrue("Postponed event is expected here",
+            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+    }
+
+    @Test
+    public void givenMinorStatusId27AndPostponedGrantedNoThenNoPostponedIsCreated() {
+        AppealCase appealWithMinorStatusId27AndPostponedGrantedY = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", TEST_DATE2)))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "N", null, null, null)
+            ))
+            .build();
+
+        events = caseDataEventBuilder.buildPostponedEvent(appealWithMinorStatusId27AndPostponedGrantedY);
+
+        assertTrue("Events size expected is empty here", events.isEmpty());
+    }
+
+    @Test
+    @Ignore
+    public void givenMinorStatusId27AndTwoPostponedGrantedYesThen() {
+        //fixme clarify this scenario with Josh
     }
 }

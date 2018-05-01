@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 
@@ -20,7 +21,8 @@ public class CaseDataEventBuilder {
     public List<Events> buildPostponedEvent(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
-                .filter(minorStatus -> "26".equals(minorStatus.getStatusId()))
+                .filter(minorStatus -> isValidMinorStatus(minorStatus.getStatusId(),
+                    appealCase.getPostponementRequests()))
                 .filter(minorStatus -> postponedEventIsNotPresentAlready(minorStatus.getDateSet(),
                     appealCase.getMajorStatus()))
                 .map(minorStatus -> buildNewPostponedEvent(minorStatus.getDateSet()))
@@ -28,6 +30,12 @@ public class CaseDataEventBuilder {
                 .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    private boolean isValidMinorStatus(String statusId, List<PostponementRequests> postponementRequests) {
+        String postponedGranted = postponementRequests == null || postponementRequests.isEmpty() ? "" :
+            postponementRequests.get(0).getPostponementGranted();
+        return "27".equals(statusId) && "Y".equals(postponedGranted) || "26".equals(statusId);
     }
 
     private Events buildNewPostponedEvent(ZonedDateTime dateSet) {
@@ -70,7 +78,6 @@ public class CaseDataEventBuilder {
         }
         return events;
     }
-
 
     public List<Events> buildAdjournedEvents(AppealCase appealCase) {
         if (null != appealCase.getHearing() && !appealCase.getHearing().isEmpty()) {
