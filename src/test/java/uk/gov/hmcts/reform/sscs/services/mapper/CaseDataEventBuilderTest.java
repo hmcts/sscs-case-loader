@@ -31,7 +31,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             .majorStatus(Collections.singletonList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)))
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
             .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(
@@ -56,7 +56,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_POSTPONED.getStatus(), TEST_DATE2)
             ))
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
             .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithPostponedAndMinorStatusWithSameDated);
@@ -73,7 +73,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_POSTPONED.getStatus(), TEST_DATE2)
             ))
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE))))
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE)))
             .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithPostponedAndMinorStatusWithDifferentDates);
@@ -125,8 +125,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
             ))
             .minorStatus(Arrays.asList(
-                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE)),
-                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))))
+                buildMinorStatusGivenIdAndDate("26", TEST_DATE),
+                buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
             .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
@@ -146,8 +146,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_POSTPONED.getStatus(), TEST_DATE2)
             ))
             .minorStatus(Arrays.asList(
-                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE)),
-                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE2))))
+                buildMinorStatusGivenIdAndDate("26", TEST_DATE),
+                buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
             .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
@@ -166,8 +166,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
             ))
             .minorStatus(Arrays.asList(
-                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE)),
-                buildMinorStatusGivenIdAndDate("26", ZonedDateTime.parse(TEST_DATE))))
+                buildMinorStatusGivenIdAndDate("26", TEST_DATE),
+                buildMinorStatusGivenIdAndDate("26", TEST_DATE)))
             .build();
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
