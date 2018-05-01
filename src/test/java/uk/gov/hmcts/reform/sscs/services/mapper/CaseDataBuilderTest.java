@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +37,12 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     public void setUp() {
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
-            .majorStatus(buildMajorStatusGivenStatuses(GapsEvent.APPEAL_RECEIVED))
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
             .hearing(getHearing())
-            .minorStatus(super.getMinorStatusId26(TEST_DATE2))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
             .build();
         caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
     }
