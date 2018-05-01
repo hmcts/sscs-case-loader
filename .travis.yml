@@ -14,7 +14,6 @@ cache:
   - $HOME/.gradle/wrapper/
 
 before_install:
-  - export CODACY_PROJECT_TOKEN=155199f4073c4809ba59a7c0f807106f
   - sudo apt-get install jq
   - curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
