@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.tools.enums.OutcomeType;
 
 public class XmlWriter {
 
-    private Document doc;
+    private final Document doc;
     private String path;
     private Document preUpdate;
     private Element appealsCollection;
@@ -35,15 +35,15 @@ public class XmlWriter {
     private Element majorStatusCollection;
     private Element partiesCollection;
     private Element hearingCollection;
-    private List<Appeal> appealsToBeWritten = new ArrayList<>();
+    private final List<Appeal> appealsToBeWritten = new ArrayList<>();
 
     Element schemaVersion;
-    private TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    private Date lastUpdatedDate = new Date();
+    private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    private final Date lastUpdatedDate = new Date();
 
     public XmlWriter(Document doc) throws ParserConfigurationException {
         this.doc = doc;
-        setAppealCollection();
+        setAppealCollection(); //NOPMD
     }
 
     public XmlWriter(String path) throws ParserConfigurationException {
@@ -51,7 +51,7 @@ public class XmlWriter {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         doc = docBuilder.newDocument();
-        setRoot();
+        setRoot(); //NOPMD
     }
 
     public XmlWriter newXmlWriter() {
@@ -286,8 +286,6 @@ public class XmlWriter {
         transformer.setOutputProperties(properties);
 
         DOMSource source = new DOMSource(doc);
-
-        Writer out = new StringWriter();
 
         StreamResult result = new StreamResult(new File(path));
         transformer.transform(source, result);

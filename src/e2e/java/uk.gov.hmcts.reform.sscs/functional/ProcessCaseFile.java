@@ -52,7 +52,7 @@ public class ProcessCaseFile {
             File folder = new File(outputdir);
             File[] files = folder.listFiles();
             for (File file : files) {
-                sftpChannel.put(new FileInputStream(file), file.getName());
+                sftpChannel.put(new FileInputStream(file), file.getName()); //NOPMD
             }
         } catch (SftpException e) {
             throw new SftpCustomException("Failed to copy generated xml to sftp", filename, e);

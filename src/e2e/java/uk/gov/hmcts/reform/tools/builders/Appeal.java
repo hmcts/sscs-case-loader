@@ -15,12 +15,11 @@ public class Appeal {
     public AppealMajorStatus majorStatus = new AppealMajorStatus();
     public AppealHearing hearing = new AppealHearing();
 
-    private XmlWriter xmlWriter;
+    private final XmlWriter xmlWriter;
     private Map<String, String> appealHeaderStore = new HashMap<>();
-    private List<Map<String, String>> appealPartiesStore = new ArrayList<>();
-    private List<Map<String, String>> appealMajorStatusList = new ArrayList<>();
-    private List<Map<String, String>> appealHearingStore = new ArrayList<>();
-    private Date prevDate = new Date();
+    private final List<Map<String, String>> appealPartiesStore = new ArrayList<>();
+    private final List<Map<String, String>> appealMajorStatusList = new ArrayList<>();
+    private final List<Map<String, String>> appealHearingStore = new ArrayList<>();
     private Integer daysOffSet = 0;
 
     public Appeal(XmlWriter xmlWriter) throws ParserConfigurationException {
@@ -33,7 +32,7 @@ public class Appeal {
 
     public void setStartedDaysAGo(Integer offSet) {
         daysOffSet = offSet;
-        prevDate = TestContainer.backDate(lastUpdatedDate, offSet);
+        TestContainer.backDate(lastUpdatedDate, offSet);
     }
 
     public String getLastUpdatedDate() {
@@ -61,8 +60,7 @@ public class Appeal {
 
     public String onDay(Integer daysAdded) {
         Date date = TestContainer.backDate(lastUpdatedDate, daysOffSet - daysAdded);
-        String value = TestContainer.asGapsDate(date);
-        return value;
+        return TestContainer.asGapsDate(date);
     }
 
     public Appeal storeHeader() {
