@@ -7,8 +7,6 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
