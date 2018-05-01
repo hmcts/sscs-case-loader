@@ -70,4 +70,25 @@ public class CaseDataEventBuilder {
     }
 
 
+    public List<Events> buildAdjournedEvents(AppealCase appealCase) {
+        List<Events> events = new ArrayList<>();
+
+        appealCase.getHearing().stream()
+            .forEach(hearing -> {
+                int outcomeId = Integer.parseInt(hearing.getOutcomeId());
+                    if (outcomeId >= 110 && outcomeId <= 126) {
+                    Event adjournedEvent = Event.builder()
+                        .type(GapsEvent.HEARING_ADJOURNED.getType())
+                        .date(hearing.getSessionDate())
+                        .description(GapsEvent.HEARING_ADJOURNED.getDescription())
+                        .build();
+
+                    events.add(Events.builder()
+                        .value(adjournedEvent)
+                        .build());
+                    }
+                }
+        );
+        return  events;
+    }
 }
