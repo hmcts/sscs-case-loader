@@ -253,4 +253,19 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(events, equalTo(Collections.EMPTY_LIST));
     }
+
+    @Test
+    public void shouldIgnoreHearingsWithNoOutComeIdWhenCreatingAdjournedEvents() {
+        ArrayList<Hearing> hearings = new ArrayList<>();
+        Hearing hearing1 = Hearing.builder().sessionDate(SESSION_DATE).outcomeId("110").build();
+        Hearing hearing2 = Hearing.builder().sessionDate(SESSION_DATE).build();
+        hearings.add(hearing1);
+        hearings.add(hearing2);
+        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+
+        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+
+        assertThat(events.size(), equalTo(1));
+
+    }
 }
