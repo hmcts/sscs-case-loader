@@ -140,29 +140,18 @@ public class XmlWriter {
     }
 
     public XmlWriter setMajorStatuses(List<Map<String, String>> majorstatuses) {
-
         int i = 0;
-
         for (Map<String, String> majorstatus : majorstatuses) {
-
             i++;
-
             createMajorStatusCollection();
             addMajorStatusElement(XmlTags.status_Id, majorstatus.get(XmlTags.status_Id));
             addMajorStatusElement(XmlTags.date_Set, majorstatus.get(XmlTags.date_Set));
-
             if (i != majorstatuses.size()) {
-
                 addMajorStatusElement(XmlTags.date_Closed, majorstatus.get(XmlTags.date_Closed));
-
             }
-
             addMajorStatusElement(XmlTags.bf_Date, majorstatus.get(XmlTags.bf_Date));
-
             addMajorStatusCollection();
-
         }
-
         return this;
 
     }

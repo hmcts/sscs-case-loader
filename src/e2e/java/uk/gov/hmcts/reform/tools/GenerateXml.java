@@ -27,10 +27,8 @@ import uk.gov.hmcts.reform.tools.utils.XmlWriter;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GenerateXml {
 
-    public static final String OUTPUT_DIR = "src/test/resources/updates";
-    public static final String INCOMING_DIR = "docker/sftp/data/incoming";
-
-    private static XmlWriter xmlWriter;
+    private static final String OUTPUT_DIR = "src/test/resources/updates";
+    private static final String INCOMING_DIR = "docker/sftp/data/incoming";
 
     @BeforeClass
     public static void cleanUpOldFiles() throws IOException, ParserConfigurationException {
@@ -59,7 +57,7 @@ public class GenerateXml {
 
         String createPath = "CreateAppeals";
 
-        xmlWriter = new XmlWriter(createPath).newXmlWriter();
+        XmlWriter xmlWriter = new XmlWriter(createPath).newXmlWriter();
 
         AppealFactory appealFactory = new AppealFactory();
 
