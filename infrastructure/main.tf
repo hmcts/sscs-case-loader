@@ -90,5 +90,8 @@ module "sscs-case-loader" {
     LOG_LEVEL_SPRING_WEB = "${var.log_level_spring_web}"
     LOG_LEVEL_SSCS = "${var.log_level_sscs}"
 
+    # debugging reasons
+    BART_TEST = "this is\r\ntemp variable"
+
   }
 }
