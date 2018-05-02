@@ -8,8 +8,8 @@ properties([
 
 def type = "java"
 def product = "sscs"
-def app = "case-loader"
+def component = "case-loader"
 
-withPipeline(type, product, app) {
+withPipeline(type, product, component) {
     enableSlackNotifications('#sscs-tech')
 }
