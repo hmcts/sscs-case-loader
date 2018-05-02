@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 @Service
 public class CaseDataEventBuilder {
 
-    public List<Events> buildPostponedEvent(AppealCase appealCase) {
+    List<Events> buildPostponedEvent(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
                 .filter(minorStatus -> isValidMinorStatus(minorStatus.getStatusId(),

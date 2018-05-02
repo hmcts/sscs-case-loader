@@ -288,9 +288,9 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithMinorStatusId27AndPostponedGrantedY);
 
-        assertTrue("Events size expected is 1 here", events.size() == 1);
-        assertTrue("Postponed event is expected here",
-            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+        assertEquals("Events size expected is 1 here", 1, events.size());
+        assertEquals("Postponed event is expected here", events.get(0).getValue().getType(),
+            GapsEvent.HEARING_POSTPONED.getType());
     }
 
     @Test
