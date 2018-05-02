@@ -28,7 +28,7 @@ targetCompatibility = 1.8
 
 mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp'
 
-//check.dependsOn dependencyCheckAnalyze
+check.dependsOn dependencyCheckAnalyze
 
 sourceSets {
   integrationTest {
