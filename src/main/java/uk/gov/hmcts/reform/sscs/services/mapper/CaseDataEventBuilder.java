@@ -94,6 +94,6 @@ public class CaseDataEventBuilder {
             );
             return  events;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }
