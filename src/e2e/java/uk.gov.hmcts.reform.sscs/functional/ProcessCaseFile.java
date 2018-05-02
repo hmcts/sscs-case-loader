@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
-import uk.gov.hmcts.reform.tools.Generatexml;
+import uk.gov.hmcts.reform.tools.GenerateXml;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,13 +36,13 @@ public class ProcessCaseFile {
 
     @Before
     public void setup() throws ParserConfigurationException, TransformerException, IOException, ConfigurationException {
-        Generatexml.generatexmlforappeals();
+        GenerateXml.generateXmlForAppeals();
         copy(outputdir, filename);
     }
 
     @After
     public void teardown() throws IOException, ParserConfigurationException {
-        Generatexml.cleanUpOldFiles();
+        GenerateXml.cleanUpOldFiles();
 
     }
 
@@ -63,7 +63,7 @@ public class ProcessCaseFile {
 
 
     @Test
-    public void processCaseFileandVerifyCcd() {
+    public void processCaseFileAndVerifyCcd() {
         RestAssured.baseURI = caseloaderinstance;
 
         RestAssured.useRelaxedHTTPSValidation();
