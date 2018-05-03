@@ -49,6 +49,11 @@ locals {
 
   localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
+
+  nonPreviewVaultUri = "${module.claim-store-vault.key_vault_uri}"
+  previewVaultUri = "https://sscs-case-loader-aat.vault.azure.net/"
+  vaultUri = "${(var.env == "preview" || var.env == "spreview") ? local.previewVaultUri : local.nonPreviewVaultUri}"
+
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
@@ -109,5 +114,5 @@ module "sscs-case-loader-key-vault" {
   tenant_id           = "${var.tenant_id}"
   object_id           = "${var.jenkins_AAD_objectId}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
-  product_group_object_id = "87099fce-881e-4654-88d2-7c36b634e622"
+  product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }
