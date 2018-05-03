@@ -1,6 +1,9 @@
 variable "product" {
   type = "string"
-  default = "sscs"
+}
+
+variable "component" {
+  type = "string"
 }
 
 variable "location" {
@@ -88,3 +91,8 @@ variable "idam_redirect_url" {
   default = "https://sscs-case-loader-sandbox.service.core-compute-sandbox.internal"
 }
 
+variable "tenant_id" {}
+
+variable "jenkins_AAD_objectId" {
+  type        = "string"
+}
