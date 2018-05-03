@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     private static final String SESSION_DATE = "2017-05-23T00:00:00+01:00";
+    private static final String LOCAL_SESSION_DATE = "2017-05-23T00:00:00";
     private final CaseDataEventBuilder caseDataEventBuilder = new CaseDataEventBuilder();
     private List<Events> events;
 
@@ -194,7 +195,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(SESSION_DATE));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
 
     }
 
@@ -212,7 +213,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(SESSION_DATE));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
 
     }
 
@@ -232,7 +233,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(SESSION_DATE));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
     }
 
     @Test
