@@ -1,0 +1,6 @@
+        <Further_Evidence>
+            <FE_Date_Received>%s</FE_Date_Received>
+            <FE_Date_Issued>%s</FE_Date_Issued>
+            <FE_Type_of_Evidence_Id>2</FE_Type_of_Evidence_Id>
+            <FE_Role_Id>4</FE_Role_Id>
+        </Further_Evidence>

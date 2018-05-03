@@ -216,6 +216,14 @@ https://github.com/hmcts/sscs-case-loader/blob/master/src/e2e/java/uk.gov.hmcts.
 http://localhost:3451
 ```
 
+* Running  Functional test locally
+
+1. Make sure you bring up local SFTP and run sscs-docker dependencies
+2. Configure below
+    export TEST_URL=http://localhost:8082
+3. Run
+``` ./gradlew functional
+
 ## Hystrix
 
 [Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
