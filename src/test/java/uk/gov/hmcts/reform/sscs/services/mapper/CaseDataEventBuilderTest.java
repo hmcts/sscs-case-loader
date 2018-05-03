@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -272,7 +271,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     }
 
     @Test
-    public void givenMinorStatusId27AndPostponedGrantedYesThenNewPostponedIsCreated() {
+    public void givenMinorStatusId27AndOneSinglePostponedWithGrantedYesThenNewPostponedIsCreated() {
         AppealCase appealWithMinorStatusId27AndPostponedGrantedY = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
@@ -313,9 +312,81 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         assertTrue("Events size expected is empty here", events.isEmpty());
     }
 
+    /*
+        scenario1:
+        Given minor status with id 27
+        And two postponed request elements with the granted field to 'Y'
+        And none of them matching the hearing id field
+        Then NO postponed element is created
+     */
     @Test
-    @Ignore
-    public void givenMinorStatusId27AndTwoPostponedGrantedYesThen() {
-        //fixme clarify this scenario with Josh
+    public void givenScenario1ThenNoPostponedEventIsNotCreated() {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", TEST_DATE2)))
+            .hearing(Collections.singletonList(Hearing.builder().hearingId("1").build()))
+            .postponementRequests(Arrays.asList(
+                new PostponementRequests(
+                    "Y", "", null, null),
+                new PostponementRequests(
+                    "Y", "", null, null)
+            ))
+            .build();
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        assertTrue("No postponed event expected here", events.isEmpty());
+    }
+
+    /*
+        scenario2:
+        Given minor status with id 27
+        And two postponed request elements with the granted field to 'Y'
+        And one of them matching the hearing id field
+        Then one postponed element is created
+     */
+    @Test
+    public void givenScenario2ThenPostponedIsCreated() {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", TEST_DATE2)))
+            .hearing(Collections.singletonList(Hearing.builder().hearingId("1").build()))
+            .postponementRequests(Arrays.asList(
+                new PostponementRequests(
+                    "Y", "", null, null),
+                new PostponementRequests(
+                    "Y", "1", null, null)
+            ))
+            .build();
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        assertEquals("One postponed event expected here", events.size(), 1);
+        assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
+            events.get(0).getValue().getType());
+        LocalDateTime actualPostponedDate = LocalDateTime.parse(events.get(0).getValue().getDate());
+        LocalDateTime expectedDate = ZonedDateTime.parse(TEST_DATE2).toLocalDateTime();
+        assertEquals(expectedDate, actualPostponedDate);
+    }
+
+    /*
+        scenario2:
+        Given minor status with id 27
+        And two postponed request elements with the granted field to 'Y'
+        And one of them matching the hearing id field
+        And the hearing object is not present in the Delta
+        Then one postponed element is created
+     */
+    @Test
+    public void givenScenario3ThenPostponedEventIsCreated() {
+
     }
 }

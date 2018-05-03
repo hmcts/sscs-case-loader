@@ -11,18 +11,16 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 
 @Service
-public class CaseDataEventBuilder {
+class CaseDataEventBuilder {
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
-                .filter(minorStatus -> isValidMinorStatus(minorStatus.getStatusId(),
-                    appealCase.getPostponementRequests()))
+                .filter(minorStatus -> areConditionsToCreatePostponedEventMet(minorStatus.getStatusId(), appealCase))
                 .filter(minorStatus -> postponedEventIsNotPresentAlready(minorStatus.getDateSet(),
                     appealCase.getMajorStatus()))
                 .map(minorStatus -> buildNewPostponedEvent(minorStatus.getDateSet()))
@@ -32,10 +30,29 @@ public class CaseDataEventBuilder {
         return Collections.emptyList();
     }
 
-    private boolean isValidMinorStatus(String statusId, List<PostponementRequests> postponementRequests) {
-        String postponedGranted = postponementRequests == null || postponementRequests.isEmpty() ? "" :
-            postponementRequests.get(0).getPostponementGranted();
-        return "27".equals(statusId) && "Y".equals(postponedGranted) || "26".equals(statusId);
+    private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
+        if ("26".equals(statusId)) {
+            return true;
+        }
+
+        if ("27".equals(statusId) && appealCase.getPostponementRequests() != null
+            && !appealCase.getPostponementRequests().isEmpty()
+            && appealCase.getPostponementRequests().size() == 1
+            && "Y".equals(appealCase.getPostponementRequests().get(0).getPostponementGranted())) {
+            return true;
+
+        }
+
+        if ("27".equals(statusId) && appealCase.getPostponementRequests() != null
+            && !appealCase.getPostponementRequests().isEmpty()) {
+            return !appealCase.getPostponementRequests().stream()
+                .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
+                .filter(postponementRequest -> postponementRequest.getAppealHearingId().equals(
+                    appealCase.getHearing().get(0).getHearingId()))
+                .collect(Collectors.toList())
+                .isEmpty();
+        }
+        return false;
     }
 
     private Events buildNewPostponedEvent(ZonedDateTime dateSet) {
@@ -53,7 +70,8 @@ public class CaseDataEventBuilder {
         return majorStatusList
             .stream()
             .filter(majorStatus -> majorStatus.getStatusId().equals(GapsEvent.HEARING_POSTPONED.getStatus()))
-            .filter(majorStatus -> majorStatus.getDateSet().equals(minorStatusDate)).collect(Collectors.toList())
+            .filter(majorStatus -> majorStatus.getDateSet().equals(minorStatusDate))
+            .collect(Collectors.toList())
             .isEmpty();
     }
 
@@ -61,7 +79,7 @@ public class CaseDataEventBuilder {
         return minorStatusList != null && !minorStatusList.isEmpty();
     }
 
-    public List<Events> buildMajorStatusEvents(AppealCase appealCase) {
+    List<Events> buildMajorStatusEvents(AppealCase appealCase) {
         List<Events> events = new ArrayList<>();
         for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
             GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());

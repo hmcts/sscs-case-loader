@@ -39,6 +39,11 @@
       <Outcome_Id>9</Outcome_Id>
     </Hearing>
     <Minor_Status>
+      <Status_Id>27</Status_Id>
+      <Date_Set>2018-06-18T07:33:56.07+00:00</Date_Set>
+      <BF_Date>2018-05-01T00:00:00+01:00</BF_Date>
+    </Minor_Status>
+    <Minor_Status>
       <Status_Id>26</Status_Id>
       <Date_Set>2018-06-08T07:33:56.07+00:00</Date_Set>
       <BF_Date>2018-05-01T00:00:00+01:00</BF_Date>
@@ -64,5 +69,17 @@
       <Date_Closed>2018-03-06T07:34:00+00:00</Date_Closed>
       <BF_Date>2018-03-06T00:00:00+01:00</BF_Date>
     </Major_Status>
+    <Postponement_Requests>
+      <Appeal_Hearing_Id>289784</Appeal_Hearing_Id>
+      <Role_Requested_By_Id>4</Role_Requested_By_Id>
+      <Postponement_Reason_Id>6</Postponement_Reason_Id>
+      <Postponement_Granted>Y</Postponement_Granted>
+    </Postponement_Requests>
+    <Postponement_Requests>
+      <Appeal_Hearing_Id>289785</Appeal_Hearing_Id>
+      <Role_Requested_By_Id>4</Role_Requested_By_Id>
+      <Postponement_Reason_Id>6</Postponement_Reason_Id>
+      <Postponement_Granted>Y</Postponement_Granted>
+    </Postponement_Requests>
   </Appeal_Case>
 </Appeal_Cases>
