@@ -50,7 +50,7 @@ locals {
   localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
 
-  nonPreviewVaultUri = "${module.claim-store-vault.key_vault_uri}"
+  nonPreviewVaultUri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
   previewVaultUri = "https://sscs-case-loader-aat.vault.azure.net/"
   vaultUri = "${(var.env == "preview" || var.env == "spreview") ? local.previewVaultUri : local.nonPreviewVaultUri}"
 
