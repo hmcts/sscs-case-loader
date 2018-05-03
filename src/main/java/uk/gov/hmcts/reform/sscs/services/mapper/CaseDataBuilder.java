@@ -37,7 +37,7 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
 @Slf4j
-public class CaseDataBuilder {
+class CaseDataBuilder {
 
     private static final String YES = "Yes";
     static final String NO = "No";
@@ -52,7 +52,7 @@ public class CaseDataBuilder {
         this.caseDataEventBuilder = caseDataEventBuilder;
     }
 
-    public List<Events> buildEvent(AppealCase appealCase) {
+    List<Events> buildEvent(AppealCase appealCase) {
         List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
         events.addAll(caseDataEventBuilder.buildPostponedEvent(appealCase));
         events.addAll(caseDataEventBuilder.buildAdjournedEvents(appealCase));
@@ -60,14 +60,14 @@ public class CaseDataBuilder {
         return events;
     }
 
-    public Identity buildIdentity(Parties party, AppealCase appealCase) {
+    Identity buildIdentity(Parties party, AppealCase appealCase) {
         return Identity.builder()
             .dob(DateHelper.getValidDateOrTime(party.getDob(), true))
             .nino(appealCase.getAppealCaseNino())
             .build();
     }
 
-    public Name buildName(Parties party) {
+    Name buildName(Parties party) {
         return Name.builder()
             .title(party.getTitle())
             .firstName(party.getInitials())
@@ -75,7 +75,7 @@ public class CaseDataBuilder {
             .build();
     }
 
-    public Contact buildContact(Parties party) {
+    Contact buildContact(Parties party) {
         return Contact.builder()
             .email(party.getEmail())
             .phone(party.getPhone1())
@@ -83,20 +83,20 @@ public class CaseDataBuilder {
             .build();
     }
 
-    public BenefitType buildBenefitType(AppealCase appealCase) {
+    BenefitType buildBenefitType(AppealCase appealCase) {
         String benefitType = referenceDataService.getBenefitType(appealCase.getAppealCaseCaseCodeId());
         return BenefitType.builder()
             .code(benefitType)
             .build();
     }
 
-    public HearingOptions buildHearingOptions(Parties party) {
+    HearingOptions buildHearingOptions(Parties party) {
         return HearingOptions.builder()
             .other(Y.equals(party.getDisabilityNeeds()) ? YES : NO)
             .build();
     }
 
-    public List<Hearing> buildHearings(AppealCase appealCase) {
+    List<Hearing> buildHearings(AppealCase appealCase) {
         List<Hearing> hearingsList = new ArrayList<>();
         HearingDetails hearings;
 
@@ -139,7 +139,7 @@ public class CaseDataBuilder {
         return hearingsList;
     }
 
-    public Evidence buildEvidence(AppealCase appealCase) {
+    Evidence buildEvidence(AppealCase appealCase) {
         List<Documents> documentsList = new ArrayList<>();
         Doc doc;
 
@@ -160,7 +160,7 @@ public class CaseDataBuilder {
             .build();
     }
 
-    public List<DwpTimeExtension> buildDwpTimeExtensions(AppealCase appealCase) {
+    List<DwpTimeExtension> buildDwpTimeExtensions(AppealCase appealCase) {
         List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
         List<PostponementRequests> postponementRequestsList = appealCase.getPostponementRequests();
         if (postponementRequestsList != null) {
@@ -185,7 +185,7 @@ public class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    public Subscriptions buildSubscriptions() {
+    Subscriptions buildSubscriptions() {
         Subscription appellantSubscription = Subscription.builder()
             .email("")
             .mobile("")

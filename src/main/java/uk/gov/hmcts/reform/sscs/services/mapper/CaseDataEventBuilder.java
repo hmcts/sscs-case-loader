@@ -31,20 +31,16 @@ class CaseDataEventBuilder {
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
+        //fixme remove minor status id 26 logic
         if ("26".equals(statusId)) {
             return true;
         }
 
-        if ("27".equals(statusId) && appealCase.getPostponementRequests() != null
-            && !appealCase.getPostponementRequests().isEmpty()
-            && appealCase.getPostponementRequests().size() == 1
-            && "Y".equals(appealCase.getPostponementRequests().get(0).getPostponementGranted())) {
+        if (minorStatusIdIs27AndThereIsOnlyOnePostponementRequest(statusId, appealCase)) {
             return true;
-
         }
 
-        if ("27".equals(statusId) && appealCase.getPostponementRequests() != null
-            && !appealCase.getPostponementRequests().isEmpty()) {
+        if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
             return !appealCase.getPostponementRequests().stream()
                 .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
                 .filter(postponementRequest -> postponementRequest.getAppealHearingId().equals(
@@ -53,6 +49,18 @@ class CaseDataEventBuilder {
                 .isEmpty();
         }
         return false;
+    }
+
+    private boolean minorStatusIdIs27AndMoreThanOnePostponementRequest(String statusId, AppealCase appealCase) {
+        return "27".equals(statusId) && appealCase.getPostponementRequests() != null
+            && !appealCase.getPostponementRequests().isEmpty();
+    }
+
+    private boolean minorStatusIdIs27AndThereIsOnlyOnePostponementRequest(String statusId, AppealCase appealCase) {
+        return "27".equals(statusId) && appealCase.getPostponementRequests() != null
+            && !appealCase.getPostponementRequests().isEmpty()
+            && appealCase.getPostponementRequests().size() == 1
+            && "Y".equals(appealCase.getPostponementRequests().get(0).getPostponementGranted());
     }
 
     private Events buildNewPostponedEvent(ZonedDateTime dateSet) {
