@@ -2,6 +2,12 @@ provider "vault" {
   address = "https://vault.reform.hmcts.net:6200"
 }
 
+# Make sure the resource group exists
+resource "azurerm_resource_group" "rg" {
+  name     = "${var.product}-${var.component}-${var.env}"
+  location = "${var.location}"
+}
+
 data "vault_generic_secret" "sscs_s2s_secret" {
   path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
 }
@@ -43,18 +49,23 @@ locals {
 
   localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
+
+  previewVaultName       = "${var.product}-${var.component}"
+  nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
+  vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
+
+  sftp_key = "${replace(data.vault_generic_secret.gaps2_key_location.data["value"], "\\n", "\n")}"
 }
 
 module "sscs-case-loader" {
   source       = "git@github.com:contino/moj-module-webapp?ref=master"
-  product      = "${var.product}-case-loader"
+  product      = "${var.product}-${var.component}"
   location     = "${var.location}"
   env          = "${var.env}"
   ilbIp        = "${var.ilbIp}"
   is_frontend  = false
   subscription = "${var.subscription}"
   capacity     = "1"
-  additional_host_name = "no-url-backend.case-loader.platform.hmcts.net"
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
@@ -76,7 +87,7 @@ module "sscs-case-loader" {
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
     IDAM_OAUTH2_REDIRECT_URL = "${var.idam_redirect_url}"
 
-    GAPS2_KEY_LOCATION = "${data.vault_generic_secret.gaps2_key_location.data["value"]}"
+    GAPS2_KEY_LOCATION = "${local.sftp_key}"
     GAPS2_SFTP_HOST = "${data.vault_generic_secret.sftp_host.data["value"]}"
     GAPS2_SFTP_PORT = "${data.vault_generic_secret.sftp_port.data["value"]}"
     GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"
@@ -91,4 +102,15 @@ module "sscs-case-loader" {
     LOG_LEVEL_SSCS = "${var.log_level_sscs}"
 
   }
+}
+
+module "sscs-case-loader-key-vault" {
+  source              = "git@github.com:hmcts/moj-module-key-vault?ref=master"
+  name                = "${local.vaultName}"
+  product             = "${var.product}"
+  env                 = "${var.env}"
+  tenant_id           = "${var.tenant_id}"
+  object_id           = "${var.jenkins_AAD_objectId}"
+  resource_group_name = "${azurerm_resource_group.rg.name}"
+  product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }
