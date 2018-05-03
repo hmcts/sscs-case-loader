@@ -11,8 +11,11 @@ def product = "sscs"
 def component = "case-loader"
 
 List<LinkedHashMap<String, Object>> secrets = [
-  secret('vault-s2s-url', 'IDAM_URL'),
-  secret('vault-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
+  secret('vault-sftp-host', 'GAPS2_SFTP_HOST'),
+  secret('vault-sftp-port', 'GAPS2_SFTP_PORT'),
+  secret('vault-sftp-key', 'GAPS2_KEY_LOCATION'),
+  secret('vault-sftp-user', 'GAPS2_SFTP_USER'),
+  secret('vault-sftp-dir', 'GAPS2_SFTP_DIR'),
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
