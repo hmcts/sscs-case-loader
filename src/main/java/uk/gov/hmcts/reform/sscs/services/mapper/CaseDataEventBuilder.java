@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,7 +83,7 @@ public class CaseDataEventBuilder {
                         if (outcomeId >= 110 && outcomeId <= 126) {
                             Event adjournedEvent = Event.builder()
                                 .type(GapsEvent.HEARING_ADJOURNED.getType())
-                                .date(hearing.getSessionDate())
+                                .date(getLocalDateTime(hearing.getSessionDate()))
                                 .description(GapsEvent.HEARING_ADJOURNED.getDescription())
                                 .build();
 
@@ -95,5 +96,12 @@ public class CaseDataEventBuilder {
             return  events;
         }
         return Collections.emptyList();
+    }
+
+    private String getLocalDateTime(String zonedDateTimeWithOffset) {
+        return ZonedDateTime
+            .parse(zonedDateTimeWithOffset)
+            .toLocalDateTime()
+            .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }
