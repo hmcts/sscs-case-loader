@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -381,11 +382,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         scenario2:
         Given minor status with id 27
         And two postponed request elements with the granted field to 'Y'
-        And one of them matching the hearing id field
-        And the hearing object is not present in the Delta
-        Then one postponed element is created
+        And the hearing is not present in the Delta
+        Then we search for the hearing_id in CCD
+        And if it matches with any of the postponed element
+        Then we create one postponed event
      */
     @Test
+    @Ignore
     public void givenScenario3ThenPostponedEventIsCreated() {
 
     }
