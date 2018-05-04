@@ -1,27 +1,11 @@
 package uk.gov.hmcts.reform.sscs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
+
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 
@@ -53,13 +37,37 @@ public final class CaseDataUtils {
             .code("1325")
             .build();
 
+        DateRange dateRange = DateRange.builder()
+            .start("2018-06-30")
+            .end("2018-06-30")
+            .build();
+        ExcludeDate excludeDate = ExcludeDate.builder()
+            .value(dateRange)
+            .build();
+
         HearingOptions hearingOptions = HearingOptions.builder()
+            .wantsToAttend("Yes")
+            .arrangements(Arrays.asList("disabledAccess", "hearingLoop"))
+            .excludeDates(Collections.singletonList(excludeDate))
             .other("No")
             .build();
+
+        MrnDetails mrnDetails = MrnDetails.builder()
+            .mrnDate("2018-06-30")
+            .dwpIssuingOffice("1")
+            .build();
+
+        Representative representative = Representative.builder()
+            .hasRepresentative("Yes")
+            .build();
+
         final Appeal appeal = Appeal.builder()
             .appellant(appellant)
             .benefitType(benefitType)
             .hearingOptions(hearingOptions)
+            .mrnDetails(mrnDetails)
+            .rep(representative)
+            .signer("Signer")
             .build();
 
         Address venueAddress = Address.builder()
