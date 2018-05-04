@@ -2,9 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

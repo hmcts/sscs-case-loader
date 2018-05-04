@@ -41,8 +41,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         events = caseDataEventBuilder.buildPostponedEvent(
             appealCaseWithMinorStatusId26);
 
-        assertTrue("event is not of type Postponed",
-            events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+        assertEquals("event is not of type Postponed", events.get(0).getValue().getType(),
+            GapsEvent.HEARING_POSTPONED.getType());
 
         LocalDateTime actualDateEvent = LocalDateTime.parse(events.get(0).getValue().getDate());
         LocalDateTime expectedDate = appealCaseWithMinorStatusId26.getMinorStatus().get(0).getDateSet()
@@ -82,20 +82,19 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithPostponedAndMinorStatusWithDifferentDates);
 
-        assertTrue("Postponed event should be created here", events.size() == 1);
+        assertEquals("Postponed event should be created here", 1, events.size());
 
         Event actualEvent = events.get(0).getValue();
-        assertTrue("event is not Postponed", actualEvent.getType().equals(
-            GapsEvent.HEARING_POSTPONED.getType()));
+        assertEquals("event is not Postponed", actualEvent.getType(), GapsEvent.HEARING_POSTPONED.getType());
 
         String existingPostponedDate = ZonedDateTime.parse(TEST_DATE2).toLocalDateTime().toString();
-        assertFalse("new postponed date cannot be equal to the existing postpone date",
-            actualEvent.getDate().equals(existingPostponedDate));
+        assertNotEquals("new postponed date cannot be equal to the existing postpone date",
+            actualEvent.getDate(), existingPostponedDate);
 
         String expectedPostponedDate = appealWithPostponedAndMinorStatusWithDifferentDates
             .getMinorStatus().get(0).getDateSet().toLocalDateTime().toString();
-        assertTrue("new postponed event date is not equal to the minor status date",
-            actualEvent.getDate().equals(expectedPostponedDate));
+        assertEquals("new postponed event date is not equal to the minor status date",
+            actualEvent.getDate(), expectedPostponedDate);
     }
 
     @Test
@@ -135,10 +134,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
 
-        assertTrue("Two new postponed event should be created here", events.size() == 2);
+        assertEquals("Two new postponed event should be created here", 2, events.size());
         LocalDateTime actualEvenDate = LocalDateTime.parse(events.get(0).getValue().getDate());
         LocalDateTime expectedEventDate = ZonedDateTime.parse(TEST_DATE).toLocalDateTime();
-        assertTrue("", actualEvenDate.equals(expectedEventDate));
+        assertEquals("", actualEvenDate, expectedEventDate);
     }
 
     @Test
@@ -156,10 +155,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
 
-        assertTrue("Only One new postponed event should be created here", events.size() == 1);
+        assertEquals("Only One new postponed event should be created here", 1, events.size());
         LocalDateTime actualEvenDate = LocalDateTime.parse(events.get(0).getValue().getDate());
         LocalDateTime expectedEventDate = ZonedDateTime.parse(TEST_DATE).toLocalDateTime();
-        assertTrue("", actualEvenDate.equals(expectedEventDate));
+        assertEquals("", actualEvenDate, expectedEventDate);
     }
 
     @Test
@@ -176,7 +175,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appealWithTwoMinorStatusesAndNoPostponed);
 
-        assertTrue("Only one postponed should be created here", events.size() == 1);
+        assertEquals("Only one postponed should be created here", 1, events.size());
     }
 
     @Test
