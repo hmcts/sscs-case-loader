@@ -105,4 +105,13 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
 
         verify(caseDataEventBuilder, times(1)).buildAdjournedEvents(appealCase);
     }
+
+    @Test
+    public void shouldCallPostponedEventsBuilder() {
+        AppealCase appealCase = AppealCase.builder().build();
+
+        caseDataBuilder.buildEvent(appealCase);
+
+        verify(caseDataEventBuilder, times(1)).buildPostponedEvent(appealCase);
+    }
 }
