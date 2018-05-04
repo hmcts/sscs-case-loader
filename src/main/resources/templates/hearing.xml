@@ -1,0 +1,9 @@
+        <Hearing>
+            <Hearing_Id>%s</Hearing_Id>
+            <Date_Hearing_Notification>%s</Date_Hearing_Notification>
+            <Date_Outcome_Decision_Notification>%s</Date_Outcome_Decision_Notification>
+            <Session_Date>%s</Session_Date>
+            <Appeal_Time>%s</Appeal_Time>
+            <Venue_Id>68</Venue_Id>
+            %s
+        </Hearing>

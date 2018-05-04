@@ -10,6 +10,24 @@ def type = "java"
 def product = "sscs"
 def component = "case-loader"
 
+List<LinkedHashMap<String, Object>> secrets = [
+  secret('vault-sftp-host', 'GAPS2_SFTP_HOST'),
+  secret('vault-sftp-port', 'GAPS2_SFTP_PORT'),
+  secret('vault-sftp-key', 'GAPS2_KEY_LOCATION'),
+  secret('vault-sftp-user', 'GAPS2_SFTP_USER'),
+  secret('vault-sftp-dir', 'GAPS2_SFTP_DIR'),
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
+
 withPipeline(type, product, component) {
     enableSlackNotifications('#sscs-tech')
+    loadVaultSecrets(secrets)
 }

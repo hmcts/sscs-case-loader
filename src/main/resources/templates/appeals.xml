@@ -1,0 +1,10 @@
+<?xml version="1.0" standalone="yes"?>
+<Appeal_Cases>
+    %s
+    <Num_Records>
+        <NumberOfCases>%s</NumberOfCases>
+    </Num_Records>
+    <Schema_Version>
+        <Version xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0.8</Version>
+    </Schema_Version>
+</Appeal_Cases>

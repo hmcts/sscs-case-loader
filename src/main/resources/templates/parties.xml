@@ -1,0 +1,9 @@
+        <Parties>
+            <Title>Ms</Title>
+            <INITIALS>%s</INITIALS>
+            <Surname>%s</Surname>
+            <Postcode>L2 5UZ</Postcode>
+            <Role_Id>%s</Role_Id>
+            <Attending>N</Attending>
+            <Disability_Needs>N</Disability_Needs>
+        </Parties>

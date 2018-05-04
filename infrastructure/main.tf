@@ -49,9 +49,12 @@ locals {
 
   localCcdApi = "http://ccd-data-store-api-${var.env}.service.${local.aseName}.internal"
   CcdApi = "${var.env == "preview" ? "http://ccd-data-store-api-aat.service.core-compute-aat.internal" : local.localCcdApi}"
+
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
+
+  sftp_key = "${replace(data.vault_generic_secret.gaps2_key_location.data["value"], "\\n", "\n")}"
 }
 
 module "sscs-case-loader" {
@@ -84,7 +87,7 @@ module "sscs-case-loader" {
     IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
     IDAM_OAUTH2_REDIRECT_URL = "${var.idam_redirect_url}"
 
-    GAPS2_KEY_LOCATION = "${data.vault_generic_secret.gaps2_key_location.data["value"]}"
+    GAPS2_KEY_LOCATION = "${local.sftp_key}"
     GAPS2_SFTP_HOST = "${data.vault_generic_secret.sftp_host.data["value"]}"
     GAPS2_SFTP_PORT = "${data.vault_generic_secret.sftp_port.data["value"]}"
     GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"
@@ -109,5 +112,5 @@ module "sscs-case-loader-key-vault" {
   tenant_id           = "${var.tenant_id}"
   object_id           = "${var.jenkins_AAD_objectId}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
-  product_group_object_id = "87099fce-881e-4654-88d2-7c36b634e622"
+  product_group_object_id = "300e771f-856c-45cc-b899-40d78281e9c1"
 }

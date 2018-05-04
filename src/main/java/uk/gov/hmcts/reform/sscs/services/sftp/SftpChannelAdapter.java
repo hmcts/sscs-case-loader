@@ -49,7 +49,7 @@ public class SftpChannelAdapter {
         }
     }
 
-    private ChannelSftp getSftpChannel() {
+    public ChannelSftp getSftpChannel() {
         try {
             jsch.addIdentity("SSCS-SFTP", sftpSshProperties.getKeyLocation().getBytes(),
                 null, null);

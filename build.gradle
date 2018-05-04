@@ -30,22 +30,6 @@ mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp'
 
 check.dependsOn dependencyCheckAnalyze
 
-checkstyle {
-  maxWarnings = 0
-  toolVersion = '8.8'
-  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
-  configDir = new File(rootDir, 'config/checkstyle')
-}
-
-pmd {
-  toolVersion = "5.8.1"
-  ignoreFailures = true
-  sourceSets = [sourceSets.main, sourceSets.test]
-  reportsDir = file("$project.buildDir/reports/pmd")
-  ruleSetFiles = files("config/pmd/ruleset.xml")
-}
-
-
 sourceSets {
   integrationTest {
     java {
@@ -63,14 +47,52 @@ sourceSets {
   }
 }
 
-dependencies {
-  integrationTestCompile(sourceSets.test.output)
-  e2eCompile(sourceSets.test.output)
+task integration(type: Test) {
+  setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
+  setClasspath(sourceSets.integrationTest.runtimeClasspath)
+}
+
+task smoke(type: Test) {
+  group = 'verification'
+  description = 'Executes non-destructive smoke tests against a running case loader'
+  setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+  setClasspath(sourceSets.e2e.runtimeClasspath)
+  include "uk/gov/hmcts/reform/sscs/smoke/**"
+  exclude "uk/gov/hmcts/reform/sscs/functional/**"
 }
 
 task functional(type: Test) {
-  setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
-  setClasspath(sourceSets.integrationTest.runtimeClasspath)
+  group = 'Functional Tests'
+  description = 'Executes non-destructive functional tests in AAT against a running case loader'
+  setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+  setClasspath(sourceSets.e2e.runtimeClasspath)
+  include "uk/gov/hmcts/reform/sscs/functional/**"
+  exclude "uk/gov/hmcts/reform/sscs/smoke/**"
+}
+
+checkstyle {
+  maxWarnings = 0
+  toolVersion = '8.8'
+  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
+  configDir = new File(rootDir, 'config/checkstyle')
+}
+
+pmd {
+  toolVersion = "5.8.1"
+  ignoreFailures = true
+  sourceSets = [
+    sourceSets.main,
+    sourceSets.test,
+    sourceSets.integrationTest,
+    sourceSets.e2e
+  ]
+  reportsDir = file("$project.buildDir/reports/pmd")
+  ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+dependencies {
+  integrationTestCompile(sourceSets.test.output)
+  e2eCompile(sourceSets.test.output)
 }
 
 jacoco {
@@ -78,7 +100,7 @@ jacoco {
 }
 
 jacocoTestReport {
-  executionData(test, functional)
+  executionData(test, integration)
   reports {
     xml.enabled = true
     csv.enabled = false
@@ -121,19 +143,19 @@ repositories {
 }
 
 
-project.tasks['sonarqube'].dependsOn test, functional
-check.dependsOn functional
+project.tasks['sonarqube'].dependsOn test, integration
+check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
-functional.shouldRunAfter(checkstyleIntegrationTest)
-functional.shouldRunAfter(test)
+integration.shouldRunAfter(checkstyleIntegrationTest)
+integration.shouldRunAfter(test)
 
 sonarqube {
   properties {
     property "sonar.projectName", "SSCS - Case loader"
     property "sonar.projectKey", "SSCSCL"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/functional.exec"
+    property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
 
   }
@@ -160,10 +182,10 @@ dependencyManagement {
 }
 
 def versions = [
-  logback: '1.2.3',
-  reformLogging: '2.0.2',
-  springBoot: springBootVersion,
-  springHystrix: '1.4.2.RELEASE',
+  logback         : '1.2.3',
+  reformLogging   : '2.0.2',
+  springBoot      : springBootVersion,
+  springHystrix   : '1.4.2.RELEASE',
   springfoxSwagger: '2.8.0'
 ]
 
@@ -227,13 +249,4 @@ run {
   if (debug == 'true') {
     jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
   }
-}
-
-task smoke(type: Test) {
-  group = 'verification'
-  description = 'Executes non-destructive smoke tests against a running case loader'
-  setTestClassesDirs(sourceSets.e2e.output.classesDirs)
-  setClasspath(sourceSets.e2e.runtimeClasspath)
-  include "uk/gov/hmcts/reform/sscs/smoke/**"
-  exclude "uk/gov/hmcts/reform/sscs/functional/**"
 }
