@@ -40,11 +40,11 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
+                super.buildMinorStatusGivenIdAndDate("26", HEARING_POSTPONED_DATE)))
             .build();
         caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
     }

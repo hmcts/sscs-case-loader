@@ -5,10 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -28,8 +27,8 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @SpringBootTest
 public class CaseDataBuilderTest {
 
-    private static final String TEST_DATE2 = "2018-05-24T00:00:00+01:00";
-    private static final String TEST_DATE = "2017-05-24T00:00:00+01:00";
+    private static final String MINOR_STATUS_DATE = "2018-05-24T00:00:00+01:00";
+    private static final String APPEAL_RECEIVED_DATE = "2017-05-24T00:00:00+01:00";
 
     @MockBean
     private SftpChannelAdapter channelAdapter;
@@ -37,67 +36,25 @@ public class CaseDataBuilderTest {
     private CaseDataBuilder caseDataBuilder;
     private List<Events> events;
 
-    @Test
-    public void givenAppealCaseHasAMinorStatusWithId26ThenAPostponedEventIsCreated() {
-        AppealCase appealCaseWithMinorStatusId26AndMajorStatuses = AppealCase.builder()
-            .appealCaseCaseCodeId("1")
-            .majorStatus(Collections.singletonList(
-                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
-            ))
-            .hearing(getHearing())
-            .minorStatus(Collections.singletonList(
-                buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
-            ))
-            .build();
-
-        events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndMajorStatuses);
-
-        assertEquals("size of Events should be 2", 2, events.size());
-        assertEquals("Latest event should be the Postponed one here",
-            events.get(0).getValue().getType(), GapsEvent.HEARING_POSTPONED.getType());
-    }
-
-    @Test
-    public void givenAppealCaseWithMinorStatusId26AndPostponedEventWithSameDatesThenNoPostponedEventIsCreated() {
-        AppealCase appealCaseWithMinorStatusId26AndPostponedWithSameDates = AppealCase.builder()
-            .appealCaseCaseCodeId("1")
-            .majorStatus(Arrays.asList(
-                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE),
-                buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_POSTPONED.getStatus(), TEST_DATE2)
-            ))
-            .hearing(getHearing())
-            .minorStatus(Collections.singletonList(
-                buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
-            ))
-            .build();
-
-        events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndPostponedWithSameDates);
-
-        assertEquals("Events size should be 2 here", 2, events.size());
-        int actualNumberOfPostponedEventsWithSameDate = events.stream()
-            .filter(event -> event.getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()))
-            .filter(event -> event.getValue().getDate().equals(
-                ZonedDateTime.parse(TEST_DATE2).toLocalDateTime().toString()))
-            .collect(Collectors.toList())
-            .size();
-        assertEquals("Only one postponed event with same minor status date expected here", 1,
-            actualNumberOfPostponedEventsWithSameDate);
-    }
 
     @Test
     public void whenBuildEventMethodIsCalledThenItReturnsAnEventListSortedByDateInDescOrder() {
-        AppealCase appealCaseWithMinorStatusId26AndMajorStatuses = AppealCase.builder()
+        AppealCase appealCaseWithMinorStatusId27AndPostponedRequestAndMajorStatuses = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
-                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
+                buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_DATE)
+            ))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "Y", null, null, null)
             ))
             .build();
 
-        events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId26AndMajorStatuses);
+        events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId27AndPostponedRequestAndMajorStatuses);
 
         assertTrue("events size only has 1 element", events.size() > 1);
         Event actualMostRecentEvent = events.get(0).getValue();
@@ -106,31 +63,11 @@ public class CaseDataBuilderTest {
     }
 
     @Test
-    public void givenAFewMinorStatuesShouldCreatePostponedEventFromTheLatestMinorStatus() {
-        AppealCase appealCaseWithTwoMinorStatusId26WithDifferentDates = AppealCase.builder()
-            .appealCaseCaseCodeId("1")
-            .majorStatus(Collections.singletonList(
-                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
-            ))
-            .hearing(getHearing())
-            .minorStatus(Arrays.asList(
-                buildMinorStatusGivenIdAndDate("26", TEST_DATE),
-                buildMinorStatusGivenIdAndDate("26", TEST_DATE2)
-            ))
-            .build();
-
-        events = caseDataBuilder.buildEvent(appealCaseWithTwoMinorStatusId26WithDifferentDates);
-
-        assertEquals("latest event expected here is postponed",
-            events.get(0).getValue().getType(), GapsEvent.HEARING_POSTPONED.getType());
-    }
-
-    @Test
     public void givenThatThereIsAOutComeIdInHearingAndItsInRangeOf110To126ThenAAdjournedEventShouldBeCreated() {
         AppealCase appealCase = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
-                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+                buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
             .hearing(newArrayList(Hearing.builder().outcomeId("110").sessionDate("2017-05-27T00:00:00+01:00").build()))
             .build();

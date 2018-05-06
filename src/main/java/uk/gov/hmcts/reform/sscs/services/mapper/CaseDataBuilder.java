@@ -41,7 +41,8 @@ class CaseDataBuilder {
 
     private static final String YES = "Yes";
     static final String NO = "No";
-    private static final String Y = "Y";
+    private static final String DISABILITY_NEEDS = "Y";
+    private static final String POSTPONEMENT_GRANTED = "Y";
 
     private final ReferenceDataService referenceDataService;
     private final CaseDataEventBuilder caseDataEventBuilder;
@@ -92,7 +93,7 @@ class CaseDataBuilder {
 
     HearingOptions buildHearingOptions(Parties party) {
         return HearingOptions.builder()
-            .other(Y.equals(party.getDisabilityNeeds()) ? YES : NO)
+            .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
             .build();
     }
 
@@ -168,7 +169,7 @@ class CaseDataBuilder {
                 postponementRequests -> {
                     DwpTimeExtensionDetails dwpTimeExtensionDetails = DwpTimeExtensionDetails.builder()
                         .requested(postponementRequests.getPostponementReasonId() != null ? YES : NO)
-                        .granted(Y.equals(postponementRequests.getPostponementGranted()) ? YES : NO)
+                        .granted(POSTPONEMENT_GRANTED.equals(postponementRequests.getPostponementGranted()) ? YES : NO)
                         .build();
                     DwpTimeExtension dwpTimeExtension = DwpTimeExtension.builder()
                         .value(dwpTimeExtensionDetails)

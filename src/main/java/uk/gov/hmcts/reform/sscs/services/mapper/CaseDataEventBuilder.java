@@ -31,11 +31,6 @@ class CaseDataEventBuilder {
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
-        //fixme remove minor status id 26 logic
-        if ("26".equals(statusId)) {
-            return true;
-        }
-
         if (minorStatusIdIs27AndThereIsOnlyOnePostponementRequest(statusId, appealCase)) {
             return true;
         }
