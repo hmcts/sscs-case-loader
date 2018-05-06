@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 
@@ -21,8 +23,6 @@ class CaseDataEventBuilder {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
                 .filter(minorStatus -> areConditionsToCreatePostponedEventMet(minorStatus.getStatusId(), appealCase))
-                .filter(minorStatus -> postponedEventIsNotPresentAlready(minorStatus.getDateSet(),
-                    appealCase.getMajorStatus()))
                 .map(minorStatus -> buildNewPostponedEvent(minorStatus.getDateSet()))
                 .distinct()
                 .collect(Collectors.toList());
@@ -34,16 +34,22 @@ class CaseDataEventBuilder {
         if (minorStatusIdIs27AndThereIsOnlyOnePostponementRequest(statusId, appealCase)) {
             return true;
         }
-
+        //todo call to CDD to get hearing id's from the exiting case in CDD.
         if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
             return !appealCase.getPostponementRequests().stream()
                 .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
-                .filter(postponementRequest -> postponementRequest.getAppealHearingId().equals(
-                    appealCase.getHearing().get(0).getHearingId()))
+                .filter(postponementRequest -> matchToHearingId(postponementRequest, appealCase.getHearing()))
                 .collect(Collectors.toList())
                 .isEmpty();
         }
         return false;
+    }
+
+    private boolean matchToHearingId(PostponementRequests postponementRequest, List<Hearing> hearingList) {
+        return !hearingList.stream()
+            .filter(hearing -> hearing.getHearingId().equals(postponementRequest.getAppealHearingId()))
+            .collect(Collectors.toList())
+            .isEmpty();
     }
 
     private boolean minorStatusIdIs27AndMoreThanOnePostponementRequest(String statusId, AppealCase appealCase) {
@@ -68,16 +74,6 @@ class CaseDataEventBuilder {
             .build();
     }
 
-    private boolean postponedEventIsNotPresentAlready(ZonedDateTime minorStatusDate,
-                                                      List<MajorStatus> majorStatusList) {
-        return majorStatusList
-            .stream()
-            .filter(majorStatus -> majorStatus.getStatusId().equals(GapsEvent.HEARING_POSTPONED.getStatus()))
-            .filter(majorStatus -> majorStatus.getDateSet().equals(minorStatusDate))
-            .collect(Collectors.toList())
-            .isEmpty();
-    }
-
     private boolean minorStatusIsNotNullAndIsNotEmpty(List<MinorStatus> minorStatusList) {
         return minorStatusList != null && !minorStatusList.isEmpty();
     }
@@ -86,7 +82,7 @@ class CaseDataEventBuilder {
         List<Events> events = new ArrayList<>();
         for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
             GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
-            if (gapsEvent != null) {
+            if (gapsEvent != null && !hearingPostponed(gapsEvent)) {
                 Event event = Event.builder()
                     .type(gapsEvent.getType())
                     .description(gapsEvent.getDescription())
@@ -98,6 +94,10 @@ class CaseDataEventBuilder {
             }
         }
         return events;
+    }
+
+    private boolean hearingPostponed(GapsEvent gapsEvent) {
+        return gapsEvent.getStatus().equals("27");
     }
 
     public List<Events> buildAdjournedEvents(AppealCase appealCase) {

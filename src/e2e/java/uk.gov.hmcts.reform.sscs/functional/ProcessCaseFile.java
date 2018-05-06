@@ -29,7 +29,6 @@ public class ProcessCaseFile {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
     private String filename;
-    private String outputdir = "src/test/resources/updates";
 
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
@@ -37,6 +36,7 @@ public class ProcessCaseFile {
     @Before
     public void setup() throws ParserConfigurationException, TransformerException, IOException {
         GenerateXml.generateXmlForAppeals();
+        String outputdir = "src/test/resources/updates";
         copy(outputdir, filename);
     }
 

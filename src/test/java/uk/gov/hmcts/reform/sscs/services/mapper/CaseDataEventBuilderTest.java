@@ -189,6 +189,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     /*
         scenario1:
         Given minor status with id 27
+        And two hearing objects
         And two postponed request elements with the granted field to 'Y'
         And none of them matching the hearing id field
         Then NO postponed element is created
@@ -202,7 +203,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
-            .hearing(Collections.singletonList(Hearing.builder().hearingId("1").build()))
+            .hearing(Arrays.asList(
+                Hearing.builder().hearingId("1").build(),
+                Hearing.builder().hearingId("2").build()
+            ))
             .postponementRequests(Arrays.asList(
                 new PostponementRequests(
                     "Y", "", null, null),
@@ -219,6 +223,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     /*
         scenario2:
         Given minor status with id 27
+        And two hearing objects
         And two postponed request elements with the granted field to 'Y'
         And one of them matching the hearing id field
         Then one postponed element is created
@@ -232,7 +237,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
-            .hearing(Collections.singletonList(Hearing.builder().hearingId("1").build()))
+            .hearing(Arrays.asList(
+                Hearing.builder().hearingId("1").build(),
+                Hearing.builder().hearingId("2").build()
+            ))
             .postponementRequests(Arrays.asList(
                 new PostponementRequests(
                     "Y", "", null, null),
