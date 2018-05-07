@@ -4,7 +4,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
@@ -16,8 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
@@ -25,10 +22,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CaseDataBuilderTest {
-
-    private static final String MINOR_STATUS_DATE = "2018-05-24T00:00:00+01:00";
-    private static final String APPEAL_RECEIVED_DATE = "2017-05-24T00:00:00+01:00";
+public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
 
     @MockBean
     private SftpChannelAdapter channelAdapter;
@@ -46,7 +40,7 @@ public class CaseDataBuilderTest {
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_DATE)
+                buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)
             ))
             .postponementRequests(Collections.singletonList(
                 new PostponementRequests(
@@ -86,14 +80,6 @@ public class CaseDataBuilderTest {
             "2017-05-24T10:30:00+01:00",
             "id");
         return newArrayList(hearing);
-    }
-
-    private MajorStatus buildMajorStatusGivenStatusAndDate(String status, String testDate) {
-        return new MajorStatus("", status, "", ZonedDateTime.parse(testDate));
-    }
-
-    private MinorStatus buildMinorStatusGivenIdAndDate(String id, String date) {
-        return new MinorStatus("", id, ZonedDateTime.parse(date));
     }
 
 }
