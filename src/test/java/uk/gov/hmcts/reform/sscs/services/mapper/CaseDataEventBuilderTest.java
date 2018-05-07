@@ -301,7 +301,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
      */
     @Test
     @Parameters({"6, ", "7, ", ", 6", ", 7"})
-    public void givenScenario3ThenPostponedIsCreated(String appealHearingId1, String appealHearingId2) throws Exception {
+    public void givenScenario3ThenPostponedIsCreated(String appealHearingId1, String appealHearingId2)
+        throws Exception {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
