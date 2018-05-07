@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.util.CcdUtil;
@@ -51,15 +52,35 @@ class CaseDataEventBuilder {
         }
 
         if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
+            if (postponedRequestMatchesToHearingIdInDelta(appealCase.getPostponementRequests(),
+                appealCase.getHearing())) {
+                return true;
+            }
             List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> hearingList = retrieveHearingsFromCaseInCcd(
                 appealCase);
-            return !appealCase.getPostponementRequests().stream()
-                .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
-                .filter(postponementRequest -> matchToHearingId(postponementRequest, hearingList))
-                .collect(Collectors.toList())
-                .isEmpty();
+            return postponedRequestMatchesToHearingIdInCcdCase(appealCase.getPostponementRequests(), hearingList);
         }
         return false;
+    }
+
+    private boolean postponedRequestMatchesToHearingIdInCcdCase(List<PostponementRequests> postponementRequests,
+                                                                List<Hearing> hearingList) {
+        return !postponementRequests.stream()
+            .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
+            .filter(postponementRequest -> matchToHearingIdInCcdCase(postponementRequest, hearingList))
+            .collect(Collectors.toList())
+            .isEmpty();
+    }
+
+    private boolean postponedRequestMatchesToHearingIdInDelta(
+        List<PostponementRequests> postponementRequests,
+        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
+            hearingList) {
+        return !postponementRequests.stream()
+            .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
+            .filter(postponementRequest -> matchToHearingIdInDelta(postponementRequest, hearingList))
+            .collect(Collectors.toList())
+            .isEmpty();
     }
 
     private List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> retrieveHearingsFromCaseInCcd(
@@ -74,10 +95,19 @@ class CaseDataEventBuilder {
         return caseData.getHearings();
     }
 
-    private boolean matchToHearingId(PostponementRequests postponementRequest,
-                                     List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> hearingList) {
+    private boolean matchToHearingIdInCcdCase(
+        PostponementRequests postponementRequest,
+        List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> hearingList) {
         return !hearingList.stream()
             .filter(hearing -> hearing.getValue().getHearingId().equals(postponementRequest.getAppealHearingId()))
+            .collect(Collectors.toList())
+            .isEmpty();
+    }
+
+    private boolean matchToHearingIdInDelta(PostponementRequests postponementRequest,
+                                            List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearingList) {
+        return !hearingList.stream()
+            .filter(hearing -> hearing.getHearingId().equals(postponementRequest.getAppealHearingId()))
             .collect(Collectors.toList())
             .isEmpty();
     }
