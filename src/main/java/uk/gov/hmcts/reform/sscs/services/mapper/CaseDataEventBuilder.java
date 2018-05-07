@@ -28,11 +28,17 @@ class CaseDataEventBuilder {
 
     private final SearchCcdService searchCcdService;
     private final IdamService idamService;
+    private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
+        postponedEventInferredFromDelta;
 
     @Autowired
-    CaseDataEventBuilder(SearchCcdService searchCcdService, IdamService idamService) {
+    CaseDataEventBuilder(
+        SearchCcdService searchCcdService, IdamService idamService,
+        PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
+            postponedEventInferredFromDelta) {
         this.searchCcdService = searchCcdService;
         this.idamService = idamService;
+        this.postponedEventInferredFromDelta = postponedEventInferredFromDelta;
     }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
@@ -52,7 +58,7 @@ class CaseDataEventBuilder {
         }
 
         if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
-            if (postponedRequestMatchesToHearingIdInDelta(appealCase.getPostponementRequests(),
+            if (postponedEventInferredFromDelta.matchToHearingId(appealCase.getPostponementRequests(),
                 appealCase.getHearing())) {
                 return true;
             }
@@ -68,17 +74,6 @@ class CaseDataEventBuilder {
         return !postponementRequests.stream()
             .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
             .filter(postponementRequest -> matchToHearingIdInCcdCase(postponementRequest, hearingList))
-            .collect(Collectors.toList())
-            .isEmpty();
-    }
-
-    private boolean postponedRequestMatchesToHearingIdInDelta(
-        List<PostponementRequests> postponementRequests,
-        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
-            hearingList) {
-        return !postponementRequests.stream()
-            .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
-            .filter(postponementRequest -> matchToHearingIdInDelta(postponementRequest, hearingList))
             .collect(Collectors.toList())
             .isEmpty();
     }
@@ -100,15 +95,6 @@ class CaseDataEventBuilder {
         List<Hearing> hearingList) {
         return !hearingList.stream()
             .filter(hearing -> hearing.getValue().getHearingId().equals(postponementRequest.getAppealHearingId()))
-            .collect(Collectors.toList())
-            .isEmpty();
-    }
-
-    private boolean matchToHearingIdInDelta(
-        PostponementRequests postponementRequest,
-        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearingList) {
-        return !hearingList.stream()
-            .filter(hearing -> hearing.getHearingId().equals(postponementRequest.getAppealHearingId()))
             .collect(Collectors.toList())
             .isEmpty();
     }

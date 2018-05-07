@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +50,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     private IdamService idamService;
     @Mock
     private SearchCcdService searchCcdService;
+    @Mock
+    private PostponedEventService<Hearing> postponedEventInferredFromDelta;
     private CaseDataEventBuilder caseDataEventBuilder;
     private List<Events> events;
 
@@ -57,7 +60,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
 
-        caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService);
+        caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService, postponedEventInferredFromDelta);
     }
 
     @Test
@@ -260,8 +263,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         Then one postponed element is created
      */
     @Test
-    @Parameters({"1, ", ", 1", "2, ", ", 2"})
-    public void givenScenario2ThenPostponedIsCreated(String appealHearingId1, String appealHearingId2) {
+    public void givenScenario2ThenPostponedIsCreated() {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
@@ -275,11 +277,14 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .postponementRequests(Arrays.asList(
                 new PostponementRequests(
-                    "Y", appealHearingId1, null, null),
+                    "Y", "1", null, null),
                 new PostponementRequests(
-                    "Y", appealHearingId2, null, null)
+                    "Y", "", null, null)
             ))
             .build();
+
+        when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
+            eq(appeal.getHearing()))).thenReturn(true);
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
