@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -13,24 +15,48 @@ import java.util.Collections;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Ignore;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import uk.gov.hmcts.reform.sscs.CaseDetailsUtils;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     private static final String SESSION_DATE = "2017-05-23T00:00:00+01:00";
     private static final String LOCAL_SESSION_DATE = "2017-05-23T00:00:00";
-    private final CaseDataEventBuilder caseDataEventBuilder = new CaseDataEventBuilder();
+    private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+    @Mock
+    private IdamService idamService;
+    @Mock
+    private SearchCcdService searchCcdService;
+    private CaseDataEventBuilder caseDataEventBuilder;
     private List<Events> events;
+
+    @Before
+    public void setUp() {
+        when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
+        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
+
+        caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService);
+    }
 
     @Test
     @Parameters(method = "getMinotStatusListParameters")
@@ -167,7 +193,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     }
 
     @Test
-    public void givenMinorStatusId27AndPostponedGrantedNoThenNoPostponedIsCreated() {
+    public void givenMinorStatusId27AndOneSinglePostponedRequestWithGrantedNoThenNoPostponedIsCreated() {
         AppealCase appealWithMinorStatusId27AndPostponedGrantedY = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
@@ -189,13 +215,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     /*
         scenario1:
         Given minor status with id 27
-        And two hearing objects
+        And multiple hearing objects
         And two postponed request elements with the granted field to 'Y'
         And none of them matching the hearing id field
         Then NO postponed element is created
      */
     @Test
-    public void givenScenario1ThenNoPostponedEventIsNotCreated() {
+    public void givenScenario1ThenNoPostponedEventIsNotCreated() throws Exception {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
@@ -209,11 +235,14 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .postponementRequests(Arrays.asList(
                 new PostponementRequests(
-                    "Y", "", null, null),
+                    "Y", "3", null, null),
                 new PostponementRequests(
-                    "Y", "", null, null)
+                    "Y", "4", null, null)
             ))
             .build();
+
+        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
@@ -223,13 +252,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     /*
         scenario2:
         Given minor status with id 27
-        And two hearing objects
+        And multiple hearing objects
         And two postponed request elements with the granted field to 'Y'
         And one of them matching the hearing id field
         Then one postponed element is created
      */
     @Test
-    public void givenScenario2ThenPostponedIsCreated() {
+    public void givenScenario2ThenPostponedIsCreated() throws Exception {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
@@ -245,9 +274,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                 new PostponementRequests(
                     "Y", "", null, null),
                 new PostponementRequests(
-                    "Y", "1", null, null)
+                    "Y", "6", null, null)
             ))
             .build();
+
+        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
@@ -260,7 +292,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     }
 
     /*
-        scenario2:
+        scenario3:
         Given minor status with id 27
         And two postponed request elements with the granted field to 'Y'
         And the hearing is not present in the Delta
@@ -268,9 +300,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         And if it matches with any of the postponed element
         Then we create one postponed event
      */
-    @Test
-    @Ignore
-    public void givenScenario3ThenPostponedEventIsCreated() {
 
-    }
+
+    /*
+        scenario4
+        Given two minor status id 27 with different dates
+        And one single postponed Request with granted Yes
+        Then only one single postponed event is created from the latest minor status
+        todo: check scenario with business: can we get more than one minus status id 27 in Delta??
+     */
 }

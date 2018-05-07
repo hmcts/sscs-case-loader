@@ -6,18 +6,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
+import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.util.CcdUtil;
 
 @Service
 class CaseDataEventBuilder {
+
+    private final SearchCcdService searchCcdService;
+    private final IdamService idamService;
+
+    @Autowired
+    CaseDataEventBuilder(SearchCcdService searchCcdService, IdamService idamService) {
+        this.searchCcdService = searchCcdService;
+        this.idamService = idamService;
+    }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
@@ -31,33 +46,49 @@ class CaseDataEventBuilder {
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
-        if (minorStatusIdIs27AndThereIsOnlyOnePostponementRequest(statusId, appealCase)) {
+        if (minorStatusIdIs27AndThereIsOnlyOnePostponementRequestGranted(statusId, appealCase)) {
             return true;
         }
-        //todo call to CDD to get hearing id's from the exiting case in CDD.
+
         if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
+            List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> hearingList = retrieveHearingsFromCaseInCcd(
+                appealCase);
             return !appealCase.getPostponementRequests().stream()
                 .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
-                .filter(postponementRequest -> matchToHearingId(postponementRequest, appealCase.getHearing()))
+                .filter(postponementRequest -> matchToHearingId(postponementRequest, hearingList))
                 .collect(Collectors.toList())
                 .isEmpty();
         }
         return false;
     }
 
-    private boolean matchToHearingId(PostponementRequests postponementRequest, List<Hearing> hearingList) {
+    private List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> retrieveHearingsFromCaseInCcd(
+        AppealCase appealCase) {
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .authenticationService(idamService.generateServiceAuthorization())
+            .build();
+        List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),
+            idamTokens);
+        CaseData caseData = CcdUtil.getCaseData(caseDetailsList.get(0).getData());
+        return caseData.getHearings();
+    }
+
+    private boolean matchToHearingId(PostponementRequests postponementRequest,
+                                     List<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> hearingList) {
         return !hearingList.stream()
-            .filter(hearing -> hearing.getHearingId().equals(postponementRequest.getAppealHearingId()))
+            .filter(hearing -> hearing.getValue().getHearingId().equals(postponementRequest.getAppealHearingId()))
             .collect(Collectors.toList())
             .isEmpty();
     }
 
     private boolean minorStatusIdIs27AndMoreThanOnePostponementRequest(String statusId, AppealCase appealCase) {
         return "27".equals(statusId) && appealCase.getPostponementRequests() != null
-            && !appealCase.getPostponementRequests().isEmpty();
+            && !appealCase.getPostponementRequests().isEmpty() && appealCase.getPostponementRequests().size() > 1;
     }
 
-    private boolean minorStatusIdIs27AndThereIsOnlyOnePostponementRequest(String statusId, AppealCase appealCase) {
+    private boolean minorStatusIdIs27AndThereIsOnlyOnePostponementRequestGranted(String statusId,
+                                                                                 AppealCase appealCase) {
         return "27".equals(statusId) && appealCase.getPostponementRequests() != null
             && !appealCase.getPostponementRequests().isEmpty()
             && appealCase.getPostponementRequests().size() == 1
