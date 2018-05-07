@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -52,6 +53,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     private SearchCcdService searchCcdService;
     @Mock
     private PostponedEventService<Hearing> postponedEventInferredFromDelta;
+    @Mock
+    private PostponedEventService<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> postponedEventInferredFromCcd;
     private CaseDataEventBuilder caseDataEventBuilder;
     private List<Events> events;
 
@@ -60,7 +63,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
 
-        caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService, postponedEventInferredFromDelta);
+        caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService, postponedEventInferredFromDelta,
+            postponedEventInferredFromCcd);
     }
 
     @Test
@@ -246,10 +250,26 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .build();
 
+        when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
+            eq(appeal.getHearing()))).thenReturn(false);
+
         when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(false);
+
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        verify(postponedEventInferredFromDelta, times(1))
+            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+
+        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(1))
+            .matchToHearingId(anyListOf(PostponementRequests.class),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
 
         assertTrue("No postponed event expected here", events.isEmpty());
     }
@@ -288,6 +308,16 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
+        verify(postponedEventInferredFromDelta, times(1))
+            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+
+        verify(searchCcdService, times(0)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(0))
+            .matchToHearingId(anyListOf(PostponementRequests.class),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+
         assertEquals("One postponed event expected here", 1, events.size());
         assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
             events.get(0).getValue().getType());
@@ -305,8 +335,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         Then one postponed element is created
      */
     @Test
-    @Parameters({"6, ", "7, ", ", 6", ", 7"})
-    public void givenScenario3ThenPostponedIsCreated(String appealHearingId1, String appealHearingId2)
+    public void givenScenario3ThenPostponedIsCreated()
         throws Exception {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
@@ -321,19 +350,32 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .postponementRequests(Arrays.asList(
                 new PostponementRequests(
-                    "Y", appealHearingId1, null, null),
+                    "Y", "6", null, null),
                 new PostponementRequests(
-                    "Y", appealHearingId2, null, null)
+                    "Y", "", null, null)
             ))
             .build();
+
+        when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
+            eq(appeal.getHearing()))).thenReturn(false);
 
         when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(true);
+
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        verify(searchCcdService, times(1))
-            .findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class));
+        verify(postponedEventInferredFromDelta, times(1))
+            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+
+        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(1))
+            .matchToHearingId(anyListOf(PostponementRequests.class),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
 
         assertEquals("One postponed event expected here", 1, events.size());
         assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),

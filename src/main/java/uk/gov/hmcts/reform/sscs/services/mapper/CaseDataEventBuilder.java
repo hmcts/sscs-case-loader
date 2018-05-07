@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
@@ -30,15 +29,18 @@ class CaseDataEventBuilder {
     private final IdamService idamService;
     private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
         postponedEventInferredFromDelta;
+    private final PostponedEventService<Hearing> postponedEventInferredFromCcd;
 
     @Autowired
     CaseDataEventBuilder(
         SearchCcdService searchCcdService, IdamService idamService,
         PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
-            postponedEventInferredFromDelta) {
+            postponedEventInferredFromDelta,
+        PostponedEventService<Hearing> postponedEventInferredFromCcd) {
         this.searchCcdService = searchCcdService;
         this.idamService = idamService;
         this.postponedEventInferredFromDelta = postponedEventInferredFromDelta;
+        this.postponedEventInferredFromCcd = postponedEventInferredFromCcd;
     }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
@@ -62,24 +64,13 @@ class CaseDataEventBuilder {
                 appealCase.getHearing())) {
                 return true;
             }
-            List<Hearing> hearingList = retrieveHearingsFromCaseInCcd(
-                appealCase);
-            return postponedRequestMatchesToHearingIdInCcdCase(appealCase.getPostponementRequests(), hearingList);
+            List<Hearing> hearingList = retrieveHearingsFromCaseInCcd(appealCase);
+            return postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(), hearingList);
         }
         return false;
     }
 
-    private boolean postponedRequestMatchesToHearingIdInCcdCase(List<PostponementRequests> postponementRequests,
-                                                                List<Hearing> hearingList) {
-        return !postponementRequests.stream()
-            .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
-            .filter(postponementRequest -> matchToHearingIdInCcdCase(postponementRequest, hearingList))
-            .collect(Collectors.toList())
-            .isEmpty();
-    }
-
-    private List<Hearing> retrieveHearingsFromCaseInCcd(
-        AppealCase appealCase) {
+    private List<Hearing> retrieveHearingsFromCaseInCcd(AppealCase appealCase) {
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
             .authenticationService(idamService.generateServiceAuthorization())
@@ -88,15 +79,6 @@ class CaseDataEventBuilder {
             idamTokens);
         CaseData caseData = CcdUtil.getCaseData(caseDetailsList.get(0).getData());
         return caseData.getHearings();
-    }
-
-    private boolean matchToHearingIdInCcdCase(
-        PostponementRequests postponementRequest,
-        List<Hearing> hearingList) {
-        return !hearingList.stream()
-            .filter(hearing -> hearing.getValue().getHearingId().equals(postponementRequest.getAppealHearingId()))
-            .collect(Collectors.toList())
-            .isEmpty();
     }
 
     private boolean minorStatusIdIs27AndMoreThanOnePostponementRequest(String statusId, AppealCase appealCase) {
