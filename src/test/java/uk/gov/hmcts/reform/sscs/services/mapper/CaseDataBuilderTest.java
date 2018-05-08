@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -76,7 +77,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         assertNotNull("SupporterSubscription is null", subscriptions.getSupporterSubscription());
         String appealNumber = subscriptions.getAppellantSubscription().getTya();
         assertTrue("appealNumber is empty", !"".equals(appealNumber));
-        assertTrue("appealNumber length is not 10 digits", appealNumber.length() == 10);
+        assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
     }
 
     @Test
@@ -104,5 +105,16 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         caseDataBuilder.buildEvent(appealCase);
 
         verify(caseDataEventBuilder, times(1)).buildAdjournedEvents(appealCase);
+    }
+
+    @Test
+    public void givenHearingInDeltaWhenBuildingHearingThenHearingIdIsBuilt() {
+        when(refDataService.getVenueDetails("venue")).thenReturn(VenueDetails.builder()
+            .venName("name")
+            .build());
+
+        List<Hearing> hearingList = caseDataBuilder.buildHearings(appeal);
+
+        assertEquals("id", hearingList.get(0).getValue().getHearingId());
     }
 }

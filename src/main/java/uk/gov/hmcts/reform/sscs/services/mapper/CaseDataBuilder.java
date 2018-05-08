@@ -127,6 +127,7 @@ class CaseDataBuilder {
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
                         .time((appealTime == null) ? "00:00:00" : appealTime.substring(11, 19))
                         .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
+                        .hearingId(hearing.getHearingId())
                         .build();
 
                     hearingsList.add(Hearing.builder().value(hearings).build());
