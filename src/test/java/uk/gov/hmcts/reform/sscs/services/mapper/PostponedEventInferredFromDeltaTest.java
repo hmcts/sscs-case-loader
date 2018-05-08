@@ -16,8 +16,8 @@ public class PostponedEventInferredFromDeltaTest {
 
     @Test
     @Parameters({"1, 1, true", "1, 2, false"})
-    public void givenPostponedRequestMatchesToHearingThenReturnTrue(String appealHearingId, String hearingId,
-                                                                    boolean expected) {
+    public void givenPostponedRequestAndHearingThenReturnTrueIfThereIsAMatch(String appealHearingId, String hearingId,
+                                                                             boolean expected) {
         PostponedEventInferredFromDelta postponedEventInferredFromDelta = new PostponedEventInferredFromDelta();
 
         List<PostponementRequests> postponementRequests = Collections.singletonList(
