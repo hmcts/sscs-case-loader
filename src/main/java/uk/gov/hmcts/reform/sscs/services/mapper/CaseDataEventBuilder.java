@@ -45,17 +45,25 @@ class CaseDataEventBuilder {
     }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
-        MajorStatus majorStatus = getMajorStatusFromAppealCase(appealCase.getMajorStatus());
-        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, majorStatus)) {
-            return Collections.singletonList(buildNewPostponedEvent(majorStatus.getDateSet()));
-        }
+        List<Events> events = buildPostponeEventFromMajorStatus(appealCase);
+        return events.isEmpty() ? buildPostponedEventFromMinorStatus(appealCase) : events;
+    }
 
+    private List<Events> buildPostponedEventFromMinorStatus(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
                 .filter(minorStatus -> areConditionsToCreatePostponedEventMet(minorStatus.getStatusId(), appealCase))
                 .map(minorStatus -> buildNewPostponedEvent(minorStatus.getDateSet()))
                 .distinct()
                 .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    private List<Events> buildPostponeEventFromMajorStatus(AppealCase appealCase) {
+        MajorStatus majorStatus = getMajorStatusFromAppealCase(appealCase.getMajorStatus());
+        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, majorStatus)) {
+            return Collections.singletonList(buildNewPostponedEvent(majorStatus.getDateSet()));
         }
         return Collections.emptyList();
     }
