@@ -27,7 +27,8 @@ public class ProcessCaseFile {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
     String filename;
-    String outputdir = "src/test/resources/updates";
+    private final String outputdir = "src/test/resources/updates";
+    private final String processedReference = "/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml";
 
 
     @Autowired
@@ -35,15 +36,24 @@ public class ProcessCaseFile {
 
 
     @Before
-    public void setup() throws ParserConfigurationException, TransformerException, IOException, ConfigurationException {
+    public void setup() throws ParserConfigurationException, TransformerException, IOException,
+        ConfigurationException, SftpException {
         GenerateXml.generateXmlForAppeals();
         copy(outputdir, filename);
+        ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
+        try {
+            sftpChannel.lstat(processedReference);
+            sftpChannel.rm(processedReference);
+        } catch (SftpException e) {
+            if (e.id != ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                throw e;
+            }
+        }
     }
 
     @After
     public void teardown() throws IOException, ParserConfigurationException {
         GenerateXml.cleanUpOldFiles();
-
     }
 
     public void copy(String outputdir, String filename) {
@@ -55,7 +65,7 @@ public class ProcessCaseFile {
                 sftpChannel.put(new FileInputStream(file), file.getName()); //NOPMD
             }
         } catch (SftpException e) {
-            throw new SftpCustomException("Failed to copy generated xml to sftp", filename, e);
+            throw new SftpCustomException("Failed to copy/deleteO generated xml to sftp", filename, e);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
