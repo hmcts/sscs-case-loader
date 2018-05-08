@@ -399,10 +399,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Arrays.asList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
-                    RESPONSE_RECEIVED_DATE),
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
-                    APPEAL_RECEIVED_DATE)
+                    APPEAL_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE)
             ))
             .postponementRequests(Collections.singletonList(
                 new PostponementRequests(
