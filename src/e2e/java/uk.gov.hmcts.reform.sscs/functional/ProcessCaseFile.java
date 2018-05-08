@@ -28,7 +28,8 @@ public class ProcessCaseFile {
     private final String caseloaderinstance = System.getenv("TEST_URL");
     String filename;
     private static final String outputdir = "src/test/resources/updates";
-    private static final String processedReference = "/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml";
+    private static final String processedReference =
+        "/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml";
 
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
