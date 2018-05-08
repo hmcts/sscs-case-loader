@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
+public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Mock
     private ReferenceDataService refDataService;

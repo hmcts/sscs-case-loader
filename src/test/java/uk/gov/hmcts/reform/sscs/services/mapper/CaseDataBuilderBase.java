@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
-class CaseDataBuilderBaseTest {
+class CaseDataBuilderBase {
 
     static final String HEARING_POSTPONED_DATE = "2018-05-24T00:00:00+01:00";
     static final String MINOR_STATUS_ID_27_DATE = "2018-05-24T00:00:00+01:00";

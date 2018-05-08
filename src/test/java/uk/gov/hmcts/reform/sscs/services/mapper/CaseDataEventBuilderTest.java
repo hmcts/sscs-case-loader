@@ -40,7 +40,7 @@ import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(JUnitParamsRunner.class)
-public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
+public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
     private static final String SESSION_DATE = "2017-05-23T00:00:00+01:00";
     private static final String LOCAL_SESSION_DATE = "2017-05-23T00:00:00";
