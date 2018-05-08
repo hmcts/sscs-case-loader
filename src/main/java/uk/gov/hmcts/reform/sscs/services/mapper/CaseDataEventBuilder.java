@@ -45,6 +45,11 @@ class CaseDataEventBuilder {
     }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
+        MajorStatus majorStatus = getMajorStatusFromAppealCase(appealCase.getMajorStatus());
+        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, majorStatus)) {
+            return Collections.singletonList(buildNewPostponedEvent(majorStatus.getDateSet()));
+        }
+
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
                 .filter(minorStatus -> areConditionsToCreatePostponedEventMet(minorStatus.getStatusId(), appealCase))
@@ -53,6 +58,24 @@ class CaseDataEventBuilder {
                 .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase, MajorStatus majorStatus) {
+        return "18".equals(majorStatus.getStatusId()) && isPostponementGranted(appealCase)
+            && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
+            retrieveHearingsFromCaseInCcd(appealCase));
+    }
+
+    private boolean isPostponementGranted(AppealCase appealCase) {
+        return !appealCase.getPostponementRequests().stream()
+            .filter(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()))
+            .collect(Collectors.toList())
+            .isEmpty();
+    }
+
+    //todo: get the latest major status id 18
+    private MajorStatus getMajorStatusFromAppealCase(List<MajorStatus> majorStatus) {
+        return majorStatus.get(0);
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
@@ -65,8 +88,8 @@ class CaseDataEventBuilder {
                 appealCase.getHearing())) {
                 return true;
             }
-            List<Hearing> hearingList = retrieveHearingsFromCaseInCcd(appealCase);
-            return postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(), hearingList);
+            return postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
+                retrieveHearingsFromCaseInCcd(appealCase));
         }
         return false;
     }

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -385,12 +386,57 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         assertEquals(expectedDate, actualPostponedDate);
     }
 
-
     /*
-        scenario4
-        Given two minor status id 27 with different dates
-        And one single postponed Request with granted Yes
-        Then only one single postponed event is created from the latest minor status
-        todo: check scenario with business: can we get more than one minus status id 27 in Delta??
+        scenario4:
+        Given major status with id 18
+        And postponed_granted Yes
+        And no hearing element present in Delta
+        And there is a hearingId matching to the postponementHearingId in the existing case in CCD
+        Then create a Postponed event with major status date_set
      */
+    @Test
+    public void givenScenario4ThenPostponedIsCreated() throws IOException {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE)
+            ))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "Y", "6", null, null)
+            ))
+            .build();
+
+        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(true);
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(1))
+            .matchToHearingId(eq(appeal.getPostponementRequests()),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+
+        assertEquals("expected one postponed event here", 1, events.size());
+        LocalDateTime expectedDate = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE).toLocalDateTime();
+        LocalDateTime actualDate = LocalDateTime.parse(events.get(0).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date", expectedDate, actualDate);
+    }
+
+    //todo: check with BA
+    /*
+    Given scenario4
+    Then create postponedEvent
+    And should we check other scenarios when minor status id is 27 or not?
+     */
+
+
 }
