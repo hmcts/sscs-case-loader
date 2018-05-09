@@ -27,8 +27,13 @@ public class CaseDataEventBuilder {
                 .distinct()
                 .collect(Collectors.toList());
         }
+
+        if (hearingExists(appealCase)) {
+            return getEventsByHearingOutcomeId(appealCase, 12, 16, GapsEvent.HEARING_POSTPONED);
+        }
         return Collections.emptyList();
     }
+
 
     private Events buildNewPostponedEvent(ZonedDateTime dateSet) {
         return Events.builder()
@@ -71,31 +76,35 @@ public class CaseDataEventBuilder {
         return events;
     }
 
-
     public List<Events> buildAdjournedEvents(AppealCase appealCase) {
 
-        if (null != appealCase.getHearing() && !appealCase.getHearing().isEmpty()) {
-            List<Events> events = new ArrayList<>();
-            appealCase.getHearing().stream()
-                .filter(hearing -> null != hearing.getOutcomeId())
-                .forEach(hearing -> {
-                        int outcomeId = Integer.parseInt(hearing.getOutcomeId());
-                        if (outcomeId >= 110 && outcomeId <= 126) {
-                            Event adjournedEvent = Event.builder()
-                                .type(GapsEvent.HEARING_ADJOURNED.getType())
-                                .date(getLocalDateTime(hearing.getSessionDate()))
-                                .description(GapsEvent.HEARING_ADJOURNED.getDescription())
-                                .build();
-
-                            events.add(Events.builder()
-                                .value(adjournedEvent)
-                                .build());
-                        }
-                }
-            );
-            return  events;
+        if (hearingExists(appealCase)) {
+            return getEventsByHearingOutcomeId(appealCase, 110, 126, GapsEvent.HEARING_ADJOURNED);
         }
-        return Collections.emptyList();
+        return Collections.EMPTY_LIST;
+    }
+
+    private List<Events> getEventsByHearingOutcomeId(AppealCase appealCase,
+                                                     int rangeStart, int rangeEnd,
+                                                     GapsEvent gapsEvent) {
+        List<Events> events = new ArrayList<>();
+        appealCase.getHearing().stream()
+            .filter(hearing -> null != hearing.getOutcomeId())
+            .forEach(hearing -> {
+                int outcomeId = Integer.parseInt(hearing.getOutcomeId());
+                if (outcomeId >= rangeStart && outcomeId <= rangeEnd) {
+                    Event adjournedEvent = Event.builder()
+                        .type(gapsEvent.getType())
+                        .date(getLocalDateTime(hearing.getSessionDate()))
+                        .description(gapsEvent.getDescription())
+                        .build();
+
+                    events.add(Events.builder()
+                        .value(adjournedEvent)
+                        .build());
+                }
+            });
+        return events;
     }
 
     private String getLocalDateTime(String zonedDateTimeWithOffset) {
@@ -103,5 +112,9 @@ public class CaseDataEventBuilder {
             .parse(zonedDateTimeWithOffset)
             .toLocalDateTime()
             .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    private boolean hearingExists(AppealCase appealCase) {
+        return null != appealCase.getHearing() && !appealCase.getHearing().isEmpty();
     }
 }

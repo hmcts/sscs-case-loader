@@ -26,8 +26,8 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
-    private static final String SESSION_DATE = "2017-05-23T00:00:00+01:00";
-    private static final String LOCAL_SESSION_DATE = "2017-05-23T00:00:00";
+    public static final String SESSION_DATE_TIME = "2017-05-23T00:00:00+01:00";
+    public static final String LOCAL_SESSION_DATETIME = "2017-05-23T00:00:00";
     private final CaseDataEventBuilder caseDataEventBuilder = new CaseDataEventBuilder();
     private List<Events> events;
 
@@ -184,7 +184,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     @Test
     public void shouldReturnAdjournedEventIfHearingOutComeIdIs110() {
         ArrayList<Hearing> hearings = new ArrayList<>();
-        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE).outcomeId("110").build();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("110").build();
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
@@ -195,14 +195,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
-
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
     }
 
     @Test
     public void shouldReturnAdjournedEventIfHearingOutComeIdIs126() {
         ArrayList<Hearing> hearings = new ArrayList<>();
-        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE).outcomeId("126").build();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("126").build();
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
@@ -213,16 +212,15 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
-
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
     }
 
     @Test
-    @Parameters({"110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122",
-        "123", "124", "125", "126"})
+    @Parameters({"110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123",
+        "124", "125", "126"})
     public void shouldReturnAdjournedEventIfHearingOutComeIdIsInTheRange110To126(String outcomeId) {
         ArrayList<Hearing> hearings = new ArrayList<>();
-        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE).outcomeId(outcomeId).build();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId(outcomeId).build();
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
@@ -233,14 +231,14 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATE));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
     }
 
     @Test
     @Parameters({"109", "127"})
     public void shouldNotReturnAdjournedEventIfHearingOutComeIdIsLessThan110OrGreaterThan126(String outcomeId) {
         ArrayList<Hearing> hearings = new ArrayList<>();
-        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE).outcomeId(outcomeId).build();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId(outcomeId).build();
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
@@ -261,8 +259,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     @Test
     public void shouldIgnoreHearingsWithNoOutComeIdWhenCreatingAdjournedEvents() {
         ArrayList<Hearing> hearings = new ArrayList<>();
-        Hearing hearing1 = Hearing.builder().sessionDate(SESSION_DATE).outcomeId("110").build();
-        Hearing hearing2 = Hearing.builder().sessionDate(SESSION_DATE).build();
+        Hearing hearing1 = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("110").build();
+        Hearing hearing2 = Hearing.builder().sessionDate(SESSION_DATE_TIME).build();
         hearings.add(hearing1);
         hearings.add(hearing2);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
@@ -272,4 +270,73 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         assertThat(events.size(), equalTo(1));
 
     }
+
+    @Test
+    public void shouldReturnPostponedEventIfHearingOutComeIdIs12() {
+        ArrayList<Hearing> hearings = new ArrayList<>();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("12").build();
+        hearings.add(hearing);
+        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+
+        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+
+        assertThat(events.size(), equalTo(1));
+        Event event = events.get(0).getValue();
+
+        assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
+        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+
+    }
+
+    @Test
+    public void shouldReturnPostponedEventIfHearingOutComeIdIs16() {
+        ArrayList<Hearing> hearings = new ArrayList<>();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("16").build();
+        hearings.add(hearing);
+        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+
+        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+
+        assertThat(events.size(), equalTo(1));
+        Event event = events.get(0).getValue();
+
+        assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
+        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+
+    }
+
+    @Test
+    @Parameters({"12", "13", "14", "15", "16"})
+    public void shouldReturnPostponedEventIfHearingOutComeIdIsInTheRange12To16(String outcomeId) {
+        ArrayList<Hearing> hearings = new ArrayList<>();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId(outcomeId).build();
+        hearings.add(hearing);
+        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+
+        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+
+        assertThat(events.size(), equalTo(1));
+        Event event = events.get(0).getValue();
+
+        assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
+        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
+        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+    }
+
+
+    @Test
+    @Parameters({"11", "17"})
+    public void shouldNotReturnPostponedEventIfHearingOutComeIdIsLessThan12OrGreaterThan16(String outcomeId) {
+        ArrayList<Hearing> hearings = new ArrayList<>();
+        Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId(outcomeId).build();
+        hearings.add(hearing);
+        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+
+        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+
+        assertThat(events.size(), equalTo(0));
+    }
+
 }
