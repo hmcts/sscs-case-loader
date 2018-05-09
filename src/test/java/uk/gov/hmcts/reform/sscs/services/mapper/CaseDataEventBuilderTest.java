@@ -416,6 +416,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
             anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(true);
 
+
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
@@ -446,6 +447,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
                     RESPONSE_RECEIVED_DATE)
             ))
+            .hearing(null)
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
             .postponementRequests(Arrays.asList(
@@ -455,9 +457,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
                     "Y", "", null, null)
             ))
             .build();
-
-        when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
-            anyListOf(Hearing.class))).thenReturn(false);
 
         when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
@@ -469,9 +468,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .thenReturn(true);
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
-
-        verify(postponedEventInferredFromDelta, times(1))
-            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
 
         verify(searchCcdService, times(2)).findCaseByCaseRef(anyString(),
             Matchers.any(IdamTokens.class));
@@ -497,19 +493,4 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             expectedDateOfPostponedComingFromMinorStatus, actualDateOfPostponedComingFromMinorStatus);
     }
 
-    /*
-        Scenario6:
-        Given two major status with id 18
-        And postponed_granted Yes
-        And no hearing element present in Delta
-        And there is a hearingId matching to the postponementHearingId in the existing case in CCD
-        Then 2 Postponed events with major status date_set are created
-
-     */
-
-    /*
-        scenario7:
-        given no major status id 18
-        what happens
-     */
 }

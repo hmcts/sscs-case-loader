@@ -89,9 +89,11 @@ class CaseDataEventBuilder {
         }
 
         if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
-            if (postponedEventInferredFromDelta.matchToHearingId(appealCase.getPostponementRequests(),
+            if (appealCase.getHearing() != null && !appealCase.getHearing().isEmpty()
+                && postponedEventInferredFromDelta.matchToHearingId(appealCase.getPostponementRequests(),
                 appealCase.getHearing())) {
                 return true;
+
             }
             return postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
                 retrieveHearingsFromCaseInCcd(appealCase));

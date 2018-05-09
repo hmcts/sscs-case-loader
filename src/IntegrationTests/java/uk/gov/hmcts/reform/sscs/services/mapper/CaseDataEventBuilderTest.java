@@ -160,10 +160,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
-            .hearing(Arrays.asList(
-                Hearing.builder().hearingId("1").build(),
-                Hearing.builder().hearingId("2").build()
-            ))
             .postponementRequests(Arrays.asList(
                 new PostponementRequests(
                     "Y", "6", null, null),
@@ -202,4 +198,51 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
         return mapper.readerFor(CaseDetails.class).readValue(caseDetailsWithHearings);
     }
+
+    /*
+       scenario4:
+       Given major status with id 18
+       And postponed_granted Yes
+       And no hearing element present in Delta
+       And there is a hearingId matching to the postponementHearingId in the existing case in CCD
+       Then create a Postponed event with major status date_set
+    */
+    @Test
+    public void givenScenario4ThenPostponedIsCreated() throws IOException {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .appealCaseRefNum("SC068/17/00011")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE)
+            ))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "Y", "6", null, null)
+            ))
+            .build();
+
+        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
+        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
+
+        given(coreCaseDataApi.searchForCaseworker(
+            "oauth2Token",
+            "serviceToken",
+            coreCaseDataProperties.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            ImmutableMap.of("case.caseReference", appeal.getAppealCaseRefNum())
+        )).willReturn(Collections.singletonList(getCaseDetails()));
+
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        assertEquals("expected one postponed event here", 1, events.size());
+        LocalDateTime expectedDate = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE).toLocalDateTime();
+        LocalDateTime actualDate = LocalDateTime.parse(events.get(0).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date", expectedDate, actualDate);
+    }
+
 }
