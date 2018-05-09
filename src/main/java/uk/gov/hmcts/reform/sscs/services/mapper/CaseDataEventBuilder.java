@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,8 @@ class CaseDataEventBuilder {
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
         List<Events> events = buildPostponeEventFromMajorStatus(appealCase);
-        return events.isEmpty() ? buildPostponedEventFromMinorStatus(appealCase) : events;
+        events.addAll(buildPostponedEventFromMinorStatus(appealCase));
+        return events;
     }
 
     private List<Events> buildPostponedEventFromMinorStatus(AppealCase appealCase) {
@@ -81,10 +81,6 @@ class CaseDataEventBuilder {
             .filter(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()))
             .collect(Collectors.toList())
             .isEmpty();
-    }
-
-    private MajorStatus getLatestMajorStatusFromAppealCase(List<MajorStatus> majorStatus) {
-        return Collections.max(majorStatus, Comparator.comparing(MajorStatus::getDateSet));
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {

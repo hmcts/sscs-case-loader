@@ -21,7 +21,6 @@ import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -438,7 +437,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     Then two postponed events should be created
      */
     @Test
-    @Ignore
     public void givenScenario5Then2PostponedEventsAreCreated() throws IOException {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
@@ -483,6 +481,20 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
                 anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
 
         assertEquals("2 postponed events expected here", 2, events.size());
+
+        LocalDateTime expectedDateOfPostponedComingFromMajorStatus = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE)
+            .toLocalDateTime();
+        LocalDateTime actualDateOfPostponedComingFromMajorStatus = LocalDateTime.parse(
+            events.get(0).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date",
+            expectedDateOfPostponedComingFromMajorStatus, actualDateOfPostponedComingFromMajorStatus);
+
+        LocalDateTime expectedDateOfPostponedComingFromMinorStatus = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE)
+            .toLocalDateTime();
+        LocalDateTime actualDateOfPostponedComingFromMinorStatus = LocalDateTime.parse(
+            events.get(1).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date",
+            expectedDateOfPostponedComingFromMinorStatus, actualDateOfPostponedComingFromMinorStatus);
     }
 
     /*
@@ -491,7 +503,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         And postponed_granted Yes
         And no hearing element present in Delta
         And there is a hearingId matching to the postponementHearingId in the existing case in CCD
-        Then create a Postponed event with major status date_set
+        Then 2 Postponed events with major status date_set are created
 
+     */
+
+    /*
+        scenario7:
+        given no major status id 18
+        what happens
      */
 }
