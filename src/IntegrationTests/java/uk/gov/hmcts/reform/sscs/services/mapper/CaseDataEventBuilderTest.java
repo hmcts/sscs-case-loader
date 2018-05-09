@@ -245,4 +245,61 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         assertEquals("event date must be equal to major status 18 date", expectedDate, actualDate);
     }
 
+    /*
+   Scenario 5:
+   Given scenario4 and scenario3 in the same Delta
+   Then two postponed events should be created
+    */
+    @Test
+    public void givenScenario5Then2PostponedEventsAreCreated() throws IOException {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .appealCaseRefNum("SC068/17/00011")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
+            .postponementRequests(Arrays.asList(
+                new PostponementRequests(
+                    "Y", "6", null, null),
+                new PostponementRequests(
+                    "Y", "", null, null)
+            ))
+            .build();
+
+        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
+        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
+
+        given(coreCaseDataApi.searchForCaseworker(
+            "oauth2Token",
+            "serviceToken",
+            coreCaseDataProperties.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            ImmutableMap.of("case.caseReference", appeal.getAppealCaseRefNum())
+        )).willReturn(Collections.singletonList(getCaseDetails()));
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        assertEquals("2 postponed events expected here", 2, events.size());
+
+        LocalDateTime expectedDateOfPostponedComingFromMajorStatus = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE)
+            .toLocalDateTime();
+        LocalDateTime actualDateOfPostponedComingFromMajorStatus = LocalDateTime.parse(
+            events.get(0).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date",
+            expectedDateOfPostponedComingFromMajorStatus, actualDateOfPostponedComingFromMajorStatus);
+
+        LocalDateTime expectedDateOfPostponedComingFromMinorStatus = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE)
+            .toLocalDateTime();
+        LocalDateTime actualDateOfPostponedComingFromMinorStatus = LocalDateTime.parse(
+            events.get(1).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date",
+            expectedDateOfPostponedComingFromMinorStatus, actualDateOfPostponedComingFromMinorStatus);
+    }
+
 }
