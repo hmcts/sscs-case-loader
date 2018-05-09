@@ -62,11 +62,12 @@ class CaseDataEventBuilder {
     }
 
     private List<Events> buildPostponeEventFromMajorStatus(AppealCase appealCase) {
-        MajorStatus majorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
-        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, majorStatus)) {
-            return Collections.singletonList(buildNewPostponedEvent(majorStatus.getDateSet()));
-        }
-        return Collections.emptyList();
+        return appealCase.getMajorStatus().stream()
+            .filter(majorStatus -> majorStatus.getStatusId().equals(GapsEvent.RESPONSE_RECEIVED.getStatus()))
+            .filter(majorStatus -> areConditionsFromMajorStatusToCreatePostponedMet(appealCase, majorStatus))
+            .map(majorStatus -> buildNewPostponedEvent(majorStatus.getDateSet()))
+            .distinct()
+            .collect(Collectors.toList());
     }
 
     private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase, MajorStatus majorStatus) {
@@ -163,7 +164,7 @@ class CaseDataEventBuilder {
         return gapsEvent.getStatus().equals("27");
     }
 
-    public List<Events> buildAdjournedEvents(AppealCase appealCase) {
+    List<Events> buildAdjournedEvents(AppealCase appealCase) {
         if (null != appealCase.getHearing() && !appealCase.getHearing().isEmpty()) {
             List<Events> events = new ArrayList<>();
             appealCase.getHearing().stream()

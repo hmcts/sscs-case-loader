@@ -21,6 +21,7 @@ import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -431,12 +432,66 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         assertEquals("event date must be equal to major status 18 date", expectedDate, actualDate);
     }
 
-    //todo: check with BA
     /*
-    Given scenario4
-    Then create postponedEvent
-    And should we check other scenarios when minor status id is 27 or not?
+    Scenario 5:
+    Given scenario4 and scenario3 in the same Delta
+    Then two postponed events should be created
      */
+    @Test
+    @Ignore
+    public void givenScenario5Then2PostponedEventsAreCreated() throws IOException {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
+            .postponementRequests(Arrays.asList(
+                new PostponementRequests(
+                    "Y", "6", null, null),
+                new PostponementRequests(
+                    "Y", "", null, null)
+            ))
+            .build();
 
+        when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(Hearing.class))).thenReturn(false);
 
+        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class)))
+            .thenReturn(true)
+            .thenReturn(true);
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        verify(postponedEventInferredFromDelta, times(1))
+            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+
+        verify(searchCcdService, times(2)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(2))
+            .matchToHearingId(anyListOf(PostponementRequests.class),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+
+        assertEquals("2 postponed events expected here", 2, events.size());
+    }
+
+    /*
+        Scenario6:
+        Given two major status with id 18
+        And postponed_granted Yes
+        And no hearing element present in Delta
+        And there is a hearingId matching to the postponementHearingId in the existing case in CCD
+        Then create a Postponed event with major status date_set
+
+     */
 }
