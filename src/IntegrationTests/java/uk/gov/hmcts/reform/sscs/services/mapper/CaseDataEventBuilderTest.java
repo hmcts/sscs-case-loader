@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,18 +54,34 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "src/test/resources/CaseDetailsWithHearings.json";
     private List<Events> events;
+    private AppealCase appeal;
+
+    @Before
+    public void setUp() throws Exception {
+        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
+        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
+
+        given(coreCaseDataApi.searchForCaseworker(
+            "oauth2Token",
+            "serviceToken",
+            coreCaseDataProperties.getUserId(),
+            coreCaseDataProperties.getJurisdictionId(),
+            coreCaseDataProperties.getCaseTypeId(),
+            ImmutableMap.of("case.caseReference", "SC068/17/00011")
+        )).willReturn(Collections.singletonList(getCaseDetails()));
+    }
 
     /*
-       scenario1:
-       Given minor status with id 27
-       And multiple hearing objects
-       And two postponed request elements with the granted field to 'Y'
-       And none of them matching the hearing id field neither in Delta or in CCD
-       Then NO postponed element is created
-    */
+           scenario1:
+           Given minor status with id 27
+           And multiple hearing objects
+           And two postponed request elements with the granted field to 'Y'
+           And none of them matching the hearing id field neither in Delta or in CCD
+           Then NO postponed element is created
+        */
     @Test
     public void givenScenario1ThenNoPostponedEventIsNotCreated() throws Exception {
-        AppealCase appeal = AppealCase.builder()
+        appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum("SC068/17/00011")
             .majorStatus(Collections.singletonList(
@@ -84,18 +101,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             ))
             .build();
 
-        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
-        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
-
-        given(coreCaseDataApi.searchForCaseworker(
-            "oauth2Token",
-            "serviceToken",
-            coreCaseDataProperties.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", appeal.getAppealCaseRefNum())
-        )).willReturn(Collections.singletonList(getCaseDetails()));
-
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         assertTrue("No postponed event expected here", events.isEmpty());
@@ -111,7 +116,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     */
     @Test
     public void givenScenario2ThenPostponedIsCreated() {
-        AppealCase appeal = AppealCase.builder()
+        appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
@@ -150,9 +155,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
       Then one postponed element is created
    */
     @Test
-    public void givenScenario3ThenPostponedIsCreated()
-        throws Exception {
-        AppealCase appeal = AppealCase.builder()
+    public void givenScenario3ThenPostponedIsCreated() throws Exception {
+        appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum("SC068/17/00011")
             .majorStatus(Collections.singletonList(
@@ -167,19 +171,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                     "Y", "", null, null)
             ))
             .build();
-
-
-        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
-        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
-
-        given(coreCaseDataApi.searchForCaseworker(
-            "oauth2Token",
-            "serviceToken",
-            coreCaseDataProperties.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", appeal.getAppealCaseRefNum())
-        )).willReturn(Collections.singletonList(getCaseDetails()));
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
@@ -209,7 +200,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     */
     @Test
     public void givenScenario4ThenPostponedIsCreated() throws IOException {
-        AppealCase appeal = AppealCase.builder()
+        appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum("SC068/17/00011")
             .majorStatus(Arrays.asList(
@@ -223,19 +214,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                     "Y", "6", null, null)
             ))
             .build();
-
-        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
-        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
-
-        given(coreCaseDataApi.searchForCaseworker(
-            "oauth2Token",
-            "serviceToken",
-            coreCaseDataProperties.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", appeal.getAppealCaseRefNum())
-        )).willReturn(Collections.singletonList(getCaseDetails()));
-
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
@@ -252,7 +230,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     */
     @Test
     public void givenScenario5Then2PostponedEventsAreCreated() throws IOException {
-        AppealCase appeal = AppealCase.builder()
+        appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum("SC068/17/00011")
             .majorStatus(Arrays.asList(
@@ -270,18 +248,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
                     "Y", "", null, null)
             ))
             .build();
-
-        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
-        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
-
-        given(coreCaseDataApi.searchForCaseworker(
-            "oauth2Token",
-            "serviceToken",
-            coreCaseDataProperties.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", appeal.getAppealCaseRefNum())
-        )).willReturn(Collections.singletonList(getCaseDetails()));
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
