@@ -9,21 +9,18 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import uk.gov.hmcts.reform.tools.builders.Appeal;
 import uk.gov.hmcts.reform.tools.enums.AppealTemplate;
 import uk.gov.hmcts.reform.tools.factory.AppealFactory;
 import uk.gov.hmcts.reform.tools.utils.XmlWriter;
 
 
 @SuppressWarnings({"PMD", "checkstyle:hideutilityclassconstructor"})
-
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GenerateXml {
 
@@ -44,16 +41,16 @@ public class GenerateXml {
     private static void cleanUpDirectory(String directory) throws IOException {
         if (get(directory).toFile().exists()) {
             walk(get(directory), FOLLOW_LINKS)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .peek(System.out::println)
-                    .forEach(File::delete);
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .peek(System.out::println)
+                .forEach(File::delete);
         }
     }
 
 
     public static void generateXmlForAppeals() throws
-            IOException, TransformerException, ParserConfigurationException {
+        IOException, TransformerException, ParserConfigurationException {
 
         String createPath = "CreateAppeals";
 
@@ -68,8 +65,6 @@ public class GenerateXml {
         appealFactory.selectAppeal(xmlWriter, AppealTemplate.HEARD_FOR_DESTRUCTION, 1);
 
         xmlWriter.writeXml(OUTPUT_DIR);
-
-        List<Appeal> appeals = xmlWriter.getAppealWrittenToFile();
 
     }
 }

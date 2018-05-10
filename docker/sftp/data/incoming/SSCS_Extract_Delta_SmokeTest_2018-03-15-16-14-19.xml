@@ -38,11 +38,6 @@
       <Venue_Id>68</Venue_Id>
       <Outcome_Id>9</Outcome_Id>
     </Hearing>
-    <Minor_Status>
-      <Status_Id>26</Status_Id>
-      <Date_Set>2018-06-08T07:33:56.07+00:00</Date_Set>
-      <BF_Date>2018-05-01T00:00:00+01:00</BF_Date>
-    </Minor_Status>
     <Major_Status>
       <Status_Id>24</Status_Id>
       <Date_Set>2018-03-08T07:33:56.07+00:00</Date_Set>

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +27,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
+public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Mock
     private ReferenceDataService refDataService;
@@ -40,11 +41,11 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), TEST_DATE)
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
             .hearing(getHearing())
             .minorStatus(Collections.singletonList(
-                super.buildMinorStatusGivenIdAndDate("26", TEST_DATE2)))
+                super.buildMinorStatusGivenIdAndDate("26", HEARING_POSTPONED_DATE)))
             .build();
         caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder);
     }
@@ -76,7 +77,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         assertNotNull("SupporterSubscription is null", subscriptions.getSupporterSubscription());
         String appealNumber = subscriptions.getAppellantSubscription().getTya();
         assertTrue("appealNumber is empty", !"".equals(appealNumber));
-        assertTrue("appealNumber length is not 10 digits", appealNumber.length() == 10);
+        assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
     }
 
     @Test
@@ -113,5 +114,16 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         caseDataBuilder.buildEvent(appealCase);
 
         verify(caseDataEventBuilder, times(1)).buildPostponedEvent(appealCase);
+    }
+
+    @Test
+    public void givenHearingInDeltaWhenBuildingHearingThenHearingIdIsBuilt() {
+        when(refDataService.getVenueDetails("venue")).thenReturn(VenueDetails.builder()
+            .venName("name")
+            .build());
+
+        List<Hearing> hearingList = caseDataBuilder.buildHearings(appeal);
+
+        assertEquals("id", hearingList.get(0).getValue().getHearingId());
     }
 }
