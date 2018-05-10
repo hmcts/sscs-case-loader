@@ -9,7 +9,6 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
@@ -23,7 +22,6 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
@@ -39,47 +37,38 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @Service
 @Slf4j
-public class CaseDataBuilder {
+class CaseDataBuilder {
 
-    public static final String YES = "Yes";
-    public static final String NO = "No";
-    public static final String Y = "Y";
+    private static final String YES = "Yes";
+    static final String NO = "No";
+    private static final String DISABILITY_NEEDS = "Y";
+    private static final String POSTPONEMENT_GRANTED = "Y";
 
     private final ReferenceDataService referenceDataService;
+    private final CaseDataEventBuilder caseDataEventBuilder;
 
     @Autowired
-    CaseDataBuilder(ReferenceDataService referenceDataService) {
+    CaseDataBuilder(ReferenceDataService referenceDataService, CaseDataEventBuilder caseDataEventBuilder) {
         this.referenceDataService = referenceDataService;
+        this.caseDataEventBuilder = caseDataEventBuilder;
     }
 
-    public List<Events> buildEvent(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
-        for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
-            GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
-            if (gapsEvent != null) {
-                Event event = Event.builder()
-                    .type(gapsEvent.getType())
-                    .description(gapsEvent.getDescription())
-                    .date(majorStatus.getDateSet().toLocalDateTime().toString())
-                    .build();
-
-                events.add(Events.builder()
-                    .value(event)
-                    .build());
-            }
-        }
+    List<Events> buildEvent(AppealCase appealCase) {
+        List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
+        events.addAll(caseDataEventBuilder.buildPostponedEvent(appealCase));
+        events.addAll(caseDataEventBuilder.buildAdjournedEvents(appealCase));
         events.sort(Collections.reverseOrder());
         return events;
     }
 
-    public Identity buildIdentity(Parties party, AppealCase appealCase) {
+    Identity buildIdentity(Parties party, AppealCase appealCase) {
         return Identity.builder()
             .dob(DateHelper.getValidDateOrTime(party.getDob(), true))
             .nino(appealCase.getAppealCaseNino())
             .build();
     }
 
-    public Name buildName(Parties party) {
+    Name buildName(Parties party) {
         return Name.builder()
             .title(party.getTitle())
             .firstName(party.getInitials())
@@ -87,7 +76,7 @@ public class CaseDataBuilder {
             .build();
     }
 
-    public Contact buildContact(Parties party) {
+    Contact buildContact(Parties party) {
         return Contact.builder()
             .email(party.getEmail())
             .phone(party.getPhone1())
@@ -95,20 +84,20 @@ public class CaseDataBuilder {
             .build();
     }
 
-    public BenefitType buildBenefitType(AppealCase appealCase) {
+    BenefitType buildBenefitType(AppealCase appealCase) {
         String benefitType = referenceDataService.getBenefitType(appealCase.getAppealCaseCaseCodeId());
         return BenefitType.builder()
             .code(benefitType)
             .build();
     }
 
-    public HearingOptions buildHearingOptions(Parties party) {
+    HearingOptions buildHearingOptions(Parties party) {
         return HearingOptions.builder()
-            .other(Y.equals(party.getDisabilityNeeds()) ? YES : NO)
+            .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
             .build();
     }
 
-    public List<Hearing> buildHearings(AppealCase appealCase) {
+    List<Hearing> buildHearings(AppealCase appealCase) {
         List<Hearing> hearingsList = new ArrayList<>();
         HearingDetails hearings;
 
@@ -138,6 +127,7 @@ public class CaseDataBuilder {
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
                         .time((appealTime == null) ? "00:00:00" : appealTime.substring(11, 19))
                         .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
+                        .hearingId(hearing.getHearingId())
                         .build();
 
                     hearingsList.add(Hearing.builder().value(hearings).build());
@@ -151,7 +141,7 @@ public class CaseDataBuilder {
         return hearingsList;
     }
 
-    public Evidence buildEvidence(AppealCase appealCase) {
+    Evidence buildEvidence(AppealCase appealCase) {
         List<Documents> documentsList = new ArrayList<>();
         Doc doc;
 
@@ -172,7 +162,7 @@ public class CaseDataBuilder {
             .build();
     }
 
-    public List<DwpTimeExtension> buildDwpTimeExtensions(AppealCase appealCase) {
+    List<DwpTimeExtension> buildDwpTimeExtensions(AppealCase appealCase) {
         List<DwpTimeExtension> dwpTimeExtensionList = new ArrayList<>();
         List<PostponementRequests> postponementRequestsList = appealCase.getPostponementRequests();
         if (postponementRequestsList != null) {
@@ -180,7 +170,7 @@ public class CaseDataBuilder {
                 postponementRequests -> {
                     DwpTimeExtensionDetails dwpTimeExtensionDetails = DwpTimeExtensionDetails.builder()
                         .requested(postponementRequests.getPostponementReasonId() != null ? YES : NO)
-                        .granted(Y.equals(postponementRequests.getPostponementGranted()) ? YES : NO)
+                        .granted(POSTPONEMENT_GRANTED.equals(postponementRequests.getPostponementGranted()) ? YES : NO)
                         .build();
                     DwpTimeExtension dwpTimeExtension = DwpTimeExtension.builder()
                         .value(dwpTimeExtensionDetails)
@@ -197,7 +187,7 @@ public class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    public Subscriptions buildSubscriptions() {
+    Subscriptions buildSubscriptions() {
         Subscription appellantSubscription = Subscription.builder()
             .email("")
             .mobile("")
