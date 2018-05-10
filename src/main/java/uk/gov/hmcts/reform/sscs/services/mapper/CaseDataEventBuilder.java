@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
@@ -77,10 +76,13 @@ class CaseDataEventBuilder {
     }
 
     private boolean isPostponementGranted(AppealCase appealCase) {
-        return !appealCase.getPostponementRequests().stream()
-            .filter(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()))
-            .collect(Collectors.toList())
-            .isEmpty();
+        if (appealCase.getPostponementRequests() != null) {
+            return !appealCase.getPostponementRequests().stream()
+                .filter(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()))
+                .collect(Collectors.toList())
+                .isEmpty();
+        }
+        return false;
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
@@ -109,8 +111,10 @@ class CaseDataEventBuilder {
             .build();
         List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),
             idamTokens);
-        CaseData caseData = CcdUtil.getCaseData(caseDetailsList.get(0).getData());
-        return caseData.getHearings();
+        if (caseDetailsList != null && !caseDetailsList.isEmpty()) {
+            return CcdUtil.getCaseData(caseDetailsList.get(0).getData()).getHearings();
+        }
+        return Collections.emptyList();
     }
 
     private boolean minorStatusIdIs27AndMoreThanOnePostponementRequest(String statusId, AppealCase appealCase) {
