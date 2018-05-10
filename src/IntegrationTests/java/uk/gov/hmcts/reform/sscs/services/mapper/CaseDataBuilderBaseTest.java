@@ -11,7 +11,7 @@ class CaseDataBuilderBaseTest {
     static final String APPEAL_RECEIVED_DATE = "2017-05-24T00:00:00+01:00";
 
     MajorStatus buildMajorStatusGivenStatusAndDate(String status, String testDate) {
-        return new MajorStatus("", status, "", ZonedDateTime.parse(testDate));
+        return new MajorStatus("", status, null, ZonedDateTime.parse(testDate));
     }
 
     MinorStatus buildMinorStatusGivenIdAndDate(String id, String date) {

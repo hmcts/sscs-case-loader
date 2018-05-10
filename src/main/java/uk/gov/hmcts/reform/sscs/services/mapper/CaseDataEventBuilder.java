@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,8 @@ class CaseDataEventBuilder {
     }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
-        List<Events> events = buildPostponeEventFromMajorStatus(appealCase);
+        List<Events> events = new ArrayList<>();
+        events.addAll(buildPostponeEventFromMajorStatus(appealCase));
         events.addAll(buildPostponedEventFromMinorStatus(appealCase));
         return events;
     }
@@ -61,18 +63,27 @@ class CaseDataEventBuilder {
     }
 
     private List<Events> buildPostponeEventFromMajorStatus(AppealCase appealCase) {
-        return appealCase.getMajorStatus().stream()
-            .filter(majorStatus -> majorStatus.getStatusId().equals(GapsEvent.RESPONSE_RECEIVED.getStatus()))
-            .filter(majorStatus -> areConditionsFromMajorStatusToCreatePostponedMet(appealCase, majorStatus))
-            .map(majorStatus -> buildNewPostponedEvent(majorStatus.getDateSet()))
-            .distinct()
-            .collect(Collectors.toList());
+        MajorStatus latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
+        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, latestMajorStatus)) {
+            return Collections.singletonList(buildNewPostponedEvent(latestMajorStatus.getDateSet()));
+        }
+        return Collections.emptyList();
     }
 
-    private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase, MajorStatus majorStatus) {
-        return "18".equals(majorStatus.getStatusId()) && isPostponementGranted(appealCase)
+    private MajorStatus getLatestMajorStatusFromAppealCase(List<MajorStatus> majorStatus) {
+        return Collections.max(majorStatus, Comparator.comparing(MajorStatus::getDateSet));
+    }
+
+    private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase,
+                                                                     MajorStatus latestMajorStatus) {
+
+        return isResponseReceivedTheAppealCurrentStatus(latestMajorStatus) && isPostponementGranted(appealCase)
             && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
             retrieveHearingsFromCaseInCcd(appealCase));
+    }
+
+    private boolean isResponseReceivedTheAppealCurrentStatus(MajorStatus latestMajorStatus) {
+        return "18".equals(latestMajorStatus.getStatusId()) && latestMajorStatus.getDateClosed() == null;
     }
 
     private boolean isPostponementGranted(AppealCase appealCase) {

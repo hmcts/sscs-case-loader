@@ -192,7 +192,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     /*
        scenario4:
-       Given major status with id 18
+       Given major status with id 18 is the current appeal status
        And postponed_granted Yes
        And no hearing element present in Delta
        And there is a hearingId matching to the postponementHearingId in the existing case in CCD
