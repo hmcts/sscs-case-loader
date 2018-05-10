@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 public class GetSavedCase {
-    public String sscsCasePattern = "SC068/18/01217";
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
 

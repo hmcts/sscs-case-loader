@@ -3,10 +3,12 @@ package uk.gov.hmcts.reform.sscs.functional;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import io.restassured.RestAssured;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,17 +28,15 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 public class ProcessCaseFile {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
-    String filename;
-    String outputdir = "src/test/resources/updates";
-
+    private String filename;
 
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
 
-
     @Before
-    public void setup() throws ParserConfigurationException, TransformerException, IOException, ConfigurationException {
+    public void setup() throws ParserConfigurationException, TransformerException, IOException {
         GenerateXml.generateXmlForAppeals();
+        String outputdir = "src/test/resources/updates";
         copy(outputdir, filename);
     }
 
@@ -46,7 +46,7 @@ public class ProcessCaseFile {
 
     }
 
-    public void copy(String outputdir, String filename) {
+    private void copy(String outputdir, String filename) {
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
         try {
             File folder = new File(outputdir);
