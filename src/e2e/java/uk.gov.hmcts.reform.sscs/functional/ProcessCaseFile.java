@@ -65,7 +65,7 @@ public class ProcessCaseFile {
                 sftpChannel.put(new FileInputStream(file), file.getName()); //NOPMD
             }
         } catch (SftpException e) {
-            throw new SftpCustomException("Failed to copy/deleteO generated xml to sftp", filename, e);
+            throw new SftpCustomException("Failed to copy/delete generated xml to sftp", filename, e);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
