@@ -48,8 +48,8 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @ActiveProfiles("development")
 public class ProcessCaseRetryAndRecoveryTest {
 
-    public static final String S2S_TOKEN = "s2s token";
-    public static final String S2S_TOKEN2 = "s2s token2";
+    private static final String S2S_TOKEN = "s2s token";
+    private static final String S2S_TOKEN2 = "s2s token2";
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
 
