@@ -132,12 +132,12 @@ class CaseDataEventBuilder {
         return events;
     }
 
-    public List<Events> buildAdjournedEvents(AppealCase appealCase) {
+    List<Events> buildAdjournedEvents(AppealCase appealCase) {
 
         if (hearingExists(appealCase)) {
             return getEventsByHearingOutcomeId(appealCase, 110, 126, GapsEvent.HEARING_ADJOURNED);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     private List<Events> getEventsByHearingOutcomeId(AppealCase appealCase,

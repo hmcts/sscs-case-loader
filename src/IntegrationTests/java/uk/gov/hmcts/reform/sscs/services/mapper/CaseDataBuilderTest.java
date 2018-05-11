@@ -83,7 +83,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataBuilder.buildEvent(appealCase);
 
-        assertTrue(events.get(0).getValue().getType().equals(GapsEvent.HEARING_POSTPONED.getType()));
+        assertEquals(events.get(0).getValue().getType(), GapsEvent.HEARING_POSTPONED.getType());
 
     }
 

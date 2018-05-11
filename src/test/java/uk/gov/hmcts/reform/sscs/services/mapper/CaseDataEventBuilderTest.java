@@ -42,8 +42,8 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
-    public static final String SESSION_DATE_TIME = "2017-05-23T00:00:00+01:00";
-    public static final String LOCAL_SESSION_DATETIME = "2017-05-23T00:00:00";
+    private static final String SESSION_DATE_TIME = "2017-05-23T00:00:00+01:00";
+    private static final String LOCAL_SESSION_DATETIME = "2017-05-23T00:00:00";
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
