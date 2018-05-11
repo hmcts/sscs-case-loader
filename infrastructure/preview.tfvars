@@ -1,3 +1,4 @@
+gaps2_sftp_dir = "/incoming"
 management_security_enabled = "false"
 infrastructure_env = "preprod"
 gaps2_sftp_user = "sftp-preview"
