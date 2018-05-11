@@ -167,7 +167,9 @@ class CaseDataEventBuilder {
 
     List<Events> buildMajorStatusEvents(AppealCase appealCase) {
         List<Events> events = new ArrayList<>();
-        for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
+        List<MajorStatus> majorStatusList = appealCase.getMajorStatus();
+        Collections.sort(majorStatusList);
+        for (MajorStatus majorStatus : majorStatusList) {
             GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
             if (gapsEvent != null && !hearingPostponed(gapsEvent)) {
                 Event event = Event.builder()
@@ -175,9 +177,17 @@ class CaseDataEventBuilder {
                     .description(gapsEvent.getDescription())
                     .date(majorStatus.getDateSet().toLocalDateTime().toString())
                     .build();
-                events.add(Events.builder()
-                    .value(event)
-                    .build());
+                boolean responseReceivedEventAlreadyPresent = events.stream()
+                    .anyMatch(e -> e.getValue().getType().equals(GapsEvent.RESPONSE_RECEIVED.getType()));
+
+                if (event.getType().equals(GapsEvent.RESPONSE_RECEIVED.getType())
+                    && responseReceivedEventAlreadyPresent) {
+                    break;
+                } else {
+                    events.add(Events.builder()
+                        .value(event)
+                        .build());
+                }
             }
         }
         return events;

@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import lombok.Value;
 
 @Value
-public class MajorStatus {
+public class MajorStatus implements Comparable<MajorStatus> {
     private String bfDate;
     private String statusId;
     private String dateClosed;
@@ -19,5 +19,10 @@ public class MajorStatus {
         this.statusId = statusId;
         this.dateClosed = dateClosed;
         this.dateSet = dateSet;
+    }
+
+    @Override
+    public int compareTo(MajorStatus o) {
+        return dateSet.compareTo(o.dateSet);
     }
 }

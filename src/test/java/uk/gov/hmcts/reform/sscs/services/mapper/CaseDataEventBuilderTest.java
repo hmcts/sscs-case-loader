@@ -585,4 +585,40 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             expectedDateOfPostponedComingFromMinorStatus, actualDateOfPostponedComingFromMinorStatus);
     }
 
+    @Test
+    public void shouldNotAddResponseReceivedForMajorStatus18IfItAlreadyExists() {
+        ZonedDateTime appealReceivedEventDateTime = getEventDateTime(5);
+        ZonedDateTime responseReceivedEventDateTime = getEventDateTime(4);
+        ZonedDateTime hearingBookedEventDateTime = getEventDateTime(3);
+        ZonedDateTime responseReceivedEventDateTime2 = getEventDateTime(2);
+        AppealCase appealCase = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    appealReceivedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    responseReceivedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    responseReceivedEventDateTime2.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
+                    hearingBookedEventDateTime.toString())
+            ))
+            .build();
+
+        List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
+
+        assertThat(events.size(), equalTo(3));
+        assertThat(events.get(0).getValue().getDate(),
+            equalTo(appealReceivedEventDateTime.toLocalDateTime().toString()));
+        assertThat(events.get(1).getValue().getDate(),
+            equalTo(responseReceivedEventDateTime.toLocalDateTime().toString()));
+        assertThat(events.get(2).getValue().getDate(),
+            equalTo(hearingBookedEventDateTime.toLocalDateTime().toString()));
+
+    }
+
+    private ZonedDateTime getEventDateTime(int diffDays) {
+        return ZonedDateTime.now().minusDays(diffDays);
+    }
+
 }
