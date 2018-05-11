@@ -43,7 +43,7 @@ public class ProcessCaseFile {
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
         try {
             sftpChannel.lstat(processedReference);
-            System.out.print("this is the file to be delete......" + sftpChannel.lstat(processedReference));
+            System.out.println("this is the file to be delete......" + sftpChannel.lstat(processedReference));
             sftpChannel.rm(processedReference);
         } catch (SftpException e) {
             if (e.id != ChannelSftp.SSH_FX_NO_SUCH_FILE) {
