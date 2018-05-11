@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
@@ -45,6 +45,22 @@ class CaseDataEventBuilder {
     }
 
     List<Events> buildPostponedEvent(AppealCase appealCase) {
+        List<Events> events = new ArrayList<>();
+        events.addAll(buildPostponedEventsFromMajorStatus(appealCase));
+        events.addAll(buildPostponedEventsFromMinorStatus(appealCase));
+        events.addAll(buildPostponedEventsFromHearingOutcomeId(appealCase));
+        return events;
+    }
+
+    private List<Events> buildPostponedEventsFromHearingOutcomeId(AppealCase appealCase) {
+        if (hearingExists(appealCase)) {
+            return getEventsByHearingOutcomeId(appealCase, 12, 16,
+                GapsEvent.HEARING_POSTPONED);
+        }
+        return Collections.emptyList();
+    }
+
+    private List<Events> buildPostponedEventsFromMinorStatus(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
                 .filter(minorStatus -> areConditionsToCreatePostponedEventMet(minorStatus.getStatusId(), appealCase))
@@ -53,10 +69,41 @@ class CaseDataEventBuilder {
                 .collect(Collectors.toList());
         }
 
-        if (hearingExists(appealCase)) {
-            return getEventsByHearingOutcomeId(appealCase, 12, 16, GapsEvent.HEARING_POSTPONED);
+        return Collections.emptyList();
+    }
+
+    private List<Events> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
+        MajorStatus latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
+        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, latestMajorStatus)) {
+            return Collections.singletonList(buildNewPostponedEvent(latestMajorStatus.getDateSet()));
         }
         return Collections.emptyList();
+    }
+
+    private MajorStatus getLatestMajorStatusFromAppealCase(List<MajorStatus> majorStatus) {
+        return Collections.max(majorStatus, Comparator.comparing(MajorStatus::getDateSet));
+    }
+
+    private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase,
+                                                                     MajorStatus latestMajorStatus) {
+
+        return isResponseReceivedTheAppealCurrentStatus(latestMajorStatus) && isPostponementGranted(appealCase)
+            && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
+            retrieveHearingsFromCaseInCcd(appealCase));
+    }
+
+    private boolean isResponseReceivedTheAppealCurrentStatus(MajorStatus latestMajorStatus) {
+        return "18".equals(latestMajorStatus.getStatusId()) && latestMajorStatus.getDateClosed() == null;
+    }
+
+    private boolean isPostponementGranted(AppealCase appealCase) {
+        if (appealCase.getPostponementRequests() != null) {
+            return !appealCase.getPostponementRequests().stream()
+                .filter(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()))
+                .collect(Collectors.toList())
+                .isEmpty();
+        }
+        return false;
     }
 
     private boolean areConditionsToCreatePostponedEventMet(String statusId, AppealCase appealCase) {
@@ -65,12 +112,14 @@ class CaseDataEventBuilder {
         }
 
         if (minorStatusIdIs27AndMoreThanOnePostponementRequest(statusId, appealCase)) {
-            if (postponedEventInferredFromDelta.matchToHearingId(appealCase.getPostponementRequests(),
+            if (appealCase.getHearing() != null && !appealCase.getHearing().isEmpty()
+                && postponedEventInferredFromDelta.matchToHearingId(appealCase.getPostponementRequests(),
                 appealCase.getHearing())) {
                 return true;
+
             }
-            List<Hearing> hearingList = retrieveHearingsFromCaseInCcd(appealCase);
-            return postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(), hearingList);
+            return postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
+                retrieveHearingsFromCaseInCcd(appealCase));
         }
         return false;
     }
@@ -83,8 +132,10 @@ class CaseDataEventBuilder {
             .build();
         List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),
             idamTokens);
-        CaseData caseData = CcdUtil.getCaseData(caseDetailsList.get(0).getData());
-        return caseData.getHearings();
+        if (caseDetailsList != null && !caseDetailsList.isEmpty()) {
+            return CcdUtil.getCaseData(caseDetailsList.get(0).getData()).getHearings();
+        }
+        return Collections.emptyList();
     }
 
     private boolean minorStatusIdIs27AndMoreThanOnePostponementRequest(String statusId, AppealCase appealCase) {

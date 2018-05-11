@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -390,7 +391,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         ArrayList<Hearing> hearings = new ArrayList<>();
         Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("12").build();
         hearings.add(hearing);
-        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+        AppealCase appealCase = AppealCase.builder()
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE)
+            ))
+            .hearing(hearings)
+            .build();
 
         List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
@@ -408,7 +415,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         ArrayList<Hearing> hearings = new ArrayList<>();
         Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId("16").build();
         hearings.add(hearing);
-        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+        AppealCase appealCase = AppealCase.builder()
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE)
+            ))
+            .hearing(hearings)
+            .build();
 
         List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
@@ -427,7 +440,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         ArrayList<Hearing> hearings = new ArrayList<>();
         Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId(outcomeId).build();
         hearings.add(hearing);
-        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+        AppealCase appealCase = AppealCase.builder()
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE)
+            ))
+            .hearing(hearings)
+            .build();
 
         List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
@@ -446,11 +465,124 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         ArrayList<Hearing> hearings = new ArrayList<>();
         Hearing hearing = Hearing.builder().sessionDate(SESSION_DATE_TIME).outcomeId(outcomeId).build();
         hearings.add(hearing);
-        AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
+        AppealCase appealCase = AppealCase.builder()
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE)
+            ))
+            .hearing(hearings)
+            .build();
 
         List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
         assertThat(events.size(), equalTo(0));
+    }
+
+    /*
+        scenario4:
+        Given major status with id 18 is the current appeal status
+        And postponed_granted Yes
+        And no hearing element present in Delta
+        And there is a hearingId matching to the postponementHearingId in the existing case in CCD
+        Then create a Postponed event with major status date_set
+     */
+    @Test
+    public void givenScenario4ThenPostponedIsCreated() throws IOException {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE)
+            ))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "Y", "6", null, null)
+            ))
+            .build();
+
+        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(true);
+
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(1))
+            .matchToHearingId(eq(appeal.getPostponementRequests()),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+
+        assertEquals("expected one postponed event here", 1, events.size());
+        LocalDateTime expectedDate = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE).toLocalDateTime();
+        LocalDateTime actualDate = LocalDateTime.parse(events.get(0).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date", expectedDate, actualDate);
+    }
+
+    /*
+    Scenario 5:
+    Given scenario4 and scenario3 in the same Delta
+    Then two postponed events should be created
+     */
+    @Test
+    public void givenScenario5Then2PostponedEventsAreCreated() throws IOException {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    RESPONSE_RECEIVED_DATE)
+            ))
+            .hearing(null)
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
+            .postponementRequests(Arrays.asList(
+                new PostponementRequests(
+                    "Y", "6", null, null),
+                new PostponementRequests(
+                    "Y", "", null, null)
+            ))
+            .build();
+
+        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
+            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
+            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class)))
+            .thenReturn(true)
+            .thenReturn(true);
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        verify(searchCcdService, times(2)).findCaseByCaseRef(anyString(),
+            Matchers.any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(2))
+            .matchToHearingId(anyListOf(PostponementRequests.class),
+                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+
+        assertEquals("2 postponed events expected here", 2, events.size());
+
+        LocalDateTime expectedDateOfPostponedComingFromMajorStatus = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE)
+            .toLocalDateTime();
+        LocalDateTime actualDateOfPostponedComingFromMajorStatus = LocalDateTime.parse(
+            events.get(0).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date",
+            expectedDateOfPostponedComingFromMajorStatus, actualDateOfPostponedComingFromMajorStatus);
+
+        LocalDateTime expectedDateOfPostponedComingFromMinorStatus = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE)
+            .toLocalDateTime();
+        LocalDateTime actualDateOfPostponedComingFromMinorStatus = LocalDateTime.parse(
+            events.get(1).getValue().getDate());
+        assertEquals("event date must be equal to major status 18 date",
+            expectedDateOfPostponedComingFromMinorStatus, actualDateOfPostponedComingFromMinorStatus);
     }
 
 }

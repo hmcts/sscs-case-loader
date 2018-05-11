@@ -10,11 +10,14 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 public class PostponedEventInferredFromCcd implements PostponedEventService<Hearing> {
     @Override
     public boolean matchToHearingId(List<PostponementRequests> postponementRequests, List<Hearing> hearingList) {
-        return !postponementRequests.stream()
-            .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
-            .filter(postponementRequest -> matchToHearingIdInCcdCase(postponementRequest, hearingList))
-            .collect(Collectors.toList())
-            .isEmpty();
+        if (hearingList != null && !hearingList.isEmpty()) {
+            return !postponementRequests.stream()
+                .filter(postponementRequest -> "Y".equals(postponementRequest.getPostponementGranted()))
+                .filter(postponementRequest -> matchToHearingIdInCcdCase(postponementRequest, hearingList))
+                .collect(Collectors.toList())
+                .isEmpty();
+        }
+        return false;
     }
 
     private boolean matchToHearingIdInCcdCase(
