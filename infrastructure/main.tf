@@ -51,7 +51,7 @@ locals {
   local_ase = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "core-compute-aat" : "core-compute-saat" : local.aseName}"
 
   CcdApi = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
-  s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal
+  s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
 
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
