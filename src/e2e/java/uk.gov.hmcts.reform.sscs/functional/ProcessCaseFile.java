@@ -3,12 +3,10 @@ package uk.gov.hmcts.reform.sscs.functional;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import io.restassured.RestAssured;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.apache.commons.configuration.ConfigurationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,25 +26,37 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 public class ProcessCaseFile {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
-    private String filename;
+    String filename;
+    private static final String outputdir = "src/test/resources/updates";
+    private static final String processedReference =
+        "/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml";
 
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
 
+
     @Before
-    public void setup() throws ParserConfigurationException, TransformerException, IOException {
+    public void setup() throws ParserConfigurationException, TransformerException, IOException,
+        ConfigurationException, SftpException {
         GenerateXml.generateXmlForAppeals();
-        String outputdir = "src/test/resources/updates";
         copy(outputdir, filename);
+        ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
+        try {
+            sftpChannel.lstat(processedReference);
+            sftpChannel.rm(processedReference);
+        } catch (SftpException e) {
+            if (e.id != ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                throw e;
+            }
+        }
     }
 
     @After
     public void teardown() throws IOException, ParserConfigurationException {
         GenerateXml.cleanUpOldFiles();
-
     }
 
-    private void copy(String outputdir, String filename) {
+    public void copy(String outputdir, String filename) {
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
         try {
             File folder = new File(outputdir);
@@ -55,7 +65,7 @@ public class ProcessCaseFile {
                 sftpChannel.put(new FileInputStream(file), file.getName()); //NOPMD
             }
         } catch (SftpException e) {
-            throw new SftpCustomException("Failed to copy generated xml to sftp", filename, e);
+            throw new SftpCustomException("Failed to copy/delete generated xml to sftp", filename, e);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -68,15 +78,14 @@ public class ProcessCaseFile {
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
-                .given()
-                .when()
-                .get("/functional-test")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .and()
-                .extract().body().asString();
+            .given()
+            .when()
+            .get("/functional-test")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .and()
+            .extract().body().asString();
     }
 }
-
 
 
