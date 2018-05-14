@@ -5,4 +5,5 @@ core_case_data_user_id = "506"
 ignore_cases_before_date = "2017-01-01"
 sftp_key_location = "sftp_key_aat"
 idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
+gaps2_sftp_dir = "/incoming"
 
