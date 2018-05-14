@@ -36,6 +36,7 @@ public class Functional {
                 .idamOauth2Token(idamService.generateServiceAuthorization())
                 .build();
         return searchCcdService.findCaseByCaseRef(referenceNumber, idamTokens);
+
     }
 
 }

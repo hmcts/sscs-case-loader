@@ -9,7 +9,6 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
@@ -23,7 +22,6 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
@@ -41,33 +39,23 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 @Slf4j
 public class CaseDataBuilder {
 
-    public static final String YES = "Yes";
-    public static final String NO = "No";
-    public static final String Y = "Y";
+    private static final String YES = "Yes";
+    static final String NO = "No";
+    private static final String Y = "Y";
 
     private final ReferenceDataService referenceDataService;
+    private final CaseDataEventBuilder caseDataEventBuilder;
 
     @Autowired
-    CaseDataBuilder(ReferenceDataService referenceDataService) {
+    CaseDataBuilder(ReferenceDataService referenceDataService, CaseDataEventBuilder caseDataEventBuilder) {
         this.referenceDataService = referenceDataService;
+        this.caseDataEventBuilder = caseDataEventBuilder;
     }
 
     public List<Events> buildEvent(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
-        for (MajorStatus majorStatus : appealCase.getMajorStatus()) {
-            GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
-            if (gapsEvent != null) {
-                Event event = Event.builder()
-                    .type(gapsEvent.getType())
-                    .description(gapsEvent.getDescription())
-                    .date(majorStatus.getDateSet().toLocalDateTime().toString())
-                    .build();
-
-                events.add(Events.builder()
-                    .value(event)
-                    .build());
-            }
-        }
+        List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
+        events.addAll(caseDataEventBuilder.buildPostponedEvent(appealCase));
+        events.addAll(caseDataEventBuilder.buildAdjournedEvents(appealCase));
         events.sort(Collections.reverseOrder());
         return events;
     }

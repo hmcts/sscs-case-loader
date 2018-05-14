@@ -17,7 +17,8 @@ public class TransformAppealCaseToCaseDataTest {
     @Test
     public void givenACaseData_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
         ReferenceDataService referenceDataService = mock(ReferenceDataService.class);
-        CaseDataBuilder caseDataBuilder = new CaseDataBuilder(referenceDataService);
+        CaseDataEventBuilder caseDataEventBuilder = mock(CaseDataEventBuilder.class);
+        CaseDataBuilder caseDataBuilder = new CaseDataBuilder(referenceDataService, caseDataEventBuilder);
         TransformAppealCaseToCaseData transformAppealCaseToCaseData =
             new TransformAppealCaseToCaseData(caseDataBuilder);
 
