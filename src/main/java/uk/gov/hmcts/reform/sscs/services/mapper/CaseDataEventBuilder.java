@@ -93,7 +93,7 @@ class CaseDataEventBuilder {
     }
 
     private boolean isResponseReceivedTheAppealCurrentStatus(MajorStatus latestMajorStatus) {
-        return "18".equals(latestMajorStatus.getStatusId()) && latestMajorStatus.getDateClosed() == null;
+        return "18".equals(latestMajorStatus.getStatusId());
     }
 
     private boolean isPostponementGranted(AppealCase appealCase) {
@@ -180,10 +180,8 @@ class CaseDataEventBuilder {
                 boolean responseReceivedEventAlreadyPresent = events.stream()
                     .anyMatch(e -> e.getValue().getType().equals(GapsEvent.RESPONSE_RECEIVED.getType()));
 
-                if (event.getType().equals(GapsEvent.RESPONSE_RECEIVED.getType())
-                    && responseReceivedEventAlreadyPresent) {
-                    break;
-                } else {
+                if (!(event.getType().equals(GapsEvent.RESPONSE_RECEIVED.getType())
+                    && responseReceivedEventAlreadyPresent)) {
                     events.add(Events.builder()
                         .value(event)
                         .build());
