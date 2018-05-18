@@ -31,7 +31,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
@@ -40,6 +39,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
+import uk.gov.hmcts.reform.sscs.services.idam.AuthTokenSubjectExtractor;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -56,7 +56,7 @@ public class ProcessCaseRetryAndRecoveryTest {
     private AuthTokenGenerator authTokenGenerator;
 
     @MockBean
-    private AuthTokenValidator authTokenValidator;
+    private AuthTokenSubjectExtractor authTokenSubjectExtractor;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -105,7 +105,7 @@ public class ProcessCaseRetryAndRecoveryTest {
             .toReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(S2S_TOKEN);
-        given(authTokenValidator.getServiceName(S2S_TOKEN)).willReturn("sscs");
+        given(authTokenSubjectExtractor.extract(S2S_TOKEN)).willReturn("sscs");
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("", "", "accessToken"));

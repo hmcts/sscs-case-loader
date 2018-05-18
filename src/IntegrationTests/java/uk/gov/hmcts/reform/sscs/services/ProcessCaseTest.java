@@ -28,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -44,11 +43,17 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @SpringBootTest
 public class ProcessCaseTest {
 
-    @MockBean
-    private AuthTokenGenerator authTokenGenerator;
+    private static final String SERVER_AUTH =
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
+        + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
+        + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
+        + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
+        + "E8panNAv3zdDDeOhlrEViQ";
+
+    private static final String SERVER_USER = "sscs";
 
     @MockBean
-    private AuthTokenValidator authTokenValidator;
+    private AuthTokenGenerator authTokenGenerator;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -93,8 +98,7 @@ public class ProcessCaseTest {
         stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("url", "code", ""));
 
-        given(authTokenGenerator.generate()).willReturn("s2s token");
-        given(authTokenValidator.getServiceName("s2s token")).willReturn("sscs");
+        given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
         stub(coreCaseDataApi.searchForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), any()))
@@ -140,8 +144,8 @@ public class ProcessCaseTest {
 
         verify(coreCaseDataApi).searchForCaseworker(
             eq("Bearer accessToken"),
-            eq("s2s token"),
-            eq("sscs"),
+            eq(SERVER_AUTH),
+            eq(SERVER_USER),
             anyString(),
             anyString(),
             any()

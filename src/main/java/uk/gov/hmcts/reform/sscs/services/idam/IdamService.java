@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 
@@ -14,15 +13,15 @@ import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 public class IdamService {
 
     private final AuthTokenGenerator authTokenGenerator;
-    private final AuthTokenValidator authTokenValidator;
+    private final AuthTokenSubjectExtractor authTokenSubjectExtractor;
     private final IdamApiClient idamApiClient;
     private final IdamProperties idamProperties;
 
     @Autowired
-    public IdamService(AuthTokenGenerator authTokenGenerator, AuthTokenValidator authTokenValidator,
+    public IdamService(AuthTokenGenerator authTokenGenerator, AuthTokenSubjectExtractor authTokenSubjectExtractor,
                        IdamApiClient idamApiClient, IdamProperties idamProperties) {
         this.authTokenGenerator = authTokenGenerator;
-        this.authTokenValidator = authTokenValidator;
+        this.authTokenSubjectExtractor = authTokenSubjectExtractor;
         this.idamApiClient = idamApiClient;
         this.idamProperties = idamProperties;
     }
@@ -32,7 +31,7 @@ public class IdamService {
     }
 
     public String getServiceUserId(String serviceAuthorization) {
-        return authTokenValidator.getServiceName(serviceAuthorization);
+        return authTokenSubjectExtractor.extract(serviceAuthorization);
     }
 
     public String getIdamOauth2Token() {
