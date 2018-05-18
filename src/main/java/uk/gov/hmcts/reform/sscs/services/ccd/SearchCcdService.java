@@ -29,6 +29,19 @@ public class SearchCcdService {
 
     @Retryable
     public List<CaseDetails> findCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
+        return tryFindCaseByCaseRef(caseRef, idamTokens);
+    }
+
+    @Recover
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private List<CaseDetails> requestNewTokensAndTryToFindCaseAgain(String caseRef, IdamTokens idamTokens) {
+        log.info("*** case-loader *** Requesting new idam and s2s tokens");
+        idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+        idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
+        return tryFindCaseByCaseRef(caseRef, idamTokens);
+    }
+
+    private List<CaseDetails> tryFindCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
         return coreCaseDataApi.searchForCaseworker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorisation(),
@@ -37,22 +50,6 @@ public class SearchCcdService {
             coreCaseDataProperties.getCaseTypeId(),
             ImmutableMap.of("case.caseReference", caseRef)
         );
-    }
-
-    @Recover
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private List<CaseDetails> requestNewTokensAndTryToFindCaseAgain(String caseRef,
-                                                                    IdamTokens idamTokens) {
-        log.info("*** case-loader *** Requesting new idam and s2s tokens");
-        idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-        idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
-        return coreCaseDataApi.searchForCaseworker(
-            idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", caseRef));
     }
 
 }

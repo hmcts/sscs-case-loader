@@ -35,24 +35,7 @@ public class CreateCcdService {
 
     @Retryable
     public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
-        CaseDataContent caseDataContent = CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(Event.builder()
-                .id(startEventResponse.getEventId())
-                .summary("GAPS2 Case")
-                .description("CaseLoader Case created")
-                .build())
-            .data(caseData)
-            .build();
-        return coreCaseDataApi.submitForCaseworker(
-            idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            true,
-            caseDataContent);
+        return tryCreate(caseData, idamTokens);
     }
 
     @Recover
@@ -61,6 +44,10 @@ public class CreateCcdService {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
+        return tryCreate(caseData, idamTokens);
+    }
+
+    private CaseDetails tryCreate(CaseData caseData, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())

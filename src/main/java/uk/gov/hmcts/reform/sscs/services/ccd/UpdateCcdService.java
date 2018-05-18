@@ -35,26 +35,7 @@ public class UpdateCcdService {
 
     @Retryable
     public CaseDetails update(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEventCcdService.startEvent(
-            idamTokens, caseId.toString(), eventType);
-        CaseDataContent caseDataContent = CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(Event.builder()
-                .id(startEventResponse.getEventId())
-                .summary("GAPS2 Case")
-                .description("CaseLoader Case updated")
-                .build())
-            .data(caseData)
-            .build();
-        return coreCaseDataApi.submitEventForCaseWorker(
-            idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            caseId.toString(),
-            true,
-            caseDataContent);
+        return tryUpdate(caseData, caseId, eventType, idamTokens);
     }
 
     @Recover
@@ -64,6 +45,11 @@ public class UpdateCcdService {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
+        return tryUpdate(caseData, caseId, eventType, idamTokens);
+
+    }
+
+    private CaseDetails tryUpdate(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startEvent(
             idamTokens, caseId.toString(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -84,7 +70,6 @@ public class UpdateCcdService {
             caseId.toString(),
             true,
             caseDataContent);
-
     }
 
 }
