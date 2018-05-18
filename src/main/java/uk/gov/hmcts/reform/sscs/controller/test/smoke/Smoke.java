@@ -21,9 +21,11 @@ public class Smoke {
     @GetMapping("/smoke-test")
     @ResponseBody
     public List<CaseDetails> smoke() {
+        String serviceAuthorisation = idamService.generateServiceAuthorization();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
-            .serviceAuthorisation(idamService.generateServiceAuthorization())
+            .serviceAuthorisation(serviceAuthorisation)
+            .serviceUserId(idamService.getServiceUserId(serviceAuthorisation))
             .build();
         return searchCcdService.findCaseByCaseRef("SC068/18/01217", idamTokens);
     }
