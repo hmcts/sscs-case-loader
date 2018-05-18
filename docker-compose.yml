@@ -1,50 +1,322 @@
-version: '2.1'
+---
+version: '3'
 
 services:
-  sscs-case-loader:
-    build:
-      context: .
-      args:
-        - http_proxy
-        - https_proxy
-        - no_proxy
-    image: docker.artifactory.reform.hmcts.net/reform/sscs-case-loader
-    container_name: sscs-case-loader
+  ccd-user-profile-api:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-user-profile-api:latest
     environment:
-      # these environment variables are used by java-logging library
-      - ROOT_APPENDER
-      - JSON_CONSOLE_PRETTY_PRINT
-      - ROOT_LOGGING_LEVEL
-      - REFORM_SERVICE_NAME
-      - REFORM_TEAM
-      - REFORM_ENVIRONMENT
-      - GAPS2_SFTP_HOST=sftp-dev-server
-      - GAPS2_SFTP_USER=sftp
-      - GAPS2_KEY_LOCATION=/home/webapp/sscs-sftp-key
-      - GAPS2_SFTP_DIR=/incoming
-      - GAPS2_DATA_DIR=/var/tmp/gaps2
-      - GAPS2_ARCHIVE_DIR=/var/tmp/gaps2archive
-      - GAPS2_VALID_DIR=/var/tmp/valid
-      - GAPS2_SCHEMA_VALIDATION_FAILED_DIR=/var/tmp/schemaValidationFailed
-      - http_proxy=
-      - https_proxy=
-      - no_proxy=
+      USER_PROFILE_DB_HOST: ccd-user-profile-database
+      USER_PROFILE_DB_PORT: 5432
+      USER_PROFILE_DB_USERNAME:
+      USER_PROFILE_DB_PASSWORD:
+      USER_PROFILE_DB_USE_SSL:
+      USER_PROFILE_S2S_AUTHORISED_SERVICES: ccd_data,ccd_definition
+      IDAM_S2S_URL: http://service-auth-provider-api:8080
+      REFORM_SERVICE_NAME: ccd-user-profile-api
+      REFORM_TEAM: ccd
+      REFORM_ENVIRONMENT: local
+      APPINSIGHTS_INSTRUMENTATIONKEY: key
+    ports:
+      - 4453:4453
     depends_on:
-      gaps2-sftp:
-        condition: service_healthy
+      - ccd-user-profile-database
     links:
-      - gaps2-sftp
-    ports:
-      # check .env
-      - $SERVER_PORT:$SERVER_PORT
-      
-  gaps2-sftp:
-    image: docker.artifactory.reform.hmcts.net/sscs/sscs-sftp:${SSCS_TESTS_VERSION:-latest}
-    container_name: sscs-sftp
-    command: sftp:pass:1001
+      - ccd-user-profile-database
+      - service-auth-provider-api
+
+  ccd-user-profile-database:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-user-profile-database:latest
     healthcheck:
-      retries: 40
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      USER_PROFILE_DB_USERNAME:
+      USER_PROFILE_DB_PASSWORD:
     ports:
-      - "2222:22"
+      - 5453:5432
     volumes:
-      - ./docker/sftp/data/incoming:/home/sftp/incoming
+      - ccd-user-profile-database-data:/var/lib/postgresql/data
+
+  ccd-definition-store-api:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-definition-store-api:latest
+    environment:
+      DEFINITION_STORE_DB_HOST: ccd-definition-store-database
+      DEFINITION_STORE_DB_PORT: 5432
+      DEFINITION_STORE_DB_USERNAME:
+      DEFINITION_STORE_DB_PASSWORD:
+      DEFINITION_STORE_DB_USE_SSL:
+      DEFINITION_STORE_IDAM_KEY: "${IDAM_KEY_CCD_DEFINITION_STORE}"
+      DEFINITION_STORE_S2S_AUTHORISED_SERVICES: ccd_data,ccd_gw
+      USER_PROFILE_HOST: http://ccd-user-profile-api:4453
+      IDAM_USER_URL: http://idam-api:8080
+      IDAM_S2S_URL: http://service-auth-provider-api:8080
+      REFORM_SERVICE_NAME: ccd-definition-store-api
+      REFORM_TEAM: ccd
+      REFORM_ENVIRONMENT: local
+      APPINSIGHTS_INSTRUMENTATIONKEY: key
+    ports:
+      - 4451:4451
+    depends_on:
+      - ccd-definition-store-database
+      - ccd-user-profile-api
+    links:
+      - ccd-definition-store-database
+      - ccd-user-profile-api
+      - idam-api
+      - service-auth-provider-api
+
+  ccd-definition-store-database:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-definition-store-database:latest
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      DEFINITION_STORE_DB_USERNAME:
+      DEFINITION_STORE_DB_PASSWORD:
+    ports:
+      - 5451:5432
+    volumes:
+      - ccd-definition-store-database-data:/var/lib/postgresql/data
+
+  ccd-data-store-api:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-data-store-api:latest
+    environment:
+      DATA_STORE_DB_HOST: ccd-data-store-database
+      DATA_STORE_DB_PORT: 5432
+      DATA_STORE_DB_USERNAME:
+      DATA_STORE_DB_PASSWORD:
+      DATA_STORE_DB_USE_SSL:
+      DATA_STORE_IDAM_KEY: "${IDAM_KEY_CCD_DATA_STORE}"
+      DATA_STORE_TOKEN_SECRET: iuasbcuasdcbasdgcasdgcuysachjsacyasdgjcgasdj
+      DATA_STORE_S2S_AUTHORISED_SERVICES: ccd_gw
+      DEFINITION_STORE_HOST: http://ccd-definition-store-api:4451
+      USER_PROFILE_HOST: http://ccd-user-profile-api:4453
+      IDAM_USER_URL: http://idam-api:8080
+      IDAM_S2S_URL: http://service-auth-provider-api:8080
+      REFORM_SERVICE_NAME: ccd-data-store-api
+      REFORM_TEAM: ccd
+      REFORM_ENVIRONMENT: local
+      APPINSIGHTS_INSTRUMENTATIONKEY: key
+    ports:
+      - 4452:4452
+    depends_on:
+      - ccd-data-store-database
+      - ccd-user-profile-api
+      - ccd-definition-store-api
+    links:
+      - ccd-data-store-database
+      - ccd-user-profile-api
+      - ccd-definition-store-api
+      - idam-api
+      - service-auth-provider-api
+
+  ccd-data-store-database:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-data-store-database:latest
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      DATA_STORE_DB_USERNAME:
+      DATA_STORE_DB_PASSWORD:
+    ports:
+      - 5452:5432
+    volumes:
+      - ccd-data-store-database-data:/var/lib/postgresql/data
+
+  idam-api:
+    image: docker.artifactory.reform.hmcts.net/auth/idam-api:latest
+    container_name: idam-api
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      IDAM_SUPERUSER_EMAIL: ccd@hmcts.net
+      SPRING_DATASOURCE_URL: jdbc:postgresql://idam-database:5432/idam
+      SPRING_MAIL_HOST: smtp-server
+      IDAM_TESTING_SUPPORT_ENABLED: "true"
+      NOTIFY_API_KEY: AAAAAAAAAAAAAAAA
+      NOTIFY_CMC_ACTIVATE_USER_TEMPLATE: 76aa8695-64e8-4afd-ae13-bc8385302b1f
+      IDAM_SECRET: idam_test_secret
+      IDAM_API_OAUTH2_CLIENT_CLIENT_SECRETS_CCD_GATEWAY: "${OAUTH2_CLIENT_CCD_GATEWAY}"
+#      IDAM_CCD_WHITELIST: http://localhost:3451/oauth2redirect
+      NOTIFY: "false"
+      NOTIFY_CMC_WELCOME_USER_TEMPLATE: fake
+      NOTIFY_DIVORCE_WELCOME_USER_TEMPLATE: fake
+      NOTIFY_SSCS_WELCOME_USER_TEMPLATE: fake
+      NOTIFY_RESET_PASSWORD_TEMPLATE: fake
+      NOTIFY_PROBATE_ACTIVATE_USER_TEMPLATE: fake
+      NOTIFY_DIVORCE_ACTIVATE_USER_TEMPLATE: fake
+      NOTIFY_SSCS_ACTIVATE_USER_TEMPLATE: fake
+      NOTIFY_CCD_ACTIVATE_USER_TEMPLATE: fake
+      REFORM_SERVICE_NAME: idam-api
+      REFORM_TEAM: idam
+      REFORM_ENVIRONMENT: local
+      http_proxy:
+      https_proxy:
+      no_proxy:
+    ports:
+      - 4501:8080
+    links:
+      - smtp-server
+      - idam-database
+    depends_on:
+      - idam-database
+      - smtp-server
+  idam-database:
+    image: docker.artifactory.reform.hmcts.net/auth/idam-database:latest
+    ports:
+      - 5501:5432
+    volumes:
+      - idam-database:/var/lib/postgresql/data
+
+  service-auth-provider-api:
+    image: docker.artifactory.reform.hmcts.net/auth/service-auth-provider-api:47e18b53aad48ae8124744041988565e07dfed50
+    container_name: service-auth-provider-api
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 4502:8080
+    environment:
+      auth.provider.service.server.jwtKey: wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==
+      auth.provider.service.server.microserviceKeys.ccd_data: "${IDAM_KEY_CCD_DATA_STORE}"
+      auth.provider.service.server.microserviceKeys.ccd_gw: "${IDAM_KEY_CCD_GATEWAY}"
+      auth.provider.service.server.microserviceKeys.ccd_definition: "${IDAM_KEY_CCD_DEFINITION_STORE}"
+      auth.provider.service.testing-support.enabled: "true"
+
+  smtp-server:
+    image: mailhog/mailhog
+
+  ccd-case-management-web:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-case-management-web:latest
+    container_name: ccd-case-management-web
+    environment:
+      IDAM_LOGIN_URL: https://localhost:3501/login
+      CCD_GATEWAY_BASE_URL: http://localhost:3453
+      CCD_ACTIVITY_BASE_URL:
+      DM_GATEWAY_BASE_URL: https://api-gateway.dev.dm.reform.hmcts.net
+      OAUTH2_CLIENT_ID: ccd_gateway
+    ports:
+      - 3451:80
+    depends_on:
+      - ccd-api-gateway
+
+  ccd-api-gateway:
+    image: docker.artifactory.reform.hmcts.net/ccd/ccd-api-gateway:latest
+    container_name: ccd-api-gateway
+    environment:
+      IDAM_LOGOUT_URL: https://localhost:3501/login/logout
+      IDAM_BASE_URL: http://idam-api:8080
+      IDAM_USER_URL: http://idam-api:8080
+      IDAM_S2S_URL: http://service-auth-provider-api:8080
+      IDAM_SERVICE_KEY: "${IDAM_KEY_CCD_GATEWAY}"
+      IDAM_OAUTH2_CLIENT_ID: ccd_gateway
+      IDAM_OAUTH2_CLIENT_SECRET: "${OAUTH2_CLIENT_CCD_GATEWAY}"
+      IDAM_OAUTH2_TOKEN_ENDPOINT: http://idam-api:8080/oauth2/token
+      PROXY_AGGREGATED: http://ccd-data-store-api:4452
+      PROXY_DATA: http://ccd-data-store-api:4452
+      PROXY_DEFINITION_IMPORT: http://ccd-definition-store-api:4451
+      PROXY_DEFINITION_DATA: http://ccd-definition-store-api:4451/api/data
+      PROXY_DEFINITION_DISPLAY: http://ccd-definition-store-api:4451/api/display
+      APPINSIGHTS_INSTRUMENTATIONKEY: key
+    ports:
+      - 3453:3453
+    depends_on:
+      - ccd-user-profile-api
+      - ccd-definition-store-api
+      - ccd-data-store-api
+
+  authentication-web:
+    image: docker.artifactory.reform.hmcts.net/auth/authentication-web:latest
+    environment:
+     IDAM_API_URL: http://idam-api:8080
+     IDAM_CONTINUE_URL_VALIDATOR_ENFORCE_TLS: "false"
+     REFORM_SERVICE_NAME: idam-api
+     REFORM_TEAM: idam
+     REFORM_ENVIRONMENT: local
+    ports:
+      - 3501:8000
+    links:
+      - idam-api
+    depends_on:
+      - idam-api
+
+  sscs-case-loader:
+      build:
+        context: .
+        args:
+          - http_proxy
+          - https_proxy
+          - no_proxy
+#      image: docker.artifactory.reform.hmcts.net/reform/sscs-case-loader
+      container_name: sscs-case-loader
+      environment:
+        # these environment variables are used by java-logging library
+        - ROOT_APPENDER
+        - JSON_CONSOLE_PRETTY_PRINT
+        - ROOT_LOGGING_LEVEL
+        - REFORM_SERVICE_NAME
+        - REFORM_TEAM
+        - REFORM_ENVIRONMENT
+        - GAPS2_SFTP_HOST=sscs-sftp
+        - GAPS2_SFTP_USER=sftp
+        - GAPS2_SFTP_DIR=incoming
+        - GAPS2_SFTP_PORT=22
+        - "GAPS2_KEY_LOCATION=-----BEGIN RSA PRIVATE KEY-----\nMIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl\n6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P\nDC568Rno5Y3r780VYC6+QQcLSgC5E+45jW52CS3sJuZTJ+4vt6huG+m5MbKMPOVe\n/QKnb20gNRsOGoX8oIHlbcogX62huUbAKgB9/eSj8kBSh1il19Xu6/WpBYORIZZM\n0Bh5DDQIMULNc965X9BlO50N15er3fftfIjv1pl91i4E1v/Rv6W5qIM3rgzLEjP2\n6n0+Lbhgpfc7yR/GoycUHJQrtd2PDKPjcv052wIDAQABAoIBAQCVxD9RWKWiXDhI\nKuY1GrEsTSULveUI3CBtHOmWyVzGXUqdDtvoGsDxgtb0JwADVGNHsxDTXtm4hkTD\n/oZJPNWBwI2lpx0cpM1FxvR3WvXy7XNNj+5RTVmp1taQK3JYnGyf0UXm5VD0gEQM\nB0J/XfPboaQvPDk2CNR9wx7Vy7ddySnyc0q9QEDo+Hb30QiacZDvvM2H08AXgegm\nFJTgR0xOgTncz/2Iw0xNL5rUA2+xnFvMeBqfOMLvSSvtTbwr4BQbup3r9uc5BYFC\n4NASRRh7ZLjzzAE2IOrv64/j0kjhSTliEsxLuhaVZgbhFVKuMW3ZwbG+7VVfY5ra\nIbErIPZZAoGBAOWeXHMGwzq8fPTKaHRRRpZ0Kk3DOWaLh2GuYn+XbjbfJTximzD9\nTgFXUhKau8wsvQ3t2udc9BbWX1mTFKUo/JJJPzp6HVHRSCozk4KFB3zdT2Lz45yA\n8jxaJFkGYiszpv+5tKU//cEHPr4pA+w7CPMk7RCe2VUkEXSHYXPA18TlAoGBAM1G\nIo1xTJO4cwPje3vlHmbEaNrjnTAere7T9LH1Lv1dPGxKhKlnbGLVo6CFsYjhV6DB\nbkSSiXlLT3uSuBakO1WRya0TLiYup7PCnTkjjivbFSxxbMqMxzi4RMx6pQde4qhd\nd3wf3JjY1JPIgw5OINVtbkTHW01LoLW4EaKPwde/AoGBAMPzuQGQq9rcL+bXNPzO\nv2Z2DAQArmOMfyQlJXmtSSkalTRLEhVklcUfN7MYyVscctoIOd9nvAYhO429rsij\niadtSsAkphDEgMlC6odf71vnoW/Yok1U3WQTqSEwCWbE1ac2W6sKSQsJm8m8RtS6\nLJES2hxs8xtthFflkIyv7XLhAoGBAJZpHqZPb5IKJFSkGfZFg0o//qjtAV+iC0al\njnXbNyw1ZjHfRGewva2J51SWweiPXZsQQRED4rG66imc70C/5C4mHgWwuS8HHqDM\nKFIW6HTgGhqvncyo7M110AuYjlXhQ+mkWwnbetOQhesnkEgqHUrl3VeOUCtKEB83\nGczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc\nfVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V\njExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+\n-----END RSA PRIVATE KEY-----\n"
+        - http_proxy=
+        - https_proxy=
+        - no_proxy=
+        - SSCS_CASE_LOADER_CRON_SCHEDULE=0 0/1 * * * ?
+        - IGNORE_CASES_BEFORE_DATE=1901-01-01
+        - CORE_CASE_DATA_API_URL=http://ccd-data-store-api:4452
+        - CORE_CASE_DATA_USER_ID=16
+        - CORE_CASE_DATA_JURISDICTION_ID=SSCS
+        - CORE_CASE_DATA_CASE_TYPE_ID=Benefit
+        - IDAM_URL=http://idam-api:8080
+        - IDAM.S2S-AUTH.TOTP_SECRET=AAAAAAAAAAAAAAAC
+        - IDAM.S2S-AUTH.MICROSERVICE=sscs
+        - IDAM.S2S-AUTH=http://service-auth-provider-api:8080
+        - IDAM_SSCS_SYSTEMUPDATE_USER=SSCS_SYSTEM_UPDATE
+        - IDAM_SSCS_SYSTEMUPDATE_PASSWORD=SSCS_SYSTEM_UPDATE
+        - IDAM_OAUTH2_CLIENT_ID=sscs
+        - IDAM_OAUTH2_CLIENT_SECRET=QM5RQQ53LZFOSIXJ
+      depends_on:
+        - gaps2-sftp
+        - idam-api
+        - ccd-data-store-api
+        - service-auth-provider-api
+      links:
+        - gaps2-sftp
+        - idam-api
+        - ccd-data-store-api
+        - service-auth-provider-api
+      ports:
+        # check .env
+        - $SERVER_PORT:$SERVER_PORT
+      healthcheck:
+        retries: 10
+
+
+  gaps2-sftp:
+      build:
+        context: docker/sftp
+      #image: docker.artifactory.reform.hmcts.net/sscs/sscs-sftp:${SSCS_TESTS_VERSION:-latest}
+      container_name: sscs-sftp
+      command: sftp:pass:1001
+      healthcheck:
+        retries: 40
+      ports:
+        - "2222:22"
+      volumes:
+        - ./docker/sftp/data/incoming:/home/sftp/incoming
+
+volumes:
+  ccd-user-profile-database-data:
+  ccd-definition-store-database-data:
+  ccd-data-store-database-data:
+  idam-database:
