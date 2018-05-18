@@ -35,8 +35,8 @@ public class UpdateCcdService {
 
     @Retryable
     public CaseDetails update(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), caseId.toString(), eventType);
+        StartEventResponse startEventResponse = startEventCcdService.startEvent(
+            idamTokens, caseId.toString(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -49,7 +49,7 @@ public class UpdateCcdService {
         return coreCaseDataApi.submitEventForCaseWorker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getAuthenticationService(),
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             caseId.toString(),
@@ -64,8 +64,8 @@ public class UpdateCcdService {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
-        StartEventResponse startEventResponse = startEventCcdService.startEvent(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), caseId.toString(), eventType);
+        StartEventResponse startEventResponse = startEventCcdService.startEvent(
+            idamTokens, caseId.toString(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -78,7 +78,7 @@ public class UpdateCcdService {
         return coreCaseDataApi.submitEventForCaseWorker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getAuthenticationService(),
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             caseId.toString(),

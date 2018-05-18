@@ -31,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
@@ -50,8 +51,12 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     private static final String S2S_TOKEN = "s2s token";
     private static final String S2S_TOKEN2 = "s2s token2";
+
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
+
+    @MockBean
+    private AuthTokenValidator authTokenValidator;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -100,6 +105,7 @@ public class ProcessCaseRetryAndRecoveryTest {
             .toReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(S2S_TOKEN);
+        given(authTokenValidator.getServiceName(S2S_TOKEN)).willReturn("sscs");
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("", "", "accessToken"));
@@ -132,7 +138,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         verify(coreCaseDataApi, times(3)).searchForCaseworker(
             eq("Bearer accessToken"),
             eq(S2S_TOKEN),
-            anyString(),
+            eq("sscs"),
             anyString(),
             anyString(),
             any());
@@ -140,7 +146,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         verify(coreCaseDataApi, times(1)).searchForCaseworker(
             eq("Bearer accessToken2"),
             eq(S2S_TOKEN2),
-            anyString(),
+            eq("sscs"),
             anyString(),
             anyString(),
             any());
@@ -152,9 +158,13 @@ public class ProcessCaseRetryAndRecoveryTest {
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
 
-
-        when(coreCaseDataApi.searchForCaseworker(eq("Bearer accessToken2"), eq(S2S_TOKEN2),
-            anyString(), anyString(), anyString(), any()))
+        when(coreCaseDataApi.searchForCaseworker(
+            eq("Bearer accessToken2"),
+            eq(S2S_TOKEN2),
+            eq("sscs"),
+            anyString(),
+            anyString(),
+            any()))
             .thenReturn(Collections.singletonList(CaseDetails.builder()
                 .id(10L)
                 .data(caseDataMap)
@@ -163,8 +173,13 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     @SuppressWarnings("unchecked")
     private void mockCcdApiToThrowExceptionWhenFindingCaseByRefIsCalled() {
-        when(coreCaseDataApi.searchForCaseworker(eq("Bearer accessToken"), eq(S2S_TOKEN),
-            anyString(), anyString(), anyString(), any()))
+        when(coreCaseDataApi.searchForCaseworker(
+            eq("Bearer accessToken"),
+            eq(S2S_TOKEN),
+            eq("sscs"),
+            anyString(),
+            anyString(),
+            any()))
             .thenThrow(Exception.class)
             .thenThrow(Exception.class)
             .thenThrow(Exception.class);

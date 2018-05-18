@@ -35,8 +35,7 @@ public class CreateCcdService {
 
     @Retryable
     public CaseDetails create(CaseData caseData, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), "appealCreated");
+        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -49,7 +48,7 @@ public class CreateCcdService {
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getAuthenticationService(),
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             true,
@@ -62,8 +61,7 @@ public class CreateCcdService {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
-        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens.getAuthenticationService(),
-            idamTokens.getIdamOauth2Token(), "appealCreated");
+        StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
@@ -76,7 +74,7 @@ public class CreateCcdService {
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getAuthenticationService(),
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             true,

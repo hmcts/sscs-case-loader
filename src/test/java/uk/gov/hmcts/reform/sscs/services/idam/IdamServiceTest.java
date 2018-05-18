@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 
@@ -21,19 +22,21 @@ public class IdamServiceTest {
     @Mock
     private AuthTokenGenerator authTokenGenerator;
     @Mock
+    private AuthTokenValidator authTokenValidator;
+    @Mock
     private IdamApiClient idamApiClient;
 
     private Authorize authToken;
-
     private IdamProperties idamProperties;
-
     private IdamService idamService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         authToken = new Authorize("redirect/", "authCode", "access");
         idamProperties = new IdamProperties();
-        idamService = new IdamService(authTokenGenerator, idamApiClient, idamProperties);
+        idamService = new IdamService(
+            authTokenGenerator, authTokenValidator, idamApiClient, idamProperties
+        );
     }
 
     @Test
@@ -41,6 +44,14 @@ public class IdamServiceTest {
         String auth = "auth";
         when(authTokenGenerator.generate()).thenReturn(auth);
         assertThat(idamService.generateServiceAuthorization(), is(auth));
+    }
+
+    @Test
+    public void shouldReturnServiceUserIdGivenAuthToken() {
+        String auth = "auth";
+        String serviceName = "sscs";
+        when(authTokenValidator.getServiceName(auth)).thenReturn(serviceName);
+        assertThat(idamService.getServiceUserId(auth), is(serviceName));
     }
 
     @Test

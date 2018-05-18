@@ -60,11 +60,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     public void setUp() throws Exception {
         given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
         given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
+        given(idamService.getServiceUserId("serviceToken")).willReturn("sscs");
 
         given(coreCaseDataApi.searchForCaseworker(
             "oauth2Token",
             "serviceToken",
-            coreCaseDataProperties.getUserId(),
+            "sscs",
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             ImmutableMap.of("case.caseReference", "SC068/17/00011")

@@ -23,6 +23,3 @@ public class GetSavedCase {
             .extract().body().asString();
     }
 }
-
-
-

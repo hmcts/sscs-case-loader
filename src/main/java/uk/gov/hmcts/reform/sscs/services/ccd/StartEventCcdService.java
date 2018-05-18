@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 
 @Service
 public class StartEventCcdService {
@@ -18,22 +19,21 @@ public class StartEventCcdService {
         this.coreCaseDataProperties = coreCaseDataProperties;
     }
 
-    public StartEventResponse startCase(String serviceAuthorization, String idamOauth2Token, String eventType) {
+    public StartEventResponse startCase(IdamTokens idamTokens, String eventType) {
         return coreCaseDataApi.startForCaseworker(
-            idamOauth2Token,
-            serviceAuthorization,
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             eventType);
     }
 
-    public StartEventResponse startEvent(String serviceAuthorization, String idamOauth2Token, String caseId,
-                                         String eventType) {
+    public StartEventResponse startEvent(IdamTokens idamTokens, String caseId, String eventType) {
         return coreCaseDataApi.startEventForCaseWorker(
-            idamOauth2Token,
-            serviceAuthorization,
-            coreCaseDataProperties.getUserId(),
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             caseId,

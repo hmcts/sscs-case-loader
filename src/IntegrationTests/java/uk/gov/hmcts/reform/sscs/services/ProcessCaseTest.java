@@ -28,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -45,6 +46,9 @@ public class ProcessCaseTest {
 
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
+
+    @MockBean
+    private AuthTokenValidator authTokenValidator;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -72,7 +76,6 @@ public class ProcessCaseTest {
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
 
-
         String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
 
@@ -91,6 +94,7 @@ public class ProcessCaseTest {
             .toReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn("s2s token");
+        given(authTokenValidator.getServiceName("s2s token")).willReturn("sscs");
 
         stub(coreCaseDataApi.searchForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), any()))
@@ -135,6 +139,12 @@ public class ProcessCaseTest {
         caseLoaderService.process();
 
         verify(coreCaseDataApi).searchForCaseworker(
-            anyString(), anyString(), anyString(), anyString(), anyString(), any());
+            eq("Bearer accessToken"),
+            eq("s2s token"),
+            eq("sscs"),
+            anyString(),
+            anyString(),
+            any()
+        );
     }
 }

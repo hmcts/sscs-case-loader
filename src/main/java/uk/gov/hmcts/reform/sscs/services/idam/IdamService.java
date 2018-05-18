@@ -5,26 +5,34 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 
 @Service
 @Slf4j
 public class IdamService {
+
     private final AuthTokenGenerator authTokenGenerator;
+    private final AuthTokenValidator authTokenValidator;
     private final IdamApiClient idamApiClient;
     private final IdamProperties idamProperties;
 
     @Autowired
-    public IdamService(AuthTokenGenerator authTokenGenerator, IdamApiClient idamApiClient,
-                       IdamProperties idamProperties) {
+    public IdamService(AuthTokenGenerator authTokenGenerator, AuthTokenValidator authTokenValidator,
+                       IdamApiClient idamApiClient, IdamProperties idamProperties) {
         this.authTokenGenerator = authTokenGenerator;
+        this.authTokenValidator = authTokenValidator;
         this.idamApiClient = idamApiClient;
         this.idamProperties = idamProperties;
     }
 
     public String generateServiceAuthorization() {
         return authTokenGenerator.generate();
+    }
+
+    public String getServiceUserId(String serviceAuthorization) {
+        return authTokenValidator.getServiceName(serviceAuthorization);
     }
 
     public String getIdamOauth2Token() {
