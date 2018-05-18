@@ -31,7 +31,7 @@ public class SearchCcdService {
     public List<CaseDetails> findCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
         return coreCaseDataApi.searchForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceAuthorisation(),
             idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
@@ -45,10 +45,10 @@ public class SearchCcdService {
                                                                     IdamTokens idamTokens) {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-        idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
+        idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
         return coreCaseDataApi.searchForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceAuthorisation(),
             idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),

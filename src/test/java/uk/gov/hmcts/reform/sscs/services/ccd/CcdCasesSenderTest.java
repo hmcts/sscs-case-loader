@@ -79,7 +79,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender = new CcdCasesSender(createCcdService, updateCcdService, regionalProcessingCenterService);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
-            .authenticationService(SERVICE_AUTHORIZATION)
+            .serviceAuthorisation(SERVICE_AUTHORIZATION)
             .serviceUserId(SERVICE_USER_ID)
             .build();
     }

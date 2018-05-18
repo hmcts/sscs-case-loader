@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class IdamTokens {
     String idamOauth2Token;
-    String authenticationService;
+    String serviceAuthorisation;
     final String serviceUserId;
 }

@@ -129,7 +129,7 @@ class CaseDataEventBuilder {
         String serviceAuthorization = idamService.generateServiceAuthorization();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
-            .authenticationService(serviceAuthorization)
+            .serviceAuthorisation(serviceAuthorization)
             .serviceUserId(idamService.getServiceUserId(serviceAuthorization))
             .build();
         List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),

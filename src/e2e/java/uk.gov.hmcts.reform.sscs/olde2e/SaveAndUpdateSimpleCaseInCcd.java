@@ -35,7 +35,7 @@ public class SaveAndUpdateSimpleCaseInCcd {
         String serviceAuthorization = idamService.generateServiceAuthorization();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(idamService.getIdamOauth2Token())
-            .authenticationService(serviceAuthorization)
+            .serviceAuthorisation(serviceAuthorization)
             .serviceUserId(idamService.getServiceUserId(serviceAuthorization))
             .build();
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);

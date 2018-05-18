@@ -22,7 +22,7 @@ public class StartEventCcdService {
     public StartEventResponse startCase(IdamTokens idamTokens, String eventType) {
         return coreCaseDataApi.startForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceAuthorisation(),
             idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
@@ -32,7 +32,7 @@ public class StartEventCcdService {
     public StartEventResponse startEvent(IdamTokens idamTokens, String caseId, String eventType) {
         return coreCaseDataApi.startEventForCaseWorker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceAuthorisation(),
             idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),

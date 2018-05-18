@@ -52,7 +52,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
             .build();
         idamTokens = IdamTokens.builder()
             .idamOauth2Token("authorization")
-            .authenticationService("serviceAuthorization")
+            .serviceAuthorisation("serviceAuthorization")
             .serviceUserId("sscs")
             .build();
     }

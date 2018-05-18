@@ -95,7 +95,7 @@ public class CaseLoaderServiceTest {
         CaseDetails caseDetails = CaseDetails.builder().build();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
-            .authenticationService("serviceAuthorization")
+            .serviceAuthorisation("serviceAuthorization")
             .serviceUserId("sscs")
             .build();
         when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), eq(idamTokens)))

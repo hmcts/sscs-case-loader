@@ -47,7 +47,7 @@ public class CreateCcdService {
             .build();
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceAuthorisation(),
             idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
@@ -60,7 +60,7 @@ public class CreateCcdService {
     private CaseDetails requestNewTokensAndTryToCreateAgain(CaseData caseData, IdamTokens idamTokens) {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-        idamTokens.setAuthenticationService(idamService.generateServiceAuthorization());
+        idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
         StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -73,7 +73,7 @@ public class CreateCcdService {
             .build();
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getAuthenticationService(),
+            idamTokens.getServiceAuthorisation(),
             idamTokens.getServiceUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
