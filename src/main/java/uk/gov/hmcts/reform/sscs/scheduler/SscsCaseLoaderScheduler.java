@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 @Component
 @Slf4j
 @ConditionalOnProperty(value = "scheduling.enabled", havingValue = "true", matchIfMissing = true)
-public class SscsCaseLoaderScheduler {
+class SscsCaseLoaderScheduler {
 
     private final CaseLoaderService caseLoaderService;
 
@@ -25,7 +25,7 @@ public class SscsCaseLoaderScheduler {
     }
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
-    public void run() {
+    void run() {
         log.info("*** case-loader to process data *** process.data: {}", slotName);
         if ("PRODUCTION".equals(slotName)) {
             try {

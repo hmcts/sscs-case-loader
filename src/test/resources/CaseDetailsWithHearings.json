@@ -8,41 +8,67 @@
   "locked_by_user_id": null,
   "security_level": null,
   "case_data": {
-    "dwpTimeExtension": [{
-      "value": {
-        "requested": "Yes",
-        "granted": "Yes"
-      },
-      "id": "47d4b988-2532-4313-b853-5ccc0a62b744"
-    }, {
-      "value": {
-        "requested": "Yes",
-        "granted": "No"
-      },
-      "id": "ba6d93ac-4e3e-42d5-b4a4-552f9abfa952"
-    }],
-    "generatedNino": "CA 36 98 74 A",
-    "hearings": [{
-      "value": {
-        "venue": {
-          "name": "Prudential House",
-          "address": {
-            "line1": "36 Dale Street",
-            "line2": "",
-            "town": "Liverpool",
-            "county": "Merseyside",
-            "postcode": "L2 5UZ"
-          },
-          "googleMapLink": "https://www.google.com/maps/place/36+Dale+Street+Liverpool+Merseyside+L2+5UZ/@53.407820,-2.988509"
+    "dwpTimeExtension": [
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "Yes"
         },
-        "hearingDate": "2017-05-24",
-        "time": "10:00",
-        "adjourned": "Yes"
+        "id": "47d4b988-2532-4313-b853-5ccc0a62b744"
       },
-      "id": "e1ba468b-9a24-494b-8b7a-26cb3b75c890"
-    }],
+      {
+        "value": {
+          "requested": "Yes",
+          "granted": "No"
+        },
+        "id": "ba6d93ac-4e3e-42d5-b4a4-552f9abfa952"
+      }
+    ],
+    "generatedNino": "CA 36 98 74 A",
+    "hearings": [
+      {
+        "value": {
+          "venue": {
+            "name": "Prudential House",
+            "address": {
+              "line1": "36 Dale Street",
+              "line2": "",
+              "town": "Liverpool",
+              "county": "Merseyside",
+              "postcode": "L2 5UZ"
+            },
+            "googleMapLink": "https://www.google.com/maps/place/36+Dale+Street+Liverpool+Merseyside+L2+5UZ/@53.407820,-2.988509"
+          },
+          "hearingDate": "2017-05-24",
+          "time": "10:00",
+          "adjourned": "Yes",
+          "hearingId": "6"
+        },
+        "id": "e1ba468b-9a24-494b-8b7a-26cb3b75c890"
+      },
+      {
+        "value": {
+          "venue": {
+            "name": "Prudential House",
+            "address": {
+              "line1": "36 Dale Street",
+              "line2": "",
+              "town": "Liverpool",
+              "county": "Merseyside",
+              "postcode": "L2 5UZ"
+            },
+            "googleMapLink": "https://www.google.com/maps/place/36+Dale+Street+Liverpool+Merseyside+L2+5UZ/@53.407820,-2.988509"
+          },
+          "hearingDate": "2017-05-24",
+          "time": "10:00",
+          "adjourned": "Yes",
+          "hearingId": "7"
+        },
+        "id": "e1ba468b-9a24-494b-8b7a-26cb3b75c890"
+      }
+    ],
     "evidence": {
-      "documents": [ ]
+      "documents": []
     },
     "caseReference": "SC068/17/00011",
     "generatedSurname": "Cherry",
@@ -71,14 +97,16 @@
       }
     },
     "generatedEmail": null,
-    "events": [{
-      "value": {
-        "date": "2017-05-23T13:18:15.073",
-        "type": "appealReceived",
-        "description": "Appeal received"
-      },
-      "id": "3cae07f7-d6e8-4695-8268-65ebb44cb497"
-    }],
+    "events": [
+      {
+        "value": {
+          "date": "2017-05-23T13:18:15.073",
+          "type": "appealReceived",
+          "description": "Appeal received"
+        },
+        "id": "3cae07f7-d6e8-4695-8268-65ebb44cb497"
+      }
+    ],
     "generatedMobile": null
   },
   "security_classification": "PUBLIC"

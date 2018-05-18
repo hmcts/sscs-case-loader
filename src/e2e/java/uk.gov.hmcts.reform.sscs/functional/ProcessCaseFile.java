@@ -78,15 +78,14 @@ public class ProcessCaseFile {
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured
-                .given()
-                .when()
-                .get("/functional-test")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .and()
-                .extract().body().asString();
+            .given()
+            .when()
+            .get("/functional-test")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .and()
+            .extract().body().asString();
     }
 }
-
 
 
