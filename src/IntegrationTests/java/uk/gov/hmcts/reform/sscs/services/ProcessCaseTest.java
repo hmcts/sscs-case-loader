@@ -44,7 +44,8 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class ProcessCaseTest {
 
     private static final String SERVER_AUTH =
-        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
+        "Bearer "
+        + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
         + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
         + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
         + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"

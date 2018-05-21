@@ -30,6 +30,18 @@ public class AuthTokenSubjectExtractorTest {
         assertThat(authTokenSubjectExtractor.extract(token), is("sscs"));
     }
 
+    @Test
+    public void shouldExtractSubjectFromJwtWithBearerType() {
+        String token = "Bearer "
+                       + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
+                       + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
+                       + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
+                       + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
+                       + "E8panNAv3zdDDeOhlrEViQ";
+
+        assertThat(authTokenSubjectExtractor.extract(token), is("sscs"));
+    }
+
     @Test(expected = JwtDecodingException.class)
     public void shouldThrowForMalformedJwt() {
         authTokenSubjectExtractor.extract("badgers");
