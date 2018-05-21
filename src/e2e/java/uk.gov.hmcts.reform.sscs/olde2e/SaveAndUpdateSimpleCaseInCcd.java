@@ -32,11 +32,11 @@ public class SaveAndUpdateSimpleCaseInCcd {
     @Test
     public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
-        String serviceAuthorization = idamService.generateServiceAuthorization();
+        String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .serviceAuthorisation(serviceAuthorization)
-            .serviceUserId(idamService.getServiceUserId(serviceAuthorization))
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorisation(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
         assertNotNull(caseDetails);

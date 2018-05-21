@@ -96,14 +96,14 @@ public class CaseLoaderServiceTest {
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
             .serviceAuthorisation("serviceAuthorization")
-            .serviceUserId("sscs")
+            .userId("16")
             .build();
         when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), eq(idamTokens)))
             .thenReturn(newArrayList(caseDetails));
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
-        when(idamService.getServiceUserId("serviceAuthorization")).thenReturn("sscs");
+        when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
 
         caseLoaderService.process();
 

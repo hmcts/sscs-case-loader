@@ -58,7 +58,7 @@ public class CcdCasesSenderTest {
         "CaseDetailsWithOneEvidenceAndOneEvent.json";
     private static final String OAUTH2 = "token";
     private static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
-    private static final String SERVICE_USER_ID = "sscs";
+    private static final String USER_ID = "16";
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
     private static final String CASE_DETAILS_WITH_NO_HEARINGS_JSON = "CaseDetailsWithNoHearings.json";
     private static final String CASE_DETAILS_WITH_HEARING_OPTIONS_JSON = "CaseDetailsWithHearingOptions.json";
@@ -80,7 +80,7 @@ public class CcdCasesSenderTest {
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
             .serviceAuthorisation(SERVICE_AUTHORIZATION)
-            .serviceUserId(SERVICE_USER_ID)
+            .userId(USER_ID)
             .build();
     }
 

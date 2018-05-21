@@ -46,11 +46,11 @@ public class CaseLoaderService {
         log.debug("*** case-loader *** reading files from sFTP...");
         List<Gaps2File> files = sftpSshService.getFiles();
         log.debug("*** case-loader *** About to start processing files: {}", files);
-        String serviceAuthorization = idamService.generateServiceAuthorization();
+        String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .serviceAuthorisation(serviceAuthorization)
-            .serviceUserId(idamService.getServiceUserId(serviceAuthorization))
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorisation(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
         Gaps2File latestRef = null;
         for (Gaps2File file : files) {

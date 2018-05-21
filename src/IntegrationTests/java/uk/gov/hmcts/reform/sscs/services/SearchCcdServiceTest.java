@@ -41,7 +41,7 @@ public class SearchCcdServiceTest {
         given(coreCaseDataApi.searchForCaseworker(
             eq("idamOauth2Token"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("1234"),
             anyString(),
             anyString(),
             eq(ImmutableMap.of("case.caseReference", CASE_REF))
@@ -51,7 +51,7 @@ public class SearchCcdServiceTest {
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
             .serviceAuthorisation("serviceAuthorization")
-            .serviceUserId("sscs")
+            .userId("1234")
             .build();
 
         List<CaseDetails> cases = searchCcdService.findCaseByCaseRef(CASE_REF, idamTokens);
@@ -59,7 +59,7 @@ public class SearchCcdServiceTest {
         verify(coreCaseDataApi).searchForCaseworker(
             eq("idamOauth2Token"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("1234"),
             anyString(),
             anyString(),
             eq(ImmutableMap.of("case.caseReference", CASE_REF))

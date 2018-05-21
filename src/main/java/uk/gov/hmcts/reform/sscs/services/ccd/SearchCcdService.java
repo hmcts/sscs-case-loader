@@ -45,7 +45,7 @@ public class SearchCcdService {
         return coreCaseDataApi.searchForCaseworker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             ImmutableMap.of("case.caseReference", caseRef)

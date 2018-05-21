@@ -8,5 +8,5 @@ import lombok.Data;
 public class IdamTokens {
     String idamOauth2Token;
     String serviceAuthorisation;
-    final String serviceUserId;
+    final String userId;
 }

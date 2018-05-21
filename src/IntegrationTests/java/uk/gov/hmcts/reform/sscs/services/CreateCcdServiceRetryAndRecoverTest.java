@@ -51,7 +51,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         idamTokens = IdamTokens.builder()
             .idamOauth2Token("authorization")
             .serviceAuthorisation("serviceAuthorization")
-            .serviceUserId("sscs")
+            .userId("16")
             .build();
     }
 
@@ -60,7 +60,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString()))
@@ -74,7 +74,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startForCaseworker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString()))
@@ -83,7 +83,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.submitForCaseworker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             eq(true),
@@ -95,7 +95,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         verify(coreCaseDataApi, times(0)).submitForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             eq(true),
@@ -107,7 +107,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString()))
@@ -116,7 +116,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.submitForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             eq(true),
@@ -131,7 +131,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startForCaseworker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString()))
@@ -140,7 +140,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.submitForCaseworker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             eq(true),

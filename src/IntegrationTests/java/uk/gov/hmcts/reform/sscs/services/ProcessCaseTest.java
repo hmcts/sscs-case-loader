@@ -43,6 +43,16 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @SpringBootTest
 public class ProcessCaseTest {
 
+    private static final String USER_AUTH =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1"
+        + "NiJ9.eyJzdWIiOiIxNiIsIm5hbWUiOiJ"
+        + "UZXN0IiwianRpIjoiMTIzNCIsImlhdCI"
+        + "6MTUyNjkyOTk1MiwiZXhwIjoxNTI2OTM"
+        + "zNTg5fQ.lZwrWNjG-y1Olo1qWocKIuq3"
+        + "_fdffVF8BTcR5l87FTg";
+
+    private static final String USER_AUTH_WITH_TYPE = "Bearer " + USER_AUTH;
+
     private static final String SERVER_AUTH =
         "Bearer "
         + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
@@ -51,7 +61,7 @@ public class ProcessCaseTest {
         + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
         + "E8panNAv3zdDDeOhlrEViQ";
 
-    private static final String SERVER_USER = "sscs";
+    private static final String USER_ID = "16";
 
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
@@ -106,7 +116,7 @@ public class ProcessCaseTest {
             .toReturn(newArrayList());
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("", "", "accessToken"));
+            .toReturn(new Authorize("", "", USER_AUTH));
 
         stub(coreCaseDataApi.startForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
@@ -144,9 +154,9 @@ public class ProcessCaseTest {
         caseLoaderService.process();
 
         verify(coreCaseDataApi).searchForCaseworker(
-            eq("Bearer accessToken"),
+            eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
-            eq(SERVER_USER),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any()

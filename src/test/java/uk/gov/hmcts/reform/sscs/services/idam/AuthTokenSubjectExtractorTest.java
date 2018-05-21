@@ -21,25 +21,27 @@ public class AuthTokenSubjectExtractorTest {
 
     @Test
     public void shouldExtractSubjectFromJwt() {
-        String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
-                       + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
-                       + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
-                       + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
-                       + "E8panNAv3zdDDeOhlrEViQ";
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1"
+                       + "NiJ9.eyJzdWIiOiIxNiIsIm5hbWUiOiJ"
+                       + "UZXN0IiwianRpIjoiMTIzNCIsImlhdCI"
+                       + "6MTUyNjkyOTk1MiwiZXhwIjoxNTI2OTM"
+                       + "zNTg5fQ.lZwrWNjG-y1Olo1qWocKIuq3"
+                       + "_fdffVF8BTcR5l87FTg";
 
-        assertThat(authTokenSubjectExtractor.extract(token), is("sscs"));
+        assertThat(authTokenSubjectExtractor.extract(token), is("16"));
     }
 
     @Test
     public void shouldExtractSubjectFromJwtWithBearerType() {
         String token = "Bearer "
-                       + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
-                       + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
-                       + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
-                       + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
-                       + "E8panNAv3zdDDeOhlrEViQ";
+                       + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1"
+                       + "NiJ9.eyJzdWIiOiIxNiIsIm5hbWUiOiJ"
+                       + "UZXN0IiwianRpIjoiMTIzNCIsImlhdCI"
+                       + "6MTUyNjkyOTk1MiwiZXhwIjoxNTI2OTM"
+                       + "zNTg5fQ.lZwrWNjG-y1Olo1qWocKIuq3"
+                       + "_fdffVF8BTcR5l87FTg";
 
-        assertThat(authTokenSubjectExtractor.extract(token), is("sscs"));
+        assertThat(authTokenSubjectExtractor.extract(token), is("16"));
     }
 
     @Test(expected = JwtDecodingException.class)

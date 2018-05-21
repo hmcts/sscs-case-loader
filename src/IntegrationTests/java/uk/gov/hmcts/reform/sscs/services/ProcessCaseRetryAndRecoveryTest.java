@@ -49,8 +49,15 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @ActiveProfiles("development")
 public class ProcessCaseRetryAndRecoveryTest {
 
-    private static final String S2S_TOKEN = "s2s token";
-    private static final String S2S_TOKEN2 = "s2s token2";
+    private static final String USER_AUTH = "oauth2token";
+    private static final String USER_AUTH_WITH_TYPE = "Bearer " + USER_AUTH;
+    private static final String USER_AUTH2 = "oauth2token2";
+    private static final String USER_AUTH2_WITH_TYPE = "Bearer " + USER_AUTH2;
+    private static final String USER_AUTH3 = "oauth2token3";
+    private static final String USER_AUTH3_WITH_TYPE = "Bearer " + USER_AUTH3;
+    private static final String USER_ID = "16";
+    private static final String SERVER_AUTH = "s2s token";
+    private static final String SERVER_AUTH2 = "s2s token2";
 
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
@@ -104,11 +111,14 @@ public class ProcessCaseRetryAndRecoveryTest {
         stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("url", "code", ""));
 
-        given(authTokenGenerator.generate()).willReturn(S2S_TOKEN);
-        given(authTokenSubjectExtractor.extract(S2S_TOKEN)).willReturn("sscs");
+        given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("", "", "accessToken"));
+            .toReturn(new Authorize("", "", USER_AUTH));
+
+        given(authTokenSubjectExtractor.extract(USER_AUTH_WITH_TYPE)).willReturn(USER_ID);
+        given(authTokenSubjectExtractor.extract(USER_AUTH2_WITH_TYPE)).willReturn(USER_ID);
+        given(authTokenSubjectExtractor.extract(USER_AUTH3_WITH_TYPE)).willReturn(USER_ID);
 
         stub(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).toReturn("bat");
         stub(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).toReturn("code");
@@ -136,17 +146,17 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
         verify(coreCaseDataApi, times(3)).searchForCaseworker(
-            eq("Bearer accessToken"),
-            eq(S2S_TOKEN),
-            eq("sscs"),
+            eq(USER_AUTH_WITH_TYPE),
+            eq(SERVER_AUTH),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any());
 
         verify(coreCaseDataApi, times(1)).searchForCaseworker(
-            eq("Bearer accessToken2"),
-            eq(S2S_TOKEN2),
-            eq("sscs"),
+            eq(USER_AUTH2_WITH_TYPE),
+            eq(SERVER_AUTH2),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any());
@@ -159,9 +169,9 @@ public class ProcessCaseRetryAndRecoveryTest {
         caseDataMap.put("evidence", evidenceMap);
 
         when(coreCaseDataApi.searchForCaseworker(
-            eq("Bearer accessToken2"),
-            eq(S2S_TOKEN2),
-            eq("sscs"),
+            eq(USER_AUTH2_WITH_TYPE),
+            eq(SERVER_AUTH2),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any()))
@@ -174,9 +184,9 @@ public class ProcessCaseRetryAndRecoveryTest {
     @SuppressWarnings("unchecked")
     private void mockCcdApiToThrowExceptionWhenFindingCaseByRefIsCalled() {
         when(coreCaseDataApi.searchForCaseworker(
-            eq("Bearer accessToken"),
-            eq(S2S_TOKEN),
-            eq("sscs"),
+            eq(USER_AUTH_WITH_TYPE),
+            eq(SERVER_AUTH),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any()))
@@ -190,12 +200,13 @@ public class ProcessCaseRetryAndRecoveryTest {
             .thenReturn(new Authorize("url", "code", ""));
 
         when(authTokenGenerator.generate())
-            .thenReturn(S2S_TOKEN)
-            .thenReturn(S2S_TOKEN2);
+            .thenReturn(SERVER_AUTH)
+            .thenReturn(SERVER_AUTH2);
 
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(new Authorize("", "", "accessToken"))
-            .thenReturn(new Authorize("", "", "accessToken2"))
-            .thenReturn(new Authorize("", "", "accessToken3"));
+            .thenReturn(new Authorize("", "", USER_AUTH))
+            .thenReturn(new Authorize("", "", USER_AUTH2))
+            .thenReturn(new Authorize("", "", USER_AUTH3));
     }
+
 }

@@ -46,7 +46,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.searchForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             any()))
@@ -57,7 +57,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.searchForCaseworker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             any()))
@@ -71,7 +71,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("authorization")
             .serviceAuthorisation("serviceAuthorization")
-            .serviceUserId("sscs")
+            .userId("16")
             .build();
 
         List<CaseDetails> result = searchCcdService.findCaseByCaseRef("caseRef", idamTokens);
@@ -80,7 +80,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
             .searchForCaseworker(
                 eq("authorization"),
                 eq("serviceAuthorization"),
-                eq("sscs"),
+                eq("16"),
                 anyString(),
                 anyString(),
                 any());
@@ -89,7 +89,7 @@ public class SearchCcdServiceRetryAndRecoverTest {
             .searchForCaseworker(
                 eq("authorization2"),
                 eq("serviceAuthorization2"),
-                eq("sscs"),
+                eq("16"),
                 anyString(),
                 anyString(),
                 any());

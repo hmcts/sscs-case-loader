@@ -47,10 +47,10 @@ public class IdamServiceTest {
 
     @Test
     public void shouldReturnServiceUserIdGivenAuthToken() {
-        String auth = "auth";
-        String serviceName = "sscs";
-        when(authTokenSubjectExtractor.extract(auth)).thenReturn(serviceName);
-        assertThat(idamService.getServiceUserId(auth), is(serviceName));
+        String auth = "token_with_sub_16";
+        String userId = "16";
+        when(authTokenSubjectExtractor.extract(auth)).thenReturn(userId);
+        assertThat(idamService.getUserId(auth), is(userId));
     }
 
     @Test

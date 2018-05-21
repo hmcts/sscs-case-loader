@@ -12,13 +12,15 @@ public class AuthTokenSubjectExtractor {
     public String extract(String token) {
         try {
 
-            token = token.replaceFirst("^Bearer\\s+", "");
+            DecodedJWT jwt = JWT.decode(
+                token.replaceFirst("^Bearer\\s+", "")
+            );
 
-            DecodedJWT jwt = JWT.decode(token);
             return jwt.getSubject();
 
         } catch (JWTDecodeException e) {
             throw new JwtDecodingException("Auth Token cannot be decoded", e);
         }
     }
+
 }

@@ -53,7 +53,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         idamTokens = IdamTokens.builder()
             .idamOauth2Token("authorization")
             .serviceAuthorisation("serviceAuthorization")
-            .serviceUserId("sscs")
+            .userId("16")
             .build();
     }
 
@@ -62,7 +62,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -77,7 +77,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -87,7 +87,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.submitEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -100,7 +100,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         verify(coreCaseDataApi, times(0)).submitEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -113,7 +113,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -123,7 +123,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.submitEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -139,7 +139,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),
@@ -149,7 +149,7 @@ public class UpdateCcdServiceRetryAndRecoverTest {
         when(coreCaseDataApi.submitEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
-            eq("sscs"),
+            eq("16"),
             anyString(),
             anyString(),
             anyString(),

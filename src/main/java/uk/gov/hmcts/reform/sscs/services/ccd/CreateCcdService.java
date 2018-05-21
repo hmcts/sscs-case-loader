@@ -61,7 +61,7 @@ public class CreateCcdService {
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             true,

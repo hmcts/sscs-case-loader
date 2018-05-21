@@ -64,7 +64,7 @@ public class UpdateCcdService {
         return coreCaseDataApi.submitEventForCaseWorker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             caseId.toString(),

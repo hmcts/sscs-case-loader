@@ -26,7 +26,7 @@ public class CreateCcdServiceTest {
 
     private static final String OAUTH2 = "token";
     private static final String SERVICE_AUTHORIZATION = "auth";
-    private static final String SERVICE_USER_ID = "sscs";
+    private static final String USER_ID = "16";
     private static final String EVENT_ID = "appealCreated";
     private static final String CCD_TOKEN = "ccdToken";
     private static final String CCD_EVENT = "ccdEvent";
@@ -60,7 +60,7 @@ public class CreateCcdServiceTest {
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
             .serviceAuthorisation(SERVICE_AUTHORIZATION)
-            .serviceUserId(SERVICE_USER_ID)
+            .userId(USER_ID)
             .build();
 
         when(startEventCcdService.startCase(idamTokens, EVENT_ID))
@@ -82,7 +82,7 @@ public class CreateCcdServiceTest {
         when(ccdApi.submitForCaseworker(
             eq(OAUTH2),
             eq(SERVICE_AUTHORIZATION),
-            eq(SERVICE_USER_ID),
+            eq(USER_ID),
             eq(ccdProperties.getJurisdictionId()),
             eq(ccdProperties.getCaseTypeId()),
             eq(true),

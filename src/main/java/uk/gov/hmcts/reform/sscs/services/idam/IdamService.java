@@ -30,8 +30,8 @@ public class IdamService {
         return authTokenGenerator.generate();
     }
 
-    public String getServiceUserId(String serviceAuthorization) {
-        return authTokenSubjectExtractor.extract(serviceAuthorization);
+    public String getUserId(String oauth2Token) {
+        return authTokenSubjectExtractor.extract(oauth2Token);
     }
 
     public String getIdamOauth2Token() {

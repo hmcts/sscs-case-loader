@@ -23,7 +23,7 @@ public class StartEventCcdService {
         return coreCaseDataApi.startForCaseworker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             eventType);
@@ -33,7 +33,7 @@ public class StartEventCcdService {
         return coreCaseDataApi.startEventForCaseWorker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorisation(),
-            idamTokens.getServiceUserId(),
+            idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),
             caseId,

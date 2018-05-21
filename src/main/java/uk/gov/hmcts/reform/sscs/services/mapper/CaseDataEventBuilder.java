@@ -126,11 +126,11 @@ class CaseDataEventBuilder {
 
     @Retryable
     private List<Hearing> retrieveHearingsFromCaseInCcd(AppealCase appealCase) {
-        String serviceAuthorization = idamService.generateServiceAuthorization();
+        String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .serviceAuthorisation(serviceAuthorization)
-            .serviceUserId(idamService.getServiceUserId(serviceAuthorization))
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorisation(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
         List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),
             idamTokens);
