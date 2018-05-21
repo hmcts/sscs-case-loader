@@ -50,7 +50,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
             .build();
         idamTokens = IdamTokens.builder()
             .idamOauth2Token("authorization")
-            .serviceAuthorisation("serviceAuthorization")
+            .serviceAuthorization("serviceAuthorization")
             .userId("16")
             .build();
     }

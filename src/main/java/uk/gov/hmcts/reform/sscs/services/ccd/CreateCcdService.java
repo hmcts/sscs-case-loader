@@ -43,7 +43,7 @@ public class CreateCcdService {
     private CaseDetails requestNewTokensAndTryToCreateAgain(CaseData caseData, IdamTokens idamTokens) {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-        idamTokens.setServiceAuthorisation(idamService.generateServiceAuthorization());
+        idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
         return tryCreate(caseData, idamTokens);
     }
 
@@ -60,7 +60,7 @@ public class CreateCcdService {
             .build();
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorisation(),
+            idamTokens.getServiceAuthorization(),
             idamTokens.getUserId(),
             coreCaseDataProperties.getJurisdictionId(),
             coreCaseDataProperties.getCaseTypeId(),

@@ -34,7 +34,7 @@ public class Functional {
         String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(oauth2Token)
-            .serviceAuthorisation(idamService.generateServiceAuthorization())
+            .serviceAuthorization(idamService.generateServiceAuthorization())
             .userId(idamService.getUserId(oauth2Token))
             .build();
         return searchCcdService.findCaseByCaseRef(referenceNumber, idamTokens);

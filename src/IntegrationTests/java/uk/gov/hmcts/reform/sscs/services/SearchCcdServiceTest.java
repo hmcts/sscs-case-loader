@@ -50,7 +50,7 @@ public class SearchCcdServiceTest {
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
-            .serviceAuthorisation("serviceAuthorization")
+            .serviceAuthorization("serviceAuthorization")
             .userId("1234")
             .build();
 
