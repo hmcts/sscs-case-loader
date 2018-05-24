@@ -75,6 +75,8 @@ logging.level:
 
 slot.name: ${SLOT:dev}
 
+test.url: ${TEST_URL:http://localhost:8082}
+
 ---
 spring:
     profiles: development
