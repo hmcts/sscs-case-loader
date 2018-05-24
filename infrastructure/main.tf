@@ -53,7 +53,7 @@ locals {
   ccdApi = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
 
-  idamUrl = "${(var.env == "saat") ? http://idam-api-idam-${local.local_env}.service.${local.local_ase}.internal : data.vault_generic_secret.idam_api.data["value"]}"
+  idamUrl = "${(var.env == "saat") ? "http://idam-api-idam-${local.local_env}.service.${local.local_ase}.internal" : data.vault_generic_secret.idam_api.data["value"]}"
 
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
