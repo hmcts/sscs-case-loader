@@ -13,11 +13,11 @@ data "vault_generic_secret" "sscs_s2s_secret" {
 }
 
 data "vault_generic_secret" "idam_sscs_systemupdate_user" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/user"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/anonymouscitizen/user"
 }
 
 data "vault_generic_secret" "idam_sscs_systemupdate_password" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/password"
+  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/anonymouscitizen/password"
 }
 
 data "vault_generic_secret" "idam_oauth2_client_secret" {
