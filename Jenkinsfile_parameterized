@@ -15,6 +15,8 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('vault-sftp-port','GAPS2_SFTP_PORT'),
   secret('vault-sftp-user','GAPS2_SFTP_USER'),
   secret('vault-sftp-dir','GAPS2_SFTP_DIR'),
+  secret('idam-password','IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
+  secret('idam-user','IDAM_SSCS_SYSTEMUPDATE_USER'),
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -27,7 +29,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withParameterizedPipeline('java', 'sscs', 'case-loader', params.ENVIRONMENT, 'sandbox') {
-    loadVaultSecrets(secrets)
+    enableSlackNotifications('#sscs-tech')
     loadVaultSecrets(secrets)
 }
 
