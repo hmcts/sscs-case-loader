@@ -110,48 +110,12 @@ Run the application by executing:
 
 ### Running the application in Docker
 
-Create the image of the application by executing the following command:
-
-```bash
-  ./gradlew installDist
-```
-
-Create docker image:
-
-```bash
-  docker-compose build
-```
-
-Run the distribution (created in `build/install/spring-boot-template` directory)
-by executing the following command:
-
-```bash
-  docker-compose up
-```
-
-This will start the API container exposing the application's port
-(set to `4550` in this template app).
-
-In order to test if the application is up, you can call its health endpoint:
-
-```bash
-  curl http://localhost:4550/health
-```
-
-You should get a response similar to this:
-
-```
-  {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
-```
+Dockerisation is a work in progress.
 
 ### Setting up a Dockerised SFTP server for developing purpose
 
 This setup is required if files need to be processed via sftp server
 
-* To build both the case-loader and SFTP server services 
-```bash
-docker-compose rm -f && docker-compose build && docker-compose up
-```
 * To simply build the SFTP server
 ```bash
 docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
@@ -161,9 +125,6 @@ docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docke
 
 Place file to be transferred under `docker/sftp/data/incoming` then:
 
-To connect into sscs-case-loader container use command:
-```bash
-docker exec -it sscs-case-loader bash
 ```
 To connect into sftp container from sscs-case-loader container use:
 ```bash
@@ -192,6 +153,9 @@ SSCS_Extract_Reference_2017-06-30-09-01-31.xml
 ```
 ## Running e2e locally
 
+* Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project. 
+Please follow the instructions given in the README document.
+
 * Copy and paste application.yml from
 ```bash
 https://tools.hmcts.net/confluence/display/SSCS/application.yml
@@ -209,7 +173,7 @@ docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docke
 * Open IntelliJ and import the Lombok plugin and enable annotation processing
 * Run this test within IntelliJ
 ```bash
-https://github.com/hmcts/sscs-case-loader/blob/master/src/e2e/java/uk.gov.hmcts.reform.sscs/functional/ProcessFileAndSaveIntoCcd.java#L20
+https://github.com/hmcts/sscs-case-loader/blob/master/src/e2e/java/uk.gov.hmcts.reform.sscs/olde2e/ProcessFileAndSaveIntoCcd.java#L20
 ```
 * Refresh the browser to view the cases in CCD
 ```bash
