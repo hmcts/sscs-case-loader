@@ -1,20 +1,21 @@
-FROM openjdk:8-alpine
+FROM gradle:jdk8 as builder
 
-RUN apk update
-RUN apk add bash openssh-client
-RUN mkdir -p /opt/app/
-RUN mkdir /var/run/sshd
+COPY . /home/gradle/src
+USER root
+RUN chown -R gradle:gradle /home/gradle/src
+USER gradle
 
-COPY ./build/install/sscs-case-loader /opt/app/
+WORKDIR /home/gradle/src
+RUN gradle assemble
 
-RUN mkdir -p /var/tmp/gaps2
-RUN mkdir -p /var/tmp/gaps2archive
-RUN mkdir -p /var/tmp/valid
-RUN mkdir -p /var/tmp/schemaValidationFailed
+FROM openjdk:8-jre-alpine
 
-COPY ./docker/sftp-docker /home/webapp/sscs-sftp-key
-RUN chmod 400 /home/webapp/sscs-sftp-key
+COPY --from=builder /home/gradle/src/build/libs/sscs-case-loader.jar /opt/app/
 
-HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD http_proxy="" wget -qO- "http://localhost:8082/health" | grep UP -q
+WORKDIR /opt/app
 
-ENTRYPOINT ["/opt/app/bin/sscs-case-loader"]
+HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD http_proxy="" wget -q http://localhost:8082/health || exit 1
+
+EXPOSE 8082
+
+ENTRYPOINT exec java ${JAVA_OPTS} -jar "/opt/app/sscs-case-loader.jar"
