@@ -7,6 +7,10 @@
   "data": {
     "caseReference": "SC068/17/00013",
     "appeal": {
+      "mrnDetails": {
+        "dwpIssuingOffice": "1",
+        "mrnDate": "2018-06-30"
+      },
       "appellant": {
         "name": {
           "title": "Mr",
@@ -27,8 +31,25 @@
         "code": "1325"
       },
       "hearingOptions": {
+        "wantsToAttend": "Yes",
+        "arrangements": [
+          "disabledAccess",
+          "hearingLoop"
+        ],
+        "excludeDates": [
+          {
+            "value": {
+              "start": "2018-06-30",
+              "end": "2018-06-30"
+            }
+          }
+        ],
         "other": "No"
-      }
+      },
+      "rep": {
+        "hasRepresentative": "Yes"
+      },
+      "signer": "Signer"
     },
     "hearings": [
       {
