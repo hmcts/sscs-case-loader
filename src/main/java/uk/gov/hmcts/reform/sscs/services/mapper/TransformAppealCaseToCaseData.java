@@ -43,6 +43,7 @@ public class TransformAppealCaseToCaseData {
         String generatedSurname = "";
         String generatedEmail = "";
         String generatedMobile = "";
+        Appellant appellant = null;
 
         if (party.isPresent()) {
             name = caseDataBuilder.buildName(party.get());
@@ -53,13 +54,13 @@ public class TransformAppealCaseToCaseData {
             generatedSurname = name.getLastName();
             generatedEmail = contact.getEmail();
             generatedMobile = contact.getMobile();
-        }
 
-        Appellant appellant = Appellant.builder()
-            .name(name)
-            .contact(contact)
-            .identity(identity)
-            .build();
+            appellant = Appellant.builder()
+                .name(name)
+                .contact(contact)
+                .identity(identity)
+                .build();
+        }
 
         BenefitType benefitType = caseDataBuilder.buildBenefitType(appealCase);
 

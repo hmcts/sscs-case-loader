@@ -42,6 +42,7 @@ public class CcdCasesSender {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
             dontOverwriteSubscriptions(caseData);
+            dontOverwriteAppealData(caseData, existingCcdCase);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
             ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase, idamTokens);
         }
@@ -49,6 +50,17 @@ public class CcdCasesSender {
 
     private void dontOverwriteSubscriptions(CaseData caseData) {
         caseData.setSubscriptions(null);
+    }
+
+    private void dontOverwriteAppealData(CaseData caseData, CaseDetails existingCcdCase) {
+        CaseData existingCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
+        Appeal existingAppeal = existingCaseData.getAppeal();
+
+        if (caseData.getAppeal() != null) {
+            existingAppeal.setAppellant(caseData.getAppeal().getAppellant());
+            existingAppeal.setBenefitType(caseData.getAppeal().getBenefitType());
+            caseData.setAppeal(existingAppeal);
+        }
     }
 
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
@@ -124,8 +136,9 @@ public class CcdCasesSender {
 
     @SuppressWarnings("unchecked")
     private Evidence buildExistingEvidence(CaseDetails existingCase) {
-        List<HashMap<String, Object>> documents = (List<HashMap<String, Object>>) (
-            (HashMap) existingCase.getData().get("evidence")).get("documents");
+        HashMap evidence = (HashMap) existingCase.getData().get("evidence");
+        List<HashMap<String, Object>> documents = evidence != null
+            ? (List<HashMap<String, Object>>)evidence.get("documents") : Collections.emptyList();
 
         List<Documents> documentList = new ArrayList<>();
         for (HashMap doc : documents) {
