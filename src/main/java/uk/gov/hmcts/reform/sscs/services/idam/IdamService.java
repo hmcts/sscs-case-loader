@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.idam;
 import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
@@ -26,14 +27,17 @@ public class IdamService {
         this.idamProperties = idamProperties;
     }
 
+    @Retryable
     public String generateServiceAuthorization() {
         return authTokenGenerator.generate();
     }
 
+    @Retryable
     public String getUserId(String oauth2Token) {
         return authTokenSubjectExtractor.extract(oauth2Token);
     }
 
+    @Retryable
     public String getIdamOauth2Token() {
         String authorisation = idamProperties.getOauth2().getUser().getEmail()
             + ":" + idamProperties.getOauth2().getUser().getPassword();
