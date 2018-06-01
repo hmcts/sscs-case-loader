@@ -32,7 +32,6 @@ public class IdamService {
         return authTokenGenerator.generate();
     }
 
-    @Retryable
     public String getUserId(String oauth2Token) {
         return authTokenSubjectExtractor.extract(oauth2Token);
     }
