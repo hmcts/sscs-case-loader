@@ -31,9 +31,11 @@ public class Functional {
     @GetMapping("/functional-test/{referenceNumber}")
     @ResponseBody
     public List<CaseDetails> getCase(@PathVariable String referenceNumber) {
+        String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(idamService.getIdamOauth2Token())
-            .idamOauth2Token(idamService.generateServiceAuthorization())
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
         return searchCcdService.findCaseByCaseRef(referenceNumber, idamTokens);
     }

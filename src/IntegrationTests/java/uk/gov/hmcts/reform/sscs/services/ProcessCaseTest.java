@@ -43,6 +43,26 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @SpringBootTest
 public class ProcessCaseTest {
 
+    private static final String USER_AUTH =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1"
+        + "NiJ9.eyJzdWIiOiIxNiIsIm5hbWUiOiJ"
+        + "UZXN0IiwianRpIjoiMTIzNCIsImlhdCI"
+        + "6MTUyNjkyOTk1MiwiZXhwIjoxNTI2OTM"
+        + "zNTg5fQ.lZwrWNjG-y1Olo1qWocKIuq3"
+        + "_fdffVF8BTcR5l87FTg";
+
+    private static final String USER_AUTH_WITH_TYPE = "Bearer " + USER_AUTH;
+
+    private static final String SERVER_AUTH =
+        "Bearer "
+        + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
+        + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
+        + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
+        + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
+        + "E8panNAv3zdDDeOhlrEViQ";
+
+    private static final String USER_ID = "16";
+
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
 
@@ -72,7 +92,6 @@ public class ProcessCaseTest {
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
 
-
         String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
 
@@ -90,14 +109,14 @@ public class ProcessCaseTest {
         stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("url", "code", ""));
 
-        given(authTokenGenerator.generate()).willReturn("s2s token");
+        given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
         stub(coreCaseDataApi.searchForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), any()))
             .toReturn(newArrayList());
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("", "", "accessToken"));
+            .toReturn(new Authorize("", "", USER_AUTH));
 
         stub(coreCaseDataApi.startForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
@@ -135,6 +154,12 @@ public class ProcessCaseTest {
         caseLoaderService.process();
 
         verify(coreCaseDataApi).searchForCaseworker(
-            anyString(), anyString(), anyString(), anyString(), anyString(), any());
+            eq(USER_AUTH_WITH_TYPE),
+            eq(SERVER_AUTH),
+            eq(USER_ID),
+            anyString(),
+            anyString(),
+            any()
+        );
     }
 }

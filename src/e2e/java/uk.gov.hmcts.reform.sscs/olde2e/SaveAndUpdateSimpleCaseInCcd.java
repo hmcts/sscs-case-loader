@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.sscs.services.ccd.CreateCcdService;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("development")
@@ -33,9 +32,11 @@ public class SaveAndUpdateSimpleCaseInCcd {
     @Test
     public void shouldBeSavedAndThenUpdatedIntoCcdGivenACase() {
         CaseData caseData = CaseDataUtils.buildCaseData("SC068/17/00013");
+        String oauth2Token = idamService.getIdamOauth2Token();
         IdamTokens idamTokens = IdamTokens.builder()
-            .authenticationService(idamService.generateServiceAuthorization())
-            .idamOauth2Token(idamService.getIdamOauth2Token())
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
             .build();
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
         assertNotNull(caseDetails);

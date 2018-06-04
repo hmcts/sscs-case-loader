@@ -56,8 +56,9 @@ public class CcdCasesSenderTest {
     private static final String CASE_DETAILS_JSON = "CaseDetailsWithOneEventAndNoEvidence.json";
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
         "CaseDetailsWithOneEvidenceAndOneEvent.json";
-    private static final String IDAM_OAUTH_2_TOKEN = "idamOauth2Token";
+    private static final String OAUTH2 = "token";
     private static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
+    private static final String USER_ID = "16";
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
     private static final String CASE_DETAILS_WITH_NO_HEARINGS_JSON = "CaseDetailsWithNoHearings.json";
     private static final String CASE_DETAILS_WITH_HEARING_OPTIONS_JSON = "CaseDetailsWithHearingOptions.json";
@@ -77,8 +78,9 @@ public class CcdCasesSenderTest {
         MockitoAnnotations.initMocks(this);
         ccdCasesSender = new CcdCasesSender(createCcdService, updateCcdService, regionalProcessingCenterService);
         idamTokens = IdamTokens.builder()
-            .idamOauth2Token(IDAM_OAUTH_2_TOKEN)
-            .authenticationService(SERVICE_AUTHORIZATION)
+            .idamOauth2Token(OAUTH2)
+            .serviceAuthorization(SERVICE_AUTHORIZATION)
+            .userId(USER_ID)
             .build();
     }
 

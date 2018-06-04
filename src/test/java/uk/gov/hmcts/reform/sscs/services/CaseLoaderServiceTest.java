@@ -95,13 +95,15 @@ public class CaseLoaderServiceTest {
         CaseDetails caseDetails = CaseDetails.builder().build();
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
-            .authenticationService("serviceAuthorization")
+            .serviceAuthorization("serviceAuthorization")
+            .userId("16")
             .build();
         when(ccdCaseService.findCaseByCaseRef(eq("caseRef"), eq(idamTokens)))
             .thenReturn(newArrayList(caseDetails));
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
+        when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
 
         caseLoaderService.process();
 

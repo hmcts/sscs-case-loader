@@ -3,7 +3,9 @@ package uk.gov.hmcts.reform.sscs.smoke;
 import io.restassured.RestAssured;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("development")
 public class GetSavedCase {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
@@ -23,6 +25,3 @@ public class GetSavedCase {
             .extract().body().asString();
     }
 }
-
-
-

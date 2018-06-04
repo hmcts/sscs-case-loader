@@ -25,7 +25,8 @@ import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 public class CreateCcdServiceTest {
 
     private static final String OAUTH2 = "token";
-    private static final String S2SAUTH = "auth";
+    private static final String SERVICE_AUTHORIZATION = "auth";
+    private static final String USER_ID = "16";
     private static final String EVENT_ID = "appealCreated";
     private static final String CCD_TOKEN = "ccdToken";
     private static final String CCD_EVENT = "ccdEvent";
@@ -49,15 +50,20 @@ public class CreateCcdServiceTest {
 
     @Before
     public void setUp() {
-        stub(idamService.generateServiceAuthorization()).toReturn(S2SAUTH);
+        stub(idamService.generateServiceAuthorization()).toReturn(SERVICE_AUTHORIZATION);
         stub(idamService.getIdamOauth2Token()).toReturn(OAUTH2);
 
         ccdProperties = new CoreCaseDataProperties();
-        ccdProperties.setUserId("USER");
         ccdProperties.setJurisdictionId("SSCS");
         ccdProperties.setCaseTypeId("Benefits");
 
-        when(startEventCcdService.startCase(S2SAUTH, OAUTH2, EVENT_ID))
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token(OAUTH2)
+            .serviceAuthorization(SERVICE_AUTHORIZATION)
+            .userId(USER_ID)
+            .build();
+
+        when(startEventCcdService.startCase(idamTokens, EVENT_ID))
             .thenReturn(response);
 
         when(response.getToken()).thenReturn(CCD_TOKEN);
@@ -66,11 +72,6 @@ public class CreateCcdServiceTest {
         caseData = CaseData.builder().build();
 
         createCcdService = new CreateCcdService(ccdProperties, ccdApi, idamService, startEventCcdService);
-
-        idamTokens = IdamTokens.builder()
-            .idamOauth2Token(OAUTH2)
-            .authenticationService(S2SAUTH)
-            .build();
     }
 
     @Test
@@ -78,9 +79,10 @@ public class CreateCcdServiceTest {
 
         ArgumentCaptor<CaseDataContent> captor = ArgumentCaptor.forClass(CaseDataContent.class);
 
-        when(ccdApi.submitForCaseworker(eq(OAUTH2),
-            eq(S2SAUTH),
-            eq(ccdProperties.getUserId()),
+        when(ccdApi.submitForCaseworker(
+            eq(OAUTH2),
+            eq(SERVICE_AUTHORIZATION),
+            eq(USER_ID),
             eq(ccdProperties.getJurisdictionId()),
             eq(ccdProperties.getCaseTypeId()),
             eq(true),
