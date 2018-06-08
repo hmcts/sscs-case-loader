@@ -1,7 +1,6 @@
 management_security_enabled = "false"
 infrastructure_env = "test"
 gaps2_sftp_user = "sscs-sftp-test"
-core_case_data_user_id = "43132"
 ignore_cases_before_date = "2017-01-01"
 sftp_key_location = "gaps2_service_sftp_private_key"
 idam_redirect_url = "https://sscs-case-loader-aat.service.core-compute-aat.internal"
