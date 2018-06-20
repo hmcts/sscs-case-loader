@@ -2,7 +2,10 @@ package uk.gov.hmcts.reform.sscs.services.idam;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.Base64;
@@ -14,14 +17,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.sscs.config.properties.IdamProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
+import uk.gov.hmcts.reform.sscs.models.idam.UserDetails;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdamServiceTest {
 
     @Mock
     private AuthTokenGenerator authTokenGenerator;
-    @Mock
-    private AuthTokenSubjectExtractor authTokenSubjectExtractor;
     @Mock
     private IdamApiClient idamApiClient;
 
@@ -34,7 +36,7 @@ public class IdamServiceTest {
         authToken = new Authorize("redirect/", "authCode", "access");
         idamProperties = new IdamProperties();
         idamService = new IdamService(
-            authTokenGenerator, authTokenSubjectExtractor, idamApiClient, idamProperties
+            authTokenGenerator, idamApiClient, idamProperties
         );
     }
 
@@ -46,11 +48,15 @@ public class IdamServiceTest {
     }
 
     @Test
-    public void shouldReturnServiceUserIdGivenAuthToken() {
-        String auth = "token_with_sub_16";
-        String userId = "16";
-        when(authTokenSubjectExtractor.extract(auth)).thenReturn(userId);
-        assertThat(idamService.getUserId(auth), is(userId));
+    public void shouldReturnServiceUserId() {
+        String oauth2Token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdG";
+
+        UserDetails expectedUserDetails = new UserDetails("16");
+        given(idamApiClient.getUserDetails(eq(oauth2Token))).willReturn(expectedUserDetails);
+
+        String userId = idamService.getUserId(oauth2Token);
+
+        assertEquals(expectedUserDetails.getId(), userId);
     }
 
     @Test
