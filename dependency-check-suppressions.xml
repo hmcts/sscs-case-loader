@@ -29,6 +29,7 @@
     <cve>CVE-2017-6056</cve>
     <cve>CVE-2018-1304</cve>
     <cve>CVE-2018-1305</cve>
+    <cve>CVE-2018-8014</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
