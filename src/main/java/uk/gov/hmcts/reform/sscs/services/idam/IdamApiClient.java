@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
+import uk.gov.hmcts.reform.sscs.models.idam.UserDetails;
 
 @FeignClient(name = "idam-api", url = "${idam.url}")
 public interface IdamApiClient {
@@ -34,4 +35,9 @@ public interface IdamApiClient {
         @RequestParam("client_secret") final String clientSecret
     );
 
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/details"
+    )
+    UserDetails getUserDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) final String oauth2Token);
 }

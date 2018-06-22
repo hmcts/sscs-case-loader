@@ -33,6 +33,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
+import uk.gov.hmcts.reform.sscs.models.idam.UserDetails;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
@@ -45,21 +46,21 @@ public class ProcessCaseTest {
 
     private static final String USER_AUTH =
         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1"
-        + "NiJ9.eyJzdWIiOiIxNiIsIm5hbWUiOiJ"
-        + "UZXN0IiwianRpIjoiMTIzNCIsImlhdCI"
-        + "6MTUyNjkyOTk1MiwiZXhwIjoxNTI2OTM"
-        + "zNTg5fQ.lZwrWNjG-y1Olo1qWocKIuq3"
-        + "_fdffVF8BTcR5l87FTg";
+            + "NiJ9.eyJzdWIiOiIxNiIsIm5hbWUiOiJ"
+            + "UZXN0IiwianRpIjoiMTIzNCIsImlhdCI"
+            + "6MTUyNjkyOTk1MiwiZXhwIjoxNTI2OTM"
+            + "zNTg5fQ.lZwrWNjG-y1Olo1qWocKIuq3"
+            + "_fdffVF8BTcR5l87FTg";
 
     private static final String USER_AUTH_WITH_TYPE = "Bearer " + USER_AUTH;
 
     private static final String SERVER_AUTH =
         "Bearer "
-        + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
-        + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
-        + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
-        + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
-        + "E8panNAv3zdDDeOhlrEViQ";
+            + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ"
+            + "zc2NzIiwiZXhwIjoxNTI2NjU2NTEyfQ."
+            + "aADJFE6_FJPNpDO_0NbqS-oYIDM9Bjjh"
+            + "18ZyB1imXGXAqOEc8Iyy0zxBe6BhXFl8"
+            + "E8panNAv3zdDDeOhlrEViQ";
 
     private static final String USER_ID = "16";
 
@@ -117,6 +118,8 @@ public class ProcessCaseTest {
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("", "", USER_AUTH));
+
+        stub(idamApiClient.getUserDetails(eq(USER_AUTH_WITH_TYPE))).toReturn(new UserDetails("16"));
 
         stub(coreCaseDataApi.startForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
