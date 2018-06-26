@@ -62,12 +62,12 @@ task smoke(type: Test) {
 }
 
 task functional(type: Test) {
-//  group = 'Functional Tests'
-//  description = 'Executes non-destructive functional tests in AAT against a running case loader'
-//  setTestClassesDirs(sourceSets.e2e.output.classesDirs)
-//  setClasspath(sourceSets.e2e.runtimeClasspath)
-//  include "uk/gov/hmcts/reform/sscs/functional/**"
-//  exclude "uk/gov/hmcts/reform/sscs/smoke/**"
+  group = 'Functional Tests'
+  description = 'Executes non-destructive functional tests in AAT against a running case loader'
+  setTestClassesDirs(sourceSets.e2e.output.classesDirs)
+  setClasspath(sourceSets.e2e.runtimeClasspath)
+  include "uk/gov/hmcts/reform/sscs/functional/**"
+  exclude "uk/gov/hmcts/reform/sscs/smoke/**"
 }
 
 checkstyle {

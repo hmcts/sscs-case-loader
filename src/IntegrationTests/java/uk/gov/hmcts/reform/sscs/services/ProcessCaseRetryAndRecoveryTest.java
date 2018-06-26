@@ -35,11 +35,11 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.models.idam.UserDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
-import uk.gov.hmcts.reform.sscs.services.idam.AuthTokenSubjectExtractor;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -61,9 +61,6 @@ public class ProcessCaseRetryAndRecoveryTest {
 
     @MockBean
     private AuthTokenGenerator authTokenGenerator;
-
-    @MockBean
-    private AuthTokenSubjectExtractor authTokenSubjectExtractor;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -115,10 +112,6 @@ public class ProcessCaseRetryAndRecoveryTest {
 
         stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
             .toReturn(new Authorize("", "", USER_AUTH));
-
-        given(authTokenSubjectExtractor.extract(USER_AUTH_WITH_TYPE)).willReturn(USER_ID);
-        given(authTokenSubjectExtractor.extract(USER_AUTH2_WITH_TYPE)).willReturn(USER_ID);
-        given(authTokenSubjectExtractor.extract(USER_AUTH3_WITH_TYPE)).willReturn(USER_ID);
 
         stub(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).toReturn("bat");
         stub(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).toReturn("code");
@@ -207,6 +200,8 @@ public class ProcessCaseRetryAndRecoveryTest {
             .thenReturn(new Authorize("", "", USER_AUTH))
             .thenReturn(new Authorize("", "", USER_AUTH2))
             .thenReturn(new Authorize("", "", USER_AUTH3));
+
+        when(idamApiClient.getUserDetails(anyString())).thenReturn(new UserDetails("16"));
     }
 
 }

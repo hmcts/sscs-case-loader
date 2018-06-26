@@ -14,15 +14,13 @@ import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
 public class IdamService {
 
     private final AuthTokenGenerator authTokenGenerator;
-    private final AuthTokenSubjectExtractor authTokenSubjectExtractor;
     private final IdamApiClient idamApiClient;
     private final IdamProperties idamProperties;
 
     @Autowired
-    public IdamService(AuthTokenGenerator authTokenGenerator, AuthTokenSubjectExtractor authTokenSubjectExtractor,
+    public IdamService(AuthTokenGenerator authTokenGenerator,
                        IdamApiClient idamApiClient, IdamProperties idamProperties) {
         this.authTokenGenerator = authTokenGenerator;
-        this.authTokenSubjectExtractor = authTokenSubjectExtractor;
         this.idamApiClient = idamApiClient;
         this.idamProperties = idamProperties;
     }
@@ -32,8 +30,9 @@ public class IdamService {
         return authTokenGenerator.generate();
     }
 
+    @Retryable
     public String getUserId(String oauth2Token) {
-        return authTokenSubjectExtractor.extract(oauth2Token);
+        return idamApiClient.getUserDetails(oauth2Token).getId();
     }
 
     @Retryable
