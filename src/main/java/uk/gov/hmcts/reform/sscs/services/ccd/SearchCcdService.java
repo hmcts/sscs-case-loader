@@ -1,55 +1,30 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @Service
 @Slf4j
 public class SearchCcdService {
 
-    private final CoreCaseDataApi coreCaseDataApi;
-    private final CoreCaseDataProperties coreCaseDataProperties;
-    private final IdamService idamService;
+    private final SearchCcdServiceByCaseRef searchCcdServiceByCaseRef;
+    private final SearchCcdServiceByCaseId searchCcdServiceByCaseId;
 
-    public SearchCcdService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
-                            IdamService idamService) {
-        this.coreCaseDataApi = coreCaseDataApi;
-        this.coreCaseDataProperties = coreCaseDataProperties;
-        this.idamService = idamService;
+    public SearchCcdService(SearchCcdServiceByCaseRef searchCcdServiceByCaseRef,
+                            SearchCcdServiceByCaseId searchCcdServiceByCaseId) {
+        this.searchCcdServiceByCaseRef = searchCcdServiceByCaseRef;
+        this.searchCcdServiceByCaseId = searchCcdServiceByCaseId;
     }
 
-    @Retryable
     public List<CaseDetails> findCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
-        return tryFindCaseByCaseRef(caseRef, idamTokens);
+        return searchCcdServiceByCaseRef.findCaseByCaseRef(caseRef, idamTokens);
     }
 
-    @Recover
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private List<CaseDetails> requestNewTokensAndTryToFindCaseAgain(String caseRef, IdamTokens idamTokens) {
-        log.info("*** case-loader *** Requesting new idam and s2s tokens");
-        idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-        idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
-        return tryFindCaseByCaseRef(caseRef, idamTokens);
-    }
-
-    private List<CaseDetails> tryFindCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
-        return coreCaseDataApi.searchForCaseworker(
-            idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorization(),
-            idamTokens.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", caseRef)
-        );
+    public List<CaseDetails> findCaseByCaseId(String caseId, IdamTokens idamTokens) {
+        return searchCcdServiceByCaseId.findCaseByCaseId(caseId, idamTokens);
     }
 
 }

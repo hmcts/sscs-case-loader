@@ -3,10 +3,13 @@ package uk.gov.hmcts.reform.sscs.functional;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import io.restassured.RestAssured;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +28,9 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 @ActiveProfiles("development")
 public class ProcessCaseFile {
 
-    private final String caseloaderinstance = System.getenv("TEST_URL");
+    private static final String caseloaderinstance = System.getenv("TEST_URL");
+    private static final String localInstance = "http://localhost:8082";
+
     String filename;
     private static final String outputdir = "src/test/resources/updates";
     private static final String processedReference =
@@ -34,10 +39,9 @@ public class ProcessCaseFile {
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
 
-
     @Before
-    public void setup() throws ParserConfigurationException, TransformerException, IOException,
-        ConfigurationException, SftpException {
+    public void setup() throws ParserConfigurationException, TransformerException,
+        IOException, SftpException {
         GenerateXml.generateXmlForAppeals();
         copy(outputdir, filename);
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
@@ -71,10 +75,11 @@ public class ProcessCaseFile {
         }
     }
 
-
     @Test
     public void processCaseFileAndVerifyCcd() {
-        RestAssured.baseURI = caseloaderinstance;
+
+        RestAssured.baseURI =
+            StringUtils.isBlank(caseloaderinstance) ? localInstance : caseloaderinstance;
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured

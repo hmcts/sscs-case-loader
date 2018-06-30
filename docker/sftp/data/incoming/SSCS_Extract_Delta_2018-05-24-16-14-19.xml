@@ -15,6 +15,7 @@
     <Appeal_Case_BF_Date>2017-06-03T00:00:00+01:00</Appeal_Case_BF_Date>
     <Originating_Office_Id>2298</Originating_Office_Id>
     <Admin_Team_Id>68</Admin_Team_Id>
+    <Additional_Ref>1234567812345678</Additional_Ref>
     <Parties>
       <PTTP_ID>498617</PTTP_ID>
       <Title>Mrs.</Title>
@@ -102,6 +103,7 @@
     <Appeal_Case_BF_Date>2019-05-24T00:00:00+01:00</Appeal_Case_BF_Date>
     <Originating_Office_Id>2298</Originating_Office_Id>
     <Admin_Team_Id>68</Admin_Team_Id>
+    <Additional_Ref>1111222233334444</Additional_Ref>
     <Parties>
       <PTTP_ID>498607</PTTP_ID>
       <Title>Mr.</Title>
