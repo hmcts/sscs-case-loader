@@ -6,14 +6,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.core.io.ClassPathResource;
@@ -72,6 +70,11 @@ public class RegionalProcessingCenterService {
 
 
     public RegionalProcessingCenter getByScReferenceCode(String referenceNumber) {
+
+        if (StringUtils.isBlank(referenceNumber)) {
+            return regionalProcessingCenterMap.get(SSCS_BIRMINGHAM);
+        }
+
         String[] splitReferenceNumber = StringUtils.split(referenceNumber, SEPARATOR_CHAR);
         String regionalProcessingCenter = sccodeRegionalProcessingCentermap.get(splitReferenceNumber[0]);
 

@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import java.util.Collections;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -81,16 +83,27 @@ public class CaseLoaderService {
         log.debug("*** case-loader *** file transformed to {} Cases successfully", cases.size());
         for (CaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
-                log.debug("*** case-loader *** searching case {} in CDD", caseData.getCaseReference());
-                List<CaseDetails> casesByCaseRef = searchCcdService.findCaseByCaseRef(
-                    caseData.getCaseReference(), idamTokens);
-                log.debug("*** case-loader *** found cases in CCD: {}", casesByCaseRef);
-                if (casesByCaseRef.isEmpty()) {
+
+                List<CaseDetails> ccdCases = Collections.emptyList();
+
+                if (StringUtils.isNotBlank(caseData.getCaseReference())) {
+                    log.debug("*** case-loader *** searching case reference {} in CDD", caseData.getCaseReference());
+                    ccdCases = searchCcdService.findCaseByCaseRef(caseData.getCaseReference(), idamTokens);
+                }
+
+                if (ccdCases.isEmpty()
+                    && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
+                    log.debug("*** case-loader *** searching case ccd id {} in CDD", caseData.getCcdCaseId());
+                    ccdCases = searchCcdService.findCaseByCaseId(caseData.getCcdCaseId(), idamTokens);
+                }
+
+                log.debug("*** case-loader *** found cases in CCD: {}", ccdCases);
+                if (ccdCases.isEmpty()) {
                     log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
                     ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
                 } else {
                     log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
-                    ccdCasesSender.sendUpdateCcdCases(caseData, casesByCaseRef.get(0), idamTokens);
+                    ccdCasesSender.sendUpdateCcdCases(caseData, ccdCases.get(0), idamTokens);
                 }
             }
         }
