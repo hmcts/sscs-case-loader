@@ -27,6 +27,7 @@ public class CaseData {
     private Subscriptions subscriptions;
     private RegionalProcessingCenter regionalProcessingCenter;
     private String region;
+    private String ccdCaseId;
 
     @JsonIgnore
     private Event getLatestEvent() {
@@ -52,7 +53,8 @@ public class CaseData {
                     @JsonProperty("generatedMobile") String generatedMobile,
                     @JsonProperty("subscriptions") Subscriptions subscriptions,
                     @JsonProperty("regionalProcessingCenter")  RegionalProcessingCenter regionalProcessingCenter,
-                    @JsonProperty("region") String region) {
+                    @JsonProperty("region") String region,
+                    @JsonProperty("ccdCaseId") String ccdCaseId) {
         this.caseReference = caseReference;
         this.appeal = appeal;
         this.hearings = hearings;
@@ -66,5 +68,6 @@ public class CaseData {
         this.subscriptions = subscriptions;
         this.regionalProcessingCenter = regionalProcessingCenter;
         this.region = region;
+        this.ccdCaseId = ccdCaseId;
     }
 }

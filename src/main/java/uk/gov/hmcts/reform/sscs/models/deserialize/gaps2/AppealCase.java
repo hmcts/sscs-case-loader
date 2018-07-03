@@ -41,6 +41,7 @@ public class AppealCase {
     private String appealCaseDateAppealReceived;
     private List<PostponementRequests> postponementRequests;
     private List<MinorStatus> minorStatus;
+    private String additionalRef;
 
     public AppealCase(@JsonProperty("Appeal_Case_Date_of_Decision") String appealCaseDateOfDecision,
                       @JsonProperty("Admin_Team_Id") String adminTeamId,
@@ -61,7 +62,8 @@ public class AppealCase {
                       @JsonProperty("Appeal_Case_Date_Appeal_Made") String appealCaseDateAppealMade,
                       @JsonProperty("Appeal_Case_Date_Appeal_Received") String appealCaseDateAppealReceived,
                       @JsonProperty("Postponement_Requests") List<PostponementRequests> postponementRequests,
-                      @JsonProperty("Minor_Status") List<MinorStatus> minorStatus) {
+                      @JsonProperty("Minor_Status") List<MinorStatus> minorStatus,
+                      @JsonProperty("Additional_Ref") String additionalRef) {
         this.appealCaseDateOfDecision = appealCaseDateOfDecision;
         this.adminTeamId = adminTeamId;
         this.originatingOfficeId = originatingOfficeId;
@@ -82,6 +84,7 @@ public class AppealCase {
         this.appealCaseDateAppealReceived = appealCaseDateAppealReceived;
         this.postponementRequests = postponementRequests;
         this.minorStatus = minorStatus;
+        this.additionalRef = additionalRef;
     }
 
     @JsonIgnore
