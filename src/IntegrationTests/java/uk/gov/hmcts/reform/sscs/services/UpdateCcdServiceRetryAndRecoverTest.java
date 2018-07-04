@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
