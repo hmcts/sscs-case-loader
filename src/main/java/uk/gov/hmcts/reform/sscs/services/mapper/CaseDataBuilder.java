@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
+import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
@@ -34,6 +35,7 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
+import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
 
 @Service
 @Slf4j
@@ -46,11 +48,16 @@ class CaseDataBuilder {
 
     private final ReferenceDataService referenceDataService;
     private final CaseDataEventBuilder caseDataEventBuilder;
+    private final RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Autowired
-    CaseDataBuilder(ReferenceDataService referenceDataService, CaseDataEventBuilder caseDataEventBuilder) {
+    CaseDataBuilder(ReferenceDataService referenceDataService,
+                    CaseDataEventBuilder caseDataEventBuilder,
+                    RegionalProcessingCenterService regionalProcessingCenterService
+    ) {
         this.referenceDataService = referenceDataService;
         this.caseDataEventBuilder = caseDataEventBuilder;
+        this.regionalProcessingCenterService = regionalProcessingCenterService;
     }
 
     List<Events> buildEvent(AppealCase appealCase) {
@@ -95,6 +102,22 @@ class CaseDataBuilder {
         return HearingOptions.builder()
             .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
             .build();
+    }
+
+    RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase) {
+        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearings = appealCase.getHearing();
+        if (hearings == null) {
+            return null;
+        }
+        return hearings.stream()
+            .min((hearing1, hearing2) -> {
+                if (hearing1.getSessionDate().equals(hearing2.getSessionDate())) {
+                    return hearing2.getAppealTime().compareTo(hearing1.getAppealTime());
+                }
+                return hearing2.getSessionDate().compareTo(hearing1.getSessionDate());
+            })
+            .map(hearing -> regionalProcessingCenterService.getByVenueId(hearing.getVenueId()))
+            .orElse(null);
     }
 
     List<Hearing> buildHearings(AppealCase appealCase) {

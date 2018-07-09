@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
+import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
@@ -71,6 +72,8 @@ public class TransformAppealCaseToCaseData {
             .build();
 
         List<Hearing> hearingsList = caseDataBuilder.buildHearings(appealCase);
+        RegionalProcessingCenter regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase);
+        String region = (regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null;
 
         Evidence evidence = caseDataBuilder.buildEvidence(appealCase);
 
@@ -81,6 +84,8 @@ public class TransformAppealCaseToCaseData {
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
+            .regionalProcessingCenter(regionalProcessingCenter)
+            .region(region)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(events)

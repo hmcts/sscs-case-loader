@@ -9,6 +9,7 @@ import com.opencsv.CSVReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -19,20 +20,15 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.RegionalProcessingCenterServiceException;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 
-
-
 @Service
 public class RegionalProcessingCenterService {
     private static final Logger LOG = getLogger(RegionalProcessingCenterService.class);
 
     private static final String RPC_DATA_JSON = "reference-data/rpc-data.json";
     private static final String CSV_FILE_PATH = "reference-data/sscs-venues.csv";
-    private static final char SEPARATOR_CHAR = '/';
-    private static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
 
     private Map<String, RegionalProcessingCenter>  regionalProcessingCenterMap  = newHashMap();
-    private final Map<String, String> sccodeRegionalProcessingCentermap = newHashMap();
-
+    private final Map<String, String> venueIdToRegionalProcessingCentre = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -46,9 +42,9 @@ public class RegionalProcessingCenterService {
 
             List<String[]> linesList = reader.readAll();
 
-            linesList.forEach(line ->
-                    sccodeRegionalProcessingCentermap.put(line[1], line[2])
-            );
+            linesList.forEach(line -> {
+                venueIdToRegionalProcessingCentre.put(line[0], line[2]);
+            });
         } catch (IOException e) {
             LOG.error("Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH,
                 new RegionalProcessingCenterServiceException(e));
@@ -85,12 +81,12 @@ public class RegionalProcessingCenterService {
         }
     }
 
+    public RegionalProcessingCenter getByVenueId(String venueId) {
+        String rpc = venueIdToRegionalProcessingCentre.get(venueId);
+        return regionalProcessingCenterMap.get(rpc);
+    }
+
     public Map<String, RegionalProcessingCenter> getRegionalProcessingCenterMap() {
         return regionalProcessingCenterMap;
     }
-
-    public Map<String, String> getSccodeRegionalProcessingCentermap() {
-        return sccodeRegionalProcessingCentermap;
-    }
-
 }
