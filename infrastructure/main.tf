@@ -69,6 +69,7 @@ module "sscs-case-loader" {
   is_frontend  = false
   subscription = "${var.subscription}"
   capacity     = "1"
+  common_tags  = "${var.common_tags}"
 
   app_settings = {
     MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
