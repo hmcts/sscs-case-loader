@@ -56,7 +56,7 @@ public class CaseLoaderService {
             .build();
         Gaps2File latestRef = null;
         for (Gaps2File file : files) {
-            log.debug("*** case-loader *** file being processed: {}", file.getName());
+            log.info("*** case-loader *** file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
             log.debug("*** case-loader *** file validated successfully: {}", file.getName());
             if (file.isDelta()) {

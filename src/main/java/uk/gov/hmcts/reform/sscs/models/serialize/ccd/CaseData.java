@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import com.fasterxml.jackson.annotation.*;
-
 import java.util.List;
-
 import lombok.Builder;
 import lombok.Data;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
@@ -27,6 +25,8 @@ public class CaseData {
     private Subscriptions subscriptions;
     private RegionalProcessingCenter regionalProcessingCenter;
     private String region;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String ccdCaseId;
 
     @JsonIgnore
@@ -54,7 +54,7 @@ public class CaseData {
                     @JsonProperty("subscriptions") Subscriptions subscriptions,
                     @JsonProperty("regionalProcessingCenter")  RegionalProcessingCenter regionalProcessingCenter,
                     @JsonProperty("region") String region,
-                    @JsonProperty("ccdCaseId") String ccdCaseId) {
+                    @JsonProperty(value = "ccdCaseId", access = JsonProperty.Access.WRITE_ONLY) String ccdCaseId) {
         this.caseReference = caseReference;
         this.appeal = appeal;
         this.hearings = hearings;
