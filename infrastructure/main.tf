@@ -53,6 +53,8 @@ locals {
   ccdApi = "http://ccd-data-store-api-${local.local_env}.service.${local.local_ase}.internal"
   s2sCnpUrl = "http://rpe-service-auth-provider-${local.local_env}.service.${local.local_ase}.internal"
 
+  idamUrl = "${(var.env == "saat") ? "http://idam-api-idam-${local.local_env}.service.${local.local_ase}.internal:80" : data.vault_generic_secret.idam_api.data["value"]}"
+
   previewVaultName       = "${var.product}-${var.component}"
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
@@ -77,7 +79,7 @@ module "sscs-case-loader" {
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
 
-    IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
+    IDAM_URL = "${local.idamUrl}"
 
     IDAM.S2S-AUTH.TOTP_SECRET = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
     IDAM.S2S-AUTH = "${local.s2sCnpUrl}"
