@@ -97,8 +97,13 @@ public class ProcessCaseFile {
         try {
             sftpChannel.rm("/incoming/SSCS_CcdCases_Delta_*.xml");
             sftpChannel.rm("/incoming/SSCS_CreateAppeals_Delta_*.xml");
-            sftpChannel.rm("/incoming/failed/*.xml");
-            sftpChannel.rm("/incoming/processed/*.xml");
+            sftpChannel.rm("/incoming/failed/SSCS_CcdCases_Delta_*.xml");
+            sftpChannel.rm("/incoming/failed/SSCS_CreateAppeals_Delta_*.xml");
+            sftpChannel.rm("/incoming/processed/SSCS_CcdCases_Delta_*.xml");
+            sftpChannel.rm("/incoming/processed/SSCS_CreateAppeals_Delta_*.xml");
+            sftpChannel.rm("/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml");
+            sftpChannel.rm("/incoming/processed/SSCS_Extract_Delta_2018-05-24-16-14-19.xml");
+            sftpChannel.rm("/incoming/processed/SSCS_Extract_Delta_SmokeTest_2018-03-15-16-14-19.xml");
         } catch (SftpException e) {
             if (e.id != ChannelSftp.SSH_FX_NO_SUCH_FILE) {
                 throw e;

@@ -6,7 +6,7 @@ import uk.gov.hmcts.reform.tools.utils.XmlWriter;
 
 public class Appeal {
 
-    public Date lastUpdatedDate = new Date();
+    public Date lastUpdatedDate = new Date(3736886400000L); // Tuesday, June 1, 2088 12:00:00 AM
 
     public AppealHeader header = new AppealHeader();
     public AppealParties parties = new AppealParties();
