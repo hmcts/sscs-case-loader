@@ -19,8 +19,6 @@ public class AppealHeader {
         return setHeaderDefaults(new Date());
     }
 
-
-
     public AppealHeader setHeaderDefaults(Date lastUpdated) {
         setAppealCaseId("3402297");
         setAppealCaseRefNum("SC068/17/4347");
@@ -45,14 +43,6 @@ public class AppealHeader {
         return this;
     }
 
-    public String getAppealCaseId() {
-        return appealHeader.get(XmlTags.appeal_Case_Id);
-    }
-
-    public String getAppealCaseRefNum() {
-        return appealHeader.get(XmlTags.appeal_Case_RefNum);
-    }
-
     public AppealHeader setAppealCaseRefNum(String value) {
         appealHeader.put(XmlTags.appeal_Case_RefNum, value);
         return this;
@@ -73,34 +63,13 @@ public class AppealHeader {
         return this;
     }
 
-    public AppealHeader setAppealCaseDateAppealReceived(Integer value) {
-        Date date = TestContainer.backDate(lastUpdatedDate, value);
-        String dateString = TestContainer.asGapsDate(date);
-        appealHeader.put(XmlTags.appeal_Case_Date_Appeal_Received, dateString);
-        return this;
-    }
-
     public AppealHeader setAppealCaseDateAppealReceived(String value) {
         appealHeader.put(XmlTags.appeal_Case_Date_Appeal_Received, value);
         return this;
     }
 
-    public AppealHeader setAppealCaseDateOfDecision(Integer value) {
-        Date date = TestContainer.backDate(lastUpdatedDate, value);
-        String dateString = TestContainer.asGapsDate(date);
-        appealHeader.put(XmlTags.appeal_Case_Date_of_Decision, dateString);
-        return this;
-    }
-
     public AppealHeader setAppealCaseDateOfDecision(String value) {
         appealHeader.put(XmlTags.appeal_Case_Date_of_Decision, value);
-        return this;
-    }
-
-    public AppealHeader setAppealCaseDateAppealMade(Integer value) {
-        Date date = TestContainer.backDate(lastUpdatedDate, value);
-        String dateString = TestContainer.asGapsDate(date);
-        appealHeader.put(XmlTags.appeal_Case_Date_Appeal_Made, dateString);
         return this;
     }
 

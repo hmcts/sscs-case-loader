@@ -39,6 +39,4 @@ public class Utils {
         return calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US) + "_" + caseId;
     }
 
-
 }
-

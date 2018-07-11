@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.services;
+package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -21,25 +21,26 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.ccd.CreateCcdService;
 import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("development")
-public class CreateCcdServiceRetryAndRecoverTest {
+public class UpdateCcdServiceRetryAndRecoverTest {
+
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
 
     @MockBean
-    private IdamService idamService;
-
-    @MockBean
     private SftpChannelAdapter channelAdapter;
 
+    @MockBean
+    private IdamService idamService;
+
     @Autowired
-    private CreateCcdService createCcdService;
+    private UpdateCcdService updateCcdService;
+
     private CaseData caseData;
     private IdamTokens idamTokens;
 
@@ -56,11 +57,12 @@ public class CreateCcdServiceRetryAndRecoverTest {
     }
 
     @Test
-    public void givenCreateCcdApiFailsWhenStartCaseWorker_shouldRetryAndRecover() {
-        when(coreCaseDataApi.startForCaseworker(
+    public void givenUpdateCcdApiFailsWhenStartEvent_shouldRetryAndRecover() {
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             anyString()))
@@ -71,31 +73,34 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization2");
 
-        when(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             anyString()))
             .thenReturn(StartEventResponse.builder().build());
 
-        when(coreCaseDataApi.submitForCaseworker(
+        when(coreCaseDataApi.submitEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             eq(true),
             any(CaseDataContent.class)))
             .thenReturn(CaseDetails.builder().build());
 
-        createCcdService.create(caseData, idamTokens);
+        updateCcdService.update(caseData, 1L, "appealReceived", idamTokens);
 
-        verify(coreCaseDataApi, times(0)).submitForCaseworker(
+        verify(coreCaseDataApi, times(0)).submitEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             eq(true),
@@ -103,20 +108,22 @@ public class CreateCcdServiceRetryAndRecoverTest {
     }
 
     @Test
-    public void givenCreateCcdApiFailsWhenSubmittingForCaseWorker_shouldRetryAndRecover() {
-        when(coreCaseDataApi.startForCaseworker(
+    public void givenUpdateCcdApiFailsWhenSubmittingEvent_shouldRetryAndRecover() {
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             anyString()))
             .thenReturn(StartEventResponse.builder().build());
 
-        when(coreCaseDataApi.submitForCaseworker(
+        when(coreCaseDataApi.submitEventForCaseWorker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             eq(true),
@@ -128,25 +135,27 @@ public class CreateCcdServiceRetryAndRecoverTest {
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization2");
 
-        when(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             anyString()))
             .thenReturn(StartEventResponse.builder().build());
 
-        when(coreCaseDataApi.submitForCaseworker(
+        when(coreCaseDataApi.submitEventForCaseWorker(
             eq("authorization2"),
             eq("serviceAuthorization2"),
             eq("16"),
+            anyString(),
             anyString(),
             anyString(),
             eq(true),
             any(CaseDataContent.class)))
             .thenReturn(CaseDetails.builder().build());
 
-        createCcdService.create(caseData, idamTokens);
+        updateCcdService.update(caseData, 1L, "appealReceived", idamTokens);
     }
 }

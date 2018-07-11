@@ -89,8 +89,8 @@ public class TransformAppealCaseToCaseData {
             .generatedEmail(generatedEmail)
             .generatedMobile(generatedMobile)
             .subscriptions(caseDataBuilder.buildSubscriptions())
+            .ccdCaseId(appealCase.getAdditionalRef())
             .build();
-
     }
 
 }
