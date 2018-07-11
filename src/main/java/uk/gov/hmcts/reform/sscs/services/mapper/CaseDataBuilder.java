@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
@@ -16,21 +17,8 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
@@ -104,20 +92,18 @@ class CaseDataBuilder {
             .build();
     }
 
-    RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase) {
-        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearings = appealCase.getHearing();
-        if (hearings == null) {
-            return null;
-        }
+    RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase, Parties appellantParty) {
+        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearings =
+            appealCase.getHearing() != null ? appealCase.getHearing() : Collections.emptyList();
+
         return hearings.stream()
-            .min((hearing1, hearing2) -> {
-                if (hearing1.getSessionDate().equals(hearing2.getSessionDate())) {
-                    return hearing2.getAppealTime().compareTo(hearing1.getAppealTime());
-                }
-                return hearing2.getSessionDate().compareTo(hearing1.getSessionDate());
-            })
+            .reduce(getLast())
             .map(hearing -> regionalProcessingCenterService.getByVenueId(hearing.getVenueId()))
-            .orElse(null);
+            .orElse(regionalProcessingCenterService.getByPostcode(appellantParty.getPostCode()));
+    }
+
+    private <T> BinaryOperator<T> getLast() {
+        return (first, second) -> second;
     }
 
     List<Hearing> buildHearings(AppealCase appealCase) {

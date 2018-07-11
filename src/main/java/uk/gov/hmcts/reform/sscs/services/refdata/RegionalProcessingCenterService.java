@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.exceptions.RegionalProcessingCenterServiceException;
@@ -29,6 +30,14 @@ public class RegionalProcessingCenterService {
 
     private Map<String, RegionalProcessingCenter>  regionalProcessingCenterMap  = newHashMap();
     private final Map<String, String> venueIdToRegionalProcessingCentre = new HashMap<>();
+
+    private final AirLookupService airLookupService;
+
+    @Autowired
+    public RegionalProcessingCenterService(AirLookupService airLookupService) {
+        this.airLookupService = airLookupService;
+    }
+
 
     @PostConstruct
     public void init() {
@@ -84,6 +93,11 @@ public class RegionalProcessingCenterService {
     public RegionalProcessingCenter getByVenueId(String venueId) {
         String rpc = venueIdToRegionalProcessingCentre.get(venueId);
         return regionalProcessingCenterMap.get(rpc);
+    }
+
+    public RegionalProcessingCenter getByPostcode(String postcode) {
+        String regionalProcessingCentreName = airLookupService.lookupRegionalCentre(postcode);
+        return regionalProcessingCenterMap.get("SSCS " + regionalProcessingCentreName);
     }
 
     public Map<String, RegionalProcessingCenter> getRegionalProcessingCenterMap() {

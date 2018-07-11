@@ -31,10 +31,10 @@ public class TransformAppealCaseToCaseDataTest {
             new TransformAppealCaseToCaseData(caseDataBuilder);
 
         String expectedRegionName = "region-name";
-        RegionalProcessingCenter expectedRegionalProcesingCentre = RegionalProcessingCenter.builder()
+        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
             .name(expectedRegionName)
             .build();
-        when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcesingCentre);
+        when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcessingCentre);
 
         AppealCase appealCase = getAppealCase();
 
@@ -42,7 +42,6 @@ public class TransformAppealCaseToCaseDataTest {
 
         String appealNumber = caseData.getSubscriptions().getAppellantSubscription().getTya();
         assertTrue("appealNumber length is not 10 digits", appealNumber.length() == 10);
-
         assertEquals("Appeal references are mapped (SC Reference)", "SC068/17/00013", caseData.getCaseReference());
         assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcesingCentre));

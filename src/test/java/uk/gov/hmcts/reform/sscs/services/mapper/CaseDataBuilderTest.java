@@ -2,11 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
@@ -20,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
@@ -39,6 +36,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     private RegionalProcessingCenterService regionalProcessingCentreService;
     private CaseDataBuilder caseDataBuilder;
     private AppealCase appeal;
+    private Parties applicantParty;
 
     @Before
     public void setUp() {
@@ -46,7 +44,9 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     private void createAppealCase(List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearings) {
+        applicantParty = Parties.builder().postCode("AB1 1AB").build();
         appeal = AppealCase.builder()
+            .parties(Collections.singletonList(applicantParty))
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
@@ -136,24 +136,47 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
-    public void shouldBuildRegionalProcessingCentre() {
-        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder().build();
-        when(regionalProcessingCentreService.getByVenueId("venue")).thenReturn(expectedRegionalProcessingCentre);
-        RegionalProcessingCenter regionalProcessingCentre = caseDataBuilder.buildRegionalProcessingCentre(appeal);
+    public void shouldBuildRegionalProcessingCentreFromPostcodeWhenThereAreNoHearings() {
+        createAppealCase(Collections.emptyList());
+        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
+            .name("RPC form postcode")
+            .build();
+        when(regionalProcessingCentreService.getByPostcode(applicantParty.getPostCode()))
+            .thenReturn(expectedRegionalProcessingCentre);
+        RegionalProcessingCenter regionalProcessingCentre =
+            caseDataBuilder.buildRegionalProcessingCentre(appeal, applicantParty);
 
         assertThat(regionalProcessingCentre, is(expectedRegionalProcessingCentre));
     }
 
     @Test
-    public void shouldReturnNullRemoteProcessingCentreIfNoHearings() {
+    public void shouldBuildRegionalProcessingCentreFromPostcodeWhenHearingsIsNull() {
         createAppealCase(null);
-        RegionalProcessingCenter regionalProcessingCentre = caseDataBuilder.buildRegionalProcessingCentre(appeal);
+        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
+            .name("RPC form postcode")
+            .build();
+        when(regionalProcessingCentreService.getByPostcode(applicantParty.getPostCode()))
+            .thenReturn(expectedRegionalProcessingCentre);
+        RegionalProcessingCenter regionalProcessingCentre =
+            caseDataBuilder.buildRegionalProcessingCentre(appeal, applicantParty);
 
-        assertThat(regionalProcessingCentre, is(nullValue()));
+        assertThat(regionalProcessingCentre, is(expectedRegionalProcessingCentre));
     }
 
     @Test
-    public void shouldBuildRegionalProcessingCentreFromLatestHearing() {
+    public void shouldBuildRegionalProcessingCentreFromHearing() {
+        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
+            .name("RPC form Hearing")
+            .build();
+        when(regionalProcessingCentreService.getByVenueId("venue")).thenReturn(expectedRegionalProcessingCentre);
+        RegionalProcessingCenter regionalProcessingCentre =
+            caseDataBuilder.buildRegionalProcessingCentre(appeal, applicantParty);
+
+        assertThat(regionalProcessingCentre, is(expectedRegionalProcessingCentre));
+    }
+
+    @Test
+    public void shouldBuildRegionalProcessingCentreFromLastHearing() {
         uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing hearing1 =
             uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing.builder()
                 .venueId("venue1")
@@ -175,9 +198,12 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
         createAppealCase(Arrays.asList(hearing1, hearing2, hearing3));
 
-        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder().build();
-        when(regionalProcessingCentreService.getByVenueId("venue2")).thenReturn(expectedRegionalProcessingCentre);
-        RegionalProcessingCenter regionalProcessingCentre = caseDataBuilder.buildRegionalProcessingCentre(appeal);
+        RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
+            .name("RPC form 2nd Hearing")
+            .build();
+        when(regionalProcessingCentreService.getByVenueId("venue3")).thenReturn(expectedRegionalProcessingCentre);
+        RegionalProcessingCenter regionalProcessingCentre =
+            caseDataBuilder.buildRegionalProcessingCentre(appeal, applicantParty);
 
         assertThat(regionalProcessingCentre, is(expectedRegionalProcessingCentre));
     }

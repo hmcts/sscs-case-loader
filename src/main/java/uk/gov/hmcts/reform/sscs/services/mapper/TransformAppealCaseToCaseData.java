@@ -45,6 +45,8 @@ public class TransformAppealCaseToCaseData {
         String generatedEmail = "";
         String generatedMobile = "";
         Appellant appellant = null;
+        RegionalProcessingCenter regionalProcessingCenter = null;
+        String region = null;
 
         if (party.isPresent()) {
             name = caseDataBuilder.buildName(party.get());
@@ -61,6 +63,9 @@ public class TransformAppealCaseToCaseData {
                 .contact(contact)
                 .identity(identity)
                 .build();
+
+            regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase, party.get());
+            region = (regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null;
         }
 
         BenefitType benefitType = caseDataBuilder.buildBenefitType(appealCase);
@@ -72,8 +77,6 @@ public class TransformAppealCaseToCaseData {
             .build();
 
         List<Hearing> hearingsList = caseDataBuilder.buildHearings(appealCase);
-        RegionalProcessingCenter regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase);
-        String region = (regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null;
 
         Evidence evidence = caseDataBuilder.buildEvidence(appealCase);
 
