@@ -178,7 +178,7 @@ bootRun {
   systemProperty 'server.port', '8082'
 }
 
-def springBootVersion = '1.5.10.RELEASE'
+def springBootVersion = '1.5.14.RELEASE'
 
 dependencyManagement {
   imports {
