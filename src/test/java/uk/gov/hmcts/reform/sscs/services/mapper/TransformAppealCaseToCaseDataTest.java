@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
@@ -29,6 +28,7 @@ public class TransformAppealCaseToCaseDataTest {
             new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService);
         TransformAppealCaseToCaseData transformAppealCaseToCaseData =
             new TransformAppealCaseToCaseData(caseDataBuilder);
+        ReflectionTestUtils.setField(transformAppealCaseToCaseData, "lookupRpcByVenueId", true);
 
         String expectedRegionName = "region-name";
         RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
@@ -44,7 +44,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertTrue("appealNumber length is not 10 digits", appealNumber.length() == 10);
         assertEquals("Appeal references are mapped (SC Reference)", "SC068/17/00013", caseData.getCaseReference());
         assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
-        assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcesingCentre));
+        assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
     }
 

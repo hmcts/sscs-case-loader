@@ -27,8 +27,11 @@ public class RegionalProcessingCenterService {
 
     private static final String RPC_DATA_JSON = "reference-data/rpc-data.json";
     private static final String CSV_FILE_PATH = "reference-data/sscs-venues.csv";
+    private static final char SEPARATOR_CHAR = '/';
+    private static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
 
     private Map<String, RegionalProcessingCenter>  regionalProcessingCenterMap  = newHashMap();
+    private final Map<String, String> sccodeRegionalProcessingCentermap = newHashMap();
     private final Map<String, String> venueIdToRegionalProcessingCentre = new HashMap<>();
 
     private final AirLookupService airLookupService;
@@ -52,6 +55,7 @@ public class RegionalProcessingCenterService {
             List<String[]> linesList = reader.readAll();
 
             linesList.forEach(line -> {
+                sccodeRegionalProcessingCentermap.put(line[1], line[2]);
                 venueIdToRegionalProcessingCentre.put(line[0], line[2]);
             });
         } catch (IOException e) {
@@ -72,7 +76,6 @@ public class RegionalProcessingCenterService {
                 new RegionalProcessingCenterServiceException(e));
         }
     }
-
 
     public RegionalProcessingCenter getByScReferenceCode(String referenceNumber) {
 
@@ -102,5 +105,9 @@ public class RegionalProcessingCenterService {
 
     public Map<String, RegionalProcessingCenter> getRegionalProcessingCenterMap() {
         return regionalProcessingCenterMap;
+    }
+
+    public Map<String, String> getSccodeRegionalProcessingCentermap() {
+        return sccodeRegionalProcessingCentermap;
     }
 }

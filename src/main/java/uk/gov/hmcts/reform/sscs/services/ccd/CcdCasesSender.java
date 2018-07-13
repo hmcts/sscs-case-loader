@@ -6,9 +6,11 @@ import static java.util.stream.Collectors.toSet;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.util.CcdUtil;
@@ -19,8 +21,12 @@ import uk.gov.hmcts.reform.sscs.util.CcdUtil;
 public class CcdCasesSender {
 
     public static final String REGION = "region";
+
+    @Value("${rpc.venue.id.enabled}")
+    private boolean lookupRpcByVenueId;
     private final CreateCcdService createCcdService;
     private final UpdateCcdService updateCcdService;
+    private final RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Autowired
     CcdCasesSender(CreateCcdService createCcdService,
@@ -28,9 +34,13 @@ public class CcdCasesSender {
                    RegionalProcessingCenterService regionalProcessingCenterService) {
         this.createCcdService = createCcdService;
         this.updateCcdService = updateCcdService;
+        this.regionalProcessingCenterService = regionalProcessingCenterService;
     }
 
     public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
+        if (!lookupRpcByVenueId) {
+            addRegionalProcessingCenter(caseData);
+        }
         createCcdService.create(caseData, idamTokens);
     }
 
@@ -62,10 +72,19 @@ public class CcdCasesSender {
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
                                                      IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCase)) {
+            if (!lookupRpcByVenueId) {
+                addRegionalProcessingCenterIfItsNotPresent(caseData, existingCcdCase);
+            }
             addMissingExistingHearings(caseData, existingCcdCase);
             updateCcdService.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
+        }
+    }
+
+    private void addRegionalProcessingCenterIfItsNotPresent(CaseData caseData, CaseDetails existingCcdCase) {
+        if (null == existingCcdCase.getData().get(REGION)) {
+            addRegionalProcessingCenter(caseData);
         }
     }
 
@@ -111,6 +130,15 @@ public class CcdCasesSender {
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
             updateCcdService.update(caseData, existingCase.getId(), "evidenceReceived", idamTokens);
+        }
+    }
+
+    private void addRegionalProcessingCenter(CaseData caseData) {
+        RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService
+            .getByScReferenceCode(caseData.getCaseReference());
+        if (null != regionalProcessingCenter) {
+            caseData.setRegion(regionalProcessingCenter.getName());
+            caseData.setRegionalProcessingCenter(regionalProcessingCenter);
         }
     }
 
