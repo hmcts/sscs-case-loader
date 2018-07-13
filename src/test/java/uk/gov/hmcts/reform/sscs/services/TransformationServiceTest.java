@@ -20,7 +20,8 @@ public class TransformationServiceTest {
 
     @Mock
     private TransformAppealCaseToCaseData transformAppealCaseToCaseData;
-    private CaseData caseData;
+    private CaseData caseDataWithScReference;
+    private CaseData caseDataWithCcdId;
     private TransformationService transformationService;
     private InputStream is;
     private List<CaseData> caseDataList;
@@ -29,16 +30,27 @@ public class TransformationServiceTest {
     public void setUp() {
         transformationService = new TransformationService(transformAppealCaseToCaseData,
             "2017-01-01");
-        caseData = CaseData.builder().build();
-        when(transformAppealCaseToCaseData.transform(any())).thenReturn(caseData);
+
+        caseDataWithScReference = CaseData.builder().build();
+        caseDataWithScReference.setCaseReference("SC012/34/56789");
+        caseDataWithScReference.setCcdCaseId(null);
+
+        caseDataWithCcdId = CaseData.builder().build();
+        caseDataWithCcdId.setCaseReference(null);
+        caseDataWithCcdId.setCcdCaseId("1234567890");
+
+        when(transformAppealCaseToCaseData.transform(any()))
+            .thenReturn(caseDataWithScReference)
+            .thenReturn(caseDataWithCcdId);
     }
 
     @Test
     public void shouldReturnListOfCasesGivenDeltaAsInputStream() {
         is = getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml");
         caseDataList = transformationService.transform(is);
-        assertThat(caseDataList.size(), is(1));
-        assertThat(caseDataList.get(0), is(caseData));
+        assertThat(caseDataList.size(), is(2));
+        assertThat(caseDataList.get(0), is(caseDataWithScReference));
+        assertThat(caseDataList.get(1), is(caseDataWithCcdId));
     }
 
     @Test

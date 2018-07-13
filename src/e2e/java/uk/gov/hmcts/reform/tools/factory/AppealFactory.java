@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.tools.factory;
 
-import java.io.IOException;
 import java.util.Date;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import uk.gov.hmcts.reform.tools.builders.Appeal;
 import uk.gov.hmcts.reform.tools.enums.*;
 import uk.gov.hmcts.reform.tools.utils.AppealRandomValues;
@@ -13,8 +10,7 @@ import uk.gov.hmcts.reform.tools.utils.XmlWriter;
 
 public class AppealFactory {
 
-    public XmlWriter selectAppeal(XmlWriter xmlWriter, AppealTemplate appealTemplate, int requiredNumber)
-            throws IOException, TransformerException, ParserConfigurationException {
+    public XmlWriter selectAppeal(XmlWriter xmlWriter, AppealTemplate appealTemplate, int requiredNumber) {
 
         for (int i = 0; i < requiredNumber; i++) {
             selectAppeal(xmlWriter, appealTemplate);
@@ -22,8 +18,7 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    public XmlWriter selectAppeal(XmlWriter xmlWriter, AppealTemplate appealTemplate) throws
-            IOException, TransformerException, ParserConfigurationException {
+    public XmlWriter selectAppeal(XmlWriter xmlWriter, AppealTemplate appealTemplate) {
 
         switch (appealTemplate) {
             case NEW_DIRECT_LODGEMENT:
@@ -42,8 +37,7 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    private XmlWriter newDirectLodgement(XmlWriter xmlWriter) throws
-            ParserConfigurationException, TransformerException, IOException {
+    private XmlWriter newDirectLodgement(XmlWriter xmlWriter) {
 
         AppealRandomValues a = new AppealRandomValues("SC001/0");
 
@@ -94,8 +88,8 @@ public class AppealFactory {
 
     }
 
-    private XmlWriter newAppealAwaitingResponse(XmlWriter xmlWriter) throws
-            ParserConfigurationException, TransformerException, IOException {
+    private XmlWriter newAppealAwaitingResponse(XmlWriter xmlWriter) {
+
         AppealRandomValues a = new AppealRandomValues("SC002/0");
 
         Appeal appeal = new Appeal(xmlWriter);
@@ -152,8 +146,7 @@ public class AppealFactory {
 
     }
 
-    private XmlWriter newReadyToList(XmlWriter xmlWriter) throws
-            ParserConfigurationException, TransformerException, IOException {
+    private XmlWriter newReadyToList(XmlWriter xmlWriter) {
 
         AppealRandomValues a = new AppealRandomValues("SC003/0");
 
@@ -217,8 +210,8 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    public XmlWriter newListedForHearing(XmlWriter xmlWriter) throws
-            ParserConfigurationException, TransformerException, IOException {
+    public XmlWriter newListedForHearing(XmlWriter xmlWriter) {
+
         AppealRandomValues a = new AppealRandomValues("SC004/0");
 
         Appeal appeal = new Appeal(xmlWriter);
@@ -300,8 +293,7 @@ public class AppealFactory {
         return xmlWriter;
     }
 
-    public XmlWriter newHeardForDestruction(XmlWriter xmlWriter) throws
-            ParserConfigurationException, TransformerException, IOException {
+    public XmlWriter newHeardForDestruction(XmlWriter xmlWriter) {
 
         AppealRandomValues a = new AppealRandomValues("SC005/0");
 
