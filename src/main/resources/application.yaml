@@ -77,9 +77,9 @@ slot.name: ${SLOT:dev}
 
 test.url: ${TEST_URL:http://localhost:8082}
 
+rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
 ---
 spring:
     profiles: development
 
 scheduling.enabled: false
-

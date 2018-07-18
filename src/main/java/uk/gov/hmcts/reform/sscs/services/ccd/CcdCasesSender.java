@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toSet;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
@@ -20,6 +21,9 @@ import uk.gov.hmcts.reform.sscs.util.CcdUtil;
 public class CcdCasesSender {
 
     public static final String REGION = "region";
+
+    @Value("${rpc.venue.id.enabled}")
+    private boolean lookupRpcByVenueId;
     private final CreateCcdService createCcdService;
     private final UpdateCcdService updateCcdService;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
@@ -34,7 +38,9 @@ public class CcdCasesSender {
     }
 
     public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
-        addRegionalProcessingCenter(caseData);
+        if (!lookupRpcByVenueId) {
+            addRegionalProcessingCenter(caseData);
+        }
         createCcdService.create(caseData, idamTokens);
     }
 
@@ -66,7 +72,9 @@ public class CcdCasesSender {
     private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
                                                      IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCase)) {
-            addRegionalProcessingCenterIfItsNotPresent(caseData, existingCcdCase);
+            if (!lookupRpcByVenueId) {
+                addRegionalProcessingCenterIfItsNotPresent(caseData, existingCcdCase);
+            }
             addMissingExistingHearings(caseData, existingCcdCase);
             updateCcdService.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
         } else {

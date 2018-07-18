@@ -7,11 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getCaseDetails;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
@@ -27,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
@@ -135,6 +132,18 @@ public class CcdCasesSenderTest {
         caseData.setRegion(getRegionalProcessingCenter().getName());
         caseData.setRegionalProcessingCenter(getRegionalProcessingCenter());
 
+        verify(createCcdService, times(1))
+            .create(eq(caseData), eq(idamTokens));
+    }
+
+    @Test
+    public void shouldNotAddRegionalProcessingCenterIfDisabled() {
+        ReflectionTestUtils.setField(ccdCasesSender, "lookupRpcByVenueId", true);
+        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);
+
+        CaseData caseData = buildCaseData(APPEAL_RECEIVED);
+
+        verifyZeroInteractions(regionalProcessingCenterService);
         verify(createCcdService, times(1))
             .create(eq(caseData), eq(idamTokens));
     }
@@ -343,6 +352,28 @@ public class CcdCasesSenderTest {
 
         assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(regionalProcessingCenter));
         assertThat(caseDataArgumentCaptor.getValue().getRegion(), equalTo(regionalProcessingCenter.getName()));
+    }
+
+    @Test
+    public void shouldNotAddRegionalProcessingCenterForAnExistingCaseIfItsNotAlreadyPresentInCcdIfDisabled()
+        throws Exception {
+        ReflectionTestUtils.setField(ccdCasesSender, "lookupRpcByVenueId", true);
+
+        RegionalProcessingCenter regionalProcessingCenter = getRegionalProcessingCenter();
+        ArgumentCaptor<CaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(CaseData.class);
+
+        CaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
+            .thenReturn(regionalProcessingCenter);
+
+        CaseDetails existingCaseDetails = getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdService).update(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()), eq(idamTokens));
+
+        verifyZeroInteractions(regionalProcessingCenterService);
     }
 
     @Test

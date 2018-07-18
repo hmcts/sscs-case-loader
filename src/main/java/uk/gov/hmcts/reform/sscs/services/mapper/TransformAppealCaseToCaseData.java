@@ -3,9 +3,11 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
+import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
@@ -21,6 +23,9 @@ import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
 
 @Service
 public class TransformAppealCaseToCaseData {
+
+    @Value("${rpc.venue.id.enabled}")
+    private boolean lookupRpcByVenueId;
 
     private final CaseDataBuilder caseDataBuilder;
 
@@ -44,6 +49,8 @@ public class TransformAppealCaseToCaseData {
         String generatedEmail = "";
         String generatedMobile = "";
         Appellant appellant = null;
+        RegionalProcessingCenter regionalProcessingCenter = null;
+        String region = null;
 
         if (party.isPresent()) {
             name = caseDataBuilder.buildName(party.get());
@@ -60,6 +67,11 @@ public class TransformAppealCaseToCaseData {
                 .contact(contact)
                 .identity(identity)
                 .build();
+
+            if (lookupRpcByVenueId) {
+                regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase, party.get());
+                region = (regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null;
+            }
         }
 
         BenefitType benefitType = caseDataBuilder.buildBenefitType(appealCase);
@@ -81,6 +93,8 @@ public class TransformAppealCaseToCaseData {
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
+            .regionalProcessingCenter(regionalProcessingCenter)
+            .region(region)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(events)

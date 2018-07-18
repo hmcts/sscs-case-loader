@@ -230,6 +230,8 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
 
+  compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+
   compileOnly 'org.projectlombok:lombok:1.16.20'
   apt "org.projectlombok:lombok:1.16.20"
 
