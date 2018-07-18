@@ -86,6 +86,7 @@ public final class CaseDataUtils {
             .generatedSurname(name.getLastName())
             .generatedEmail(contact.getEmail())
             .generatedMobile(contact.getMobile())
+            .generatedDob(identity.getDob())
             .build();
     }
 

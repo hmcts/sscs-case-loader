@@ -14,6 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
 
@@ -46,6 +47,10 @@ public class TransformAppealCaseToCaseDataTest {
         assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
+
+        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
+
+        assertThat(caseData.getGeneratedDob(), is(dob));
     }
 
     private AppealCase getAppealCase() throws Exception {

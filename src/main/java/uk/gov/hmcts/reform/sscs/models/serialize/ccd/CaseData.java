@@ -22,6 +22,8 @@ public class CaseData {
     private String generatedSurname;
     private String generatedEmail;
     private String generatedMobile;
+    @JsonProperty("generatedDOB")
+    private String generatedDob;
     private Subscriptions subscriptions;
     private RegionalProcessingCenter regionalProcessingCenter;
     private String region;
@@ -51,6 +53,7 @@ public class CaseData {
                     @JsonProperty("generatedSurname") String generatedSurname,
                     @JsonProperty("generatedEmail") String generatedEmail,
                     @JsonProperty("generatedMobile") String generatedMobile,
+                    @JsonProperty("generatedDOB") String generatedDob,
                     @JsonProperty("subscriptions") Subscriptions subscriptions,
                     @JsonProperty("regionalProcessingCenter")  RegionalProcessingCenter regionalProcessingCenter,
                     @JsonProperty("region") String region,
@@ -65,6 +68,7 @@ public class CaseData {
         this.generatedSurname = generatedSurname;
         this.generatedEmail = generatedEmail;
         this.generatedMobile = generatedMobile;
+        this.generatedDob = generatedDob;
         this.subscriptions = subscriptions;
         this.regionalProcessingCenter = regionalProcessingCenter;
         this.region = region;

@@ -48,6 +48,7 @@ public class TransformAppealCaseToCaseData {
         String generatedSurname = "";
         String generatedEmail = "";
         String generatedMobile = "";
+        String generatedDob = "";
         Appellant appellant = null;
         RegionalProcessingCenter regionalProcessingCenter = null;
         String region = null;
@@ -61,6 +62,7 @@ public class TransformAppealCaseToCaseData {
             generatedSurname = name.getLastName();
             generatedEmail = contact.getEmail();
             generatedMobile = contact.getMobile();
+            generatedDob = identity.getDob();
 
             appellant = Appellant.builder()
                 .name(name)
@@ -102,6 +104,7 @@ public class TransformAppealCaseToCaseData {
             .generatedSurname(generatedSurname)
             .generatedEmail(generatedEmail)
             .generatedMobile(generatedMobile)
+            .generatedDob(generatedDob)
             .subscriptions(caseDataBuilder.buildSubscriptions())
             .ccdCaseId(appealCase.getAdditionalRef())
             .build();
