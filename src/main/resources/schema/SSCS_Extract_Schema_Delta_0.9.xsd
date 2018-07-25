@@ -22,6 +22,7 @@
               <xs:element minOccurs="0" name="Appeal_Case_BF_Date" type="xs:dateTime" />
               <xs:element minOccurs="0" name="Originating_Office_Id" type="xs:short" />
               <xs:element minOccurs="0" name="Admin_Team_Id" type="xs:short" />
+              <xs:element minOccurs="0" name="Additional_Ref" type="xs:string" />
               <xs:element minOccurs="0" maxOccurs="unbounded" name="Parties">
                 <xs:annotation>
                   <xs:appinfo>
@@ -39,7 +40,7 @@
                     <xs:element minOccurs="0" name="Phone_2" type="xs:string" />
                     <xs:element minOccurs="0" name="Postcode" type="xs:string" />
                     <xs:element minOccurs="0" name="Role_Id" type="xs:short" />
-                    <xs:element minOccurs="0" name="Separate_Correspondence_Id" type="xs:short" />
+                    <xs:element minOccurs="0" name="Separate_Correspondence_id" type="xs:short" />
                     <xs:element minOccurs="0" name="Attending" type="xs:string" />
                     <xs:element minOccurs="0" name="Disability_Needs" type="xs:string" />
                     <xs:element minOccurs="0" name="Interpreter_Signer_Id" type="xs:short" />
