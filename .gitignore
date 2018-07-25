@@ -21,3 +21,6 @@
 
 ### Eclipse ###
 /bin
+
+docker/sftp/data/incoming/SSCS_CreateAppeals_*.xml
+docker/sftp/data/incoming/processed/*.xml

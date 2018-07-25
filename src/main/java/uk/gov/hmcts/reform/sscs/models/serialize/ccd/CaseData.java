@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import com.fasterxml.jackson.annotation.*;
-
 import java.util.List;
-
 import lombok.Builder;
 import lombok.Data;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
@@ -24,9 +22,14 @@ public class CaseData {
     private String generatedSurname;
     private String generatedEmail;
     private String generatedMobile;
+    @JsonProperty("generatedDOB")
+    private String generatedDob;
     private Subscriptions subscriptions;
     private RegionalProcessingCenter regionalProcessingCenter;
     private String region;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String ccdCaseId;
 
     @JsonIgnore
     private Event getLatestEvent() {
@@ -50,9 +53,11 @@ public class CaseData {
                     @JsonProperty("generatedSurname") String generatedSurname,
                     @JsonProperty("generatedEmail") String generatedEmail,
                     @JsonProperty("generatedMobile") String generatedMobile,
+                    @JsonProperty("generatedDOB") String generatedDob,
                     @JsonProperty("subscriptions") Subscriptions subscriptions,
                     @JsonProperty("regionalProcessingCenter")  RegionalProcessingCenter regionalProcessingCenter,
-                    @JsonProperty("region") String region) {
+                    @JsonProperty("region") String region,
+                    @JsonProperty(value = "ccdCaseId", access = JsonProperty.Access.WRITE_ONLY) String ccdCaseId) {
         this.caseReference = caseReference;
         this.appeal = appeal;
         this.hearings = hearings;
@@ -63,8 +68,10 @@ public class CaseData {
         this.generatedSurname = generatedSurname;
         this.generatedEmail = generatedEmail;
         this.generatedMobile = generatedMobile;
+        this.generatedDob = generatedDob;
         this.subscriptions = subscriptions;
         this.regionalProcessingCenter = regionalProcessingCenter;
         this.region = region;
+        this.ccdCaseId = ccdCaseId;
     }
 }

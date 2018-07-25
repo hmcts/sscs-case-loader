@@ -5,6 +5,7 @@
   "appealCaseDateFtaResponseReceived": "2017-05-23T00:00:00+01:00",
   "furtherEvidence": null,
   "appealCaseRefNum": "SC068/17/00013",
+  "additionalRef": "1111222233334444",
   "majorStatus": [
     {
       "bfDate": "2017-05-23T00:00:00+01:00",
@@ -92,7 +93,7 @@
       "postCode": "L17 7AE",
       "disabilityNeeds": "N",
       "interpreterSignerId": null,
-      "dob": null,
+      "dob": "1987-01-01T00:00:00+00:00",
       "roleId": 4
     }
   ],
