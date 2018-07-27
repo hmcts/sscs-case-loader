@@ -60,7 +60,16 @@ public class TransformationService {
 
         return (appealCases == null) ? Collections.emptyList() : appealCases.stream()
             .filter(c -> c.getCreateDate() != null && ignoreCasesBeforeDate.isBefore(c.getCreateDate()))
-            .filter(c -> !"BB 00 00 00 B".equals(c.getAppealCaseNino()))
+            .filter(c -> {
+
+                String nino = c.getAppealCaseNino();
+                if (nino == null) {
+                    return true;
+                }
+
+                return !"BB000000B".equalsIgnoreCase(nino.replaceAll("\\s+", ""));
+
+            })
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
     }
