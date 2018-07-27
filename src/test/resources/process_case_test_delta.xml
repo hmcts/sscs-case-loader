@@ -61,8 +61,70 @@
       <BF_Date>2019-01-01T00:00:00+01:00</BF_Date>
     </Major_Status>
   </Appeal_Case>
+  <Appeal_Case>
+    <Extract_Time_UTC>2017-05-25T15:12:04.2+01:00</Extract_Time_UTC>
+    <Appeal_Case_Id>100003</Appeal_Case_Id>
+    <Appeal_Case_RefNum></Appeal_Case_RefNum>
+    <Appeal_Case_Case_Code_Id>1735</Appeal_Case_Case_Code_Id>
+    <Tribunal_Type_Id>2</Tribunal_Type_Id>
+    <Appeal_Case_Date_Appeal_Received>2018-01-01T00:00:00+01:00</Appeal_Case_Date_Appeal_Received>
+    <Appeal_Case_Date_of_Decision>2018-01-01T00:00:00+01:00</Appeal_Case_Date_of_Decision>
+    <Appeal_Case_Date_Appeal_Made>2018-01-01T00:00:00+01:00</Appeal_Case_Date_Appeal_Made>
+    <Appeal_Case_NINO>BB 00 00 00 B</Appeal_Case_NINO>
+    <Appeal_Case_Major_Id>3</Appeal_Case_Major_Id>
+    <Appeal_Case_BF_Date>2019-01-01T00:00:00+01:00</Appeal_Case_BF_Date>
+    <Originating_Office_Id>1001</Originating_Office_Id>
+    <Admin_Team_Id>01</Admin_Team_Id>
+    <Additional_Ref>1234567890</Additional_Ref>
+    <Parties>
+      <PTTP_ID>100000</PTTP_ID>
+      <Title>Mr.</Title>
+      <INITIALS>A</INITIALS>
+      <Surname>A0001</Surname>
+      <Postcode>L3 6AB</Postcode>
+      <Role_Id>4</Role_Id>
+      <Attending>N</Attending>
+      <Disability_Needs>N</Disability_Needs>
+    </Parties>
+    <Major_Status>
+      <Status_Id>3</Status_Id>
+      <Date_Set>2018-01-01T01:01:01+01:00</Date_Set>
+      <BF_Date>2019-01-01T00:00:00+01:00</BF_Date>
+    </Major_Status>
+  </Appeal_Case>
+  <Appeal_Case>
+    <Extract_Time_UTC>2017-05-25T15:12:04.2+01:00</Extract_Time_UTC>
+    <Appeal_Case_Id>100004</Appeal_Case_Id>
+    <Appeal_Case_RefNum></Appeal_Case_RefNum>
+    <Appeal_Case_Case_Code_Id>1735</Appeal_Case_Case_Code_Id>
+    <Tribunal_Type_Id>2</Tribunal_Type_Id>
+    <Appeal_Case_Date_Appeal_Received>2018-01-01T00:00:00+01:00</Appeal_Case_Date_Appeal_Received>
+    <Appeal_Case_Date_of_Decision>2018-01-01T00:00:00+01:00</Appeal_Case_Date_of_Decision>
+    <Appeal_Case_Date_Appeal_Made>2018-01-01T00:00:00+01:00</Appeal_Case_Date_Appeal_Made>
+    <Appeal_Case_NINO>BB000000B</Appeal_Case_NINO>
+    <Appeal_Case_Major_Id>3</Appeal_Case_Major_Id>
+    <Appeal_Case_BF_Date>2019-01-01T00:00:00+01:00</Appeal_Case_BF_Date>
+    <Originating_Office_Id>1001</Originating_Office_Id>
+    <Admin_Team_Id>01</Admin_Team_Id>
+    <Additional_Ref>1234567890</Additional_Ref>
+    <Parties>
+      <PTTP_ID>100000</PTTP_ID>
+      <Title>Mr.</Title>
+      <INITIALS>A</INITIALS>
+      <Surname>A0001</Surname>
+      <Postcode>L3 6AB</Postcode>
+      <Role_Id>4</Role_Id>
+      <Attending>N</Attending>
+      <Disability_Needs>N</Disability_Needs>
+    </Parties>
+    <Major_Status>
+      <Status_Id>3</Status_Id>
+      <Date_Set>2018-01-01T01:01:01+01:00</Date_Set>
+      <BF_Date>2019-01-01T00:00:00+01:00</BF_Date>
+    </Major_Status>
+  </Appeal_Case>
   <Num_Records>
-    <NumberOfCases>2</NumberOfCases>
+    <NumberOfCases>4</NumberOfCases>
   </Num_Records>
   <Schema_Version>
     <Version xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0.8</Version>
