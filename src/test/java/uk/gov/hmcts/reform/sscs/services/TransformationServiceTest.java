@@ -48,7 +48,7 @@ public class TransformationServiceTest {
     public void shouldReturnListOfCasesGivenDeltaAsInputStream() {
         is = getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml");
         caseDataList = transformationService.transform(is);
-        assertThat(caseDataList.size(), is(2));
+        assertThat(caseDataList.size(), is(3));
         assertThat(caseDataList.get(0), is(caseDataWithScReference));
         assertThat(caseDataList.get(1), is(caseDataWithCcdId));
     }
