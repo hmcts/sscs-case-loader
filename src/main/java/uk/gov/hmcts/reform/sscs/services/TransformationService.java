@@ -60,6 +60,7 @@ public class TransformationService {
 
         return (appealCases == null) ? Collections.emptyList() : appealCases.stream()
             .filter(c -> c.getCreateDate() != null && ignoreCasesBeforeDate.isBefore(c.getCreateDate()))
+            .filter(c -> "BB 00 00 00 B".equals(c.getAppealCaseNino()) == false)
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
     }
