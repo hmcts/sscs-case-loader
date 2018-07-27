@@ -186,6 +186,7 @@ http://localhost:3451
 2. Configure below
     export TEST_URL=http://localhost:8082
 3. Run
+
 ``` ./gradlew functional
 
 ## Hystrix
