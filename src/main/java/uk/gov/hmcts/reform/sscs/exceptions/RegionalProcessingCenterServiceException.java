@@ -8,4 +8,8 @@ public class RegionalProcessingCenterServiceException extends UnknownErrorCodeEx
     public RegionalProcessingCenterServiceException(Throwable cause) {
         super(AlertLevel.P4, cause);
     }
+
+    public RegionalProcessingCenterServiceException(String message) {
+        super(AlertLevel.P4, message);
+    }
 }

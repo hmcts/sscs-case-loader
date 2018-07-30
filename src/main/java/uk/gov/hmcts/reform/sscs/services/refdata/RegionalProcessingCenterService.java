@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.refdata;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -22,28 +21,28 @@ import uk.gov.hmcts.reform.sscs.exceptions.RegionalProcessingCenterServiceExcept
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 
 @Service
+@Slf4j
 public class RegionalProcessingCenterService {
-    private static final Logger LOG = getLogger(RegionalProcessingCenterService.class);
 
     private static final String RPC_DATA_JSON = "reference-data/rpc-data.json";
     private static final String CSV_FILE_PATH = "reference-data/sscs-venues.csv";
     private static final char SEPARATOR_CHAR = '/';
     private static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
 
-    private Map<String, RegionalProcessingCenter>  regionalProcessingCenterMap  = newHashMap();
+    private Map<String, RegionalProcessingCenter> regionalProcessingCenterMap = newHashMap();
     private final Map<String, String> sccodeRegionalProcessingCentermap = newHashMap();
     private final Map<String, String> venueIdToRegionalProcessingCentre = new HashMap<>();
 
     private final AirLookupService airLookupService;
 
     @Autowired
-    public RegionalProcessingCenterService(AirLookupService airLookupService) {
+    RegionalProcessingCenterService(AirLookupService airLookupService) {
         this.airLookupService = airLookupService;
     }
 
 
     @PostConstruct
-    public void init() {
+    void init() {
         loadSccodeRpcMetadata();
         populateRpcMetadata();
     }
@@ -59,26 +58,26 @@ public class RegionalProcessingCenterService {
                 venueIdToRegionalProcessingCentre.put(line[0], line[2]);
             });
         } catch (IOException e) {
-            LOG.error("Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH,
+            log.error("Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH,
                 new RegionalProcessingCenterServiceException(e));
         }
     }
 
     private void populateRpcMetadata() {
         ClassPathResource classPathResource = new ClassPathResource(RPC_DATA_JSON);
-        try (InputStream inputStream  = classPathResource.getInputStream()) {
+        try (InputStream inputStream = classPathResource.getInputStream()) {
             ObjectMapper mapper = new ObjectMapper();
             regionalProcessingCenterMap =
-                    mapper.readValue(inputStream, new TypeReference<Map<String,RegionalProcessingCenter>>(){});
+                mapper.readValue(inputStream, new TypeReference<Map<String, RegionalProcessingCenter>>() {
+                });
 
         } catch (IOException e) {
-            LOG.error("Error while reading RegionalProcessingCenter from " + RPC_DATA_JSON,
+            log.error("Error while reading RegionalProcessingCenter from " + RPC_DATA_JSON,
                 new RegionalProcessingCenterServiceException(e));
         }
     }
 
     public RegionalProcessingCenter getByScReferenceCode(String referenceNumber) {
-
         if (StringUtils.isBlank(referenceNumber)) {
             return regionalProcessingCenterMap.get(SSCS_BIRMINGHAM);
         }
@@ -88,9 +87,10 @@ public class RegionalProcessingCenterService {
 
         if (null != regionalProcessingCenter) {
             if (regionalProcessingCenterMap.get(regionalProcessingCenter) == null) {
-                String text = "Venue could not be mapped to a valid RPC that SSCS knows about";
-                LOG.error(text, new RegionalProcessingCenterServiceException(new Exception(text)));
-                return null;
+                log.info("*** case-loader *** get RPC by Case Reference {}", referenceNumber);
+                log.info("*** case-loader *** regionalProcessingCenter = {}", regionalProcessingCenter);
+                throw new RegionalProcessingCenterServiceException(
+                    "Venue could not be mapped to a valid RPC that SSCS knows about");
             } else {
                 return regionalProcessingCenterMap.get(regionalProcessingCenter);
             }
@@ -109,11 +109,11 @@ public class RegionalProcessingCenterService {
         return regionalProcessingCenterMap.get("SSCS " + regionalProcessingCentreName);
     }
 
-    public Map<String, RegionalProcessingCenter> getRegionalProcessingCenterMap() {
+    Map<String, RegionalProcessingCenter> getRegionalProcessingCenterMap() {
         return regionalProcessingCenterMap;
     }
 
-    public Map<String, String> getSccodeRegionalProcessingCenterMap() {
+    Map<String, String> getSccodeRegionalProcessingCenterMap() {
         return sccodeRegionalProcessingCentermap;
     }
 }
