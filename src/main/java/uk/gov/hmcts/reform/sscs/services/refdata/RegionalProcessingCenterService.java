@@ -8,7 +8,6 @@ import com.opencsv.CSVReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -30,8 +29,8 @@ public class RegionalProcessingCenterService {
     private static final String SSCS_BIRMINGHAM = "SSCS Birmingham";
 
     private Map<String, RegionalProcessingCenter> regionalProcessingCenterMap = newHashMap();
-    private final Map<String, String> sccodeRegionalProcessingCentermap = newHashMap();
-    private final Map<String, String> venueIdToRegionalProcessingCentre = new HashMap<>();
+    private final Map<String, String> scCodeRegionalProcessingCenterMap = newHashMap();
+    private final Map<String, String> venueIdToRegionalProcessingCentre = newHashMap();
 
     private final AirLookupService airLookupService;
 
@@ -54,7 +53,7 @@ public class RegionalProcessingCenterService {
             List<String[]> linesList = reader.readAll();
 
             linesList.forEach(line -> {
-                sccodeRegionalProcessingCentermap.put(line[1], line[2]);
+                scCodeRegionalProcessingCenterMap.put(line[1], line[2]);
                 venueIdToRegionalProcessingCentre.put(line[0], line[2]);
             });
         } catch (IOException e) {
@@ -83,7 +82,7 @@ public class RegionalProcessingCenterService {
         }
 
         String[] splitReferenceNumber = StringUtils.split(referenceNumber, SEPARATOR_CHAR);
-        String regionalProcessingCenter = sccodeRegionalProcessingCentermap.get(splitReferenceNumber[0]);
+        String regionalProcessingCenter = scCodeRegionalProcessingCenterMap.get(splitReferenceNumber[0]);
 
         if (null != regionalProcessingCenter) {
             if (regionalProcessingCenterMap.get(regionalProcessingCenter) == null) {
@@ -114,6 +113,6 @@ public class RegionalProcessingCenterService {
     }
 
     Map<String, String> getSccodeRegionalProcessingCenterMap() {
-        return sccodeRegionalProcessingCentermap;
+        return scCodeRegionalProcessingCenterMap;
     }
 }
