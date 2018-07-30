@@ -57,8 +57,8 @@ public class RegionalProcessingCenterService {
                 venueIdToRegionalProcessingCentre.put(line[0], line[2]);
             });
         } catch (IOException e) {
-            log.error("Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH,
-                new RegionalProcessingCenterServiceException(e));
+            throw new RegionalProcessingCenterServiceException(
+                "Error occurred while loading the sscs venues reference data file: " + CSV_FILE_PATH, e);
         }
     }
 
@@ -71,8 +71,8 @@ public class RegionalProcessingCenterService {
                 });
 
         } catch (IOException e) {
-            log.error("Error while reading RegionalProcessingCenter from " + RPC_DATA_JSON,
-                new RegionalProcessingCenterServiceException(e));
+            throw new RegionalProcessingCenterServiceException(
+                "Error while reading RegionalProcessingCenter from " + RPC_DATA_JSON, e);
         }
     }
 
