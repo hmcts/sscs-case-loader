@@ -33,12 +33,12 @@ public class RegionalProcessingCenterServiceTest {
         regionalProcessingCenterService.init();
 
         //Then
-        Map<String, String> sccodeRegionalProcessingCentermap
-            = regionalProcessingCenterService.getSccodeRegionalProcessingCentermap();
-        assertThat(sccodeRegionalProcessingCentermap.size(), equalTo(245));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC038"), equalTo("SSCS Birmingham"));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC001"), equalTo("SSCS Leeds"));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC293"), equalTo("SSCS Cardiff"));
+        Map<String, String> sccodeRegionalProcessingCenterMap
+            = regionalProcessingCenterService.getSccodeRegionalProcessingCenterMap();
+        assertThat(sccodeRegionalProcessingCenterMap.size(), equalTo(245));
+        assertThat(sccodeRegionalProcessingCenterMap.get("SC038"), equalTo("SSCS Birmingham"));
+        assertThat(sccodeRegionalProcessingCenterMap.get("SC001"), equalTo("SSCS Leeds"));
+        assertThat(sccodeRegionalProcessingCenterMap.get("SC293"), equalTo("SSCS Cardiff"));
     }
 
     @Test

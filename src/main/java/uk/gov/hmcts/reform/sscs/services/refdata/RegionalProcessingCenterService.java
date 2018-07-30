@@ -113,7 +113,7 @@ public class RegionalProcessingCenterService {
         return regionalProcessingCenterMap;
     }
 
-    public Map<String, String> getSccodeRegionalProcessingCentermap() {
+    public Map<String, String> getSccodeRegionalProcessingCenterMap() {
         return sccodeRegionalProcessingCentermap;
     }
 }
