@@ -42,11 +42,11 @@ public class RegionalProcessingCenterService {
 
     @PostConstruct
     void init() {
-        loadSccodeRpcMetadata();
+        loadScCodeRpcMetadata();
         populateRpcMetadata();
     }
 
-    private void loadSccodeRpcMetadata() {
+    private void loadScCodeRpcMetadata() {
         ClassPathResource classPathResource = new ClassPathResource(CSV_FILE_PATH);
         try (CSVReader reader = new CSVReader(new InputStreamReader(classPathResource.getInputStream()))) {
 
@@ -112,7 +112,7 @@ public class RegionalProcessingCenterService {
         return regionalProcessingCenterMap;
     }
 
-    Map<String, String> getSccodeRegionalProcessingCenterMap() {
+    Map<String, String> getScCodeRegionalProcessingCenterMap() {
         return scCodeRegionalProcessingCenterMap;
     }
 }
