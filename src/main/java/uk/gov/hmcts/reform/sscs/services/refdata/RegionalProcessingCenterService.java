@@ -86,16 +86,13 @@ public class RegionalProcessingCenterService {
 
         if (null != regionalProcessingCenter) {
             if (regionalProcessingCenterMap.get(regionalProcessingCenter) == null) {
-                log.info("*** case-loader *** get RPC by Case Reference {}", referenceNumber);
-                log.info("*** case-loader *** regionalProcessingCenter = {}", regionalProcessingCenter);
-                throw new RegionalProcessingCenterServiceException(
-                    "Venue could not be mapped to a valid RPC that SSCS knows about");
+                log.error("*** case-loader *** Venue could not be mapped to a valid RPC - {} for the SC number - {} "
+                    + "that SSCS knows about", regionalProcessingCenter, referenceNumber);
             } else {
                 return regionalProcessingCenterMap.get(regionalProcessingCenter);
             }
-        } else {
-            return regionalProcessingCenterMap.get(SSCS_BIRMINGHAM);
         }
+        return regionalProcessingCenterMap.get(SSCS_BIRMINGHAM);
     }
 
     public RegionalProcessingCenter getByVenueId(String venueId) {
