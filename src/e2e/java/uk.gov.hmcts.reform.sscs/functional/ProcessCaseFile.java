@@ -131,6 +131,7 @@ public class ProcessCaseFile {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void processCaseFileAndVerifyCcd() {
 
