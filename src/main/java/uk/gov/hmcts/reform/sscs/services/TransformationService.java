@@ -61,9 +61,16 @@ public class TransformationService {
 
         return (appealCases == null) ? Collections.emptyList() : appealCases.stream()
             .filter(c -> c.getCreateDate() != null && ignoreCasesBeforeDate.isBefore(c.getCreateDate()))
-            .filter(c -> !ROBOTIC_NINO_FOR_TESTING_PURPOSE.equalsIgnoreCase(c.getAppealCaseNino()
-                .replaceAll("\\s+", "")))
+            .filter(c -> {
+                if (c.getAppealCaseNino() == null) {
+                    log.warn("NINO({}) is null for case number({}):", c.getAppealCaseNino(), c.getAppealCaseRefNum());
+                    return false;
+                }
+                return !ROBOTIC_NINO_FOR_TESTING_PURPOSE.equalsIgnoreCase(c.getAppealCaseNino()
+                    .replaceAll("\\s+", ""));
+            })
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
     }
+
 }
