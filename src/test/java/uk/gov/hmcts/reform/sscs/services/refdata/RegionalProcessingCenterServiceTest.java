@@ -2,13 +2,21 @@ package uk.gov.hmcts.reform.sscs.services.refdata;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 
+@RunWith(MockitoJUnitRunner.class)
 public class RegionalProcessingCenterServiceTest {
+
+    @Mock
+    private AirLookupService airLookupService;
 
     private static final String SSCS_LIVERPOOL = "SSCS Liverpool";
 
@@ -16,9 +24,8 @@ public class RegionalProcessingCenterServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        regionalProcessingCenterService = new RegionalProcessingCenterService();
+        regionalProcessingCenterService = new RegionalProcessingCenterService(airLookupService);
     }
-
 
     @Test
     public void givenVenuesCvsFile_shouldLoadSccodeToRpcMap() {
@@ -26,14 +33,13 @@ public class RegionalProcessingCenterServiceTest {
         regionalProcessingCenterService.init();
 
         //Then
-        Map<String, String> sccodeRegionalProcessingCentermap
-                = regionalProcessingCenterService.getSccodeRegionalProcessingCentermap();
-        assertThat(sccodeRegionalProcessingCentermap.size(), equalTo(245));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC038"), equalTo("SSCS Birmingham"));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC001"), equalTo("SSCS Leeds"));
-        assertThat(sccodeRegionalProcessingCentermap.get("SC293"), equalTo("SSCS Cardiff"));
+        Map<String, String> scCodeRegionalProcessingCenterMap
+            = regionalProcessingCenterService.getScCodeRegionalProcessingCenterMap();
+        assertThat(scCodeRegionalProcessingCenterMap.size(), equalTo(245));
+        assertThat(scCodeRegionalProcessingCenterMap.get("SC038"), equalTo("SSCS Birmingham"));
+        assertThat(scCodeRegionalProcessingCenterMap.get("SC001"), equalTo("SSCS Leeds"));
+        assertThat(scCodeRegionalProcessingCenterMap.get("SC293"), equalTo("SSCS Cardiff"));
     }
-
 
     @Test
     public void givenRpcMetaData_shouldLoadRpcMetadataToMap() {
@@ -66,7 +72,7 @@ public class RegionalProcessingCenterServiceTest {
 
         //When
         RegionalProcessingCenter regionalProcessingCenter =
-                regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
+            regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("LIVERPOOL"));
@@ -91,7 +97,7 @@ public class RegionalProcessingCenterServiceTest {
 
         //When
         RegionalProcessingCenter regionalProcessingCenter =
-                regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
+            regionalProcessingCenterService.getByScReferenceCode(referenceNumber);
 
         //Then
         assertThat(regionalProcessingCenter.getName(), equalTo("BIRMINGHAM"));
@@ -104,5 +110,26 @@ public class RegionalProcessingCenterServiceTest {
         assertThat(regionalProcessingCenter.getPhoneNumber(), equalTo("0300 123 1142"));
         assertThat(regionalProcessingCenter.getFaxNumber(), equalTo("0126 434 7983"));
 
+    }
+
+    @Test
+    public void getRegionalProcessingCentreFromVenueId() {
+        regionalProcessingCenterService.init();
+
+        String leedsVenueId = "10";
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByVenueId(leedsVenueId);
+
+        assertThat(rpc.getName(), equalTo("LEEDS"));
+    }
+
+    @Test
+    public void getRegionalProcessingCentreFromPostcode() {
+        regionalProcessingCenterService.init();
+
+        String somePostcode = "AB1 1AB";
+        when(airLookupService.lookupRegionalCentre(somePostcode)).thenReturn("Leeds");
+        RegionalProcessingCenter rpc = regionalProcessingCenterService.getByPostcode(somePostcode);
+
+        assertThat(rpc.getName(), equalTo("LEEDS"));
     }
 }

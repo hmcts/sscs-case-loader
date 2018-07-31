@@ -44,6 +44,11 @@ sourceSets {
       runtimeClasspath += main.output + test.output
       srcDir('src/e2e/java')
     }
+    resources {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir('src/e2e/resources')
+    }
   }
 }
 
@@ -173,7 +178,7 @@ bootRun {
   systemProperty 'server.port', '8082'
 }
 
-def springBootVersion = '1.5.10.RELEASE'
+def springBootVersion = '1.5.14.RELEASE'
 
 dependencyManagement {
   imports {
@@ -225,6 +230,8 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
 
+  compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+
   compileOnly 'org.projectlombok:lombok:1.16.20'
   apt "org.projectlombok:lombok:1.16.20"
 
@@ -243,6 +250,10 @@ jar {
       'Implementation-Version': project.version
   }
 }
+
+// this is required to force Java running on the Azure Windows Server OS into using
+// UTF-8 as the default character set instead of windows-1252 which causes issues
+applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 
 run {
   def debug = System.getProperty("debug")

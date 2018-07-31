@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData;
 public class TransformationService {
 
 
+    private static final String ROBOTIC_NINO_FOR_TESTING_PURPOSE = "BB000000B";
     private final LocalDate ignoreCasesBeforeDate;
 
     private final TransformAppealCaseToCaseData transformAppealCaseToCaseData;
@@ -60,6 +61,8 @@ public class TransformationService {
 
         return (appealCases == null) ? Collections.emptyList() : appealCases.stream()
             .filter(c -> c.getCreateDate() != null && ignoreCasesBeforeDate.isBefore(c.getCreateDate()))
+            .filter(c -> !ROBOTIC_NINO_FOR_TESTING_PURPOSE.equalsIgnoreCase(c.getAppealCaseNino()
+                .replaceAll("\\s+", "")))
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
     }

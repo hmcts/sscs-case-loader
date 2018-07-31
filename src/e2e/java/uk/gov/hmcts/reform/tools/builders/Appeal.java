@@ -1,14 +1,12 @@
 package uk.gov.hmcts.reform.tools.builders;
 
-import java.io.IOException;
 import java.util.*;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import uk.gov.hmcts.reform.tools.utils.*;
+import uk.gov.hmcts.reform.tools.utils.TestContainer;
+import uk.gov.hmcts.reform.tools.utils.XmlWriter;
 
 public class Appeal {
 
-    public Date lastUpdatedDate = new Date();
+    public Date lastUpdatedDate = new Date(3736886400000L); // Tuesday, June 1, 2088 12:00:00 AM
 
     public AppealHeader header = new AppealHeader();
     public AppealParties parties = new AppealParties();
@@ -22,7 +20,7 @@ public class Appeal {
     private final List<Map<String, String>> appealHearingStore = new ArrayList<>();
     private Integer daysOffSet = 0;
 
-    public Appeal(XmlWriter xmlWriter) throws ParserConfigurationException {
+    public Appeal(XmlWriter xmlWriter) {
         this.xmlWriter = xmlWriter;
     }
 
@@ -43,19 +41,6 @@ public class Appeal {
         daysOffSet = offSet;
         Date futureDate = TestContainer.backDate(lastUpdatedDate, -offSet);
         return TestContainer.asGapsDate(futureDate);
-    }
-
-    public String getCaseId() {
-        return header.getAppealCaseId();
-    }
-
-    public String getCaseRefNum() {
-        return header.getAppealCaseRefNum();
-    }
-
-
-    public String getCaseRefNumber() {
-        return header.getAppealCaseRefNum();
     }
 
     public String onDay(Integer daysAdded) {
@@ -85,12 +70,7 @@ public class Appeal {
         return this;
     }
 
-    public Appeal setLastUpdatedDate(Date date) {
-        lastUpdatedDate = date;
-        return this;
-    }
-
-    public XmlWriter write() throws ParserConfigurationException, TransformerException, IOException {
+    public XmlWriter write() {
         this.xmlWriter.setAppealCollection();
         this.xmlWriter.setHeader(appealHeaderStore);
         this.xmlWriter.setParties(appealPartiesStore);
