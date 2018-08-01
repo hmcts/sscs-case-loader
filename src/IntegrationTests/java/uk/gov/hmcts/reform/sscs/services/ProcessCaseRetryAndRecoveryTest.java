@@ -6,7 +6,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -94,28 +93,28 @@ public class ProcessCaseRetryAndRecoveryTest {
         String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
 
-        stub(channelAdapter.listFailed()).toReturn(newArrayList());
-        stub(channelAdapter.listProcessed()).toReturn(newArrayList());
-        stub(channelAdapter.listIncoming())
-            .toReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+        when(channelAdapter.listFailed()).thenReturn(newArrayList());
+        when(channelAdapter.listProcessed()).thenReturn(newArrayList());
+        when(channelAdapter.listIncoming())
+            .thenReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
 
-        stub(channelAdapter.getInputStream(refFilename)).toAnswer(x ->
+        when(channelAdapter.getInputStream(refFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
 
-        stub(channelAdapter.getInputStream(deltaFilename)).toAnswer(x ->
+        when(channelAdapter.getInputStream(deltaFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
 
-        stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("url", "code", ""));
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
-        stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("", "", USER_AUTH));
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(new Authorize("", "", USER_AUTH));
 
-        stub(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).toReturn("bat");
-        stub(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).toReturn("code");
-        stub(refDataRepository.find(BAT_CODE_MAP, "code", BENEFIT_DESC)).toReturn("PIP");
+        when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
+        when(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).thenReturn("code");
+        when(refDataRepository.find(BAT_CODE_MAP, "code", BENEFIT_DESC)).thenReturn("PIP");
 
         referenceDataService.setRefDataRepo(refDataRepository);
     }
@@ -183,9 +182,9 @@ public class ProcessCaseRetryAndRecoveryTest {
             anyString(),
             anyString(),
             any()))
-            .thenThrow(Exception.class)
-            .thenThrow(Exception.class)
-            .thenThrow(Exception.class);
+            .thenThrow(RuntimeException.class)
+            .thenThrow(RuntimeException.class)
+            .thenThrow(RuntimeException.class);
     }
 
     private void mockIdamApi() {

@@ -4,9 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,7 +22,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -46,6 +43,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     private static final String SESSION_DATE_TIME = "2017-05-23T00:00:00+01:00";
     private static final String LOCAL_SESSION_DATETIME = "2017-05-23T00:00:00";
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
+    private static final String APPEAL_CASE_REF_NUM = "SC002/000001/001";
+
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
     @Mock
@@ -234,6 +233,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     public void givenScenario1ThenNoPostponedEventIsNotCreated() throws Exception {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
+            .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Collections.singletonList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
@@ -254,23 +254,23 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
             eq(appeal.getHearing()))).thenReturn(false);
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
-            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(false);
+            anyList())).thenReturn(false);
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         verify(postponedEventInferredFromDelta, times(1))
-            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+            .matchToHearingId(anyList(), anyList());
 
         verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
-            Matchers.any(IdamTokens.class));
+            any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
-            .matchToHearingId(anyListOf(PostponementRequests.class),
-                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+            .matchToHearingId(anyList(),
+                anyList());
 
         assertTrue("No postponed event expected here", events.isEmpty());
     }
@@ -310,14 +310,14 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         verify(postponedEventInferredFromDelta, times(1))
-            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+            .matchToHearingId(anyList(), anyList());
 
         verify(searchCcdService, times(0)).findCaseByCaseRef(anyString(),
-            Matchers.any(IdamTokens.class));
+            any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(0))
-            .matchToHearingId(anyListOf(PostponementRequests.class),
-                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+            .matchToHearingId(anyList(),
+                anyList());
 
         assertEquals("One postponed event expected here", 1, events.size());
         assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
@@ -340,6 +340,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         throws Exception {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
+            .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Collections.singletonList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
@@ -360,23 +361,23 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
             eq(appeal.getHearing()))).thenReturn(false);
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
-            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(true);
+            anyList())).thenReturn(true);
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         verify(postponedEventInferredFromDelta, times(1))
-            .matchToHearingId(anyListOf(PostponementRequests.class), anyListOf(Hearing.class));
+            .matchToHearingId(anyList(), anyList());
 
         verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
-            Matchers.any(IdamTokens.class));
+            any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
-            .matchToHearingId(anyListOf(PostponementRequests.class),
-                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+            .matchToHearingId(anyList(),
+                anyList());
 
         assertEquals("One postponed event expected here", 1, events.size());
         assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
@@ -490,6 +491,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     public void givenScenario4ThenPostponedIsCreated() throws IOException {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
+            .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Arrays.asList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
                     APPEAL_RECEIVED_DATE),
@@ -502,21 +504,21 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
-            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class))).thenReturn(true);
+            anyList())).thenReturn(true);
 
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
-            Matchers.any(IdamTokens.class));
+            any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
             .matchToHearingId(eq(appeal.getPostponementRequests()),
-                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+                anyList());
 
         assertEquals("expected one postponed event here", 1, events.size());
         LocalDateTime expectedDate = ZonedDateTime.parse(RESPONSE_RECEIVED_DATE).toLocalDateTime();
@@ -532,6 +534,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     @Test
     public void givenScenario5Then2PostponedEventsAreCreated() throws IOException {
         AppealCase appeal = AppealCase.builder()
+            .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .appealCaseCaseCodeId("1")
             .majorStatus(Arrays.asList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
@@ -550,23 +553,23 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), Matchers.any(IdamTokens.class)))
+        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
             .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
-            anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class)))
+            anyList()))
             .thenReturn(true)
             .thenReturn(true);
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
         verify(searchCcdService, times(2)).findCaseByCaseRef(anyString(),
-            Matchers.any(IdamTokens.class));
+            any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(2))
-            .matchToHearingId(anyListOf(PostponementRequests.class),
-                anyListOf(uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing.class));
+            .matchToHearingId(anyList(),
+                anyList());
 
         assertEquals("2 postponed events expected here", 2, events.size());
 

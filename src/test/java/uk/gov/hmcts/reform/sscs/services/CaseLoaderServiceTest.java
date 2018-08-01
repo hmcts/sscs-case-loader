@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
@@ -10,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
@@ -54,7 +53,7 @@ public class CaseLoaderServiceTest {
     @Before
     public void setUp() {
         when(sftpSshService.getFiles()).thenReturn(newArrayList(file, file));
-        stub(sftpSshService.readExtractFile(file)).toReturn(is);
+        when(sftpSshService.readExtractFile(file)).thenReturn(is);
         when(file.isDelta()).thenReturn(false).thenReturn(true);
 
         caseLoaderService = new CaseLoaderService(sftpSshService,
