@@ -41,6 +41,10 @@ public class IdamService {
             + ":" + idamProperties.getOauth2().getUser().getPassword();
         String base64Authorisation = Base64.getEncoder().encodeToString(authorisation.getBytes());
 
+        log.info("**** idam issue *** authorisation: Basic {}", base64Authorisation);
+        log.info("**** idam issue *** client.id: {}", idamProperties.getOauth2().getClient().getId());
+        log.info("**** idam issue *** redirectUlr: {}", idamProperties.getOauth2().getRedirectUrl());
+
         Authorize authorize = idamApiClient.authorizeCodeType(
             "Basic " + base64Authorisation,
             "code",
