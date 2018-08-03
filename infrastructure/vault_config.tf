@@ -48,7 +48,7 @@ resource "azurerm_key_vault_secret" "ccd-tid" {
 
 resource "azurerm_key_vault_secret" "idam-url" {
   name      = "idam-url"
-  value     = "${data.vault_generic_secret.idam_api.data["value"]}"
+  value     = "${local.idamUrl}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
