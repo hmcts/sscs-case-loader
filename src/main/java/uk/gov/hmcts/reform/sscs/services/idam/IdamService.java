@@ -52,6 +52,8 @@ public class IdamService {
             idamProperties.getOauth2().getRedirectUrl()
         );
 
+        log.info("*** idam issue *** authorize: {}", authorize);
+
         Authorize authorizeToken = idamApiClient.authorizeToken(
             authorize.getCode(),
             "authorization_code",
@@ -59,6 +61,8 @@ public class IdamService {
             idamProperties.getOauth2().getClient().getId(),
             idamProperties.getOauth2().getClient().getSecret()
         );
+
+        log.info("*** idam issue *** authorizeToken: {}", authorizeToken);
 
         return "Bearer " + authorizeToken.getAccessToken();
     }
