@@ -28,7 +28,7 @@ management:
   info.git.mode: full
   endpoints:
     health.show-details: always
-
+    web.base-path: /
 
 sftp:
   keyLocation:  ${GAPS2_KEY_LOCATION:|
