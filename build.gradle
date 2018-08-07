@@ -275,7 +275,7 @@ dependencies {
   runtime "org.springframework.boot:spring-boot-properties-migrator"
 }
 
-jar {
+bootJar {
   archiveName 'sscs-case-loader.jar'
   manifest {
     attributes 'Implementation-Title': project.name,
