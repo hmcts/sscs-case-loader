@@ -1,0 +1,48 @@
+{
+  "id": 1520380132328647,
+  "jurisdiction": "SSCS",
+  "case_type_id": "Benefit",
+  "created_date": [2018, 3, 6, 23, 48, 52, 382000000],
+  "last_modified": [2018, 3, 7, 1, 0, 58, 390000000],
+  "state": "appealCreated",
+  "locked_by_user_id": null,
+  "security_level": null,
+  "case_data": {
+    "generatedNino": null,
+    "generatedSurname": null,
+    "appeal": {
+      "appellant": {
+        "name": {
+          "title": "Mr",
+          "firstName": "User",
+          "lastName": "Test"
+        },
+        "contact": {
+          "email": "mail@email.com",
+          "phone": "01234567890",
+          "mobile": "01234567890"
+        },
+        "identity": {
+          "dob": "1904-03-10",
+          "nino": "AB 22 55 66 B"
+        }
+      },
+      "benefitType": {
+        "code": "PIP"
+      }
+    },
+    "generatedEmail": null,
+    "events": [
+      {
+        "value": {
+          "date": "2001-12-14T21:59:43.10-05:00",
+          "type": "appealReceived",
+          "description": "Appeal Received"
+        },
+        "id": "3cae07f7-d6e8-4695-8268-65ebb44cb497"
+      }
+    ],
+    "generatedMobile": null
+  },
+  "security_classification": "PUBLIC"
+}
