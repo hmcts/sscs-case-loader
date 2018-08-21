@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
@@ -95,30 +95,30 @@ public class ProcessCaseTest {
         String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
 
-        stub(channelAdapter.listFailed()).toReturn(newArrayList());
-        stub(channelAdapter.listProcessed()).toReturn(newArrayList());
-        stub(channelAdapter.listIncoming())
-            .toReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+        when(channelAdapter.listFailed()).thenReturn(newArrayList());
+        when(channelAdapter.listProcessed()).thenReturn(newArrayList());
+        when(channelAdapter.listIncoming())
+            .thenReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
 
-        stub(channelAdapter.getInputStream(refFilename)).toAnswer(x ->
+        when(channelAdapter.getInputStream(refFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
 
-        stub(channelAdapter.getInputStream(deltaFilename)).toAnswer(x ->
+        when(channelAdapter.getInputStream(deltaFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
 
-        stub(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("url", "code", ""));
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
-        stub(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(new Authorize("", "", USER_AUTH));
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(new Authorize("", "", USER_AUTH));
 
-        stub(idamApiClient.getUserDetails(eq(USER_AUTH_WITH_TYPE))).toReturn(new UserDetails("16"));
+        when(idamApiClient.getUserDetails(eq(USER_AUTH_WITH_TYPE))).thenReturn(new UserDetails("16"));
 
-        stub(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).toReturn("bat");
-        stub(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).toReturn("code");
-        stub(refDataRepository.find(BAT_CODE_MAP, "code", BENEFIT_DESC)).toReturn("PIP");
+        when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
+        when(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).thenReturn("code");
+        when(refDataRepository.find(BAT_CODE_MAP, "code", BENEFIT_DESC)).thenReturn("PIP");
 
         referenceDataService.setRefDataRepo(refDataRepository);
 
@@ -130,19 +130,19 @@ public class ProcessCaseTest {
                 .data(caseDataMap)
                 .build();
 
-        stub(coreCaseDataApi.searchForCaseworker(
+        when(coreCaseDataApi.searchForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))))
-            .toReturn(new ArrayList<>());
+            .thenReturn(new ArrayList<>());
 
-        stub(coreCaseDataApi.startForCaseworker(
+        when(coreCaseDataApi.startForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(StartEventResponse.builder().build());
+            .thenReturn(StartEventResponse.builder().build());
 
-        stub(coreCaseDataApi.submitForCaseworker(
+        when(coreCaseDataApi.submitForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(Boolean.TRUE), any(CaseDataContent.class)))
-            .toReturn(scReferenceCaseDetails);
+            .thenReturn(scReferenceCaseDetails);
 
         // CCD ID case
 
@@ -152,19 +152,19 @@ public class ProcessCaseTest {
                 .data(caseDataMap)
                 .build();
 
-        stub(coreCaseDataApi.readForCaseWorker(
+        when(coreCaseDataApi.readForCaseWorker(
             anyString(), anyString(), anyString(), anyString(), anyString(),
             eq("1234567890")))
-            .toReturn(ccdCaseDetails);
+            .thenReturn(ccdCaseDetails);
 
-        stub(coreCaseDataApi.startEventForCaseWorker(
+        when(coreCaseDataApi.startEventForCaseWorker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
-            .toReturn(StartEventResponse.builder().build());
+            .thenReturn(StartEventResponse.builder().build());
 
-        stub(coreCaseDataApi.submitEventForCaseWorker(
+        when(coreCaseDataApi.submitEventForCaseWorker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
             anyBoolean(), any(CaseDataContent.class)))
-            .toReturn(ccdCaseDetails);
+            .thenReturn(ccdCaseDetails);
 
     }
 
