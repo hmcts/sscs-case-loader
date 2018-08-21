@@ -97,11 +97,11 @@ public class CcdCasesSenderTest {
         assertEquals(appellant, caseData.getAppeal().getAppellant());
         assertEquals(benefitType, caseData.getAppeal().getBenefitType());
 
-        assertEquals(null, caseData.getAppeal().getMrnDetails());
-        assertEquals(null, caseData.getAppeal().getAppealReasons());
-        assertEquals(null, caseData.getAppeal().getHearingOptions());
-        assertEquals(null, caseData.getAppeal().getRep());
-        assertEquals(null, caseData.getAppeal().getSigner());
+        assertNull(caseData.getAppeal().getMrnDetails());
+        assertNull(caseData.getAppeal().getAppealReasons());
+        assertNull(caseData.getAppeal().getHearingOptions());
+        assertNull(caseData.getAppeal().getRep());
+        assertNull(caseData.getAppeal().getSigner());
     }
 
     @Test
@@ -427,20 +427,13 @@ public class CcdCasesSenderTest {
         events.add(Events.builder().value(appealCreatedEvent).build());
         events.add(Events.builder().value(updateEvent).build());
 
-        Collections.sort(events, Collections.reverseOrder());
+        events.sort(Collections.reverseOrder());
 
         return CaseData.builder()
             .caseReference("SC068/17/00011")
             .events(events)
             .build();
     }
-
-    private CaseData buildCaseDataForEventAndCaseReference(GapsEvent event, String caseReference) {
-        CaseData caseData = buildCaseData(event);
-        caseData.setCaseReference(caseReference);
-        return caseData;
-    }
-
 
     private Evidence buildEvidence() {
         Doc document1 = Doc.builder()
