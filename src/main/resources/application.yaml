@@ -75,6 +75,7 @@ logging.level:
     org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
     uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
+# change slot value to PRODUCTION to cause the service to start processing Deltas
 slot.name: ${SLOT:dev}
 
 test.url: ${TEST_URL:http://localhost:8082}
@@ -85,3 +86,8 @@ spring:
     profiles: development
 
 scheduling.enabled: false
+
+logging.level:
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+
