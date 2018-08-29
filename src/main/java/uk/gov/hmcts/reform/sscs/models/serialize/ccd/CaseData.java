@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.models.serialize.ccd;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.List;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
@@ -73,5 +74,38 @@ public class CaseData {
         this.regionalProcessingCenter = regionalProcessingCenter;
         this.region = region;
         this.ccdCaseId = ccdCaseId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CaseData caseData = (CaseData) o;
+        return Objects.equals(caseReference, caseData.caseReference)
+            && Objects.equals(appeal, caseData.appeal)
+            && Objects.equals(hearings, caseData.hearings)
+            && Objects.equals(evidence, caseData.evidence)
+            && Objects.equals(dwpTimeExtension, caseData.dwpTimeExtension)
+            && Objects.equals(events, caseData.events)
+            && Objects.equals(generatedNino, caseData.generatedNino)
+            && Objects.equals(generatedSurname, caseData.generatedSurname)
+            && Objects.equals(generatedEmail, caseData.generatedEmail)
+            && Objects.equals(generatedMobile, caseData.generatedMobile)
+            && Objects.equals(generatedDob, caseData.generatedDob)
+            && Objects.equals(subscriptions, caseData.subscriptions)
+            && Objects.equals(regionalProcessingCenter, caseData.regionalProcessingCenter)
+            && Objects.equals(region, caseData.region)
+            && Objects.equals(ccdCaseId, caseData.ccdCaseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(caseReference, appeal, hearings, evidence, dwpTimeExtension, events, generatedNino,
+            generatedSurname, generatedEmail, generatedMobile, generatedDob, subscriptions, regionalProcessingCenter,
+            region, ccdCaseId);
     }
 }

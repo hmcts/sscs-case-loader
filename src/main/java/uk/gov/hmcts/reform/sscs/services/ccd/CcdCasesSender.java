@@ -20,8 +20,6 @@ import uk.gov.hmcts.reform.sscs.util.CcdUtil;
 @Slf4j
 public class CcdCasesSender {
 
-    public static final String REGION = "region";
-
     @Value("${rpc.venue.id.enabled}")
     private boolean lookupRpcByVenueId;
     private final CreateCcdService createCcdService;
@@ -47,51 +45,39 @@ public class CcdCasesSender {
     public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
-            dontOverwriteSubscriptions(caseData);
-            dontOverwriteAppealData(caseData, existingCcdCase);
+            CaseData existingCcdCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
+            addMissingInfo(caseData, existingCcdCaseData);
+            dontOverwriteSubscriptions(caseData, existingCcdCaseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
-            ifThereIsEventChangesThenUpdateCase(caseData, existingCcdCase, idamTokens);
+            ifThereIsChangesThenUpdateCase(caseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
     }
 
-    private void dontOverwriteSubscriptions(CaseData caseData) {
-        caseData.setSubscriptions(null);
-    }
-
-    private void dontOverwriteAppealData(CaseData caseData, CaseDetails existingCcdCase) {
-        CaseData existingCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
-        Appeal existingAppeal = existingCaseData.getAppeal();
-
-        if (caseData.getAppeal() != null) {
-            existingAppeal.setAppellant(caseData.getAppeal().getAppellant());
-            existingAppeal.setBenefitType(caseData.getAppeal().getBenefitType());
-            caseData.setAppeal(existingAppeal);
+    private void addMissingInfo(CaseData caseData, CaseData existingCcdCaseData) {
+        if (!lookupRpcByVenueId) {
+            addRegionalProcessingCenter(caseData);
         }
+        addMissingExistingHearings(caseData, existingCcdCaseData);
     }
 
-    private void ifThereIsEventChangesThenUpdateCase(CaseData caseData, CaseDetails existingCcdCase,
-                                                     IdamTokens idamTokens) {
-        if (thereIsAnEventChange(caseData, existingCcdCase)) {
-            if (!lookupRpcByVenueId) {
-                addRegionalProcessingCenterIfItsNotPresent(caseData, existingCcdCase);
-            }
-            addMissingExistingHearings(caseData, existingCcdCase);
-            updateCcdService.update(caseData, existingCcdCase.getId(), caseData.getLatestEventType(), idamTokens);
+    private void dontOverwriteSubscriptions(CaseData caseData, CaseData existingCcdCaseData) {
+        caseData.setSubscriptions(existingCcdCaseData.getSubscriptions());
+    }
+
+    private void ifThereIsChangesThenUpdateCase(CaseData caseData, CaseData existingCcdCaseData, Long existingCaseId,
+                                                IdamTokens idamTokens) {
+        if (thereIsAnEventChange(caseData, existingCcdCaseData)) {
+            updateCcdService.update(caseData, existingCaseId, caseData.getLatestEventType(), idamTokens);
+        } else if (thereIsADataChange(caseData, existingCcdCaseData)) {
+            updateCcdService.update(caseData, existingCaseId, "caseUpdated", idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
     }
 
-    private void addRegionalProcessingCenterIfItsNotPresent(CaseData caseData, CaseDetails existingCcdCase) {
-        if (null == existingCcdCase.getData().get(REGION)) {
-            addRegionalProcessingCenter(caseData);
-        }
-    }
-
-    private void addMissingExistingHearings(CaseData caseData, CaseDetails existingCcdCase) {
+    private void addMissingExistingHearings(CaseData caseData, CaseData existingCcdCaseData) {
         List<Hearing> gaps2Hearings = caseData.getHearings();
-        CaseData ccdCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
-        List<Hearing> ccdCaseDataHearings = ccdCaseData.getHearings();
+        List<Hearing> ccdCaseDataHearings = existingCcdCaseData.getHearings();
         ArrayList<Hearing> hearingArrayList = new ArrayList<>();
 
         if (null != ccdCaseDataHearings) {
@@ -120,9 +106,13 @@ public class CcdCasesSender {
         }
     }
 
-    private boolean thereIsAnEventChange(CaseData caseData, CaseDetails existingCcdCase) {
-        List eventObjects = (ArrayList) existingCcdCase.getData().get("events");
-        return eventObjects == null || caseData.getEvents().size() != eventObjects.size();
+    private boolean thereIsAnEventChange(CaseData caseData, CaseData existingCcdCaseData) {
+        return existingCcdCaseData.getEvents() == null
+            || caseData.getEvents().size() != existingCcdCaseData.getEvents().size();
+    }
+
+    private boolean thereIsADataChange(CaseData caseData, CaseData existingCcdCaseData) {
+        return !existingCcdCaseData.equals(caseData);
     }
 
     private void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase, IdamTokens idamTokens) {

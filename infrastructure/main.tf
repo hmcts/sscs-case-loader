@@ -6,6 +6,9 @@ provider "vault" {
 resource "azurerm_resource_group" "rg" {
   name     = "${var.product}-${var.component}-${var.env}"
   location = "${var.location}"
+  tags = "${merge(var.common_tags,
+    map("lastUpdated", "${timestamp()}")
+    )}"
 }
 
 data "vault_generic_secret" "sscs_s2s_secret" {

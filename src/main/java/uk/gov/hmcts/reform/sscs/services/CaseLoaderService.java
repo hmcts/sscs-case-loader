@@ -87,13 +87,13 @@ public class CaseLoaderService {
                 List<CaseDetails> ccdCases = Collections.emptyList();
 
                 if (StringUtils.isNotBlank(caseData.getCaseReference())) {
-                    log.debug("*** case-loader *** searching case reference {} in CDD", caseData.getCaseReference());
+                    log.info("*** case-loader *** searching case reference {} in CDD", caseData.getCaseReference());
                     ccdCases = searchCcdService.findCaseByCaseRef(caseData.getCaseReference(), idamTokens);
                 }
 
                 if (ccdCases.isEmpty()
                     && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
-                    log.debug("*** case-loader *** searching case ccd id {} in CDD", caseData.getCcdCaseId());
+                    log.info("*** case-loader *** searching case ccd id {} in CDD", caseData.getCcdCaseId());
                     ccdCases = searchCcdService.findCaseByCaseId(caseData.getCcdCaseId(), idamTokens);
                 }
 

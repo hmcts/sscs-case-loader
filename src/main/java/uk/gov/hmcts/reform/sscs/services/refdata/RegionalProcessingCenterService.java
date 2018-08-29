@@ -86,7 +86,7 @@ public class RegionalProcessingCenterService {
 
         if (null != regionalProcessingCenter) {
             if (regionalProcessingCenterMap.get(regionalProcessingCenter) == null) {
-                log.error("*** case-loader *** Venue could not be mapped to a valid RPC - {} for the SC number - {} "
+                log.debug("*** case-loader *** Venue could not be mapped to a valid RPC - {} for the SC number - {} "
                     + "that SSCS knows about", regionalProcessingCenter, referenceNumber);
                 return null;
             } else {

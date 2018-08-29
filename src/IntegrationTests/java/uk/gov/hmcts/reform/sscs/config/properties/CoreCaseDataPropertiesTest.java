@@ -22,7 +22,6 @@ public class CoreCaseDataPropertiesTest {
 
     @Test
     public void shouldLoadAllPropertiesGivenAnInstance() {
-        assertNotNull(coreCaseDataProperties.getApi().getUrl());
         assertNotNull(coreCaseDataProperties.getJurisdictionId());
         assertNotNull(coreCaseDataProperties.getCaseTypeId());
     }

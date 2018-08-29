@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -27,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
@@ -65,12 +64,12 @@ public class SftpChannelAdapterTest {
         props.setPort(123);
         props.setUsername("user");
 
-        stub(jsch.getSession(
+        when(jsch.getSession(
             "user",
             "host",
-            123)).toReturn(session);
-        stub(session.openChannel("sftp")).toReturn(channel);
-        stub(channel.get("xxx")).toReturn(new ByteArrayInputStream("abc".getBytes()));
+            123)).thenReturn(session);
+        when(session.openChannel("sftp")).thenReturn(channel);
+        when(channel.get("xxx")).thenReturn(new ByteArrayInputStream("abc".getBytes()));
 
         sftp = new SftpChannelAdapter(jsch, props);
     }

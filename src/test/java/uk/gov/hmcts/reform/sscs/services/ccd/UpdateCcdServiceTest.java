@@ -2,8 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.stub;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -11,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -51,9 +50,6 @@ public class UpdateCcdServiceTest {
 
     @Before
     public void setUp() {
-        stub(idamService.generateServiceAuthorization()).toReturn(SERVICE_AUTHORIZATION);
-        stub(idamService.getIdamOauth2Token()).toReturn(OAUTH2);
-
         ccdProperties = new CoreCaseDataProperties();
         ccdProperties.setJurisdictionId("SSCS");
         ccdProperties.setCaseTypeId("Benefits");
