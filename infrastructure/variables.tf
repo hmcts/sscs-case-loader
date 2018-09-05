@@ -96,3 +96,7 @@ variable "jenkins_AAD_objectId" {
 variable "common_tags" {
   type = "map"
 }
+
+variable "raw_product" {
+  default = "sscs" // jenkins-library overrides product for PRs and adds e.g. pr-118-cmc
+}
