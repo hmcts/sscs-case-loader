@@ -11,7 +11,7 @@ resource "azurerm_key_vault_secret" "vault-sftp-port" {
 }
 
 resource "azurerm_key_vault_secret" "vault-sftp-key" {
-  name      = "vault-sftp-key"  
+  name      = "vault-sftp-key"
   value     = "${local.sftp_key}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }

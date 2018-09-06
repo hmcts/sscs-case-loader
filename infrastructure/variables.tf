@@ -20,11 +20,6 @@ variable "infrastructure_env" {
   description = "Infrastructure environment to point to"
 }
 
-variable "management_security_enabled" {
-  type    = "string"
-  default = "false"
-}
-
 variable "subscription" {
   type = "string"
 }

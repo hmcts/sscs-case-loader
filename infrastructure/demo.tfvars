@@ -1,4 +1,3 @@
-management_security_enabled = "false"
 infrastructure_env = "preprod"
 gaps2_sftp_user = "sscs-sftp-demo"
 ignore_cases_before_date = "2099-01-01"
