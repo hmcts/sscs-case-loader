@@ -57,14 +57,10 @@ data "azurerm_key_vault_secret" "sftp-port" {
 }
 
 data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key" {
-  name = "gaps2-service-sftp-private-key"
+  name = "${var.sftp_key_name}}"
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key-preview" {
-  name = "gaps2-service-sftp-private-key-preview"
-  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
-}
 
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
@@ -82,10 +78,6 @@ locals {
   azurePreviewVaultName       = "${var.raw_product}-aat"
   azureNonPreviewVaultName    = "${var.raw_product}-${var.env}"
   azureVaultName              = "${(var.env == "preview" || var.env == "spreview") ? local.azurePreviewVaultName : local.azureNonPreviewVaultName}"
-
-  sftp_key = "${(var.env == "preview") ?
-                 replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key-preview.value, "\\n", "\n")
-                 : replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key.value, "\\n", "\n")}"
 }
 
 module "sscs-case-loader" {
@@ -117,7 +109,7 @@ module "sscs-case-loader" {
     IDAM_OAUTH2_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
     IDAM_OAUTH2_REDIRECT_URL = "${var.idam_redirect_url}"
 
-    GAPS2_KEY_LOCATION = "${local.sftp_key}"
+    GAPS2_KEY_LOCATION = "${data.azurerm_key_vault_secret.gaps2-service-sftp-private-key.value}"
     GAPS2_SFTP_HOST = "${data.azurerm_key_vault_secret.sftp-host.value}"
     GAPS2_SFTP_PORT = "${data.azurerm_key_vault_secret.sftp-port.value}"
     GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"

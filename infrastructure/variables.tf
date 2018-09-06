@@ -95,3 +95,7 @@ variable "common_tags" {
 variable "raw_product" {
   default = "sscs" // jenkins-library overrides product for PRs and adds e.g. pr-118-cmc
 }
+
+variable "sftp_key_name" {
+  default = "gaps2-service-sftp-private-key"
+}
