@@ -1,17 +1,17 @@
 resource "azurerm_key_vault_secret" "vault-sftp-host" {
   name      = "vault-sftp-host"
-  value     = "${data.vault_generic_secret.sftp_host.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.sftp-host.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "vault-sftp-port" {
   name      = "vault-sftp-port"
-  value     = "${data.vault_generic_secret.sftp_port.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.sftp-port.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "vault-sftp-key" {
-  name      = "vault-sftp-key"
+  name      = "vault-sftp-key"  
   value     = "${local.sftp_key}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
@@ -48,7 +48,7 @@ resource "azurerm_key_vault_secret" "ccd-tid" {
 
 resource "azurerm_key_vault_secret" "idam-url" {
   name      = "idam-url"
-  value     = "${data.vault_generic_secret.idam_api.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-api.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
@@ -60,25 +60,25 @@ resource "azurerm_key_vault_secret" "s2s-api" {
 
 resource "azurerm_key_vault_secret" "s2s-auth" {
   name      = "s2s-auth"
-  value     = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "sysupdate-user" {
   name      = "sysupdate-user"
-  value     = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "sysupdate-pass" {
   name      = "sysupdate-pass"
-  value     = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-password.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
 resource "azurerm_key_vault_secret" "idam-oauth-secret" {
   name      = "idam-oauth-secret"
-  value     = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
+  value     = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
   vault_uri = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
