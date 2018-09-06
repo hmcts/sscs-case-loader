@@ -61,6 +61,11 @@ data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key-preview" {
+  name = "gaps2-service-sftp-private-key-preview"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
@@ -78,7 +83,9 @@ locals {
   azureNonPreviewVaultName    = "${var.raw_product}-${var.env}"
   azureVaultName              = "${(var.env == "preview" || var.env == "spreview") ? local.azurePreviewVaultName : local.azureNonPreviewVaultName}"
 
-  sftp_key = "${replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key.value, "\\n", "\n")}"
+  sftp_key = "${(var.env == "preview") ?
+                 replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key-preview.value, "\\n", "\n")
+                 : replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key.value, "\\n", "\n")}"
 }
 
 module "sscs-case-loader" {
