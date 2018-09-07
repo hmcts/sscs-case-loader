@@ -57,7 +57,7 @@ data "azurerm_key_vault_secret" "sftp-port" {
 }
 
 data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key" {
-  name = "${var.sftp_key_name}}"
+  name = "${var.sftp_key_name}"
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
