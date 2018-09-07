@@ -11,41 +11,56 @@ resource "azurerm_resource_group" "rg" {
     )}"
 }
 
-data "vault_generic_secret" "sscs_s2s_secret" {
-  path = "secret/${var.infrastructure_env}/ccidam/service-auth-provider/api/microservice-keys/sscs"
+data "azurerm_key_vault" "sscs_key_vault" {
+  name = "${local.azureVaultName}"
+  resource_group_name = "${local.azureVaultName}"
 }
 
-data "vault_generic_secret" "idam_sscs_systemupdate_user" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/user"
+data "azurerm_key_vault_secret" "sscs-s2s-secret" {
+  name = "sscs-s2s-secret"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_sscs_systemupdate_password" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/sscs/systemupdate/password"
+data "azurerm_key_vault_secret" "idam-sscs-systemupdate-user" {
+  name = "idam-sscs-systemupdate-user"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_oauth2_client_secret" {
-  path = "secret/${var.infrastructure_env}/ccidam/idam-api/oauth2/client-secrets/sscs"
+data "azurerm_key_vault_secret" "idam-sscs-systemupdate-password" {
+  name = "idam-sscs-systemupdate-password"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "gaps2_key_location" {
-  path = "secret/${var.infrastructure_env}/sscs/${var.sftp_key_location}"
+data "azurerm_key_vault_secret" "idam-sscs-oauth2-client-secret" {
+  name = "idam-sscs-oauth2-client-secret"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_api" {
-  path = "secret/${var.infrastructure_env}/sscs/idam_api"
+data "azurerm_key_vault_secret" "idam-api" {
+  name = "idam-api"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "idam_s2s_api" {
-  path = "secret/${var.infrastructure_env}/sscs/idam_s2s_api"
+data "azurerm_key_vault_secret" "idam-s2s-api" {
+  name = "idam-s2s-api"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "sftp_host" {
-  path = "secret/${var.infrastructure_env}/sscs/sftp_host"
+data "azurerm_key_vault_secret" "sftp-host" {
+  name = "sftp-host"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "sftp_port" {
-  path = "secret/${var.infrastructure_env}/sscs/sftp_port"
+data "azurerm_key_vault_secret" "sftp-port" {
+  name = "sftp-port"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
+
+data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key" {
+  name = "${var.sftp_key_name}"
+  vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+}
+
 
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
@@ -60,7 +75,9 @@ locals {
   nonPreviewVaultName    = "${var.product}-${var.component}-${var.env}"
   vaultName              = "${(var.env == "preview") ? local.previewVaultName : local.nonPreviewVaultName}"
 
-  sftp_key = "${replace(data.vault_generic_secret.gaps2_key_location.data["value"], "\\n", "\n")}"
+  azurePreviewVaultName       = "${var.raw_product}-aat"
+  azureNonPreviewVaultName    = "${var.raw_product}-${var.env}"
+  azureVaultName              = "${(var.env == "preview" || var.env == "spreview") ? local.azurePreviewVaultName : local.azureNonPreviewVaultName}"
 }
 
 module "sscs-case-loader" {
@@ -75,27 +92,26 @@ module "sscs-case-loader" {
   common_tags  = "${var.common_tags}"
 
   app_settings = {
-    MANAGEMENT_SECURITY_ENABLED = "${var.management_security_enabled}"
     CORE_CASE_DATA_API_URL = "${local.ccdApi}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
     CORE_CASE_DATA_CASE_TYPE_ID = "${var.core_case_data_case_type_id}"
 
-    IDAM_URL = "${data.vault_generic_secret.idam_api.data["value"]}"
+    IDAM_URL = "${data.azurerm_key_vault_secret.idam-api.value}"
 
-    IDAM.S2S-AUTH.TOTP_SECRET = "${data.vault_generic_secret.sscs_s2s_secret.data["value"]}"
+    IDAM.S2S-AUTH.TOTP_SECRET = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
     IDAM.S2S-AUTH = "${local.s2sCnpUrl}"
     IDAM.S2S-AUTH.MICROSERVICE = "${var.idam_s2s_auth_microservice}"
 
-    IDAM_SSCS_SYSTEMUPDATE_USER = "${data.vault_generic_secret.idam_sscs_systemupdate_user.data["value"]}"
-    IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.vault_generic_secret.idam_sscs_systemupdate_password.data["value"]}"
+    IDAM_SSCS_SYSTEMUPDATE_USER = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
+    IDAM_SSCS_SYSTEMUPDATE_PASSWORD = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-password.value}"
 
     IDAM_OAUTH2_CLIENT_ID = "${var.idam_oauth2_client_id}"
-    IDAM_OAUTH2_CLIENT_SECRET = "${data.vault_generic_secret.idam_oauth2_client_secret.data["value"]}"
+    IDAM_OAUTH2_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
     IDAM_OAUTH2_REDIRECT_URL = "${var.idam_redirect_url}"
 
-    GAPS2_KEY_LOCATION = "${local.sftp_key}"
-    GAPS2_SFTP_HOST = "${data.vault_generic_secret.sftp_host.data["value"]}"
-    GAPS2_SFTP_PORT = "${data.vault_generic_secret.sftp_port.data["value"]}"
+    GAPS2_KEY_LOCATION = "${replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key.value, "\\n", "\n")}"
+    GAPS2_SFTP_HOST = "${data.azurerm_key_vault_secret.sftp-host.value}"
+    GAPS2_SFTP_PORT = "${data.azurerm_key_vault_secret.sftp-port.value}"
     GAPS2_SFTP_USER = "${var.gaps2_sftp_user}"
     GAPS2_SFTP_DIR = "${var.gaps2_sftp_dir}"
 

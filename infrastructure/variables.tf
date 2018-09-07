@@ -20,11 +20,6 @@ variable "infrastructure_env" {
   description = "Infrastructure environment to point to"
 }
 
-variable "management_security_enabled" {
-  type    = "string"
-  default = "false"
-}
-
 variable "subscription" {
   type = "string"
 }
@@ -95,4 +90,12 @@ variable "jenkins_AAD_objectId" {
 
 variable "common_tags" {
   type = "map"
+}
+
+variable "raw_product" {
+  default = "sscs" // jenkins-library overrides product for PRs and adds e.g. pr-118-cmc
+}
+
+variable "sftp_key_name" {
+  default = "gaps2-service-sftp-private-key"
 }

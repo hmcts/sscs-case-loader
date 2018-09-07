@@ -24,7 +24,6 @@ idam:
     redirectUrl: ${IDAM_SSCS_URL:https://localhost:9000/poc}
 
 management:
-  security.enabled: ${MANAGEMENT_SECURITY_ENABLED:false}
   info.git.mode: full
   endpoints:
     health.show-details: always
