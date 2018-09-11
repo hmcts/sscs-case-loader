@@ -1,15 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.refdata;
 
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.FUR_EVID_TYPE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.PTTP_ROLE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.FET_DESC;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.PTR_DESC;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -58,5 +50,9 @@ public class ReferenceDataService {
 
     public void setRefDataRepo(RefDataRepository repo) {
         this.refDataRepo = repo;
+    }
+
+    public String getTbtCode(String tribunalTypeId) {
+        return refDataRepo.find(TRIBUNAL_TYPE, tribunalTypeId, TBT_CODE);
     }
 }

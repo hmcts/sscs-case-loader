@@ -36,6 +36,7 @@ public class TransformAppealCaseToCaseDataTest {
             .name(expectedRegionName)
             .build();
         when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcessingCentre);
+        when(referenceDataService.getTbtCode("2")).thenReturn("O");
 
         AppealCase appealCase = getAppealCase();
 

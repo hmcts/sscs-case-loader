@@ -57,7 +57,7 @@ public class TransformAppealCaseToCaseData {
             name = caseDataBuilder.buildName(party.get());
             contact = caseDataBuilder.buildContact(party.get());
             identity = caseDataBuilder.buildIdentity(party.get(), appealCase);
-            hearingOptions = caseDataBuilder.buildHearingOptions(party.get());
+            hearingOptions = caseDataBuilder.buildHearingOptions(party.get(), appealCase.getTribunalTypeId());
             generatedNino = identity.getNino();
             generatedSurname = name.getLastName();
             generatedEmail = contact.getEmail();
