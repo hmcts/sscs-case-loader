@@ -118,12 +118,10 @@ class CaseDataBuilder {
     private String getWantsToAttend(String tribunalsTypeId) {
         String tbtCode = referenceDataService.getTbtCode(tribunalsTypeId);
 
-        switch (tbtCode) {
-            case "O":
-                return YES;
-            default:
-                return NO;
+        if (tbtCode.equals("O")) {
+            return YES;
         }
+        return NO;
     }
 
     RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase, Parties appellantParty) {
