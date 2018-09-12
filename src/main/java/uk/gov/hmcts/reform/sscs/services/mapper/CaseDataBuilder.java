@@ -99,10 +99,29 @@ class CaseDataBuilder {
             .build();
     }
 
-    HearingOptions buildHearingOptions(Parties party) {
-        return HearingOptions.builder()
+    HearingOptions buildHearingOptions(Parties party, String tribunalsTypeId) {
+        HearingOptions hearingOptions = HearingOptions.builder()
             .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
             .build();
+
+        if (null != tribunalsTypeId
+            && (tribunalsTypeId.equals("1")
+            || tribunalsTypeId.equals("2")
+            ||  tribunalsTypeId.equals("3"))) {
+            hearingOptions.setWantsToAttend(getWantsToAttend(tribunalsTypeId));
+        }
+
+        return hearingOptions;
+
+    }
+
+    private String getWantsToAttend(String tribunalsTypeId) {
+        String tbtCode = referenceDataService.getTbtCode(tribunalsTypeId);
+
+        if (tbtCode.equals("O")) {
+            return YES;
+        }
+        return NO;
     }
 
     RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase, Parties appellantParty) {

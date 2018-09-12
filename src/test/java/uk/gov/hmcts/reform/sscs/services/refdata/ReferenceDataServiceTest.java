@@ -86,4 +86,13 @@ public class ReferenceDataServiceTest {
 
         assertThat(referenceDataService.getRoleType("1"), is("Appellant"));
     }
+
+    @Test
+    public void shouldReturnTbtCodeForGivenTribunalTypeId() {
+        when(refDataRepo.find(RefKey.TRIBUNAL_TYPE, "1", RefKeyField.TBT_CODE)).thenReturn("P");
+
+        referenceDataService.setRefDataRepo(refDataRepo);
+
+        assertThat(referenceDataService.getTbtCode("1"), is("P"));
+    }
 }

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
 import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
@@ -28,6 +30,7 @@ import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
+    public static final String YES = "Yes";
     @Mock
     private ReferenceDataService refDataService;
     @Mock
@@ -207,4 +210,50 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
         assertThat(regionalProcessingCentre, is(expectedRegionalProcessingCentre));
     }
+
+    @Test
+    public void shouldSetHearingOptionsWantsToAttendToNoForPaperCase() {
+        String tribunalsTypeId = "1";
+
+        Parties parties = Parties.builder().build();
+
+        when(refDataService.getTbtCode(tribunalsTypeId)).thenReturn("P");
+
+        HearingOptions hearingOptions = caseDataBuilder.buildHearingOptions(parties, tribunalsTypeId);
+
+        assertThat(hearingOptions.getWantsToAttend(), equalTo(NO));
+
+
+    }
+
+
+    @Test
+    public void shouldSetHearingOptionsWantsToAttendToYesForOralCase() {
+        String tribunalsTypeId = "2";
+
+        Parties parties = Parties.builder().build();
+
+        when(refDataService.getTbtCode(tribunalsTypeId)).thenReturn("O");
+
+        HearingOptions hearingOptions = caseDataBuilder.buildHearingOptions(parties, tribunalsTypeId);
+
+        assertThat(hearingOptions.getWantsToAttend(), equalTo(YES));
+
+    }
+
+
+    @Test
+    public void shouldSetHearingOptionsWantsToAttendToYesForDomiciliaryCase() {
+        String tribunalsTypeId = "3";
+
+        Parties parties = Parties.builder().build();
+
+        when(refDataService.getTbtCode(tribunalsTypeId)).thenReturn("D");
+
+        HearingOptions hearingOptions = caseDataBuilder.buildHearingOptions(parties, tribunalsTypeId);
+
+        assertThat(hearingOptions.getWantsToAttend(), equalTo(NO));
+
+    }
+
 }

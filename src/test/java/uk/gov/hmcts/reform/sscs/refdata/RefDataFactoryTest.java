@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.OFFICE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.TRIBUNAL_TYPE;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
 
 import java.io.ByteArrayInputStream;
@@ -37,6 +38,15 @@ public class RefDataFactoryTest {
         + "      <OFFICE_ID>1959</OFFICE_ID>\n"
         + "      <OFF_NAME>Liverpool</OFF_NAME>\n"
         + "  </Office>"
+        + "  <Tribunal_Type>\n"
+        + "    <TRIBUNAL_TYPE_ID>1</TRIBUNAL_TYPE_ID>\n"
+        + "    <TBT_CODE>P</TBT_CODE>\n"
+        + "    <TBT_DESC>Paper</TBT_DESC>\n"
+        + "    <ROW_IS_DELETED>N</ROW_IS_DELETED>\n"
+        + "    <LAST_MODIFIED_DATE>2009-01-01T16:41:12.14+00:00</LAST_MODIFIED_DATE>\n"
+        + "    <LAST_MODIFIED_BY>SYSTEM</LAST_MODIFIED_BY>\n"
+        + "    <TIMESTAMP>AAAAARGBC+w=</TIMESTAMP>\n"
+        + "  </Tribunal_Type>\n"
         + "</Reference_Tables>\n";
 
     @Before
@@ -61,5 +71,6 @@ public class RefDataFactoryTest {
 
         assertThat(repo.find(OFFICE, "1959", OFFICE_ID), is("1959"));
         assertThat(repo.find(OFFICE, "1959", OFF_NAME), is("Liverpool"));
+        assertThat(repo.find(TRIBUNAL_TYPE, "1", TBT_CODE), is("P"));
     }
 }
