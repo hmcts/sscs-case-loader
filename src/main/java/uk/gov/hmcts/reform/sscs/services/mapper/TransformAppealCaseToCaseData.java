@@ -8,18 +8,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appellant;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
+import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 
 @Service
 public class TransformAppealCaseToCaseData {
@@ -82,6 +71,7 @@ public class TransformAppealCaseToCaseData {
             .appellant(appellant)
             .benefitType(benefitType)
             .hearingOptions(hearingOptions)
+            .hearingType(HearingType.getHearingTypeByTribunalsTypeId(appealCase.getTribunalTypeId()).getValue())
             .build();
 
         List<Hearing> hearingsList = caseDataBuilder.buildHearings(appealCase);
