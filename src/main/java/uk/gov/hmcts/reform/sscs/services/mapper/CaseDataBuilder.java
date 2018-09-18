@@ -118,7 +118,7 @@ class CaseDataBuilder {
     private String getWantsToAttend(String tribunalsTypeId) {
         String tbtCode = referenceDataService.getTbtCode(tribunalsTypeId);
 
-        if (tbtCode.equals("O")) {
+        if ("O".equals(tbtCode)) {
             return YES;
         }
         return NO;
