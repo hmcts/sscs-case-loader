@@ -3,7 +3,7 @@ output "vaultUri" {
 }
 
 output "vaultName" {
-  value = "${local.vaultName}"
+  value = "${local.azureVaultName}"
 }
 
 output "microserviceName" {
