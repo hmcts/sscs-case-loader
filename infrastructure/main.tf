@@ -116,13 +116,3 @@ module "sscs-case-loader" {
   }
 }
 
-module "sscs-case-loader-key-vault" {
-  source              = "git@github.com:hmcts/moj-module-key-vault?ref=master"
-  name                = "${local.azureVaultName}"
-  product             = "${var.product}"
-  env                 = "${var.env}"
-  tenant_id           = "${var.tenant_id}"
-  object_id           = "${var.jenkins_AAD_objectId}"
-  resource_group_name = "${azurerm_resource_group.rg.name}"
-  product_group_object_id = "70de400b-4f47-4f25-a4f0-45e1ee4e4ae3"
-}
