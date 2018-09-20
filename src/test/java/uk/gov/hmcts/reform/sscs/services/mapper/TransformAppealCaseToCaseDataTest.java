@@ -48,6 +48,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
+        assertThat(caseData.getAppeal().getHearingType(), is("oral"));
 
         String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
 
