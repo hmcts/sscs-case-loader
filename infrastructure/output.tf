@@ -1,9 +1,9 @@
 output "vaultUri" {
-  value = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
+  value = "${module.sscs-case-loader-key-vault.key_vault_uri}"
 }
 
 output "vaultName" {
-  value = "${local.azureVaultName}"
+  value = "${local.vaultName}"
 }
 
 output "microserviceName" {
