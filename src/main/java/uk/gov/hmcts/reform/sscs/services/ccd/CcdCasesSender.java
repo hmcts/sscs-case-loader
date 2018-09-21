@@ -47,7 +47,7 @@ public class CcdCasesSender {
         if (latestEventType != null) {
             CaseData existingCcdCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
             addMissingInfo(caseData, existingCcdCaseData);
-            dontOverwriteSubscriptions(caseData, existingCcdCaseData);
+            dontOverwriteSubscriptions(caseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
             ifThereIsChangesThenUpdateCase(caseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
@@ -60,8 +60,8 @@ public class CcdCasesSender {
         addMissingExistingHearings(caseData, existingCcdCaseData);
     }
 
-    private void dontOverwriteSubscriptions(CaseData caseData, CaseData existingCcdCaseData) {
-        caseData.setSubscriptions(existingCcdCaseData.getSubscriptions());
+    private void dontOverwriteSubscriptions(CaseData caseData) {
+        caseData.setSubscriptions(null);
     }
 
     private void ifThereIsChangesThenUpdateCase(CaseData caseData, CaseData existingCcdCaseData, Long existingCaseId,
