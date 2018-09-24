@@ -13,7 +13,7 @@ def component = "case-loader"
 List<LinkedHashMap<String, Object>> secrets = [
   secret('sftp-host', 'GAPS2_SFTP_HOST'),
   secret('sftp-port', 'GAPS2_SFTP_PORT'),
-  secret('gaps2-service-sftp-private-key-preview', 'GAPS2_KEY_LOCATION'),
+  secret('gaps2-service-sftp-private-key', 'GAPS2_KEY_LOCATION'),
   secret('vault-sftp-user', 'GAPS2_SFTP_USER'),
   secret('vault-sftp-dir', 'GAPS2_SFTP_DIR'),
   secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
