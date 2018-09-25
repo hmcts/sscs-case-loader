@@ -1,7 +1,7 @@
 #!groovy
 properties([
-        [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/sscs-case-loader.git'],
-        pipelineTriggers([[$class: 'GitHubPushTrigger']])
+  [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/sscs-case-loader.git'],
+  pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
 @Library("Infrastructure")
@@ -31,18 +31,19 @@ List<LinkedHashMap<String, Object>> secrets = [
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
-    secretType: 'Secret',
-    name: secretName,
-    version: '',
-    envVariable: envVar
+  [$class     : 'AzureKeyVaultSecret',
+   secretType : 'Secret',
+   name       : secretName,
+   version    : '',
+   envVariable: envVar
   ]
 }
 
 
-env.TF_LOG='DEBUG'
+env.TF_LOG = 'DEBUG'
+env.TEST_VAR = 'TRUE'
 
 withPipeline(type, product, component) {
-    enableSlackNotifications('#sscs-tech')
-    loadVaultSecrets(secrets)
+  enableSlackNotifications('#sscs-tech')
+  loadVaultSecrets(secrets)
 }
