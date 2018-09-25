@@ -39,6 +39,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+
+env.TF_LOG='DEBUG'
+
 withPipeline(type, product, component) {
     enableSlackNotifications('#sscs-tech')
     loadVaultSecrets(secrets)
