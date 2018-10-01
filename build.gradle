@@ -4,7 +4,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.6.RELEASE'
-  id 'org.springframework.boot' version '2.0.3.RELEASE'
+  id 'org.springframework.boot' version '2.0.4.RELEASE'
   id 'org.owasp.dependencycheck' version '3.2.1'
   id 'com.github.ben-manes.versions' version '0.17.0'
   id 'net.ltgt.apt' version '0.14'
@@ -189,7 +189,7 @@ bootRun {
   systemProperty 'server.port', '8082'
 }
 
-def springBootVersion = '2.0.3.RELEASE'
+def springBootVersion = '2.0.5.RELEASE'
 
 dependencyManagement {
   imports {
@@ -206,7 +206,7 @@ def versions = [
 ]
 
 ext {
-  springCloudVersion = 'Finchley.M9'
+  springCloudVersion = 'Finchley.SR1'
 }
 
 dependencyManagement {
@@ -258,7 +258,7 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
-  compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '9.5.0'
+  compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
   compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 

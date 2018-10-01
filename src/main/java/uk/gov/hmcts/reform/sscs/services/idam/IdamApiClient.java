@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.idam;
 
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +26,8 @@ public interface IdamApiClient {
 
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/oauth2/token"
+        value = "/oauth2/token",
+        consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     )
     Authorize authorizeToken(
         @RequestParam("code") final String code,
