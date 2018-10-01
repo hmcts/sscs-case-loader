@@ -262,7 +262,7 @@ dependencies {
 
   compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 
-  compileOnly 'org.projectlombok:lombok:1.16.20'
+  compileOnly 'org.projectlombok:lombok:1.18.2'
   apt "org.projectlombok:lombok:1.16.20"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '1.28.2'
