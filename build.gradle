@@ -257,7 +257,7 @@ dependencies {
   compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
-  compile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
+  compile group: 'io.rest-assured', name: 'rest-assured', version: '3.1.1'
   compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
   compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
