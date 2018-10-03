@@ -9,9 +9,9 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
 
 @RunWith(JUnitParamsRunner.class)
 public class PostponedEventInferredFromCcdTest {

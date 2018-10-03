@@ -4,19 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 public class StartEventCcdService {
 
     private final CoreCaseDataApi coreCaseDataApi;
-    private final CoreCaseDataProperties coreCaseDataProperties;
+    private final CcdRequestDetails ccdRequestDetails;
 
     @Autowired
-    public StartEventCcdService(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties) {
+    public StartEventCcdService(CoreCaseDataApi coreCaseDataApi, CcdRequestDetails ccdRequestDetails) {
         this.coreCaseDataApi = coreCaseDataApi;
-        this.coreCaseDataProperties = coreCaseDataProperties;
+        this.ccdRequestDetails = ccdRequestDetails;
     }
 
     public StartEventResponse startCase(IdamTokens idamTokens, String eventType) {
@@ -24,8 +24,8 @@ public class StartEventCcdService {
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorization(),
             idamTokens.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
             eventType);
     }
 
@@ -34,8 +34,8 @@ public class StartEventCcdService {
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorization(),
             idamTokens.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
             caseId,
             eventType);
     }

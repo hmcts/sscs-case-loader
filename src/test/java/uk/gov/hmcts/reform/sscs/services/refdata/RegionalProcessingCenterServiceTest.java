@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegionalProcessingCenterServiceTest {

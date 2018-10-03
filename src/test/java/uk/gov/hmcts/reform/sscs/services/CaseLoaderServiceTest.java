@@ -11,16 +11,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Appeal;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
@@ -46,7 +46,7 @@ public class CaseLoaderServiceTest {
     @Mock
     private IdamService idamService;
 
-    private CaseData caseData;
+    private SscsCaseData caseData;
 
     private CaseLoaderService caseLoaderService;
 
@@ -69,7 +69,7 @@ public class CaseLoaderServiceTest {
                 .code("PIP")
                 .build())
             .build();
-        caseData = CaseData.builder()
+        caseData = SscsCaseData.builder()
             .caseReference("caseRef")
             .appeal(appeal)
             .build();
@@ -119,7 +119,7 @@ public class CaseLoaderServiceTest {
 
         CaseDetails caseDetails = CaseDetails.builder().build();
         caseData.setCaseReference(null);
-        caseData.setCcdCaseId("1234567890");
+        caseData.setCaseId("1234567890");
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")

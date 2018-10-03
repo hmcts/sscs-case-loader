@@ -5,22 +5,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,14 +21,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.models.idam.Authorize;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.idam.UserDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.idam.Authorize;
+import uk.gov.hmcts.reform.sscs.idam.IdamApiClient;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.idam.UserDetails;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -127,7 +116,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         mockCcdApiToThrowExceptionWhenFindingCaseByRefIsCalled();
         mockCcdApiToReturnResultWhenCalled();
 
-        doNothing().when(ccdCasesSender).sendUpdateCcdCases(any(CaseData.class), any(CaseDetails.class),
+        doNothing().when(ccdCasesSender).sendUpdateCcdCases(any(SscsCaseData.class), any(CaseDetails.class),
             any(IdamTokens.class));
 
         caseLoaderService.process();

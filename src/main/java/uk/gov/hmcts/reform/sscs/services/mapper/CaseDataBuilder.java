@@ -10,30 +10,10 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.*;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Address;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.BenefitType;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Contact;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Doc;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Documents;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Evidence;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.HearingOptions;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Identity;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Name;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Venue;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscription;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.subscriptions.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
@@ -61,8 +41,8 @@ class CaseDataBuilder {
         this.regionalProcessingCenterService = regionalProcessingCenterService;
     }
 
-    List<Events> buildEvent(AppealCase appealCase) {
-        List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
+    List<Event> buildEvent(AppealCase appealCase) {
+        List<Event> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
         events.addAll(caseDataEventBuilder.buildPostponedEvent(appealCase));
         events.addAll(caseDataEventBuilder.buildAdjournedEvents(appealCase));
         events.sort(Collections.reverseOrder());
@@ -100,16 +80,20 @@ class CaseDataBuilder {
     }
 
     HearingOptions buildHearingOptions(Parties party, String tribunalsTypeId) {
-        HearingOptions hearingOptions = HearingOptions.builder()
-            .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
-            .build();
+
+        String wantsToAttend = null;
 
         if (null != tribunalsTypeId
             && (tribunalsTypeId.equals("1")
             || tribunalsTypeId.equals("2")
             ||  tribunalsTypeId.equals("3"))) {
-            hearingOptions.setWantsToAttend(getWantsToAttend(tribunalsTypeId));
+            wantsToAttend = getWantsToAttend(tribunalsTypeId);
         }
+
+        HearingOptions hearingOptions = HearingOptions.builder()
+            .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
+            .wantsToAttend(wantsToAttend)
+            .build();
 
         return hearingOptions;
 
@@ -183,17 +167,17 @@ class CaseDataBuilder {
     }
 
     Evidence buildEvidence(AppealCase appealCase) {
-        List<Documents> documentsList = new ArrayList<>();
-        Doc doc;
+        List<Document> documentsList = new ArrayList<>();
+        DocumentDetails doc;
 
         if (appealCase.getFurtherEvidence() != null) {
             for (FurtherEvidence furtherEvidence : appealCase.getFurtherEvidence()) {
-                doc = Doc.builder()
+                doc = DocumentDetails.builder()
                     .dateReceived(DateHelper.getValidDateOrTime(furtherEvidence.getFeDateReceived(), true))
                     .evidenceType(referenceDataService.getEvidenceType(furtherEvidence.getFeTypeofEvidenceId()))
                     .evidenceProvidedBy(referenceDataService.getRoleType(furtherEvidence.getFeRoleId()))
                     .build();
-                Documents documents = Documents.builder().value(doc).build();
+                Document documents = Document.builder().value(doc).build();
                 documentsList.add(documents);
             }
         }

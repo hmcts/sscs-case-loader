@@ -15,10 +15,10 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateCcdServiceTest {
@@ -42,17 +42,15 @@ public class UpdateCcdServiceTest {
     @Mock
     private StartEventCcdService startEventCcdService;
 
-    private CoreCaseDataProperties ccdProperties;
-    private CaseData caseData;
+    private CcdRequestDetails ccdRequestDetails;
+    private SscsCaseData caseData;
     private IdamTokens idamTokens;
 
     private UpdateCcdService updateCcdService;
 
     @Before
     public void setUp() {
-        ccdProperties = new CoreCaseDataProperties();
-        ccdProperties.setJurisdictionId("SSCS");
-        ccdProperties.setCaseTypeId("Benefits");
+        ccdRequestDetails = CcdRequestDetails.builder().jurisdictionId("SSCS").caseTypeId("Benefits").build();
 
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
@@ -66,9 +64,9 @@ public class UpdateCcdServiceTest {
         when(response.getToken()).thenReturn(CCD_TOKEN);
         when(response.getEventId()).thenReturn(CCD_EVENT);
 
-        caseData = CaseData.builder().build();
+        caseData = SscsCaseData.builder().build();
 
-        updateCcdService = new UpdateCcdService(ccdProperties, ccdApi, idamService, startEventCcdService);
+        updateCcdService = new UpdateCcdService(ccdRequestDetails, ccdApi, idamService, startEventCcdService);
     }
 
     @Test
@@ -80,8 +78,8 @@ public class UpdateCcdServiceTest {
             eq(OAUTH2),
             eq(SERVICE_AUTHORIZATION),
             eq(USER_ID),
-            eq(ccdProperties.getJurisdictionId()),
-            eq(ccdProperties.getCaseTypeId()),
+            eq(ccdRequestDetails.getJurisdictionId()),
+            eq(ccdRequestDetails.getCaseTypeId()),
             eq(CASE_ID.toString()),
             eq(true),
             captor.capture())).thenReturn(caseDetails);

@@ -25,13 +25,13 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
+import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
@@ -50,10 +50,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
     @Autowired
     private CaseDataEventBuilder caseDataEventBuilder;
     @Autowired
-    private CoreCaseDataProperties coreCaseDataProperties;
+    private CcdRequestDetails ccdRequestDetails;
 
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "src/test/resources/CaseDetailsWithHearings.json";
-    private List<Events> events;
+    private List<Event> events;
     private AppealCase appeal;
 
     @Before
@@ -66,8 +66,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
             "oauth2Token",
             "serviceToken",
             "16",
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
             ImmutableMap.of("case.caseReference", "SC068/17/00011")
         )).willReturn(Collections.singletonList(getCaseDetails()));
     }

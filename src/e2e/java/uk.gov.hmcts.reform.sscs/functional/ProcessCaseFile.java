@@ -25,13 +25,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.ccd.CreateCcdService;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdServiceByCaseId;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 import uk.gov.hmcts.reform.tools.GenerateXml;
 
@@ -70,7 +70,7 @@ public class ProcessCaseFile {
             .userId(idamService.getUserId(oauth2Token))
             .build();
 
-        CaseData caseData = CaseDataUtils.buildMinimalCaseData();
+        SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
         CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
         ccdCaseId = String.valueOf(caseDetails.getId());
         LOG.info("Created test ccd case with id {}", ccdCaseId);

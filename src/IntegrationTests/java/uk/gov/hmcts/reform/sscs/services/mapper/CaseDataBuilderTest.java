@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
@@ -28,7 +28,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     private SftpChannelAdapter channelAdapter;
     @Autowired
     private CaseDataBuilder caseDataBuilder;
-    private List<Events> events;
+    private List<Event> events;
 
 
     @Test
@@ -51,7 +51,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
         events = caseDataBuilder.buildEvent(appealCaseWithMinorStatusId27AndPostponedRequestAndMajorStatuses);
 
         assertTrue("events size only has 1 element", events.size() > 1);
-        Event actualMostRecentEvent = events.get(0).getValue();
+        EventDetails actualMostRecentEvent = events.get(0).getValue();
         assertEquals("expected most recent Event is wrong",
             actualMostRecentEvent.getType(), GapsEvent.HEARING_POSTPONED.getType());
     }

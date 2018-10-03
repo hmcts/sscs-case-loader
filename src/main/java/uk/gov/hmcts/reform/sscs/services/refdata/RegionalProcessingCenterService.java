@@ -16,8 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.exceptions.RegionalProcessingCenterServiceException;
-import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
 
 @Service
 @Slf4j

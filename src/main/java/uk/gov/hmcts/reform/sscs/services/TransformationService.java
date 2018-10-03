@@ -16,10 +16,10 @@ import org.json.XML;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Gaps2Extract;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData;
 
 @Service
@@ -41,7 +41,7 @@ public class TransformationService {
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
     }
 
-    public List<CaseData> transform(InputStream inputStream) {
+    public List<SscsCaseData> transform(InputStream inputStream) {
 
         String xmlString;
         try {
