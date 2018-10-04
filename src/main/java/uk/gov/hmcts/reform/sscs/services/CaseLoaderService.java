@@ -92,9 +92,9 @@ public class CaseLoaderService {
                 }
 
                 if (ccdCases.isEmpty()
-                    && StringUtils.isNotBlank(caseData.getCaseId())) {
-                    log.info("*** case-loader *** searching case ccd id {} in CDD", caseData.getCaseId());
-                    ccdCases = searchCcdService.findCaseByCaseId(caseData.getCaseId(), idamTokens);
+                    && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
+                    log.info("*** case-loader *** searching case ccd id {} in CDD", caseData.getCcdCaseId());
+                    ccdCases = searchCcdService.findCaseByCaseId(caseData.getCcdCaseId(), idamTokens);
                 }
 
                 log.debug("*** case-loader *** found cases in CCD: {}", ccdCases);

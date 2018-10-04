@@ -33,11 +33,11 @@ public class TransformationServiceTest {
 
         caseDataWithScReference = SscsCaseData.builder().build();
         caseDataWithScReference.setCaseReference("SC012/34/56789");
-        caseDataWithScReference.setCaseId(null);
+        caseDataWithScReference.setCcdCaseId(null);
 
         caseDataWithCcdId = SscsCaseData.builder().build();
         caseDataWithCcdId.setCaseReference(null);
-        caseDataWithCcdId.setCaseId("1234567890");
+        caseDataWithCcdId.setCcdCaseId("1234567890");
 
         when(transformAppealCaseToCaseData.transform(any()))
             .thenReturn(caseDataWithScReference)

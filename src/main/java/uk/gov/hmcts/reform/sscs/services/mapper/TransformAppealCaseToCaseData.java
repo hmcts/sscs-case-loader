@@ -95,7 +95,7 @@ public class TransformAppealCaseToCaseData {
             .generatedMobile(generatedMobile)
             .generatedDob(generatedDob)
             .subscriptions(caseDataBuilder.buildSubscriptions())
-            .caseId(appealCase.getAdditionalRef())
+            .ccdCaseId(appealCase.getAdditionalRef())
             .build();
     }
 

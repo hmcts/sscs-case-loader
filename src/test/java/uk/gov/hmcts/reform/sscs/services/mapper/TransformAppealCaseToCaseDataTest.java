@@ -45,7 +45,7 @@ public class TransformAppealCaseToCaseDataTest {
         String appealNumber = caseData.getSubscriptions().getAppellantSubscription().getTya();
         assertTrue("appealNumber length is not 10 digits", appealNumber.length() == 10);
         assertEquals("Appeal references are mapped (SC Reference)", "SC068/17/00013", caseData.getCaseReference());
-        assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCaseId());
+        assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
         assertThat(caseData.getAppeal().getHearingType(), is("oral"));

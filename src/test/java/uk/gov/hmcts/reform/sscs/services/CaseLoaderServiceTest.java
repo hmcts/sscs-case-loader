@@ -119,7 +119,7 @@ public class CaseLoaderServiceTest {
 
         CaseDetails caseDetails = CaseDetails.builder().build();
         caseData.setCaseReference(null);
-        caseData.setCaseId("1234567890");
+        caseData.setCcdCaseId("1234567890");
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
