@@ -11,17 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.util.CcdUtil;
 
 @Service
 class CaseDataEventBuilder {
@@ -31,28 +31,31 @@ class CaseDataEventBuilder {
     private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
         postponedEventInferredFromDelta;
     private final PostponedEventService<Hearing> postponedEventInferredFromCcd;
+    private final SscsCcdConvertService sscsCcdConvertService;
 
     @Autowired
     CaseDataEventBuilder(
         SearchCcdService searchCcdService, IdamService idamService,
         PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
             postponedEventInferredFromDelta,
-        PostponedEventService<Hearing> postponedEventInferredFromCcd) {
+        PostponedEventService<Hearing> postponedEventInferredFromCcd,
+        SscsCcdConvertService sscsCcdConvertService) {
         this.searchCcdService = searchCcdService;
         this.idamService = idamService;
         this.postponedEventInferredFromDelta = postponedEventInferredFromDelta;
         this.postponedEventInferredFromCcd = postponedEventInferredFromCcd;
+        this.sscsCcdConvertService = sscsCcdConvertService;
     }
 
-    List<Events> buildPostponedEvent(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
+    List<Event> buildPostponedEvent(AppealCase appealCase) {
+        List<Event> events = new ArrayList<>();
         events.addAll(buildPostponedEventsFromMajorStatus(appealCase));
         events.addAll(buildPostponedEventsFromMinorStatus(appealCase));
         events.addAll(buildPostponedEventsFromHearingOutcomeId(appealCase));
         return events;
     }
 
-    private List<Events> buildPostponedEventsFromHearingOutcomeId(AppealCase appealCase) {
+    private List<Event> buildPostponedEventsFromHearingOutcomeId(AppealCase appealCase) {
         if (hearingExists(appealCase)) {
             return getEventsByHearingOutcomeId(appealCase, 12, 16,
                 GapsEvent.HEARING_POSTPONED);
@@ -60,7 +63,7 @@ class CaseDataEventBuilder {
         return Collections.emptyList();
     }
 
-    private List<Events> buildPostponedEventsFromMinorStatus(AppealCase appealCase) {
+    private List<Event> buildPostponedEventsFromMinorStatus(AppealCase appealCase) {
         if (minorStatusIsNotNullAndIsNotEmpty(appealCase.getMinorStatus())) {
             return appealCase.getMinorStatus().stream()
                 .filter(minorStatus -> areConditionsToCreatePostponedEventMet(minorStatus.getStatusId(), appealCase))
@@ -72,7 +75,7 @@ class CaseDataEventBuilder {
         return Collections.emptyList();
     }
 
-    private List<Events> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
+    private List<Event> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
         MajorStatus latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
         if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, latestMajorStatus)) {
             return Collections.singletonList(buildNewPostponedEvent(latestMajorStatus.getDateSet()));
@@ -135,7 +138,7 @@ class CaseDataEventBuilder {
         List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),
             idamTokens);
         if (caseDetailsList != null && !caseDetailsList.isEmpty()) {
-            return CcdUtil.getCaseData(caseDetailsList.get(0).getData()).getHearings();
+            return sscsCcdConvertService.getCaseData(caseDetailsList.get(0).getData()).getHearings();
         }
         return Collections.emptyList();
     }
@@ -153,9 +156,9 @@ class CaseDataEventBuilder {
             && "Y".equals(appealCase.getPostponementRequests().get(0).getPostponementGranted());
     }
 
-    private Events buildNewPostponedEvent(ZonedDateTime dateSet) {
-        return Events.builder()
-            .value(Event.builder()
+    private Event buildNewPostponedEvent(ZonedDateTime dateSet) {
+        return Event.builder()
+            .value(EventDetails.builder()
                 .type(GapsEvent.HEARING_POSTPONED.getType())
                 .date(dateSet.toLocalDateTime().toString())
                 .description(GapsEvent.HEARING_POSTPONED.getDescription())
@@ -167,14 +170,14 @@ class CaseDataEventBuilder {
         return minorStatusList != null && !minorStatusList.isEmpty();
     }
 
-    List<Events> buildMajorStatusEvents(AppealCase appealCase) {
-        List<Events> events = new ArrayList<>();
+    List<Event> buildMajorStatusEvents(AppealCase appealCase) {
+        List<Event> events = new ArrayList<>();
         List<MajorStatus> majorStatusList = appealCase.getMajorStatus();
         Collections.sort(majorStatusList);
         for (MajorStatus majorStatus : majorStatusList) {
             GapsEvent gapsEvent = GapsEvent.getGapsEventByStatus(majorStatus.getStatusId());
             if (gapsEvent != null && !hearingPostponed(gapsEvent)) {
-                Event event = Event.builder()
+                EventDetails event = EventDetails.builder()
                     .type(gapsEvent.getType())
                     .description(gapsEvent.getDescription())
                     .date(majorStatus.getDateSet().toLocalDateTime().toString())
@@ -184,7 +187,7 @@ class CaseDataEventBuilder {
 
                 if (!(event.getType().equals(GapsEvent.RESPONSE_RECEIVED.getType())
                     && responseReceivedEventAlreadyPresent)) {
-                    events.add(Events.builder()
+                    events.add(Event.builder()
                         .value(event)
                         .build());
                 }
@@ -193,7 +196,7 @@ class CaseDataEventBuilder {
         return events;
     }
 
-    List<Events> buildAdjournedEvents(AppealCase appealCase) {
+    List<Event> buildAdjournedEvents(AppealCase appealCase) {
 
         if (hearingExists(appealCase)) {
             return getEventsByHearingOutcomeId(appealCase, 110, 126, GapsEvent.HEARING_ADJOURNED);
@@ -201,22 +204,22 @@ class CaseDataEventBuilder {
         return Collections.emptyList();
     }
 
-    private List<Events> getEventsByHearingOutcomeId(AppealCase appealCase,
+    private List<Event> getEventsByHearingOutcomeId(AppealCase appealCase,
                                                      int rangeStart, int rangeEnd,
                                                      GapsEvent gapsEvent) {
-        List<Events> events = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         appealCase.getHearing().stream()
             .filter(hearing -> null != hearing.getOutcomeId())
             .forEach(hearing -> {
                 int outcomeId = Integer.parseInt(hearing.getOutcomeId());
                 if (outcomeId >= rangeStart && outcomeId <= rangeEnd) {
-                    Event adjournedEvent = Event.builder()
+                    EventDetails adjournedEvent = EventDetails.builder()
                         .type(gapsEvent.getType())
                         .date(getLocalDateTime(hearing.getSessionDate()))
                         .description(gapsEvent.getDescription())
                         .build();
 
-                    events.add(Events.builder()
+                    events.add(Event.builder()
                         .value(adjournedEvent)
                         .build());
                 }

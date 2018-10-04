@@ -5,10 +5,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
 
 @Service
 public class TransformAppealCaseToCaseData {
@@ -23,7 +22,7 @@ public class TransformAppealCaseToCaseData {
         this.caseDataBuilder = caseDataBuilder;
     }
 
-    public CaseData transform(AppealCase appealCase) {
+    public SscsCaseData transform(AppealCase appealCase) {
         List<Parties> parties = appealCase.getParties();
 
         Optional<Parties> party = (parties == null) ? Optional.empty() :
@@ -80,8 +79,8 @@ public class TransformAppealCaseToCaseData {
 
         List<DwpTimeExtension> dwpTimeExtensionList = caseDataBuilder.buildDwpTimeExtensions(appealCase);
 
-        List<Events> events = caseDataBuilder.buildEvent(appealCase);
-        return CaseData.builder()
+        List<Event> events = caseDataBuilder.buildEvent(appealCase);
+        return SscsCaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)

@@ -11,9 +11,9 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
@@ -40,7 +40,7 @@ public class TransformAppealCaseToCaseDataTest {
 
         AppealCase appealCase = getAppealCase();
 
-        CaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
 
         String appealNumber = caseData.getSubscriptions().getAppellantSubscription().getTya();
         assertTrue("appealNumber length is not 10 digits", appealNumber.length() == 10);

@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 public class SearchCcdServiceTest {
 

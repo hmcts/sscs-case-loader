@@ -3,9 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +17,9 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
@@ -41,12 +39,12 @@ public class UpdateCcdServiceRetryAndRecoverTest {
     @Autowired
     private UpdateCcdService updateCcdService;
 
-    private CaseData caseData;
+    private SscsCaseData caseData;
     private IdamTokens idamTokens;
 
     @Before
     public void setUp() {
-        caseData = CaseData.builder()
+        caseData = SscsCaseData.builder()
             .caseReference("SC068/17/00004")
             .build();
         idamTokens = IdamTokens.builder()

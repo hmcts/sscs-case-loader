@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.refdata.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
-import uk.gov.hmcts.reform.sscs.util.CcdUtil;
 
 
 @Service
@@ -25,27 +24,30 @@ public class CcdCasesSender {
     private final CreateCcdService createCcdService;
     private final UpdateCcdService updateCcdService;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
+    private final SscsCcdConvertService sscsCcdConvertService;
 
     @Autowired
     CcdCasesSender(CreateCcdService createCcdService,
                    UpdateCcdService updateCcdService,
-                   RegionalProcessingCenterService regionalProcessingCenterService) {
+                   RegionalProcessingCenterService regionalProcessingCenterService,
+                   SscsCcdConvertService sscsCcdConvertService) {
         this.createCcdService = createCcdService;
         this.updateCcdService = updateCcdService;
         this.regionalProcessingCenterService = regionalProcessingCenterService;
+        this.sscsCcdConvertService = sscsCcdConvertService;
     }
 
-    public void sendCreateCcdCases(CaseData caseData, IdamTokens idamTokens) {
+    public void sendCreateCcdCases(SscsCaseData caseData, IdamTokens idamTokens) {
         if (!lookupRpcByVenueId) {
             addRegionalProcessingCenter(caseData);
         }
         createCcdService.create(caseData, idamTokens);
     }
 
-    public void sendUpdateCcdCases(CaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
+    public void sendUpdateCcdCases(SscsCaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
-            CaseData existingCcdCaseData = CcdUtil.getCaseData(existingCcdCase.getData());
+            SscsCaseData existingCcdCaseData = sscsCcdConvertService.getCaseData(existingCcdCase.getData());
             addMissingInfo(caseData, existingCcdCaseData);
             dontOverwriteSubscriptions(caseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
@@ -53,19 +55,19 @@ public class CcdCasesSender {
         }
     }
 
-    private void addMissingInfo(CaseData caseData, CaseData existingCcdCaseData) {
+    private void addMissingInfo(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
         if (!lookupRpcByVenueId) {
             addRegionalProcessingCenter(caseData);
         }
         addMissingExistingHearings(caseData, existingCcdCaseData);
     }
 
-    private void dontOverwriteSubscriptions(CaseData caseData) {
+    private void dontOverwriteSubscriptions(SscsCaseData caseData) {
         caseData.setSubscriptions(null);
     }
 
-    private void ifThereIsChangesThenUpdateCase(CaseData caseData, CaseData existingCcdCaseData, Long existingCaseId,
-                                                IdamTokens idamTokens) {
+    private void ifThereIsChangesThenUpdateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData,
+                                                Long existingCaseId, IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCaseData)) {
             updateCcdService.update(caseData, existingCaseId, caseData.getLatestEventType(), idamTokens);
         } else if (thereIsADataChange(caseData, existingCcdCaseData)) {
@@ -75,7 +77,7 @@ public class CcdCasesSender {
         }
     }
 
-    private void addMissingExistingHearings(CaseData caseData, CaseData existingCcdCaseData) {
+    private void addMissingExistingHearings(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
         List<Hearing> gaps2Hearings = caseData.getHearings();
         List<Hearing> ccdCaseDataHearings = existingCcdCaseData.getHearings();
         ArrayList<Hearing> hearingArrayList = new ArrayList<>();
@@ -84,13 +86,13 @@ public class CcdCasesSender {
             if (null != gaps2Hearings) {
                 Set<String> gaps2HearingDateTime = gaps2Hearings
                     .stream()
-                    .map(hearing -> hearing.getValue().getHearingDateTime())
+                    .map(hearing -> getMissingHearingDateTime(hearing.getValue()))
                     .collect(toSet());
 
                 List<Hearing> missingHearings = ccdCaseDataHearings
                     .stream()
                     .filter(hearing ->
-                    !gaps2HearingDateTime.contains(hearing.getValue().getHearingDateTime()))
+                    !gaps2HearingDateTime.contains(getMissingHearingDateTime(hearing.getValue())))
                     .collect(toList());
 
                 hearingArrayList.addAll(gaps2Hearings);
@@ -106,16 +108,20 @@ public class CcdCasesSender {
         }
     }
 
-    private boolean thereIsAnEventChange(CaseData caseData, CaseData existingCcdCaseData) {
+    private String getMissingHearingDateTime(HearingDetails details) {
+        return details.getHearingDate() + details.getTime();
+    }
+
+    private boolean thereIsAnEventChange(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
         return existingCcdCaseData.getEvents() == null
             || caseData.getEvents().size() != existingCcdCaseData.getEvents().size();
     }
 
-    private boolean thereIsADataChange(CaseData caseData, CaseData existingCcdCaseData) {
+    private boolean thereIsADataChange(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
         return !existingCcdCaseData.equals(caseData);
     }
 
-    private void checkNewEvidenceReceived(CaseData caseData, CaseDetails existingCase, IdamTokens idamTokens) {
+    private void checkNewEvidenceReceived(SscsCaseData caseData, CaseDetails existingCase, IdamTokens idamTokens) {
         Evidence newEvidence = caseData.getEvidence();
         Evidence existingEvidence = buildExistingEvidence(existingCase);
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
@@ -123,7 +129,7 @@ public class CcdCasesSender {
         }
     }
 
-    private void addRegionalProcessingCenter(CaseData caseData) {
+    private void addRegionalProcessingCenter(SscsCaseData caseData) {
         RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService
             .getByScReferenceCode(caseData.getCaseReference());
         if (null != regionalProcessingCenter) {
@@ -138,12 +144,12 @@ public class CcdCasesSender {
         List<HashMap<String, Object>> documents = evidence != null
             ? (List<HashMap<String, Object>>)evidence.get("documents") : Collections.emptyList();
 
-        List<Documents> documentList = new ArrayList<>();
+        List<Document> documentList = new ArrayList<>();
         for (HashMap doc : documents) {
             Map<String, Object> docValue = (HashMap<String, Object>) doc.get("value");
 
-            documentList.add(Documents.builder().value(
-                Doc.builder()
+            documentList.add(Document.builder().value(
+                DocumentDetails.builder()
                     .dateReceived((String) docValue.get("dateReceived"))
                     .evidenceProvidedBy((String) docValue.get("evidenceProvidedBy"))
                     .evidenceType((String) docValue.get("evidenceType"))

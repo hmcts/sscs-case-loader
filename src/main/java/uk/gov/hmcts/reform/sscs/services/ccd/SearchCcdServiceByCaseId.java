@@ -8,22 +8,22 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Component
 @Slf4j
 public class SearchCcdServiceByCaseId {
 
     private final CoreCaseDataApi coreCaseDataApi;
-    private final CoreCaseDataProperties coreCaseDataProperties;
+    private final CcdRequestDetails ccdRequestDetails;
     private final IdamService idamService;
 
-    public SearchCcdServiceByCaseId(CoreCaseDataApi coreCaseDataApi, CoreCaseDataProperties coreCaseDataProperties,
+    public SearchCcdServiceByCaseId(CoreCaseDataApi coreCaseDataApi, CcdRequestDetails ccdRequestDetails,
                                     IdamService idamService) {
         this.coreCaseDataApi = coreCaseDataApi;
-        this.coreCaseDataProperties = coreCaseDataProperties;
+        this.ccdRequestDetails = ccdRequestDetails;
         this.idamService = idamService;
     }
 
@@ -47,8 +47,8 @@ public class SearchCcdServiceByCaseId {
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorization(),
             idamTokens.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
             caseId
         );
 

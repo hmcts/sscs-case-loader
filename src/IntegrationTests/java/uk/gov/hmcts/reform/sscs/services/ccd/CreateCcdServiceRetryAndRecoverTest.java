@@ -17,9 +17,9 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
@@ -37,12 +37,12 @@ public class CreateCcdServiceRetryAndRecoverTest {
 
     @Autowired
     private CreateCcdService createCcdService;
-    private CaseData caseData;
+    private SscsCaseData caseData;
     private IdamTokens idamTokens;
 
     @Before
     public void setUp() {
-        caseData = CaseData.builder()
+        caseData = SscsCaseData.builder()
             .caseReference("SC068/17/00004")
             .build();
         idamTokens = IdamTokens.builder()

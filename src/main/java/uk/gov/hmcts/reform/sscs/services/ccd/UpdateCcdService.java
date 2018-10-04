@@ -10,37 +10,37 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.config.properties.CoreCaseDataProperties;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 @Slf4j
 public class UpdateCcdService {
 
-    private final CoreCaseDataProperties coreCaseDataProperties;
+    private final CcdRequestDetails ccdRequestDetails;
     private final CoreCaseDataApi coreCaseDataApi;
     private final IdamService idamService;
     private final StartEventCcdService startEventCcdService;
 
     @Autowired
-    public UpdateCcdService(CoreCaseDataProperties coreCaseDataProperties, CoreCaseDataApi coreCaseDataApi,
+    public UpdateCcdService(CcdRequestDetails ccdRequestDetails, CoreCaseDataApi coreCaseDataApi,
                             IdamService idamService, StartEventCcdService startEventCcdService) {
-        this.coreCaseDataProperties = coreCaseDataProperties;
+        this.ccdRequestDetails = ccdRequestDetails;
         this.coreCaseDataApi = coreCaseDataApi;
         this.idamService = idamService;
         this.startEventCcdService = startEventCcdService;
     }
 
     @Retryable
-    public CaseDetails update(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
+    public CaseDetails update(SscsCaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
         return tryUpdate(caseData, caseId, eventType, idamTokens);
     }
 
     @Recover
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private CaseDetails requestNewTokensAndTryToUpdateAgain(CaseData caseData, Long caseId, String eventType,
+    private CaseDetails requestNewTokensAndTryToUpdateAgain(SscsCaseData caseData, Long caseId, String eventType,
                                                             IdamTokens idamTokens) {
         log.info("*** case-loader *** Requesting new idam and s2s tokens");
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
@@ -49,7 +49,7 @@ public class UpdateCcdService {
 
     }
 
-    private CaseDetails tryUpdate(CaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
+    private CaseDetails tryUpdate(SscsCaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startEvent(
             idamTokens, caseId.toString(), eventType);
         CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -65,8 +65,8 @@ public class UpdateCcdService {
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorization(),
             idamTokens.getUserId(),
-            coreCaseDataProperties.getJurisdictionId(),
-            coreCaseDataProperties.getCaseTypeId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
             caseId.toString(),
             true,
             caseDataContent);

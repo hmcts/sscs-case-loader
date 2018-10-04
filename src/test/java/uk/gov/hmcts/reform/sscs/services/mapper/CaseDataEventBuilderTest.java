@@ -1,13 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -26,16 +25,17 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import uk.gov.hmcts.reform.sscs.CaseDetailsUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
@@ -54,17 +54,19 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     @Mock
     private PostponedEventService<Hearing> postponedEventInferredFromDelta;
     @Mock
-    private PostponedEventService<uk.gov.hmcts.reform.sscs.models.serialize.ccd.Hearing> postponedEventInferredFromCcd;
+    private PostponedEventService<uk.gov.hmcts.reform.sscs.ccd.domain.Hearing> postponedEventInferredFromCcd;
+
     private CaseDataEventBuilder caseDataEventBuilder;
-    private List<Events> events;
+    private List<Event> events;
 
     @Before
     public void setUp() {
         when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
 
+        SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService, postponedEventInferredFromDelta,
-            postponedEventInferredFromCcd);
+            postponedEventInferredFromCcd, sscsCcdConvertService);
     }
 
     @Test
@@ -97,10 +99,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
-        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events.size(), equalTo(1));
-        Event event = events.get(0).getValue();
+        EventDetails event = events.get(0).getValue();
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
@@ -114,10 +116,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
-        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events.size(), equalTo(1));
-        Event event = events.get(0).getValue();
+        EventDetails event = events.get(0).getValue();
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
@@ -133,10 +135,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
-        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events.size(), equalTo(1));
-        Event event = events.get(0).getValue();
+        EventDetails event = events.get(0).getValue();
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
@@ -151,7 +153,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         hearings.add(hearing);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
-        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events.size(), equalTo(0));
     }
@@ -160,7 +162,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     public void shouldReturnEmptyListIfThereAreNoHearing() {
         AppealCase appealCase = AppealCase.builder().build();
 
-        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events, equalTo(Collections.EMPTY_LIST));
     }
@@ -174,7 +176,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         hearings.add(hearing2);
         AppealCase appealCase = AppealCase.builder().hearing(hearings).build();
 
-        List<Events> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
         assertThat(events.size(), equalTo(1));
     }
@@ -400,10 +402,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .hearing(hearings)
             .build();
 
-        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
         assertThat(events.size(), equalTo(1));
-        Event event = events.get(0).getValue();
+        EventDetails event = events.get(0).getValue();
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
@@ -424,10 +426,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .hearing(hearings)
             .build();
 
-        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
         assertThat(events.size(), equalTo(1));
-        Event event = events.get(0).getValue();
+        EventDetails event = events.get(0).getValue();
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
@@ -449,10 +451,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .hearing(hearings)
             .build();
 
-        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
         assertThat(events.size(), equalTo(1));
-        Event event = events.get(0).getValue();
+        EventDetails event = events.get(0).getValue();
 
         assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
         assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
@@ -474,7 +476,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .hearing(hearings)
             .build();
 
-        List<Events> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
         assertThat(events.size(), equalTo(0));
     }
@@ -608,7 +610,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        List<Events> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
+        List<Event> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
 
         assertThat(events.size(), equalTo(3));
         assertThat(events.get(0).getValue().getDate(),

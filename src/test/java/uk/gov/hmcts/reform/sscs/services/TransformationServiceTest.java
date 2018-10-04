@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -20,22 +20,22 @@ public class TransformationServiceTest {
 
     @Mock
     private TransformAppealCaseToCaseData transformAppealCaseToCaseData;
-    private CaseData caseDataWithScReference;
-    private CaseData caseDataWithCcdId;
+    private SscsCaseData caseDataWithScReference;
+    private SscsCaseData caseDataWithCcdId;
     private TransformationService transformationService;
     private InputStream is;
-    private List<CaseData> caseDataList;
+    private List<SscsCaseData> caseDataList;
 
     @Before
     public void setUp() {
         transformationService = new TransformationService(transformAppealCaseToCaseData,
             "2017-01-01");
 
-        caseDataWithScReference = CaseData.builder().build();
+        caseDataWithScReference = SscsCaseData.builder().build();
         caseDataWithScReference.setCaseReference("SC012/34/56789");
         caseDataWithScReference.setCcdCaseId(null);
 
-        caseDataWithCcdId = CaseData.builder().build();
+        caseDataWithCcdId = SscsCaseData.builder().build();
         caseDataWithCcdId.setCaseReference(null);
         caseDataWithCcdId.setCcdCaseId("1234567890");
 

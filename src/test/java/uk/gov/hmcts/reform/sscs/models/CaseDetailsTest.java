@@ -1,25 +1,18 @@
 package uk.gov.hmcts.reform.sscs.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Event;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.Events;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 
 public class CaseDetailsTest {
     @Test
@@ -28,7 +21,7 @@ public class CaseDetailsTest {
 
         //When
         @SuppressWarnings("unchecked")
-        List<Events> events = (List<Events>) caseDetails.getData().get("events");
+        List<Event> events = (List<Event>) caseDetails.getData().get("events");
 
         //Should
         assertTrue(events.size() == 1);
@@ -41,13 +34,13 @@ public class CaseDetailsTest {
         return CaseDetails.builder().data(data).build();
     }
 
-    private List<Events> buildEvents() {
-        Event value = Event.builder()
+    private List<Event> buildEvents() {
+        EventDetails value = EventDetails.builder()
             .date(LocalDate.now().toString())
             .description("test")
             .type("AppealReceived")
             .build();
-        return Collections.singletonList(Events.builder()
+        return Collections.singletonList(Event.builder()
             .value(value)
             .build());
     }
@@ -62,7 +55,7 @@ public class CaseDetailsTest {
         List eventObjects = (ArrayList) caseDetails.getData().get("events");
         for (Object event : eventObjects) {
             LinkedHashMap value = (LinkedHashMap) ((LinkedHashMap) event).get("value");
-            event = Event.builder()
+            event = EventDetails.builder()
                 .date((String) value.get("date"))
                 .type((String) value.get("type"))
                 .description((String) value.get("description"))

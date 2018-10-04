@@ -8,14 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
-import uk.gov.hmcts.reform.sscs.models.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.models.serialize.ccd.CaseData;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
-import uk.gov.hmcts.reform.sscs.services.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
@@ -79,9 +79,9 @@ public class CaseLoaderService {
     }
 
     private void processDelta(IdamTokens idamTokens, Gaps2File file) {
-        List<CaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
+        List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
         log.debug("*** case-loader *** file transformed to {} Cases successfully", cases.size());
-        for (CaseData caseData : cases) {
+        for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
 
                 List<CaseDetails> ccdCases = Collections.emptyList();
