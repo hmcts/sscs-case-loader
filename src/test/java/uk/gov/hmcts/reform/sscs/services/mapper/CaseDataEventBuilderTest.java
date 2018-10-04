@@ -56,7 +56,6 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     @Mock
     private PostponedEventService<uk.gov.hmcts.reform.sscs.ccd.domain.Hearing> postponedEventInferredFromCcd;
 
-    private SscsCcdConvertService sscsCcdConvertService;
     private CaseDataEventBuilder caseDataEventBuilder;
     private List<Event> events;
 
@@ -65,7 +64,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
 
-        sscsCcdConvertService = new SscsCcdConvertService();
+        SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService, postponedEventInferredFromDelta,
             postponedEventInferredFromCcd, sscsCcdConvertService);
     }

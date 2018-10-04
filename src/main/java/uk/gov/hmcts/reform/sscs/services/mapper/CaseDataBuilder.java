@@ -11,7 +11,6 @@ import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.*;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
@@ -122,8 +121,8 @@ class CaseDataBuilder {
         return (first, second) -> second;
     }
 
-    List<Hearing> buildHearings(AppealCase appealCase) {
-        List<Hearing> hearingsList = new ArrayList<>();
+    List<uk.gov.hmcts.reform.sscs.ccd.domain.Hearing> buildHearings(AppealCase appealCase) {
+        List<uk.gov.hmcts.reform.sscs.ccd.domain.Hearing> hearingsList = new ArrayList<>();
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
@@ -155,7 +154,7 @@ class CaseDataBuilder {
                         .hearingId(hearing.getHearingId())
                         .build();
 
-                    hearingsList.add(Hearing.builder().value(hearings).build());
+                    hearingsList.add(uk.gov.hmcts.reform.sscs.ccd.domain.Hearing.builder().value(hearings).build());
                 } else {
                     log.info("*** case-loader *** venue missing: " + appealCase.getHearing().get(0).getVenueId());
                     return Collections.emptyList();
