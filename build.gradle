@@ -253,7 +253,7 @@ dependencies {
   compile group: 'org.json', name: 'json', version: '20180813'
 
   compile group: 'commons-io', name: 'commons-io', version: '2.6'
-  compile group: 'com.opencsv', name: 'opencsv', version: '4.2'
+  compile group: 'com.opencsv', name: 'opencsv', version: '4.3'
 
   compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
