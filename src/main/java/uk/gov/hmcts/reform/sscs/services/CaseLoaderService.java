@@ -1,10 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import java.util.Collections;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -33,12 +31,12 @@ public class CaseLoaderService {
 
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
-                      SearchCcdService ccdCaseService, CcdCasesSender ccdCasesSender,
+                      SearchCcdService searchCcdService, CcdCasesSender ccdCasesSender,
                       RefDataFactory refDataFactory, IdamService idamService) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformService = transformService;
-        this.searchCcdService = ccdCaseService;
+        this.searchCcdService = searchCcdService;
         this.ccdCasesSender = ccdCasesSender;
         this.refDataFactory = refDataFactory;
         this.idamService = idamService;
@@ -80,28 +78,17 @@ public class CaseLoaderService {
 
     private void processDelta(IdamTokens idamTokens, Gaps2File file) {
         List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-        log.debug("*** case-loader *** file transformed to {} Cases successfully", cases.size());
+        log.info("*** case-loader *** file transformed to {} Cases successfully", cases.size());
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
-
-                List<CaseDetails> ccdCases = Collections.emptyList();
-
-                if (StringUtils.isNotBlank(caseData.getCaseReference())) {
-                    log.info("*** case-loader *** searching case reference {} in CDD", caseData.getCaseReference());
-                    ccdCases = searchCcdService.findCaseByCaseRef(caseData.getCaseReference(), idamTokens);
-                }
-
-                if (ccdCases.isEmpty() && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
-                    log.info("*** case-loader *** searching case ccd id {} in CDD", caseData.getCcdCaseId());
-                    ccdCases = searchCcdService.findCaseByCaseId(caseData.getCcdCaseId(), idamTokens);
-                }
-
-                log.debug("*** case-loader *** found cases in CCD: {}", ccdCases);
+                List<CaseDetails> ccdCases = searchCcdService.searchCasesByScNumberAndCcdId(idamTokens, caseData);
                 if (ccdCases.isEmpty()) {
-                    log.debug("*** case-loader *** sending case for creation to CCD: {}", caseData);
+                    log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
+                        caseData.getCaseReference(), caseData.getCcdCaseId());
                     ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
                 } else {
-                    log.debug("*** case-loader *** sending case for update to CCD: {}", caseData);
+                    log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
+                        caseData.getCaseReference(), caseData.getCcdCaseId());
                     ccdCasesSender.sendUpdateCcdCases(caseData, ccdCases.get(0), idamTokens);
                 }
             }

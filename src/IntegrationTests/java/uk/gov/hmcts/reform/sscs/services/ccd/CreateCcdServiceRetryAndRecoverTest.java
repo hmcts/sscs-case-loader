@@ -89,9 +89,9 @@ public class CreateCcdServiceRetryAndRecoverTest {
 
         createCcdService.create(caseData, idamTokens);
 
-        verify(coreCaseDataApi, times(0)).submitForCaseworker(
-            eq("authorization"),
-            eq("serviceAuthorization"),
+        verify(coreCaseDataApi, times(1)).submitForCaseworker(
+            eq("authorization2"),
+            eq("serviceAuthorization2"),
             eq("16"),
             anyString(),
             anyString(),

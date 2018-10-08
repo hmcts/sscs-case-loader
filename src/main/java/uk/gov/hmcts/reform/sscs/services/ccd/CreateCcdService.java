@@ -35,13 +35,16 @@ public class CreateCcdService {
 
     @Retryable
     public CaseDetails create(SscsCaseData caseData, IdamTokens idamTokens) {
+        log.info("*** case-loader *** Starting create case process with SC number {} and ccdID {} ...",
+            caseData.getCaseReference(), caseData.getCcdCaseId());
         return tryCreate(caseData, idamTokens);
     }
 
     @Recover
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private CaseDetails requestNewTokensAndTryToCreateAgain(SscsCaseData caseData, IdamTokens idamTokens) {
-        log.info("*** case-loader *** Requesting new idam and s2s tokens");
+        log.info("*** case-loader *** Recovering method called when creating case with SC number {} and ccdID {}...",
+            caseData.getCaseReference(), caseData.getCcdCaseId());
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
         return tryCreate(caseData, idamTokens);
