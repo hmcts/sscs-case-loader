@@ -10,8 +10,29 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtensionDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -85,22 +106,19 @@ class CaseDataBuilder {
         if (null != tribunalsTypeId
             && (tribunalsTypeId.equals("1")
             || tribunalsTypeId.equals("2")
-            ||  tribunalsTypeId.equals("3"))) {
+            || tribunalsTypeId.equals("3"))) {
             wantsToAttend = getWantsToAttend(tribunalsTypeId);
         }
 
-        HearingOptions hearingOptions = HearingOptions.builder()
+        return HearingOptions.builder()
             .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
             .wantsToAttend(wantsToAttend)
             .build();
-
-        return hearingOptions;
 
     }
 
     private String getWantsToAttend(String tribunalsTypeId) {
         String tbtCode = referenceDataService.getTbtCode(tribunalsTypeId);
-
         if ("O".equals(tbtCode)) {
             return YES;
         }
@@ -108,9 +126,7 @@ class CaseDataBuilder {
     }
 
     RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase, Parties appellantParty) {
-        List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> hearings =
-            appealCase.getHearing() != null ? appealCase.getHearing() : Collections.emptyList();
-
+        List<Hearing> hearings = appealCase.getHearing() != null ? appealCase.getHearing() : Collections.emptyList();
         return hearings.stream()
             .reduce(getLast())
             .map(hearing -> regionalProcessingCenterService.getByVenueId(hearing.getVenueId()))
@@ -126,7 +142,7 @@ class CaseDataBuilder {
         HearingDetails hearings;
 
         if (appealCase.getHearing() != null) {
-            for (uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing hearing : appealCase.getHearing()) {
+            for (Hearing hearing : appealCase.getHearing()) {
 
                 VenueDetails venueDetails = referenceDataService.getVenueDetails(hearing.getVenueId());
 
