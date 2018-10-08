@@ -49,7 +49,18 @@ public class CreateCcdService {
 
     private CaseDetails tryCreate(SscsCaseData caseData, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
-        CaseDataContent caseDataContent = CaseDataContent.builder()
+        return coreCaseDataApi.submitForCaseworker(
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
+            true,
+            buildCaseDataContent(caseData, startEventResponse));
+    }
+
+    private CaseDataContent buildCaseDataContent(SscsCaseData caseData, StartEventResponse startEventResponse) {
+        return CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
                 .id(startEventResponse.getEventId())
@@ -58,14 +69,6 @@ public class CreateCcdService {
                 .build())
             .data(caseData)
             .build();
-        return coreCaseDataApi.submitForCaseworker(
-            idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorization(),
-            idamTokens.getUserId(),
-            ccdRequestDetails.getJurisdictionId(),
-            ccdRequestDetails.getCaseTypeId(),
-            true,
-            caseDataContent);
     }
 
 }

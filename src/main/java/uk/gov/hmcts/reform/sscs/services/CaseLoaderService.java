@@ -91,8 +91,7 @@ public class CaseLoaderService {
                     ccdCases = searchCcdService.findCaseByCaseRef(caseData.getCaseReference(), idamTokens);
                 }
 
-                if (ccdCases.isEmpty()
-                    && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
+                if (ccdCases.isEmpty() && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
                     log.info("*** case-loader *** searching case ccd id {} in CDD", caseData.getCcdCaseId());
                     ccdCases = searchCcdService.findCaseByCaseId(caseData.getCcdCaseId(), idamTokens);
                 }
