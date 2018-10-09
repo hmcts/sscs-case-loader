@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -30,15 +31,16 @@ public class SearchCcdService {
         return searchCcdServiceByCaseId.findCaseByCaseId(caseId, idamTokens);
     }
 
+    @Retryable
     public List<CaseDetails> searchCasesByScNumberAndCcdId(IdamTokens idamTokens, SscsCaseData caseData) {
         List<CaseDetails> ccdCases = Collections.emptyList();
         if (StringUtils.isNotBlank(caseData.getCaseReference())) {
-            log.info("*** case-loader *** searching cases by SC number {} in CDD", caseData.getCaseReference());
+            log.info("*** case-loader *** searching cases by SC number {}", caseData.getCaseReference());
             ccdCases = this.findCaseByCaseRef(caseData.getCaseReference(), idamTokens);
         }
 
         if (ccdCases.isEmpty() && StringUtils.isNotBlank(caseData.getCcdCaseId())) {
-            log.info("*** case-loader *** searching cases by ccdID {} in CDD", caseData.getCcdCaseId());
+            log.info("*** case-loader *** searching cases by ccdID {}", caseData.getCcdCaseId());
             ccdCases = this.findCaseByCaseId(caseData.getCcdCaseId(), idamTokens);
         }
         log.info("*** case-loader *** total cases found in CCD: {}", ccdCases.size());

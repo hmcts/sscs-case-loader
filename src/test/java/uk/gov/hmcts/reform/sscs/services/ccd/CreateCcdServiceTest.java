@@ -40,6 +40,8 @@ public class CreateCcdServiceTest {
     private CaseDetails caseDetails;
     @Mock
     private StartEventCcdService startEventCcdService;
+    @Mock
+    private SearchCcdService searchCcdService;
 
     private CcdRequestDetails ccdRequestDetails;
     private SscsCaseData caseData;
@@ -65,7 +67,8 @@ public class CreateCcdServiceTest {
 
         caseData = SscsCaseData.builder().build();
 
-        createCcdService = new CreateCcdService(ccdRequestDetails, ccdApi, idamService, startEventCcdService);
+        createCcdService = new CreateCcdService(ccdRequestDetails, ccdApi, idamService, startEventCcdService,
+            searchCcdService);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Recover;
@@ -23,14 +24,16 @@ public class CreateCcdService {
     private final CoreCaseDataApi coreCaseDataApi;
     private final IdamService idamService;
     private final StartEventCcdService startEventCcdService;
+    private final SearchCcdService searchCcdService;
 
     @Autowired
     CreateCcdService(CcdRequestDetails ccdRequestDetails, CoreCaseDataApi ccd, IdamService idamService,
-                     StartEventCcdService startEventCcdService) {
+                     StartEventCcdService startEventCcdService, SearchCcdService searchCcdService) {
         this.ccdRequestDetails = ccdRequestDetails;
         this.coreCaseDataApi = ccd;
         this.idamService = idamService;
         this.startEventCcdService = startEventCcdService;
+        this.searchCcdService = searchCcdService;
     }
 
     @Retryable
@@ -39,6 +42,7 @@ public class CreateCcdService {
             caseData.getCaseReference(), caseData.getCcdCaseId());
         return tryCreate(caseData, idamTokens);
     }
+
 
     @Recover
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -51,6 +55,11 @@ public class CreateCcdService {
     }
 
     private CaseDetails tryCreate(SscsCaseData caseData, IdamTokens idamTokens) {
+        List<CaseDetails> ccdCases = searchCcdService.searchCasesByScNumberAndCcdId(idamTokens, caseData);
+        return (ccdCases.isEmpty() ? createCaseInCcd(caseData, idamTokens) : ccdCases.get(0));
+    }
+
+    private CaseDetails createCaseInCcd(SscsCaseData caseData, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
         return coreCaseDataApi.submitForCaseworker(
             idamTokens.getIdamOauth2Token(),
