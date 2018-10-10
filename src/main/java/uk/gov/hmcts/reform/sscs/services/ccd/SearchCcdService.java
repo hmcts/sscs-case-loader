@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -31,7 +30,6 @@ public class SearchCcdService {
         return searchCcdServiceByCaseId.findCaseByCaseId(caseId, idamTokens);
     }
 
-    @Retryable
     public List<CaseDetails> searchCasesByScNumberAndCcdId(IdamTokens idamTokens, SscsCaseData caseData) {
         List<CaseDetails> ccdCases = Collections.emptyList();
         if (StringUtils.isNotBlank(caseData.getCaseReference())) {

@@ -65,8 +65,6 @@ public class CreateCcdServiceRetryAndRecoverTest {
             anyString(),
             anyString(),
             anyString()))
-            .thenThrow(new RuntimeException())
-            .thenThrow(new RuntimeException())
             .thenThrow(new RuntimeException());
 
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
@@ -144,7 +142,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
 
         createCcdService.create(caseData, idamTokens);
 
-        verify(coreCaseDataApi, times(1)).startForCaseworker(
+        verify(coreCaseDataApi, times(2)).startForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
@@ -152,7 +150,7 @@ public class CreateCcdServiceRetryAndRecoverTest {
             anyString(),
             anyString());
 
-        verify(coreCaseDataApi, times(1)).submitForCaseworker(
+        verify(coreCaseDataApi, times(2)).submitForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
@@ -182,8 +180,6 @@ public class CreateCcdServiceRetryAndRecoverTest {
             anyString(),
             eq(true),
             any(CaseDataContent.class)))
-            .thenThrow(new RuntimeException())
-            .thenThrow(new RuntimeException())
             .thenThrow(new RuntimeException());
 
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");
@@ -198,12 +194,11 @@ public class CreateCcdServiceRetryAndRecoverTest {
             eq(ImmutableMap.of("case.caseReference", caseData.getCaseReference()))))
             .thenReturn(Collections.emptyList())
             .thenReturn(Collections.emptyList())
-            .thenReturn(Collections.emptyList())
             .thenReturn(Collections.singletonList(CaseDetails.builder().build()));
 
         createCcdService.create(caseData, idamTokens);
 
-        verify(coreCaseDataApi, times(3)).searchForCaseworker(
+        verify(coreCaseDataApi, times(2)).searchForCaseworker(
             eq("authorization"),
             eq("serviceAuthorization"),
             eq("16"),
@@ -258,8 +253,6 @@ public class CreateCcdServiceRetryAndRecoverTest {
             anyString(),
             eq(true),
             any(CaseDataContent.class)))
-            .thenThrow(new RuntimeException())
-            .thenThrow(new RuntimeException())
             .thenThrow(new RuntimeException());
 
         when(idamService.getIdamOauth2Token()).thenReturn("authorization2");

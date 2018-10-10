@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ class UpdateCcdService {
         this.startEventCcdService = startEventCcdService;
     }
 
-    @Retryable
+    @Retryable(backoff = @Backoff(delay = 2000L))
     CaseDetails update(SscsCaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
         return tryUpdate(caseData, caseId, eventType, idamTokens);
     }
