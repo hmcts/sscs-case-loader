@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.RecoveryCallback;
 import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
@@ -57,14 +58,14 @@ public class CreateCcdService {
         return context -> {
             log.info("*** case-loader *** Recovery method called when creating case with SC number {} and ccdID {}...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
-            idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-            idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
-            List<CaseDetails> ccdCases = searchCcdService.searchCasesByScNumberAndCcdId(idamTokens, caseData);
-            if (ccdCases.isEmpty()) {
-                return createCaseInCcd(caseData, idamTokens);
-            }
-            return ccdCases.get(0);
+            requestNewIdamTokens(idamTokens);
+            return createCaseIfDoesNotExist(caseData, idamTokens, context);
         };
+    }
+
+    private void requestNewIdamTokens(IdamTokens idamTokens) {
+        idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+        idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
     }
 
     private RetryCallback<CaseDetails, ? extends Throwable> getRetryCallback(SscsCaseData caseData,
@@ -72,15 +73,16 @@ public class CreateCcdService {
         return (RetryCallback<CaseDetails, Throwable>) context -> {
             log.info("*** case-loader *** create case with SC number {} and ccdID {} and retry number {}",
                 caseData.getCaseReference(), caseData.getCcdCaseId(), context.getRetryCount());
-            List<CaseDetails> ccdCases = Collections.emptyList();
-            if (context.getRetryCount() > 0) {
-                ccdCases = searchCcdService.searchCasesByScNumberAndCcdId(idamTokens, caseData);
-            }
-            if (ccdCases.isEmpty()) {
-                return createCaseInCcd(caseData, idamTokens);
-            }
-            return ccdCases.get(0);
+            return createCaseIfDoesNotExist(caseData, idamTokens, context);
         };
+    }
+
+    private CaseDetails createCaseIfDoesNotExist(SscsCaseData caseData, IdamTokens idamTokens, RetryContext context) {
+        List<CaseDetails> ccdCases = Collections.emptyList();
+        if (context.getRetryCount() > 0) {
+            ccdCases = searchCcdService.searchCasesByScNumberAndCcdId(idamTokens, caseData);
+        }
+        return (ccdCases.isEmpty() ? createCaseInCcd(caseData, idamTokens) : ccdCases.get(0));
     }
 
     private CaseDetails createCaseInCcd(SscsCaseData caseData, IdamTokens idamTokens) {
