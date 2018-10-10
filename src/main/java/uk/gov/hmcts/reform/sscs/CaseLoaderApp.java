@@ -8,7 +8,6 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
@@ -21,11 +20,6 @@ import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 @Slf4j
 @EnableScheduling
 @EnableRetry
-@ComponentScan(
-    basePackages = "uk.gov.hmcts.reform.sscs",
-    basePackageClasses = CaseLoaderApp.class,
-    lazyInit = true
-)
 public class CaseLoaderApp {
 
     public static void main(String[] args) {
