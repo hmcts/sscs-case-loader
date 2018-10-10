@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.exceptions.CreateCcdCaseException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -54,6 +55,20 @@ public class CreateCcdServiceRetryAndRecoverTest {
             .serviceAuthorization("serviceAuthorization")
             .userId("16")
             .build();
+    }
+
+    @Test(expected = CreateCcdCaseException.class)
+    public void givenWeCannotRecover_shouldThrowAnException() {
+        when(coreCaseDataApi.startForCaseworker(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()))
+            .thenThrow(new RuntimeException());
+
+        createCcdService.create(caseData, idamTokens);
     }
 
     @Test

@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.exceptions.CreateCcdCaseException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
@@ -50,6 +51,9 @@ public class CreateCcdService {
         } catch (Throwable throwable) {
             log.error("Recovery mechanism failed when creating case with SC {} and ccdID {}...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
+            throw new CreateCcdCaseException(String.format(
+                "Recovery mechanism failed when creating case with SC %s and ccdID %s...",
+                caseData.getCaseReference(), caseData.getCcdCaseId()));
         }
         return null;
     }
