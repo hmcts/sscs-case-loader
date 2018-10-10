@@ -47,13 +47,12 @@ public class CreateCcdService {
         log.info("*** case-loader *** Starting create case process with SC number {} and ccdID {} ...",
             caseData.getCaseReference(), caseData.getCcdCaseId());
         try {
-            retryTemplate.execute(getRetryCallback(caseData, idamTokens), getRecoveryCallback(caseData, idamTokens));
+            return retryTemplate.execute(getRetryCallback(caseData, idamTokens), getRecoveryCallback(caseData, idamTokens));
         } catch (Throwable throwable) {
             throw new CreateCcdCaseException(String.format(
                 "Recovery mechanism failed when creating case with SC %s and ccdID %s...",
                 caseData.getCaseReference(), caseData.getCcdCaseId()), throwable);
         }
-        return null;
     }
 
     private RecoveryCallback<CaseDetails> getRecoveryCallback(SscsCaseData caseData, IdamTokens idamTokens) {
