@@ -5,7 +5,8 @@ import uk.gov.hmcts.reform.logging.exception.UnknownErrorCodeException;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class CreateCcdCaseException extends UnknownErrorCodeException {
-    public CreateCcdCaseException(String message) {
-        super(AlertLevel.P1, message);
+
+    public CreateCcdCaseException(String message, Throwable cause) {
+        super(AlertLevel.P1, message, cause);
     }
 }

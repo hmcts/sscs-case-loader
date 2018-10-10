@@ -49,11 +49,9 @@ public class CreateCcdService {
         try {
             retryTemplate.execute(getRetryCallback(caseData, idamTokens), getRecoveryCallback(caseData, idamTokens));
         } catch (Throwable throwable) {
-            log.error("Recovery mechanism failed when creating case with SC {} and ccdID {}...",
-                caseData.getCaseReference(), caseData.getCcdCaseId());
             throw new CreateCcdCaseException(String.format(
                 "Recovery mechanism failed when creating case with SC %s and ccdID %s...",
-                caseData.getCaseReference(), caseData.getCcdCaseId()));
+                caseData.getCaseReference(), caseData.getCcdCaseId()), throwable);
         }
         return null;
     }
