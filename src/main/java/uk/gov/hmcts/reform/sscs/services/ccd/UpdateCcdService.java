@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
 @Service
 @Slf4j
-public class UpdateCcdService {
+class UpdateCcdService {
 
     private final CcdRequestDetails ccdRequestDetails;
     private final CoreCaseDataApi coreCaseDataApi;
@@ -25,16 +26,16 @@ public class UpdateCcdService {
     private final StartEventCcdService startEventCcdService;
 
     @Autowired
-    public UpdateCcdService(CcdRequestDetails ccdRequestDetails, CoreCaseDataApi coreCaseDataApi,
-                            IdamService idamService, StartEventCcdService startEventCcdService) {
+    UpdateCcdService(CcdRequestDetails ccdRequestDetails, CoreCaseDataApi coreCaseDataApi,
+                     IdamService idamService, StartEventCcdService startEventCcdService) {
         this.ccdRequestDetails = ccdRequestDetails;
         this.coreCaseDataApi = coreCaseDataApi;
         this.idamService = idamService;
         this.startEventCcdService = startEventCcdService;
     }
 
-    @Retryable
-    public CaseDetails update(SscsCaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
+    @Retryable(backoff = @Backoff(delay = 2000L))
+    CaseDetails update(SscsCaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
         return tryUpdate(caseData, caseId, eventType, idamTokens);
     }
 
@@ -50,17 +51,8 @@ public class UpdateCcdService {
     }
 
     private CaseDetails tryUpdate(SscsCaseData caseData, Long caseId, String eventType, IdamTokens idamTokens) {
-        StartEventResponse startEventResponse = startEventCcdService.startEvent(
-            idamTokens, caseId.toString(), eventType);
-        CaseDataContent caseDataContent = CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(Event.builder()
-                .id(startEventResponse.getEventId())
-                .summary("GAPS2 Case")
-                .description("CaseLoader Case updated")
-                .build())
-            .data(caseData)
-            .build();
+        StartEventResponse startEventResponse = startEventCcdService
+            .startEvent(idamTokens, caseId.toString(), eventType);
         return coreCaseDataApi.submitEventForCaseWorker(
             idamTokens.getIdamOauth2Token(),
             idamTokens.getServiceAuthorization(),
@@ -69,7 +61,19 @@ public class UpdateCcdService {
             ccdRequestDetails.getCaseTypeId(),
             caseId.toString(),
             true,
-            caseDataContent);
+            buildCaseDataContent(caseData, startEventResponse));
+    }
+
+    private CaseDataContent buildCaseDataContent(SscsCaseData caseData, StartEventResponse startEventResponse) {
+        return CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(Event.builder()
+                .id(startEventResponse.getEventId())
+                .summary("GAPS2 Case")
+                .description("CaseLoader Case updated")
+                .build())
+            .data(caseData)
+            .build();
     }
 
 }

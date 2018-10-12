@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import java.util.Collections;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.RecoveryCallback;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -12,6 +16,7 @@ import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.exceptions.CreateCcdCaseException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 
@@ -23,33 +28,79 @@ public class CreateCcdService {
     private final CoreCaseDataApi coreCaseDataApi;
     private final IdamService idamService;
     private final StartEventCcdService startEventCcdService;
+    private final SearchCcdService searchCcdService;
+    private final RetryTemplate retryTemplate;
 
     @Autowired
     CreateCcdService(CcdRequestDetails ccdRequestDetails, CoreCaseDataApi ccd, IdamService idamService,
-                     StartEventCcdService startEventCcdService) {
+                     StartEventCcdService startEventCcdService, SearchCcdService searchCcdService,
+                     RetryTemplate retryTemplate) {
         this.ccdRequestDetails = ccdRequestDetails;
         this.coreCaseDataApi = ccd;
         this.idamService = idamService;
         this.startEventCcdService = startEventCcdService;
+        this.searchCcdService = searchCcdService;
+        this.retryTemplate = retryTemplate;
     }
 
-    @Retryable
     public CaseDetails create(SscsCaseData caseData, IdamTokens idamTokens) {
-        return tryCreate(caseData, idamTokens);
+        log.info("*** case-loader *** Starting create case process with SC number {} and ccdID {} ...",
+            caseData.getCaseReference(), caseData.getCcdCaseId());
+        try {
+            return retryTemplate.execute(getRetryCallback(caseData, idamTokens),
+                getRecoveryCallback(caseData, idamTokens));
+        } catch (Throwable throwable) {
+            throw new CreateCcdCaseException(String.format(
+                "Recovery mechanism failed when creating case with SC %s and ccdID %s...",
+                caseData.getCaseReference(), caseData.getCcdCaseId()), throwable);
+        }
     }
 
-    @Recover
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private CaseDetails requestNewTokensAndTryToCreateAgain(SscsCaseData caseData, IdamTokens idamTokens) {
-        log.info("*** case-loader *** Requesting new idam and s2s tokens");
+    private RecoveryCallback<CaseDetails> getRecoveryCallback(SscsCaseData caseData, IdamTokens idamTokens) {
+        return context -> {
+            log.info("*** case-loader *** Recovery method called when creating case with SC number {} and ccdID {}...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            requestNewIdamTokens(idamTokens);
+            return createCaseIfDoesNotExist(caseData, idamTokens, context);
+        };
+    }
+
+    private void requestNewIdamTokens(IdamTokens idamTokens) {
         idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
         idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
-        return tryCreate(caseData, idamTokens);
     }
 
-    private CaseDetails tryCreate(SscsCaseData caseData, IdamTokens idamTokens) {
+    private RetryCallback<CaseDetails, ? extends Throwable> getRetryCallback(SscsCaseData caseData,
+                                                                             IdamTokens idamTokens) {
+        return (RetryCallback<CaseDetails, Throwable>) context -> {
+            log.info("*** case-loader *** create case with SC number {} and ccdID {} and retry number {}",
+                caseData.getCaseReference(), caseData.getCcdCaseId(), context.getRetryCount());
+            return createCaseIfDoesNotExist(caseData, idamTokens, context);
+        };
+    }
+
+    private CaseDetails createCaseIfDoesNotExist(SscsCaseData caseData, IdamTokens idamTokens, RetryContext context) {
+        List<CaseDetails> ccdCases = Collections.emptyList();
+        if (context.getRetryCount() > 0) {
+            ccdCases = searchCcdService.searchCasesByScNumberAndCcdId(idamTokens, caseData);
+        }
+        return (ccdCases.isEmpty() ? createCaseInCcd(caseData, idamTokens) : ccdCases.get(0));
+    }
+
+    private CaseDetails createCaseInCcd(SscsCaseData caseData, IdamTokens idamTokens) {
         StartEventResponse startEventResponse = startEventCcdService.startCase(idamTokens, "appealCreated");
-        CaseDataContent caseDataContent = CaseDataContent.builder()
+        return coreCaseDataApi.submitForCaseworker(
+            idamTokens.getIdamOauth2Token(),
+            idamTokens.getServiceAuthorization(),
+            idamTokens.getUserId(),
+            ccdRequestDetails.getJurisdictionId(),
+            ccdRequestDetails.getCaseTypeId(),
+            true,
+            buildCaseDataContent(caseData, startEventResponse));
+    }
+
+    private CaseDataContent buildCaseDataContent(SscsCaseData caseData, StartEventResponse startEventResponse) {
+        return CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(Event.builder()
                 .id(startEventResponse.getEventId())
@@ -58,14 +109,6 @@ public class CreateCcdService {
                 .build())
             .data(caseData)
             .build();
-        return coreCaseDataApi.submitForCaseworker(
-            idamTokens.getIdamOauth2Token(),
-            idamTokens.getServiceAuthorization(),
-            idamTokens.getUserId(),
-            ccdRequestDetails.getJurisdictionId(),
-            ccdRequestDetails.getCaseTypeId(),
-            true,
-            caseDataContent);
     }
 
 }

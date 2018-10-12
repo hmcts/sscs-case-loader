@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,8 @@ public class SearchCcdServiceByCaseRef {
         this.idamService = idamService;
     }
 
-    @Retryable
-    public List<CaseDetails> findCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
+    @Retryable(backoff = @Backoff(delay = 2000L))
+    List<CaseDetails> findCaseByCaseRef(String caseRef, IdamTokens idamTokens) {
         return tryFindCaseByCaseRef(caseRef, idamTokens);
     }
 
