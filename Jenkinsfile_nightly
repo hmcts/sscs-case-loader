@@ -12,5 +12,5 @@ def product = "sscs"
 def component = "case-loader"
 
 withNightlyPipeline(type, product, component) {
-  enableSlackNotifications('#sscs-sta')
+  enableSlackNotifications('#sscs-tech')
 }
