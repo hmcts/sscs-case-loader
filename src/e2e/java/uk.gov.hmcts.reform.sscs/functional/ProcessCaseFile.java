@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -8,9 +9,6 @@ import com.jcraft.jsch.SftpException;
 import io.restassured.RestAssured;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.commons.io.FileUtils;
@@ -24,14 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.services.ccd.CreateCcdService;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdServiceByCaseId;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 import uk.gov.hmcts.reform.tools.GenerateXml;
 
@@ -51,9 +48,7 @@ public class ProcessCaseFile {
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
     @Autowired
-    private CreateCcdService createCcdService;
-    @Autowired
-    private SearchCcdServiceByCaseId searchCcdServiceByCaseId;
+    private CcdService ccdService;
     @Autowired
     private IdamService idamService;
 
@@ -71,7 +66,7 @@ public class ProcessCaseFile {
             .build();
 
         SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
-        CaseDetails caseDetails = createCcdService.create(caseData, idamTokens);
+        SscsCaseDetails caseDetails = ccdService.createCase(caseData, idamTokens);
         ccdCaseId = String.valueOf(caseDetails.getId());
         LOG.info("Created test ccd case with id {}", ccdCaseId);
 
@@ -148,15 +143,12 @@ public class ProcessCaseFile {
             .and()
             .extract().body().asString();
 
-        List<CaseDetails> updatedCcdCase = searchCcdServiceByCaseId.findCaseByCaseId(ccdCaseId, idamTokens);
-        assertEquals(1, updatedCcdCase.size());
+        SscsCaseDetails updatedCcdCase = ccdService.getByCaseId(Long.parseLong(ccdCaseId), idamTokens);
+        assertNotNull(updatedCcdCase);
 
-        Map<String, Object> updatedCaseData = updatedCcdCase.get(0).getData();
-        Map<String, Object> appealData = (Map<String, Object>) updatedCaseData.get("appeal");
-        Map<String, Object> appellantData = (Map<String, Object>) appealData.get("appellant");
-        Map<String, Object> appellantNameData = (Map<String, Object>) appellantData.get("name");
+        SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();
 
-        assertEquals("XYZ", appellantNameData.get("firstName"));
-        assertEquals(3, ((ArrayList) updatedCaseData.get("events")).size());
+        assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName());
+        assertEquals(3, updatedCcdCaseData.getEvents().size());
     }
 }

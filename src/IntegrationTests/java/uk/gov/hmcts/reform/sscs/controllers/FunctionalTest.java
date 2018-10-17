@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 
@@ -25,7 +25,7 @@ public class FunctionalTest {
     @MockBean
     private SftpChannelAdapter channelAdapter;
     @MockBean
-    private SearchCcdService searchCcdService;
+    private CcdService ccdService;
     @MockBean
     private IdamService idamService;
     @Autowired

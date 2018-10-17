@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
 
@@ -19,35 +19,34 @@ import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService
 @Slf4j
 public class CcdCasesSender {
 
+    public static final String SSCS_APPEAL_UPDATED_EVENT = "SSCS - appeal updated event";
+    public static final String UPDATED_SSCS = "Updated SSCS";
     @Value("${rpc.venue.id.enabled}")
     private boolean lookupRpcByVenueId;
-    private final CreateCcdService createCcdService;
-    private final UpdateCcdService updateCcdService;
+    private final CcdService ccdService;
+    private final UpdateCcdCaseService updateCcdCaseService;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
-    private final SscsCcdConvertService sscsCcdConvertService;
 
     @Autowired
-    CcdCasesSender(CreateCcdService createCcdService,
-                   UpdateCcdService updateCcdService,
-                   RegionalProcessingCenterService regionalProcessingCenterService,
-                   SscsCcdConvertService sscsCcdConvertService) {
-        this.createCcdService = createCcdService;
-        this.updateCcdService = updateCcdService;
+    CcdCasesSender(CcdService ccdService,
+                   UpdateCcdCaseService updateCcdCaseService,
+                   RegionalProcessingCenterService regionalProcessingCenterService) {
+        this.updateCcdCaseService = updateCcdCaseService;
         this.regionalProcessingCenterService = regionalProcessingCenterService;
-        this.sscsCcdConvertService = sscsCcdConvertService;
+        this.ccdService = ccdService;
     }
 
     public void sendCreateCcdCases(SscsCaseData caseData, IdamTokens idamTokens) {
         if (!lookupRpcByVenueId) {
             addRegionalProcessingCenter(caseData);
         }
-        createCcdService.create(caseData, idamTokens);
+        ccdService.createCase(caseData, idamTokens);
     }
 
-    public void sendUpdateCcdCases(SscsCaseData caseData, CaseDetails existingCcdCase, IdamTokens idamTokens) {
+    public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
-            SscsCaseData existingCcdCaseData = sscsCcdConvertService.getCaseData(existingCcdCase.getData());
+            SscsCaseData existingCcdCaseData = existingCcdCase.getData();
             addMissingInfo(caseData, existingCcdCaseData);
             dontOverwriteSubscriptions(caseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
@@ -69,9 +68,13 @@ public class CcdCasesSender {
     private void ifThereIsChangesThenUpdateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData,
                                                 Long existingCaseId, IdamTokens idamTokens) {
         if (thereIsAnEventChange(caseData, existingCcdCaseData)) {
-            updateCcdService.update(caseData, existingCaseId, caseData.getLatestEventType(), idamTokens);
+            updateCcdCaseService
+                .updateCase(caseData, existingCaseId, caseData.getLatestEventType(),
+                    SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS,idamTokens);
         } else if (thereIsADataChange(caseData, existingCcdCaseData)) {
-            updateCcdService.update(caseData, existingCaseId, "caseUpdated", idamTokens);
+            updateCcdCaseService
+                .updateCase(caseData, existingCaseId, "caseUpdated",
+                    SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
         }
@@ -121,11 +124,12 @@ public class CcdCasesSender {
         return !existingCcdCaseData.equals(caseData);
     }
 
-    private void checkNewEvidenceReceived(SscsCaseData caseData, CaseDetails existingCase, IdamTokens idamTokens) {
+    private void checkNewEvidenceReceived(SscsCaseData caseData, SscsCaseDetails existingCase, IdamTokens idamTokens) {
         Evidence newEvidence = caseData.getEvidence();
-        Evidence existingEvidence = buildExistingEvidence(existingCase);
+        Evidence existingEvidence = existingCase.getData().getEvidence();
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            updateCcdService.update(caseData, existingCase.getId(), "evidenceReceived", idamTokens);
+            updateCcdCaseService.updateCase(caseData, existingCase.getId(), "evidenceReceived",
+                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         }
     }
 
@@ -136,27 +140,5 @@ public class CcdCasesSender {
             caseData.setRegion(regionalProcessingCenter.getName());
             caseData.setRegionalProcessingCenter(regionalProcessingCenter);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Evidence buildExistingEvidence(CaseDetails existingCase) {
-        HashMap evidence = (HashMap) existingCase.getData().get("evidence");
-        List<HashMap<String, Object>> documents = evidence != null
-            ? (List<HashMap<String, Object>>)evidence.get("documents") : Collections.emptyList();
-
-        List<Document> documentList = new ArrayList<>();
-        for (HashMap doc : documents) {
-            Map<String, Object> docValue = (HashMap<String, Object>) doc.get("value");
-
-            documentList.add(Document.builder().value(
-                DocumentDetails.builder()
-                    .dateReceived((String) docValue.get("dateReceived"))
-                    .evidenceProvidedBy((String) docValue.get("evidenceProvidedBy"))
-                    .evidenceType((String) docValue.get("evidenceType"))
-                    .build())
-                .build());
-        }
-
-        return Evidence.builder().documents(documentList).build();
     }
 }

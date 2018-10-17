@@ -17,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -33,7 +35,7 @@ public class SearchCcdServiceByCaseRefTest {
     private CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
-    private SearchCcdServiceByCaseRef searchCcdServiceByCaseRef;
+    private CcdService ccdService;
 
     @Test
     public void givenCaseRef_shouldFindTheCaseInCcd() {
@@ -53,7 +55,8 @@ public class SearchCcdServiceByCaseRefTest {
             .userId("1234")
             .build();
 
-        List<CaseDetails> cases = searchCcdServiceByCaseRef.findCaseByCaseRef(CASE_REF, idamTokens);
+        List<SscsCaseDetails> cases = ccdService
+            .findCaseBy(ImmutableMap.of("case.caseReference", CASE_REF), idamTokens);
 
         verify(coreCaseDataApi).searchForCaseworker(
             eq("idamOauth2Token"),

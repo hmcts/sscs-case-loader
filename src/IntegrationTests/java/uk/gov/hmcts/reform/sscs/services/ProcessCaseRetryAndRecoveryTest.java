@@ -6,6 +6,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.buildCaseDetails;
+import static uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils.convertCaseDetailsToSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
 
@@ -22,6 +24,8 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -65,6 +69,9 @@ public class ProcessCaseRetryAndRecoveryTest {
     @MockBean
     private CcdCasesSender ccdCasesSender;
 
+    @MockBean
+    private SscsCcdConvertService sscsCcdConvertService;
+
     @Autowired
     private ReferenceDataService referenceDataService;
 
@@ -105,6 +112,10 @@ public class ProcessCaseRetryAndRecoveryTest {
         when(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).thenReturn("code");
         when(refDataRepository.find(BAT_CODE_MAP, "code", BENEFIT_DESC)).thenReturn("PIP");
 
+        SscsCaseDetails sscsCaseDetails = convertCaseDetailsToSscsCaseDetails(buildCaseDetails());
+
+        when(sscsCcdConvertService.getCaseDetails(any(CaseDetails.class))).thenReturn(sscsCaseDetails);
+
         referenceDataService.setRefDataRepo(refDataRepository);
     }
 
@@ -116,8 +127,10 @@ public class ProcessCaseRetryAndRecoveryTest {
         mockCcdApiToThrowExceptionWhenFindingCaseByRefIsCalled();
         mockCcdApiToReturnResultWhenCalled();
 
-        doNothing().when(ccdCasesSender).sendUpdateCcdCases(any(SscsCaseData.class), any(CaseDetails.class),
+        doNothing().when(ccdCasesSender).sendUpdateCcdCases(any(SscsCaseData.class), any(SscsCaseDetails.class),
             any(IdamTokens.class));
+
+
 
         caseLoaderService.process();
 
