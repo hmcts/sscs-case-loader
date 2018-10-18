@@ -148,7 +148,7 @@ public class ProcessCaseFile {
 
         SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();
 
-        assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName());
+        assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
         assertEquals(3, updatedCcdCaseData.getEvents().size());
     }
 }
