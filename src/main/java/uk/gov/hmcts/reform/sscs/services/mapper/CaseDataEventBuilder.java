@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 @Service
 class CaseDataEventBuilder {
 
-    private CcdService ccdService;
+    private final CcdService ccdService;
     private final IdamService idamService;
     private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
         postponedEventInferredFromDelta;
@@ -129,8 +129,6 @@ class CaseDataEventBuilder {
             .serviceAuthorization(idamService.generateServiceAuthorization())
             .userId(idamService.getUserId(oauth2Token))
             .build();
-
-        HashMap<String, String> searchParameterMap = new HashMap<>();
 
         List<SscsCaseDetails> sscsCaseDetailsList =
             ccdService.findCaseBy(ImmutableMap.of("case.caseReference", appealCase.getAppealCaseRefNum()),
