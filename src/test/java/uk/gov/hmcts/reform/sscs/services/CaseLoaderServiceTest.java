@@ -1,9 +1,14 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Before;
@@ -15,7 +20,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -37,13 +42,13 @@ public class CaseLoaderServiceTest {
     @Mock
     private CcdCasesSender ccdCasesSender;
     @Mock
-    private CcdService ccdService;
-    @Mock
     private RefDataFactory refDataFactory;
     @Mock
     private Gaps2File file;
     @Mock
     private InputStream is;
+    @Mock
+    private SearchCcdCaseService searchCcdCaseService;
     @Mock
     private IdamService idamService;
 
@@ -63,7 +68,7 @@ public class CaseLoaderServiceTest {
             ccdCasesSender,
             refDataFactory,
             idamService,
-            ccdService);
+            searchCcdCaseService);
 
         Appeal appeal = Appeal.builder()
             .benefitType(BenefitType.builder()
@@ -96,9 +101,11 @@ public class CaseLoaderServiceTest {
             .serviceAuthorization("serviceAuthorization")
             .userId("16")
             .build();
-        when(ccdService
-            .findCaseBy(eq(ImmutableMap.of("case.caseReference", caseData.getCaseReference())),  eq(idamTokens)))
-            .thenReturn(newArrayList(sscsCaseDetails));
+
+
+        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenReturn(sscsCaseDetails);
+
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
@@ -107,12 +114,12 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(ccdService, times(1))
-            .findCaseBy(eq(ImmutableMap.of("case.caseReference", caseData.getCaseReference())), eq(idamTokens));
         verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         verify(sftpSshService, times(2)).move(file, true);
-
-        verify(ccdService, never()).getByCaseId(any(), any());
+        verify(searchCcdCaseService, times(1))
+            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        verify(sftpSshService, times(2)).move(file, true);
     }
 
     @Test
@@ -128,7 +135,7 @@ public class CaseLoaderServiceTest {
             .userId("16")
             .build();
 
-        when(ccdService.getByCaseId(eq(1234567890L), eq(idamTokens)))
+        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
 
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
@@ -139,11 +146,14 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(ccdService, times(1)).getByCaseId(eq(1234567890L), eq(idamTokens));
+        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        verify(sftpSshService, times(2)).move(file, true);
+        verify(searchCcdCaseService, times(1))
+            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
         verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         verify(sftpSshService, times(2)).move(file, true);
 
-        verify(ccdService, never()).findCaseBy(any(), any());
+        verify(searchCcdCaseService, never()).findCaseByCaseRef(any(), any());
     }
 
     @Test

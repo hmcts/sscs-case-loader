@@ -1,12 +1,21 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -171,7 +180,7 @@ public class ProcessCaseTest {
 
         // SC reference case
 
-        verify(coreCaseDataApi).searchForCaseworker(
+        verify(coreCaseDataApi, times(1)).searchForCaseworker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),
@@ -180,7 +189,7 @@ public class ProcessCaseTest {
             eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))
         );
 
-        verify(coreCaseDataApi).submitForCaseworker(
+        verify(coreCaseDataApi, times(1)).submitForCaseworker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),
@@ -192,7 +201,7 @@ public class ProcessCaseTest {
 
         // CCD ID case
 
-        verify(coreCaseDataApi).readForCaseWorker(
+        verify(coreCaseDataApi, times(1)).readForCaseWorker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),
@@ -201,7 +210,7 @@ public class ProcessCaseTest {
             eq("1234567890")
         );
 
-        verify(coreCaseDataApi).submitEventForCaseWorker(
+        verify(coreCaseDataApi, times(1)).submitEventForCaseWorker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),

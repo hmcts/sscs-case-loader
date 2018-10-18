@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 
 @Service
