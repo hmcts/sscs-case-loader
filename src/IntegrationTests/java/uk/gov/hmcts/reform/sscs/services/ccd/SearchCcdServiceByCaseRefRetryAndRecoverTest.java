@@ -4,7 +4,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
@@ -30,11 +32,11 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
 
     private static final String CASE_REF = "SC068/17/00013";
-    public static final String AUTHORIZATION = "authorization";
-    public static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
-    public static final String VALUE = "16";
-    public static final String AUTHORIZATION_2 = "authorization2";
-    public static final String SERVICE_AUTHORIZATION_2 = "serviceAuthorization2";
+    private static final String AUTHORIZATION = "authorization";
+    private static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
+    private static final String USER_ID = "16";
+    private static final String AUTHORIZATION_2 = "authorization2";
+    private static final String SERVICE_AUTHORIZATION_2 = "serviceAuthorization2";
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -53,7 +55,7 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
         when(coreCaseDataApi.searchForCaseworker(
             eq(AUTHORIZATION),
             eq(SERVICE_AUTHORIZATION),
-            eq(VALUE),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any()))
@@ -64,7 +66,7 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
         when(coreCaseDataApi.searchForCaseworker(
             eq(AUTHORIZATION_2),
             eq(SERVICE_AUTHORIZATION_2),
-            eq(VALUE),
+            eq(USER_ID),
             anyString(),
             anyString(),
             any()))
@@ -76,25 +78,24 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
             .thenReturn(IdamTokens.builder()
                 .idamOauth2Token(AUTHORIZATION_2)
                 .serviceAuthorization(SERVICE_AUTHORIZATION_2)
-                .userId(VALUE)
+                .userId(USER_ID)
                 .build());
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token(AUTHORIZATION)
             .serviceAuthorization(SERVICE_AUTHORIZATION)
-            .userId(VALUE)
+            .userId(USER_ID)
             .build();
 
 
-
-        List<SscsCaseDetails> result = ccdService
-            .findCaseBy(ImmutableMap.of("case.caseReference", CASE_REF), idamTokens);
+        List<SscsCaseDetails> result = ccdService.findCaseBy(
+            ImmutableMap.of("case.caseReference", CASE_REF), idamTokens);
 
         verify(coreCaseDataApi, times(3))
             .searchForCaseworker(
                 eq(AUTHORIZATION),
                 eq(SERVICE_AUTHORIZATION),
-                eq(VALUE),
+                eq(USER_ID),
                 anyString(),
                 anyString(),
                 any());
@@ -103,7 +104,7 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
             .searchForCaseworker(
                 eq(AUTHORIZATION_2),
                 eq(SERVICE_AUTHORIZATION_2),
-                eq(VALUE),
+                eq(USER_ID),
                 anyString(),
                 anyString(),
                 any());

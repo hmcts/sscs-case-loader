@@ -27,11 +27,11 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class SearchCcdServiceByCaseIdRetryAndRecoverTest {
 
     private static final String CASE_ID = "1111222233334444";
-    public static final String AUTHORIZATION = "authorization";
-    public static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
-    public static final String USER_ID = "16";
-    public static final String AUTHORIZATION_2 = "authorization2";
-    public static final String SERVICE_AUTHORIZATION_2 = "serviceAuthorization2";
+    private static final String AUTHORIZATION = "authorization";
+    private static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
+    private static final String USER_ID = "16";
+    private static final String AUTHORIZATION_2 = "authorization2";
+    private static final String SERVICE_AUTHORIZATION_2 = "serviceAuthorization2";
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
