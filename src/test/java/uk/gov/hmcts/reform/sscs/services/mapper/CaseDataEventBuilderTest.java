@@ -4,9 +4,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,6 +27,7 @@ import org.mockito.junit.MockitoRule;
 import uk.gov.hmcts.reform.sscs.CaseDetailsUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -35,7 +36,6 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
@@ -50,7 +50,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     @Mock
     private IdamService idamService;
     @Mock
-    private SearchCcdService searchCcdService;
+    private CcdService ccdService;
     @Mock
     private PostponedEventService<Hearing> postponedEventInferredFromDelta;
     @Mock
@@ -61,12 +61,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
     @Before
     public void setUp() {
+        initMocks(this);
         when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
 
         SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
-        caseDataEventBuilder = new CaseDataEventBuilder(searchCcdService, idamService, postponedEventInferredFromDelta,
-            postponedEventInferredFromCcd, sscsCcdConvertService);
+        caseDataEventBuilder = new CaseDataEventBuilder(ccdService, idamService, postponedEventInferredFromDelta,
+            postponedEventInferredFromCcd);
     }
 
     @Test
@@ -256,8 +257,9 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
             eq(appeal.getHearing()))).thenReturn(false);
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
-            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+            .thenReturn(Collections
+                .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
             anyList())).thenReturn(false);
@@ -267,7 +269,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+        verify(ccdService, times(1)).findCaseBy(any(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
@@ -314,7 +316,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(searchCcdService, times(0)).findCaseByCaseRef(anyString(),
+        verify(ccdService, times(0)).findCaseBy(any(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(0))
@@ -363,8 +365,9 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
             eq(appeal.getHearing()))).thenReturn(false);
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
-            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+            .thenReturn(Collections
+                .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
             anyList())).thenReturn(true);
@@ -374,7 +377,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+        verify(ccdService, times(1)).findCaseBy(any(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
@@ -506,8 +509,9 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
-            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+            .thenReturn(Collections
+                .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
             anyList())).thenReturn(true);
@@ -515,7 +519,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        verify(searchCcdService, times(1)).findCaseByCaseRef(anyString(),
+        verify(ccdService, times(1)).findCaseBy(any(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
@@ -555,9 +559,11 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        when(searchCcdService.findCaseByCaseRef(anyString(), any(IdamTokens.class)))
-            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
-            .thenReturn(Collections.singletonList(CaseDetailsUtils.getCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+            .thenReturn(Collections
+                .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
+            .thenReturn(Collections
+                .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
         when(postponedEventInferredFromCcd.matchToHearingId(eq(appeal.getPostponementRequests()),
             anyList()))
@@ -566,7 +572,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        verify(searchCcdService, times(2)).findCaseByCaseRef(anyString(),
+        verify(ccdService, times(2)).findCaseBy(any(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(2))

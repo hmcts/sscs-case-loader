@@ -16,16 +16,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
@@ -48,7 +48,7 @@ public class CaseLoaderServiceTest {
     @Mock
     private InputStream is;
     @Mock
-    private SearchCcdService searchCcdService;
+    private SearchCcdCaseService searchCcdCaseService;
     @Mock
     private IdamService idamService;
 
@@ -65,10 +65,10 @@ public class CaseLoaderServiceTest {
         caseLoaderService = new CaseLoaderService(sftpSshService,
             xmlValidator,
             transformService,
-            searchCcdService,
             ccdCasesSender,
             refDataFactory,
-            idamService);
+            idamService,
+            searchCcdCaseService);
 
         Appeal appeal = Appeal.builder()
             .benefitType(BenefitType.builder()
@@ -94,7 +94,7 @@ public class CaseLoaderServiceTest {
     @Test
     public void shouldUpdateCaseUsingCaseRefGivenIncomingXmlFiles() {
 
-        CaseDetails caseDetails = CaseDetails.builder().build();
+        final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
@@ -102,8 +102,9 @@ public class CaseLoaderServiceTest {
             .userId("16")
             .build();
 
-        when(searchCcdService.searchCasesByScNumberAndCcdId(eq(idamTokens), eq(caseData)))
-            .thenReturn(newArrayList(caseDetails));
+
+        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenReturn(sscsCaseDetails);
 
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
@@ -113,17 +114,18 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(searchCcdService, times(1))
-            .searchCasesByScNumberAndCcdId(eq(idamTokens), eq(caseData));
-        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, caseDetails, idamTokens);
+        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         verify(sftpSshService, times(2)).move(file, true);
-        verify(searchCcdService, never()).findCaseByCaseId(any(), any());
+        verify(searchCcdCaseService, times(1))
+            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        verify(sftpSshService, times(2)).move(file, true);
     }
 
     @Test
     public void shouldUpdateCaseUsingCaseCcdIdGivenIncomingXmlFiles() {
 
-        CaseDetails caseDetails = CaseDetails.builder().build();
+        final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
         caseData.setCaseReference(null);
         caseData.setCcdCaseId("1234567890");
 
@@ -133,8 +135,8 @@ public class CaseLoaderServiceTest {
             .userId("16")
             .build();
 
-        when(searchCcdService.searchCasesByScNumberAndCcdId(eq(idamTokens), eq(caseData)))
-            .thenReturn(newArrayList(caseDetails));
+        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenReturn(sscsCaseDetails);
 
         when(transformService.transform(is)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
@@ -144,12 +146,14 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(searchCcdService, times(1))
-            .searchCasesByScNumberAndCcdId(eq(idamTokens), eq(caseData));
-        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, caseDetails, idamTokens);
+        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        verify(sftpSshService, times(2)).move(file, true);
+        verify(searchCcdCaseService, times(1))
+            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         verify(sftpSshService, times(2)).move(file, true);
 
-        verify(searchCcdService, never()).findCaseByCaseRef(any(), any());
+        verify(searchCcdCaseService, never()).findCaseByCaseRef(any(), any());
     }
 
     @Test

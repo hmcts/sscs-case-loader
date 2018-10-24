@@ -1,13 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -24,55 +26,61 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 public class SearchCcdServiceByCaseIdTest {
 
     private static final String CASE_ID = "1111222233334444";
+    public static final String IDAM_OAUTH_2_TOKEN = "idamOauth2Token";
+    public static final String SERVICE_AUTHORIZATION = "serviceAuthorization";
+    public static final String USER_ID = "1234";
 
     @MockBean
     private SftpChannelAdapter channelAdapter;
 
     @MockBean
+    private IdamService idamService;
+
+    @MockBean
     private CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
-    private SearchCcdServiceByCaseId searchCcdServiceByCaseId;
+    private CcdService ccdService;
 
     @Test
     public void givenCaseRef_shouldFindTheCaseInCcd() {
         given(coreCaseDataApi.readForCaseWorker(
-            eq("idamOauth2Token"),
-            eq("serviceAuthorization"),
-            eq("1234"),
+            eq(IDAM_OAUTH_2_TOKEN),
+            eq(SERVICE_AUTHORIZATION),
+            eq(USER_ID),
             anyString(),
             anyString(),
             eq(CASE_ID)
             )
-        ).willReturn(CaseDetails.builder().build());
+        ).willReturn(CaseDataUtils.buildCaseDetails());
 
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token("idamOauth2Token")
-            .serviceAuthorization("serviceAuthorization")
-            .userId("1234")
+            .idamOauth2Token(IDAM_OAUTH_2_TOKEN)
+            .serviceAuthorization(SERVICE_AUTHORIZATION)
+            .userId(USER_ID)
             .build();
 
-        List<CaseDetails> cases = searchCcdServiceByCaseId.findCaseByCaseId(CASE_ID, idamTokens);
+        SscsCaseDetails cases = ccdService.getByCaseId(Long.parseLong(CASE_ID), idamTokens);
 
         verify(coreCaseDataApi).readForCaseWorker(
-            eq("idamOauth2Token"),
-            eq("serviceAuthorization"),
-            eq("1234"),
+            eq(IDAM_OAUTH_2_TOKEN),
+            eq(SERVICE_AUTHORIZATION),
+            eq(USER_ID),
             anyString(),
             anyString(),
             eq(CASE_ID)
         );
 
-        assertEquals("expected one case only", 1, cases.size());
+        assertNotNull(cases);
     }
 
     @Test
     public void givenCaseRef_shouldReturnEmptyListWhenCaseNotInCcd() {
 
         given(coreCaseDataApi.readForCaseWorker(
-            eq("idamOauth2Token"),
-            eq("serviceAuthorization"),
-            eq("1234"),
+            eq(IDAM_OAUTH_2_TOKEN),
+            eq(SERVICE_AUTHORIZATION),
+            eq(USER_ID),
             anyString(),
             anyString(),
             eq(CASE_ID)
@@ -80,23 +88,23 @@ public class SearchCcdServiceByCaseIdTest {
         ).willReturn(null);
 
         IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token("idamOauth2Token")
-            .serviceAuthorization("serviceAuthorization")
-            .userId("1234")
+            .idamOauth2Token(IDAM_OAUTH_2_TOKEN)
+            .serviceAuthorization(SERVICE_AUTHORIZATION)
+            .userId(USER_ID)
             .build();
 
-        List<CaseDetails> cases = searchCcdServiceByCaseId.findCaseByCaseId(CASE_ID, idamTokens);
+        SscsCaseDetails cases = ccdService.getByCaseId(Long.parseLong(CASE_ID), idamTokens);
 
         verify(coreCaseDataApi).readForCaseWorker(
-            eq("idamOauth2Token"),
-            eq("serviceAuthorization"),
-            eq("1234"),
+            eq(IDAM_OAUTH_2_TOKEN),
+            eq(SERVICE_AUTHORIZATION),
+            eq(USER_ID),
             anyString(),
             anyString(),
             eq(CASE_ID)
         );
 
-        assertTrue("expected no cases", cases.isEmpty());
+        assertNull("expected no cases", cases);
     }
 
 }

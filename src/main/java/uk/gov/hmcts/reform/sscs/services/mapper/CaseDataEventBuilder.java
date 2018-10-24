@@ -1,50 +1,44 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import com.google.common.collect.ImmutableMap;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
-import uk.gov.hmcts.reform.sscs.services.ccd.SearchCcdService;
 
 @Service
 class CaseDataEventBuilder {
 
-    private final SearchCcdService searchCcdService;
+    private final CcdService ccdService;
     private final IdamService idamService;
     private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
         postponedEventInferredFromDelta;
     private final PostponedEventService<Hearing> postponedEventInferredFromCcd;
-    private final SscsCcdConvertService sscsCcdConvertService;
 
     @Autowired
     CaseDataEventBuilder(
-        SearchCcdService searchCcdService, IdamService idamService,
+        CcdService ccdService, IdamService idamService,
         PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
             postponedEventInferredFromDelta,
-        PostponedEventService<Hearing> postponedEventInferredFromCcd,
-        SscsCcdConvertService sscsCcdConvertService) {
-        this.searchCcdService = searchCcdService;
+        PostponedEventService<Hearing> postponedEventInferredFromCcd) {
+        this.ccdService = ccdService;
         this.idamService = idamService;
         this.postponedEventInferredFromDelta = postponedEventInferredFromDelta;
         this.postponedEventInferredFromCcd = postponedEventInferredFromCcd;
-        this.sscsCcdConvertService = sscsCcdConvertService;
     }
 
     List<Event> buildPostponedEvent(AppealCase appealCase) {
@@ -135,10 +129,12 @@ class CaseDataEventBuilder {
             .serviceAuthorization(idamService.generateServiceAuthorization())
             .userId(idamService.getUserId(oauth2Token))
             .build();
-        List<CaseDetails> caseDetailsList = searchCcdService.findCaseByCaseRef(appealCase.getAppealCaseRefNum(),
+
+        List<SscsCaseDetails> sscsCaseDetailsList =
+            ccdService.findCaseBy(ImmutableMap.of("case.caseReference", appealCase.getAppealCaseRefNum()),
             idamTokens);
-        if (caseDetailsList != null && !caseDetailsList.isEmpty()) {
-            return sscsCcdConvertService.getCaseData(caseDetailsList.get(0).getData()).getHearings();
+        if (sscsCaseDetailsList != null && !sscsCaseDetailsList.isEmpty()) {
+            return sscsCaseDetailsList.get(0).getData().getHearings();
         }
         return Collections.emptyList();
     }

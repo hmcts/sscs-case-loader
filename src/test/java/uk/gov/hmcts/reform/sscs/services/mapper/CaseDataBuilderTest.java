@@ -20,8 +20,8 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
-import uk.gov.hmcts.reform.sscs.services.refdata.RegionalProcessingCenterService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDataBuilderTest extends CaseDataBuilderBase {
