@@ -245,8 +245,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.101'
-
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.108-SNAPSHOT'
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
 
   compile group: 'org.json', name: 'json', version: '20180813'

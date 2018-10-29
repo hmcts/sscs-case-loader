@@ -236,7 +236,7 @@ class CaseDataBuilder {
             .subscribeSms("")
             .tya(generateAppealNumber())
             .build();
-        Subscription supporterSubscription = Subscription.builder()
+        Subscription representativeSubscription = Subscription.builder()
             .email("")
             .mobile("")
             .reason("")
@@ -246,7 +246,7 @@ class CaseDataBuilder {
             .build();
         return Subscriptions.builder()
             .appellantSubscription(appellantSubscription)
-            .supporterSubscription(supporterSubscription)
+            .representativeSubscription(representativeSubscription)
             .build();
     }
 

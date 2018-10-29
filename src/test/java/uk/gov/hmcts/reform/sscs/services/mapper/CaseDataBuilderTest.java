@@ -81,7 +81,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     public void shouldBuildSubscriptionsWithAppealCaseNumber() {
         Subscriptions subscriptions = caseDataBuilder.buildSubscriptions();
         assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
-        assertNotNull("SupporterSubscription is null", subscriptions.getSupporterSubscription());
+        assertNotNull("RepresentativeSubscription is null", subscriptions.getRepresentativeSubscription());
         String appealNumber = subscriptions.getAppellantSubscription().getTya();
         assertTrue("appealNumber is empty", !"".equals(appealNumber));
         assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
