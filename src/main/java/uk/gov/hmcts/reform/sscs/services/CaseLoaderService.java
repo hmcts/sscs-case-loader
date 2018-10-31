@@ -85,8 +85,9 @@ public class CaseLoaderService {
                 try {
                     sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
                 } catch (NumberFormatException e) {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for, skipping case...",
-                    caseData.getCaseReference(), caseData.getCcdCaseId());
+                    log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
+                        + " skipping case...",
+                        caseData.getCaseReference(), caseData.getCcdCaseId());
                     continue;
                 }
                 
