@@ -102,7 +102,6 @@ public class CaseLoaderServiceTest {
             .userId("16")
             .build();
 
-
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
 
@@ -119,6 +118,35 @@ public class CaseLoaderServiceTest {
         verify(searchCcdCaseService, times(1))
             .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
         verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        verify(sftpSshService, times(2)).move(file, true);
+    }
+
+    @Test
+    public void shouldUpdateValidCasesWhenMixedWithInvalidCases() {
+
+        final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
+
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("idamOauth2Token")
+            .serviceAuthorization("serviceAuthorization")
+            .userId("16")
+            .build();
+
+        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenThrow(new NumberFormatException())
+            .thenReturn(sscsCaseDetails);
+
+        when(transformService.transform(is)).thenReturn(newArrayList(caseData));
+        when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
+        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
+        when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
+
+        caseLoaderService.process();
+
+        verify(xmlValidator, times(2)).validateXml(file);
+        verify(sftpSshService, times(2)).move(file, true);
+        verify(searchCcdCaseService, times(1))
+            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
         verify(sftpSshService, times(2)).move(file, true);
     }
 
