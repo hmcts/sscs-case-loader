@@ -81,7 +81,17 @@ public class CaseLoaderService {
         log.info("*** case-loader *** file transformed to {} Cases successfully", cases.size());
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
-                SscsCaseDetails sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
+                SscsCaseDetails sscsCaseDetails;
+                
+                try {
+                    sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
+                } catch (NumberFormatException e) {
+                    log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
+                        + " skipping case...",
+                        caseData.getCaseReference(), caseData.getCcdCaseId());
+                    continue;
+                }
+
                 if (null == sscsCaseDetails) {
                     log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
                         caseData.getCaseReference(), caseData.getCcdCaseId());
@@ -94,5 +104,4 @@ public class CaseLoaderService {
             }
         }
     }
-
 }
