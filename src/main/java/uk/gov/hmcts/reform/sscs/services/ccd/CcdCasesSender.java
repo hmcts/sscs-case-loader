@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.models.UpdateType;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 
@@ -47,8 +49,8 @@ public class CcdCasesSender {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
+            existingCcdCaseData.setCaseReference(caseData.getCaseReference());
             addMissingInfo(caseData, existingCcdCaseData);
-            dontOverwriteSubscriptions(caseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
             ifThereIsChangesThenUpdateCase(caseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
@@ -56,24 +58,22 @@ public class CcdCasesSender {
 
     private void addMissingInfo(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
         if (!lookupRpcByVenueId) {
-            addRegionalProcessingCenter(caseData);
+            addRegionalProcessingCenter(existingCcdCaseData);
         }
         addMissingExistingHearings(caseData, existingCcdCaseData);
     }
 
-    private void dontOverwriteSubscriptions(SscsCaseData caseData) {
-        caseData.setSubscriptions(null);
-    }
-
     private void ifThereIsChangesThenUpdateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData,
                                                 Long existingCaseId, IdamTokens idamTokens) {
-        if (thereIsAnEventChange(caseData, existingCcdCaseData)) {
+
+        UpdateType updateType = updateCcdRecordForChangesAndReturnUpdateType(caseData, existingCcdCaseData);
+        if (UpdateType.EVENT_UPDATE == updateType) {
             updateCcdCaseService
-                .updateCase(caseData, existingCaseId, caseData.getLatestEventType(),
+                .updateCase(existingCcdCaseData, existingCaseId, caseData.getLatestEventType(),
                     SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS,idamTokens);
-        } else if (thereIsADataChange(caseData, existingCcdCaseData)) {
+        } else if (UpdateType.DATA_UPDATE == updateType) {
             updateCcdCaseService
-                .updateCase(caseData, existingCaseId, "caseUpdated",
+                .updateCase(existingCcdCaseData, existingCaseId, "caseUpdated",
                     SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         } else {
             log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
@@ -100,14 +100,16 @@ public class CcdCasesSender {
 
                 hearingArrayList.addAll(gaps2Hearings);
                 hearingArrayList.addAll(missingHearings);
-                caseData.setHearings(hearingArrayList);
+                existingCcdCaseData.setHearings(hearingArrayList);
 
             } else {
                 hearingArrayList.addAll(ccdCaseDataHearings);
-                caseData.setHearings(hearingArrayList);
+                existingCcdCaseData.setHearings(hearingArrayList);
 
             }
 
+        } else {
+            existingCcdCaseData.setHearings(gaps2Hearings);
         }
     }
 
@@ -120,15 +122,13 @@ public class CcdCasesSender {
             || caseData.getEvents().size() != existingCcdCaseData.getEvents().size();
     }
 
-    private boolean thereIsADataChange(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
-        return !existingCcdCaseData.equals(caseData);
-    }
-
     private void checkNewEvidenceReceived(SscsCaseData caseData, SscsCaseDetails existingCase, IdamTokens idamTokens) {
         Evidence newEvidence = caseData.getEvidence();
-        Evidence existingEvidence = existingCase.getData().getEvidence();
+        SscsCaseData existingCaseData = existingCase.getData();
+        Evidence existingEvidence = existingCaseData.getEvidence();
         if (newEvidence != null && existingEvidence != null && !existingEvidence.equals(newEvidence)) {
-            updateCcdCaseService.updateCase(caseData, existingCase.getId(), "evidenceReceived",
+            existingCaseData.setEvidence(newEvidence);
+            updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
                 SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         }
     }
@@ -140,5 +140,124 @@ public class CcdCasesSender {
             caseData.setRegion(regionalProcessingCenter.getName());
             caseData.setRegionalProcessingCenter(regionalProcessingCenter);
         }
+    }
+
+    private UpdateType updateCcdRecordForChangesAndReturnUpdateType(SscsCaseData gaps2CaseData,
+                                                                    SscsCaseData existingCcdCaseData) {
+        boolean eventChanged = false;
+        boolean dataChange = false;
+
+        if (thereIsAnEventChange(gaps2CaseData, existingCcdCaseData)) {
+            eventChanged = true;
+            existingCcdCaseData.setEvents(gaps2CaseData.getEvents());
+        }
+
+        Name gaps2Name = gaps2CaseData.getAppeal().getAppellant().getName();
+        Name ccdName = existingCcdCaseData.getAppeal().getAppellant().getName();
+
+        if (!gaps2Name.equals(ccdName)) {
+            dataChange = true;
+            existingCcdCaseData.getAppeal().getAppellant().setName(gaps2Name);
+        }
+
+        Contact gaps2Contact = gaps2CaseData.getAppeal().getAppellant().getContact();
+        Contact ccdContact = existingCcdCaseData.getAppeal().getAppellant().getContact();
+
+        if (!gaps2Contact.equals(ccdContact)) {
+            dataChange = true;
+            existingCcdCaseData.getAppeal().getAppellant().setContact(gaps2Contact);
+        }
+
+        Identity gaps2Identity = gaps2CaseData.getAppeal().getAppellant().getIdentity();
+        Identity ccdIdentity = existingCcdCaseData.getAppeal().getAppellant().getIdentity();
+
+        if (!gaps2Identity.equals(ccdIdentity)) {
+            dataChange = true;
+            existingCcdCaseData.getAppeal().getAppellant().setIdentity(gaps2Identity);
+        }
+
+        dataChange = updateHearingOptions(gaps2CaseData, existingCcdCaseData, dataChange);
+
+        dataChange = updateHearingType(gaps2CaseData, existingCcdCaseData, dataChange);
+
+        updateGeneratedFields(existingCcdCaseData);
+
+        if (null != gaps2CaseData.getDwpTimeExtension() && !gaps2CaseData.getDwpTimeExtension().isEmpty()) {
+            existingCcdCaseData.setDwpTimeExtension(gaps2CaseData.getDwpTimeExtension());
+        }
+
+        if (eventChanged) {
+            return UpdateType.EVENT_UPDATE;
+        } else if (!eventChanged && dataChange) {
+            return UpdateType.DATA_UPDATE;
+        }
+        return UpdateType.NO_UPDATE;
+    }
+
+    private void updateGeneratedFields(SscsCaseData existingCcdCaseData) {
+        existingCcdCaseData
+            .setGeneratedSurname(existingCcdCaseData.getAppeal().getAppellant().getName().getLastName());
+        existingCcdCaseData
+            .setGeneratedDob(existingCcdCaseData.getAppeal().getAppellant().getIdentity().getDob());
+
+        existingCcdCaseData
+            .setGeneratedNino(existingCcdCaseData.getAppeal().getAppellant().getIdentity().getNino());
+
+        if (null != existingCcdCaseData.getAppeal().getAppellant().getContact()) {
+            existingCcdCaseData
+                .setGeneratedEmail(existingCcdCaseData.getAppeal().getAppellant().getContact().getEmail());
+            existingCcdCaseData
+                .setGeneratedMobile(existingCcdCaseData.getAppeal().getAppellant().getContact().getMobile());
+        }
+    }
+
+    private boolean updateHearingType(SscsCaseData gaps2CaseData,
+                                      SscsCaseData existingCcdCaseData,
+                                      boolean dataChange) {
+        if (StringUtils.isNotBlank(gaps2CaseData.getAppeal().getHearingType())) {
+            if (StringUtils.isNotBlank(existingCcdCaseData.getAppeal().getHearingType())) {
+                if (!gaps2CaseData.getAppeal().getHearingType()
+                    .equals(existingCcdCaseData.getAppeal().getHearingType())) {
+                    dataChange = true;
+                    existingCcdCaseData.getAppeal().setHearingType(gaps2CaseData.getAppeal().getHearingType());
+                }
+            } else {
+                dataChange = true;
+                existingCcdCaseData.getAppeal().setHearingType(gaps2CaseData.getAppeal().getHearingType());
+            }
+        }
+        return dataChange;
+    }
+
+    private boolean updateHearingOptions(SscsCaseData gaps2CaseData,
+                                         SscsCaseData existingCcdCaseData,
+                                         boolean dataChange) {
+        String gaps2WantsToAttend = null;
+        String ccdWantsToAttend = null;
+
+        if (null != gaps2CaseData.getAppeal().getHearingOptions()
+            && StringUtils.isNotBlank(gaps2CaseData.getAppeal().getHearingOptions().getWantsToAttend())) {
+            gaps2WantsToAttend = gaps2CaseData.getAppeal().getHearingOptions().getWantsToAttend();
+        }
+
+        if (null != existingCcdCaseData.getAppeal().getHearingOptions()
+            && StringUtils.isNotBlank(existingCcdCaseData.getAppeal().getHearingOptions().getWantsToAttend())) {
+            ccdWantsToAttend = existingCcdCaseData.getAppeal().getHearingOptions().getWantsToAttend();
+        }
+
+
+        if (StringUtils.isNotBlank(gaps2WantsToAttend)) {
+            if (StringUtils.isNotBlank(ccdWantsToAttend)) {
+                if (!gaps2WantsToAttend.equals(ccdWantsToAttend)) {
+                    dataChange = true;
+                    existingCcdCaseData.getAppeal().getHearingOptions().setWantsToAttend(gaps2WantsToAttend);
+                }
+            } else {
+                dataChange = true;
+                existingCcdCaseData.getAppeal()
+                    .setHearingOptions(HearingOptions.builder().wantsToAttend(gaps2WantsToAttend).build());
+            }
+        }
+        return dataChange;
     }
 }
