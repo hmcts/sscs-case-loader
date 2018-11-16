@@ -188,7 +188,7 @@ public class CcdCasesSender {
 
         if (eventChanged) {
             return UpdateType.EVENT_UPDATE;
-        } else if (!eventChanged && dataChange) {
+        } else if (dataChange) {
             return UpdateType.DATA_UPDATE;
         }
         return UpdateType.NO_UPDATE;
