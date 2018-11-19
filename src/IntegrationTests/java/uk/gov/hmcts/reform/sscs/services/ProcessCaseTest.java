@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.idam.UserDetails;
@@ -92,10 +93,9 @@ public class ProcessCaseTest {
 
         Map<String, Object> caseDataMap = new HashMap<>(1);
         Map<String, Object> evidenceMap = new LinkedHashMap<>();
-        Map<String, Object> appealMap = new LinkedHashMap<>();
         evidenceMap.put("documents", new ArrayList<HashMap<String, Object>>());
         caseDataMap.put("evidence", evidenceMap);
-        caseDataMap.put("appeal", appealMap);
+        caseDataMap.put("appeal", buildAppeal());
 
         String refFilename = "SSCS_Extract_Reference_2017-05-24-16-14-19.xml";
         String deltaFilename = "SSCS_Extract_Delta_2018-05-01-01-01-01.xml";
@@ -220,5 +220,35 @@ public class ProcessCaseTest {
             eq(true),
             notNull(CaseDataContent.class)
         );
+    }
+
+    private Appeal buildAppeal() {
+        Name name = Name.builder()
+            .title("Mr")
+            .firstName("User")
+            .lastName("Test")
+            .build();
+        Contact contact = Contact.builder()
+            .email("mail@email.com")
+            .phone("01234567890")
+            .mobile("01234567890")
+            .build();
+        Identity identity = Identity.builder()
+            .dob("1904-03-10")
+            .nino("AB 22 55 66 B")
+            .build();
+        Appellant appellant = Appellant.builder()
+            .name(name)
+            .contact(contact)
+            .identity(identity)
+            .build();
+        BenefitType benefitType = BenefitType.builder()
+            .code("PIP")
+            .build();
+
+        return Appeal.builder()
+            .appellant(appellant)
+            .benefitType(benefitType)
+            .build();
     }
 }
