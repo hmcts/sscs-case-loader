@@ -1,4 +1,4 @@
-FROM gradle:jdk8 as builder
+FROM gradle:4.10.2-jdk8-slim as builder
 
 WORKDIR /home/gradle/src
 COPY . /home/gradle/src
