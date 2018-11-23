@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${SERVICE_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${SERVICE_NAME}
+    spec:
+      containers:
+      - image: ${IMAGE_NAME}
+        name: ${SERVICE_NAME}
+        ports:
+          - containerPort: 8082
+        env:
+          - name: CORE_CASE_DATA_API_URL
+            value: "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
+          - name: CORE_CASE_DATA_JURISDICTION_ID
+            value: SSCS
+          - name: CORE_CASE_DATA_CASE_TYPE_ID
+            value: Benefit
+          - name: IDAM_URL
+            value: ${IDAM_URL}
+          - name: IDAM.S2S-AUTH.TOTP_SECRET
+            value: ${IDAM_S2S_AUTH_TOTP_SECRET}
+          - name: IDAM.S2S-AUTH
+            value: ${IDAM_S2S_AUTH}
+          - name: IDAM.S2S-AUTH.MICROSERVICE
+            value: ${IDAM_S2S_AUTH_MICROSERVICE}
+          - name: IDAM_SSCS_SYSTEMUPDATE_USER
+            value: ${IDAM_SSCS_SYSTEMUPDATE_USER}
+          - name: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+            value: ${IDAM_SSCS_SYSTEMUPDATE_PASSWORD}
+          - name: IDAM_OAUTH2_CLIENT_ID
+            value: sscs
+          - name: IDAM_OAUTH2_CLIENT_SECRET
+            value: ${IDAM_OAUTH2_CLIENT_SECRET}
+          - name: IDAM_OAUTH2_REDIRECT_URL
+            value: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
+          - name: GAPS2_KEY_LOCATION
+            value: ${GAPS2_KEY_LOCATION}
+          - name: GAPS2_SFTP_HOST
+            value: ${GAPS2_SFTP_HOST}
+          - name: GAPS2_SFTP_PORT
+            value: ${GAPS2_SFTP_PORT}
+          - name: GAPS2_SFTP_USER
+            value: sftp-aat
+          - name: GAPS2_SFTP_DIR
+            value: "/incoming"
+          - name: SSCS_CASE_LOADER_CRON_SCHEDULE
+            value: "0 0/5 * * * ?"
+          - name: IGNORE_CASES_BEFORE_DATE
+            value: "2088-01-01"
+          - name: ROOT_LOGGING_LEVEL
+            value: INFO
+          - name: LOG_LEVEL_SPRING_WEB
+            value: INFO
+          - name: LOG_LEVEL_SSCS
+            value: INFO
+          - name: DEMO_TEST
+            value: "Testing Demo for update config"
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1024Mi"
+            cpu: "2500m"
+
+        readinessProbe:
+          timeoutSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          httpGet:
+            path: /health
+            port: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app: ${SERVICE_NAME}
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8082
+  selector:
+    app: ${SERVICE_NAME}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: ${SERVICE_FQDN}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ${SERVICE_NAME}
+          servicePort: 80
