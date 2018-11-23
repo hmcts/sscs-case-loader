@@ -1,12 +1,10 @@
 FROM gradle:jdk8 as builder
 
-COPY . /home/gradle/src
-USER root
-RUN chown -R gradle:gradle /home/gradle/src
-USER gradle
-
 WORKDIR /home/gradle/src
-RUN gradle assemble
+COPY . /home/gradle/src
+
+USER root
+RUN gradle build --no-daemon --console plain
 
 FROM openjdk:8-jre-alpine
 
