@@ -1,13 +1,14 @@
-FROM openjdk:8-jre-alpine as builder
+FROM gradle:4.10.2-jdk8-slim as builder
 
-WORKDIR /home/gradle/src
-COPY . /home/gradle/src
+WORKDIR /app
+COPY . .
 
-RUN ./gradlew build --no-daemon --console plain
+USER root
+RUN gradle build --no-daemon --console plain
 
 FROM openjdk:8-jre-alpine
 
-COPY --from=builder /home/gradle/src/build/libs/sscs-case-loader.jar /opt/app/
+COPY --from=builder /app/build/libs/sscs-case-loader.jar /opt/app/
 
 WORKDIR /opt/app
 
