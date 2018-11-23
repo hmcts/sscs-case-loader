@@ -1,10 +1,9 @@
-FROM gradle:4.10.2-jdk8-slim as builder
+FROM openjdk:8-jre-alpine as builder
 
 WORKDIR /home/gradle/src
 COPY . /home/gradle/src
 
-USER root
-RUN gradle build --no-daemon --console plain
+RUN ./gradlew build --no-daemon --console plain
 
 FROM openjdk:8-jre-alpine
 
