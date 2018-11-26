@@ -213,19 +213,19 @@ public class CcdCasesSender {
                                     boolean dataChange) {
 
         Appeal gaps2Appeal = gaps2CaseData.getAppeal();
-        Appeal existingAppeal = existingCcdCaseData.getAppeal();
 
         if (null == gaps2Appeal) {
             return dataChange;
         }
 
         Appellant gaps2Appellant = gaps2Appeal.getAppellant();
-        Appellant existingAppellant = existingAppeal.getAppellant();
 
         if (null == gaps2Appellant) {
             return dataChange;
         }
 
+        Appeal existingAppeal = existingCcdCaseData.getAppeal();
+        Appellant existingAppellant = existingAppeal.getAppellant();
         Name gaps2Name = gaps2Appellant.getName();
         Name ccdName = existingAppellant.getName();
 
