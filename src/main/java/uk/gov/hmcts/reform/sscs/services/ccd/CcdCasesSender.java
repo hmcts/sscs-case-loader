@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
@@ -152,28 +153,34 @@ public class CcdCasesSender {
             existingCcdCaseData.setEvents(gaps2CaseData.getEvents());
         }
 
-        Name gaps2Name = gaps2CaseData.getAppeal().getAppellant().getName();
-        Name ccdName = existingCcdCaseData.getAppeal().getAppellant().getName();
+        Appeal gaps2Appeal = gaps2CaseData.getAppeal();
+        Appeal existingAppeal = existingCcdCaseData.getAppeal();
+
+        Appellant gaps2Appellant = gaps2Appeal.getAppellant();
+        Appellant existingAppellant = existingAppeal.getAppellant();
+
+        Name gaps2Name = gaps2Appellant.getName();
+        Name ccdName = existingAppellant.getName();
 
         if (!gaps2Name.equals(ccdName)) {
             dataChange = true;
-            existingCcdCaseData.getAppeal().getAppellant().setName(gaps2Name);
+            existingAppellant.setName(gaps2Name);
         }
 
-        Contact gaps2Contact = gaps2CaseData.getAppeal().getAppellant().getContact();
-        Contact ccdContact = existingCcdCaseData.getAppeal().getAppellant().getContact();
+        Contact gaps2Contact = gaps2Appellant.getContact();
+        Contact ccdContact = existingAppellant.getContact();
 
         if (!gaps2Contact.equals(ccdContact)) {
             dataChange = true;
-            existingCcdCaseData.getAppeal().getAppellant().setContact(gaps2Contact);
+            existingAppellant.setContact(gaps2Contact);
         }
 
-        Identity gaps2Identity = gaps2CaseData.getAppeal().getAppellant().getIdentity();
-        Identity ccdIdentity = existingCcdCaseData.getAppeal().getAppellant().getIdentity();
+        Identity gaps2Identity = gaps2Appellant.getIdentity();
+        Identity ccdIdentity = existingAppellant.getIdentity();
 
         if (!gaps2Identity.equals(ccdIdentity)) {
             dataChange = true;
-            existingCcdCaseData.getAppeal().getAppellant().setIdentity(gaps2Identity);
+            existingAppellant.setIdentity(gaps2Identity);
         }
 
         dataChange = updateHearingOptions(gaps2CaseData, existingCcdCaseData, dataChange);
@@ -191,6 +198,7 @@ public class CcdCasesSender {
         } else if (dataChange) {
             return UpdateType.DATA_UPDATE;
         }
+
         return UpdateType.NO_UPDATE;
     }
 
