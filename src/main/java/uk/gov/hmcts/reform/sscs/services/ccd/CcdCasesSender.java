@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import gcardone.junidecode.App;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
@@ -169,7 +168,7 @@ public class CcdCasesSender {
         }
 
         Contact gaps2Contact = gaps2Appellant.getContact();
-        Contact ccdContact = existingAppeal.getAppellant().getContact();
+        Contact ccdContact = existingAppellant.getContact();
 
         if (!gaps2Contact.equals(ccdContact)) {
             dataChange = true;
@@ -199,7 +198,7 @@ public class CcdCasesSender {
         } else if (dataChange) {
             return UpdateType.DATA_UPDATE;
         }
-        
+
         return UpdateType.NO_UPDATE;
     }
 
