@@ -156,31 +156,35 @@ public class CcdCasesSender {
         Appeal gaps2Appeal = gaps2CaseData.getAppeal();
         Appeal existingAppeal = existingCcdCaseData.getAppeal();
 
-        Appellant gaps2Appellant = gaps2Appeal.getAppellant();
-        Appellant existingAppellant = existingAppeal.getAppellant();
+        if (null != gaps2Appeal) {
+            Appellant gaps2Appellant = gaps2Appeal.getAppellant();
+            Appellant existingAppellant = existingAppeal.getAppellant();
 
-        Name gaps2Name = gaps2Appellant.getName();
-        Name ccdName = existingAppellant.getName();
+            if (null != gaps2Appellant) {
+                Name gaps2Name = gaps2Appellant.getName();
+                Name ccdName = existingAppellant.getName();
 
-        if (!gaps2Name.equals(ccdName)) {
-            dataChange = true;
-            existingAppellant.setName(gaps2Name);
-        }
+                if (!gaps2Name.equals(ccdName)) {
+                    dataChange = true;
+                    existingAppellant.setName(gaps2Name);
+                }
 
-        Contact gaps2Contact = gaps2Appellant.getContact();
-        Contact ccdContact = existingAppellant.getContact();
+                Contact gaps2Contact = gaps2Appellant.getContact();
+                Contact ccdContact = existingAppellant.getContact();
 
-        if (!gaps2Contact.equals(ccdContact)) {
-            dataChange = true;
-            existingAppellant.setContact(gaps2Contact);
-        }
+                if (!gaps2Contact.equals(ccdContact)) {
+                    dataChange = true;
+                    existingAppellant.setContact(gaps2Contact);
+                }
 
-        Identity gaps2Identity = gaps2Appellant.getIdentity();
-        Identity ccdIdentity = existingAppellant.getIdentity();
+                Identity gaps2Identity = gaps2Appellant.getIdentity();
+                Identity ccdIdentity = existingAppellant.getIdentity();
 
-        if (!gaps2Identity.equals(ccdIdentity)) {
-            dataChange = true;
-            existingAppellant.setIdentity(gaps2Identity);
+                if (!gaps2Identity.equals(ccdIdentity)) {
+                    dataChange = true;
+                    existingAppellant.setIdentity(gaps2Identity);
+                }
+            }
         }
 
         dataChange = updateHearingOptions(gaps2CaseData, existingCcdCaseData, dataChange);
