@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
@@ -153,39 +152,7 @@ public class CcdCasesSender {
             existingCcdCaseData.setEvents(gaps2CaseData.getEvents());
         }
 
-        Appeal gaps2Appeal = gaps2CaseData.getAppeal();
-        Appeal existingAppeal = existingCcdCaseData.getAppeal();
-
-        if (null != gaps2Appeal) {
-            Appellant gaps2Appellant = gaps2Appeal.getAppellant();
-            Appellant existingAppellant = existingAppeal.getAppellant();
-
-            if (null != gaps2Appellant) {
-                Name gaps2Name = gaps2Appellant.getName();
-                Name ccdName = existingAppellant.getName();
-
-                if (!gaps2Name.equals(ccdName)) {
-                    dataChange = true;
-                    existingAppellant.setName(gaps2Name);
-                }
-
-                Contact gaps2Contact = gaps2Appellant.getContact();
-                Contact ccdContact = existingAppellant.getContact();
-
-                if (!gaps2Contact.equals(ccdContact)) {
-                    dataChange = true;
-                    existingAppellant.setContact(gaps2Contact);
-                }
-
-                Identity gaps2Identity = gaps2Appellant.getIdentity();
-                Identity ccdIdentity = existingAppellant.getIdentity();
-
-                if (!gaps2Identity.equals(ccdIdentity)) {
-                    dataChange = true;
-                    existingAppellant.setIdentity(gaps2Identity);
-                }
-            }
-        }
+        dataChange = updateParties(gaps2CaseData, existingCcdCaseData, dataChange);
 
         dataChange = updateHearingOptions(gaps2CaseData, existingCcdCaseData, dataChange);
 
@@ -241,6 +208,51 @@ public class CcdCasesSender {
         return dataChange;
     }
 
+    private boolean updateParties(SscsCaseData gaps2CaseData,
+                                    SscsCaseData existingCcdCaseData,
+                                    boolean dataChange) {
+
+        Appeal gaps2Appeal = gaps2CaseData.getAppeal();
+        Appeal existingAppeal = existingCcdCaseData.getAppeal();
+
+        if (null == gaps2Appeal) {
+            return dataChange;
+        }
+
+        Appellant gaps2Appellant = gaps2Appeal.getAppellant();
+        Appellant existingAppellant = existingAppeal.getAppellant();
+
+        if (null == gaps2Appellant) {
+            return dataChange;
+        }
+
+        Name gaps2Name = gaps2Appellant.getName();
+        Name ccdName = existingAppellant.getName();
+
+        if (!gaps2Name.equals(ccdName)) {
+            dataChange = true;
+            existingAppellant.setName(gaps2Name);
+        }
+
+        Contact gaps2Contact = gaps2Appellant.getContact();
+        Contact ccdContact = existingAppellant.getContact();
+
+        if (!gaps2Contact.equals(ccdContact)) {
+            dataChange = true;
+            existingAppellant.setContact(gaps2Contact);
+        }
+
+        Identity gaps2Identity = gaps2Appellant.getIdentity();
+        Identity ccdIdentity = existingAppellant.getIdentity();
+
+        if (!gaps2Identity.equals(ccdIdentity)) {
+            dataChange = true;
+            existingAppellant.setIdentity(gaps2Identity);
+        }
+
+        return dataChange;
+    }
+
     private boolean updateHearingOptions(SscsCaseData gaps2CaseData,
                                          SscsCaseData existingCcdCaseData,
                                          boolean dataChange) {
@@ -257,7 +269,6 @@ public class CcdCasesSender {
             ccdWantsToAttend = existingCcdCaseData.getAppeal().getHearingOptions().getWantsToAttend();
         }
 
-
         if (StringUtils.isNotBlank(gaps2WantsToAttend)) {
             if (StringUtils.isNotBlank(ccdWantsToAttend)) {
                 if (!gaps2WantsToAttend.equals(ccdWantsToAttend)) {
@@ -270,6 +281,7 @@ public class CcdCasesSender {
                     .setHearingOptions(HearingOptions.builder().wantsToAttend(gaps2WantsToAttend).build());
             }
         }
+
         return dataChange;
     }
 }
