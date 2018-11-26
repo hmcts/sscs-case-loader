@@ -2,8 +2,18 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
@@ -20,7 +30,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -124,6 +151,30 @@ public class CcdCasesSenderTest {
         assertNull(caseData.getAppeal().getHearingOptions());
         assertNull(caseData.getAppeal().getRep());
         assertNull(caseData.getAppeal().getSigner());
+    }
+
+    @Test
+    @Parameters(method = "generateGapsCaseDataScenarios")
+    public void givenACaseUpdate_shouldNotThrowNullPointExceptionIfAppealOrAppellantIsNull(SscsCaseData gapsCaseData)
+        throws Exception {
+        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_HEARING_OPTIONS_JSON);
+        ccdCasesSender.sendUpdateCcdCases(gapsCaseData, existingCaseDetails, idamTokens);
+    }
+
+    private Object[] generateGapsCaseDataScenarios() {
+        SscsCaseData gapsCaseDataWithNullAppeal = SscsCaseData.builder()
+            .appeal(null)
+            .build();
+
+        SscsCaseData gapsCaseDataWithNullAppellant = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(null)
+                .build())
+            .build();
+        return new Object[]{
+            new Object[]{gapsCaseDataWithNullAppeal},
+            new Object[]{gapsCaseDataWithNullAppellant}
+        };
     }
 
     @Test
