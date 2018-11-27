@@ -113,3 +113,40 @@ spec:
         backend:
           serviceName: ${SERVICE_NAME}
           servicePort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sftp
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sftp
+  template:
+    metadata:
+      labels:
+        app: sftp
+    spec:
+      containers:
+      - image: docker.artifactory.reform.hmcts.net/sscs/sscs-sftp:latest
+        name: sftp
+        ports:
+          - containerPort: 2222
+
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # readinessProbe:
+        #   timeoutSeconds: 10
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   httpGet:
+        #     path: /health
+        #     port: 8082
