@@ -44,13 +44,16 @@ spec:
           - name: IDAM_OAUTH2_REDIRECT_URL
             value: "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
           - name: GAPS2_KEY_LOCATION
-            value: "${GAPS2_KEY_LOCATION}"
+            valueFrom:
+              secretKeyRef:
+                name: sftp
+                key: privateKey
           - name: GAPS2_SFTP_HOST
-            value: "${GAPS2_SFTP_HOST}"
+            value: "localhost"
           - name: GAPS2_SFTP_PORT
-            value: "${GAPS2_SFTP_PORT}"
+            value: "22"
           - name: GAPS2_SFTP_USER
-            value: "sftp-aat"
+            value: "sftp"
           - name: GAPS2_SFTP_DIR
             value: "/incoming"
           - name: SSCS_CASE_LOADER_CRON_SCHEDULE
@@ -81,6 +84,21 @@ spec:
           httpGet:
             path: /health
             port: 8082
+
+      - image: hmcts/sscs-sftp
+        name: sftp
+        args:
+          - "sftp:pass:1001"
+        ports:
+          - containerPort: 22
+
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
@@ -114,39 +132,10 @@ spec:
           serviceName: ${SERVICE_NAME}
           servicePort: 80
 ---
-apiVersion: apps/v1
-kind: Deployment
+kind: Secret
+apiVersion: v1
 metadata:
   name: sftp
   namespace: ${NAMESPACE}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: sftp
-  template:
-    metadata:
-      labels:
-        app: sftp
-    spec:
-      containers:
-      - image: docker.artifactory.reform.hmcts.net/sscs/sscs-sftp:latest
-        name: sftp
-        ports:
-          - containerPort: 2222
-
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "200m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-
-        # readinessProbe:
-        #   timeoutSeconds: 10
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        #   httpGet:
-        #     path: /health
-        #     port: 8082
+data:
+  privateKey: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcGdJQkFBS0NBUUVBdUI2NFUwbjk5LzAvSXVKTTNTZWlRYU5MbldDS3krcU15KzA2RDlVa3BPckxIWHBsCjZEa0VRc1RFWjU4WHMwMGorVC94bGY2d2Z5bDJxSm45Qi9adGtkR2VHQXNkcm1HdEdRWjZ0UUxUUFAxZjBxN1AKREM1NjhSbm81WTNyNzgwVllDNitRUWNMU2dDNUUrNDVqVzUyQ1Mzc0p1WlRKKzR2dDZodUcrbTVNYktNUE9WZQovUUtuYjIwZ05Sc09Hb1g4b0lIbGJjb2dYNjJodVViQUtnQjkvZVNqOGtCU2gxaWwxOVh1Ni9XcEJZT1JJWlpNCjBCaDVERFFJTVVMTmM5NjVYOUJsTzUwTjE1ZXIzZmZ0ZklqdjFwbDkxaTRFMXYvUnY2VzVxSU0zcmd6TEVqUDIKNm4wK0xiaGdwZmM3eVIvR295Y1VISlFydGQyUERLUGpjdjA1MndJREFRQUJBb0lCQVFDVnhEOVJXS1dpWERoSQpLdVkxR3JFc1RTVUx2ZVVJM0NCdEhPbVd5VnpHWFVxZER0dm9Hc0R4Z3RiMEp3QURWR05Ic3hEVFh0bTRoa1RECi9vWkpQTldCd0kybHB4MGNwTTFGeHZSM1d2WHk3WE5Oais1UlRWbXAxdGFRSzNKWW5HeWYwVVhtNVZEMGdFUU0KQjBKL1hmUGJvYVF2UERrMkNOUjl3eDdWeTdkZHlTbnljMHE5UUVEbytIYjMwUWlhY1pEdnZNMkgwOEFYZ2VnbQpGSlRnUjB4T2dUbmN6LzJJdzB4Tkw1clVBMit4bkZ2TWVCcWZPTUx2U1N2dFRid3I0QlFidXAzcjl1YzVCWUZDCjROQVNSUmg3WkxqenpBRTJJT3J2NjQvajBramhTVGxpRXN4THVoYVZaZ2JoRlZLdU1XM1p3YkcrN1ZWZlk1cmEKSWJFcklQWlpBb0dCQU9XZVhITUd3enE4ZlBUS2FIUlJScFowS2szRE9XYUxoMkd1WW4rWGJqYmZKVHhpbXpEOQpUZ0ZYVWhLYXU4d3N2UTN0MnVkYzlCYldYMW1URktVby9KSkpQenA2SFZIUlNDb3prNEtGQjN6ZFQyTHo0NXlBCjhqeGFKRmtHWWlzenB2KzV0S1UvL2NFSFByNHBBK3c3Q1BNazdSQ2UyVlVrRVhTSFlYUEExOFRsQW9HQkFNMUcKSW8xeFRKTzRjd1BqZTN2bEhtYkVhTnJqblRBZXJlN1Q5TEgxTHYxZFBHeEtoS2xuYkdMVm82Q0ZzWWpoVjZEQgpia1NTaVhsTFQzdVN1QmFrTzFXUnlhMFRMaVl1cDdQQ25Ua2pqaXZiRlN4eGJNcU14emk0Uk14NnBRZGU0cWhkCmQzd2YzSmpZMUpQSWd3NU9JTlZ0YmtUSFcwMUxvTFc0RWFLUHdkZS9Bb0dCQU1QenVRR1FxOXJjTCtiWE5Qek8KdjJaMkRBUUFybU9NZnlRbEpYbXRTU2thbFRSTEVoVmtsY1VmTjdNWXlWc2NjdG9JT2Q5bnZBWWhPNDI5cnNpagppYWR0U3NBa3BoREVnTWxDNm9kZjcxdm5vVy9Zb2sxVTNXUVRxU0V3Q1diRTFhYzJXNnNLU1FzSm04bThSdFM2CkxKRVMyaHhzOHh0dGhGZmxrSXl2N1hMaEFvR0JBSlpwSHFaUGI1SUtKRlNrR2ZaRmcwby8vcWp0QVYraUMwYWwKam5YYk55dzFaakhmUkdld3ZhMko1MVNXd2VpUFhac1FRUkVENHJHNjZpbWM3MEMvNUM0bUhnV3d1UzhISHFETQpLRklXNkhUZ0docXZuY3lvN00xMTBBdVlqbFhoUStta1d3bmJldE9RaGVzbmtFZ3FIVXJsM1ZlT1VDdEtFQjgzCkdjem8wMXVYQW9HQkFJeDNtZDJCcGoycTEzMjB5NkhEa2ZpVGVCSEJpTzBsQW1SVWx4QllERDhqMzh2b1hnYmMKZlZJSjlabVFsUzF6MWt2V1VmMWhWUjNER0ZqKzgxaTZtZGZRdndJQnJIVnFqWTIxZ1hINFFuc01VZC9mOUsvVgpqRXhzeUU5NFVkajY1Vlo5Smt5NVdFbkVtaWNGRTdKUGFabThNbmI2N3JNdXI5M3NpWFEzb3lMKwotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
