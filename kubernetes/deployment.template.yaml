@@ -52,7 +52,7 @@ spec:
           - name: GAPS2_SFTP_USER
             value: "sftp"
           - name: GAPS2_SFTP_DIR
-            value: "/incoming"
+            value: "incoming"
           - name: SSCS_CASE_LOADER_CRON_SCHEDULE
             value: "0 0/5 * * * ?"
           - name: IGNORE_CASES_BEFORE_DATE
