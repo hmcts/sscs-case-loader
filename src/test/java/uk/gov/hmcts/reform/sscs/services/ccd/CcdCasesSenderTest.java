@@ -161,6 +161,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(gapsCaseData, existingCaseDetails, idamTokens);
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateGapsCaseDataScenarios() {
         SscsCaseData gapsCaseDataWithNullAppeal = SscsCaseData.builder()
             .appeal(null)

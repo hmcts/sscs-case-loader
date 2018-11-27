@@ -249,7 +249,6 @@ public class CcdCasesSender {
             return false;
         }
 
-        Appellant gapsAppellant = gapsCaseData.getAppeal().getAppellant();
         Appeal existingAppeal = existingCcdCaseData.getAppeal();
 
         if (null == existingAppeal) {
@@ -258,6 +257,7 @@ public class CcdCasesSender {
         }
 
         Appellant existingCcdAppellant = existingCcdCaseData.getAppeal().getAppellant();
+        Appellant gapsAppellant = gapsCaseData.getAppeal().getAppellant();
 
         if (null == existingCcdAppellant) {
             existingCcdCaseData.getAppeal().setAppellant(gapsAppellant);
