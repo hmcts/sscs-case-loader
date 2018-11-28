@@ -1,16 +1,23 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
 @Service
 class UpdateCcdCaseData {
+
+    private final UpdateCcdAppellantData updateCcdAppellantData;
+
+    @Autowired
+    UpdateCcdCaseData(UpdateCcdAppellantData updateCcdAppellantData) {
+        this.updateCcdAppellantData = updateCcdAppellantData;
+    }
+
     UpdateType updateCcdRecordForChangesAndReturnUpdateType(SscsCaseData gapsCaseData,
                                                             SscsCaseData existingCcdCaseData) {
         boolean eventChanged = false;
@@ -38,7 +45,7 @@ class UpdateCcdCaseData {
 
     private boolean updateCcdData(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
         if (null != gapsCaseData.getAppeal()) {
-            boolean updateParties = updateParties(gapsCaseData, existingCcdCaseData);
+            boolean updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
             boolean updateHearingOptions = updateHearingOptions(gapsCaseData, existingCcdCaseData);
             boolean updateHearingType = updateHearingType(gapsCaseData, existingCcdCaseData);
             return updateParties || updateHearingOptions || updateHearingType;
@@ -101,52 +108,6 @@ class UpdateCcdCaseData {
         }
 
         return false;
-    }
-
-    private boolean updateParties(SscsCaseData gapsCaseData,
-                                  SscsCaseData existingCcdCaseData) {
-        if (null == gapsCaseData.getAppeal().getAppellant()) {
-            return false;
-        }
-
-        Appeal existingAppeal = existingCcdCaseData.getAppeal();
-
-        if (null == existingAppeal) {
-            existingCcdCaseData.setAppeal(gapsCaseData.getAppeal());
-            return true;
-        }
-
-        Appellant existingCcdAppellant = existingCcdCaseData.getAppeal().getAppellant();
-        Appellant gapsAppellant = gapsCaseData.getAppeal().getAppellant();
-
-        if (null == existingCcdAppellant) {
-            existingCcdCaseData.getAppeal().setAppellant(gapsAppellant);
-            return true;
-        }
-
-        Name gapsAppellantName = gapsAppellant.getName();
-        Name existingCcdAppellantName = existingCcdAppellant.getName();
-
-        if (null == existingCcdAppellantName) {
-            existingCcdAppellant.setName(gapsAppellantName);
-            return true;
-        }
-
-        boolean dataChanged = false;
-        if (null != gapsAppellantName) {
-            if (StringUtils.isNotBlank(gapsAppellantName.getFirstName())
-                && !gapsAppellantName.getFirstName().equals(existingCcdAppellantName.getFirstName())) {
-                existingCcdAppellantName.setFirstName(gapsAppellantName.getFirstName());
-                dataChanged = true;
-            }
-            if (StringUtils.isNotBlank(gapsAppellantName.getLastName())
-                && !gapsAppellantName.getLastName().equals(existingCcdAppellantName.getLastName())) {
-                existingCcdAppellantName.setLastName(gapsAppellantName.getLastName());
-                dataChanged = true;
-            }
-        }
-
-        return dataChanged;
     }
 
     private boolean updateHearingOptions(SscsCaseData gaps2CaseData,
