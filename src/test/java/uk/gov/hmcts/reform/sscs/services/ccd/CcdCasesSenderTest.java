@@ -65,7 +65,7 @@ public class CcdCasesSenderTest {
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
     private static final String CASE_DETAILS_WITH_NO_HEARINGS_JSON = "CaseDetailsWithNoHearings.json";
     private static final String CASE_DETAILS_WITH_HEARING_OPTIONS_JSON = "CaseDetailsWithHearingOptions.json";
-    private static final String CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON = "CaseDetailsWithAppealReceived.json";
+    public static final String CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON = "CaseDetailsWithAppealReceived.json";
     private static final String SSCS_APPEAL_UPDATED_EVENT = "SSCS - appeal updated event";
     private static final String UPDATED_SSCS = "Updated SSCS";
 
@@ -484,7 +484,7 @@ public class CcdCasesSenderTest {
                 .build());
     }
 
-    private SscsCaseData buildCaseData(GapsEvent event) {
+    public static SscsCaseData buildCaseData(GapsEvent event) {
         final Appeal appeal = buildAppeal();
         EventDetails appealCreatedEvent = EventDetails.builder()
             .type("appealCreated")
