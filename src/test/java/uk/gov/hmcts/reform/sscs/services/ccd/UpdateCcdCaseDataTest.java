@@ -47,7 +47,8 @@ public class UpdateCcdCaseDataTest {
         given(updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData()))
             .willReturn(false);
 
-        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(gapsCaseData, existingCaseDetails.getData());
+        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(gapsCaseData,
+            existingCaseDetails.getData());
 
         assertThat(gapsCaseData.getEvents().toArray(), equalTo(existingCaseDetails.getData().getEvents().toArray()));
         assertThat(updateType, is(UpdateType.EVENT_UPDATE));

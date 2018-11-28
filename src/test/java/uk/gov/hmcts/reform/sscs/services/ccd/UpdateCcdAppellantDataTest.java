@@ -78,7 +78,6 @@ public class UpdateCcdAppellantDataTest {
 
         updateCcdAppellantData.updateCcdAppellantData(caseData, sscsCaseDetails.getData());
 
-
         assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(), equalTo(FIRST_NAME));
         assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(), equalTo(LAST_NAME));
         assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
