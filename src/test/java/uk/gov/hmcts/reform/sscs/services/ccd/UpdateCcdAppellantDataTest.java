@@ -56,13 +56,14 @@ public class UpdateCcdAppellantDataTest {
 
     @Test
     @Parameters({
-        "first-name,first-name,last-name,last-name",
-        ",A,,Cherry",
-        "null,A,null,Cherry"
+        "first-name,first-name,last-name,last-name,email@email.com,email@email.com",
+        ",A,,Cherry,,existingCaseEmail@email.com",
+        "null,A,null,Cherry,null,existingCaseEmail@email.com"
     })
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
         @Nullable String firstName, String expectedFirstName,
-        @Nullable String lastName, String expectedLastName) throws Exception {
+        @Nullable String lastName, String expectedLastName,
+        @Nullable String contactEmail, @Nullable String expectedContactEmail) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
@@ -71,7 +72,7 @@ public class UpdateCcdAppellantDataTest {
                 .title("Mr")
                 .build())
             .contact(Contact.builder()
-                .email(EMAIL_EMAIL_COM)
+                .email(contactEmail)
                 .build())
             .identity(Identity.builder()
                 .nino(NINO)
@@ -87,6 +88,7 @@ public class UpdateCcdAppellantDataTest {
         gapsCaseData.getAppeal().setAppellant(appellant);
 
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail("existingCaseEmail@email.com");
 
         updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
@@ -95,7 +97,7 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
             equalTo(expectedLastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(EMAIL_EMAIL_COM));
+            equalTo(expectedContactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(), equalTo(NINO));
     }
 
