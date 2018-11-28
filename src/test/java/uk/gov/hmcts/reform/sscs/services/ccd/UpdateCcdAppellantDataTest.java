@@ -24,7 +24,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 public class UpdateCcdAppellantDataTest {
 
     private static final String CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON = "CaseDetailsWithSubscriptions.json";
-    private static final String EMAIL_EMAIL_COM = "email@email.com";
     private static final String NINO = "AB46575S";
 
     private final UpdateCcdAppellantData updateCcdAppellantData = new UpdateCcdAppellantData();
@@ -56,14 +55,15 @@ public class UpdateCcdAppellantDataTest {
 
     @Test
     @Parameters({
-        "first-name,first-name,last-name,last-name,email@email.com,email@email.com",
-        ",A,,Cherry,,existingCaseEmail@email.com",
-        "null,A,null,Cherry,null,existingCaseEmail@email.com"
+        "first-name,first-name,last-name,last-name,email@email.com,email@email.com,AB46575S,AB46575S",
+        ",A,,Cherry,,existingCaseEmail@email.com,,CA 36 98 74 A",
+        "null,A,null,Cherry,null,existingCaseEmail@email.com,null,CA 36 98 74 A"
     })
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
         @Nullable String firstName, String expectedFirstName,
         @Nullable String lastName, String expectedLastName,
-        @Nullable String contactEmail, @Nullable String expectedContactEmail) throws Exception {
+        @Nullable String contactEmail, @Nullable String expectedContactEmail,
+        @Nullable String nino, String expectedNino) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
@@ -75,7 +75,7 @@ public class UpdateCcdAppellantDataTest {
                 .email(contactEmail)
                 .build())
             .identity(Identity.builder()
-                .nino(NINO)
+                .nino(nino)
                 .build())
             .build();
 
@@ -98,7 +98,8 @@ public class UpdateCcdAppellantDataTest {
             equalTo(expectedLastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
             equalTo(expectedContactEmail));
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(), equalTo(NINO));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
+            equalTo(expectedNino));
     }
 
 }
