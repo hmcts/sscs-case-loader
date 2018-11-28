@@ -4,9 +4,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
-import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.buildTestCaseDataWithAppellantAndBenefitType;
 
 import org.junit.Test;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
@@ -27,21 +27,23 @@ public class UpdateCcdAppellantDataTest {
     private static final String MOBILE = "07777777777";
 
     private final UpdateCcdAppellantData updateCcdAppellantData = new UpdateCcdAppellantData();
+    private SscsCaseData gapsCaseData;
+    private SscsCaseDetails existingCaseDetails;
 
     @Test
     public void givenAppellantUpdatesInGapsData_shouldNotOverwriteSubscriptions() throws Exception {
-        SscsCaseData caseData = CcdCasesSenderTest.buildTestCaseDataWithEventAndEvidence();
+        gapsCaseData = CcdCasesSenderTest.buildTestCaseDataWithEventAndEvidence();
         Subscriptions subscription = Subscriptions.builder()
             .appellantSubscription(Subscription.builder()
                 .tya("001")
                 .build())
             .build();
-        caseData.setSubscriptions(subscription);
-        caseData.setAppeal(CcdCasesSenderTest.buildAppeal());
+        gapsCaseData.setSubscriptions(subscription);
+        gapsCaseData.setAppeal(CcdCasesSenderTest.buildAppeal());
 
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON);
+        existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON);
 
-        updateCcdAppellantData.updateCcdAppellantData(caseData, existingCaseDetails.getData());
+        updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
 
         Subscriptions subscriptions = existingCaseDetails.getData().getSubscriptions();
@@ -49,12 +51,10 @@ public class UpdateCcdAppellantDataTest {
         assertNotNull(subscriptions);
 
         assertThat(subscriptions.getAppellantSubscription().getTya(), equalTo("abcde12345"));
-
     }
 
     @Test
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData() throws Exception {
-        SscsCaseData caseData = buildTestCaseDataWithAppellantAndBenefitType();
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
@@ -72,17 +72,23 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .build();
 
-        caseData.getAppeal().setAppellant(appellant);
+        gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(appellant)
+                .build())
+            .build();
 
-        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        gapsCaseData.getAppeal().setAppellant(appellant);
 
-        updateCcdAppellantData.updateCcdAppellantData(caseData, sscsCaseDetails.getData());
+        existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
 
-        assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(), equalTo(FIRST_NAME));
-        assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(), equalTo(LAST_NAME));
-        assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
+        updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
+
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(), equalTo(FIRST_NAME));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(), equalTo(LAST_NAME));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
             equalTo(EMAIL_EMAIL_COM));
-        assertThat(sscsCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(), equalTo(NINO));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(), equalTo(NINO));
     }
 
 }
