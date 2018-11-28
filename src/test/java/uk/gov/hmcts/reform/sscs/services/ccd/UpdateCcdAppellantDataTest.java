@@ -55,22 +55,27 @@ public class UpdateCcdAppellantDataTest {
     @Test
     @Parameters({
         "first-name, first-name, last-name, last-name, email@email.com, email@email.com, AB46575S, AB46575S,"
-            + "existingCaseEmail@email.com, existingFirstName",
-        ", existingFirstName,, Cherry,, existingCaseEmail@email.com,, CA 36 98 74 A, existingCaseEmail@email.com, existingFirstName",
-        "null, existingFirstName, null, Cherry, null, existingCaseEmail@email.com, null, CA 36 98 74 A, existingCaseEmail@email.com, "
-            + "existingFirstName",
-        "null, existingFirstName, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A, null, existingFirstName",
-        "null, existingFirstName, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A,, existingFirstName",
-        "null, existingFirstName, null, Cherry,,null, null, CA 36 98 74 A, null, existingFirstName",
-        "first-name, first-name, null, Cherry,,null, null, CA 36 98 74 A, null,",
-        "first-name, first-name, null, Cherry,,null, null, CA 36 98 74 A, null, null",
+            + "existingCaseEmail@email.com, existingFirstName, existingLastName",
+        ", existingFirstName,, existingLastName,, existingCaseEmail@email.com,, CA 36 98 74 A, "
+            + "existingCaseEmail@email.com, existingFirstName, existingLastName",
+        "null, existingFirstName, null, existingLastName, null, existingCaseEmail@email.com, null, CA 36 98 74 A, "
+            + "existingCaseEmail@email.com, existingFirstName, existingLastName",
+        "null, existingFirstName, null, existingLastName, email@email.com, email@email.com, null, CA 36 98 74 A, null,"
+            + "existingFirstName, existingLastName",
+        "null, existingFirstName, null, existingLastName, email@email.com, email@email.com, null, CA 36 98 74 A,,"
+            + "existingFirstName, existingLastName",
+        "null, existingFirstName, null, existingLastName,,null, null, CA 36 98 74 A, null, existingFirstName, "
+            + "existingLastName",
+        "first-name, first-name, null, existingLastName,,null, null, CA 36 98 74 A, null,, existingLastName",
+        "first-name, first-name, null, existingLastName,,null, null, CA 36 98 74 A, null, null, existingLastName"
     })
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
         @Nullable String gapsFirstName, @Nullable String expectedExistingCcdFirstName,
         @Nullable String gapsLastName, @Nullable String expectedExistingCcdLastName,
         @Nullable String gapsContactEmail, @Nullable String expectedExistingCcdContactEmail,
         @Nullable String gapsNino, @Nullable String expectedExistingCcdNino,
-        @Nullable String existingCcdContactEmail, @Nullable String existingCddFirstName) throws Exception {
+        @Nullable String existingCcdContactEmail, @Nullable String existingCddFirstName,
+        @Nullable String existingCcdLastName) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
@@ -97,6 +102,7 @@ public class UpdateCcdAppellantDataTest {
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail(existingCcdContactEmail);
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setFirstName(existingCddFirstName);
+        existingCaseDetails.getData().getAppeal().getAppellant().getName().setLastName(existingCcdLastName);
 
         updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
