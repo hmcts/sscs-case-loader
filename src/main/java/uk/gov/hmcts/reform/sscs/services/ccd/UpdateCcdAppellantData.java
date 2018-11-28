@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
@@ -30,6 +31,31 @@ class UpdateCcdAppellantData {
             return true;
         }
 
+        boolean appellantNameChanged = updateCcdAppellantName(gapsAppellant, existingCcdAppellant);
+        boolean appellantContactChanged = updateCcdAppellantContact(gapsAppellant, existingCcdAppellant);
+
+
+        return appellantNameChanged || appellantContactChanged;
+    }
+
+    private boolean updateCcdAppellantContact(Appellant gapsAppellant, Appellant existingCcdAppellant) {
+        Contact gapsAppellantContact = gapsAppellant.getContact();
+        Contact existingCcdAppellantContact = existingCcdAppellant.getContact();
+
+        if (null == existingCcdAppellantContact) {
+            existingCcdAppellant.setContact(gapsAppellantContact);
+            return true;
+        }
+
+        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getEmail())
+            && !gapsAppellantContact.getEmail().equals(existingCcdAppellantContact.getEmail())) {
+            existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateCcdAppellantName(Appellant gapsAppellant, Appellant existingCcdAppellant) {
         Name gapsAppellantName = gapsAppellant.getName();
         Name existingCcdAppellantName = existingCcdAppellant.getName();
 
@@ -37,7 +63,6 @@ class UpdateCcdAppellantData {
             existingCcdAppellant.setName(gapsAppellantName);
             return true;
         }
-
         boolean dataChanged = false;
         if (null != gapsAppellantName) {
             if (StringUtils.isNotBlank(gapsAppellantName.getFirstName())
@@ -51,7 +76,6 @@ class UpdateCcdAppellantData {
                 dataChanged = true;
             }
         }
-
         return dataChanged;
     }
 }
