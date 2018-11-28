@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
@@ -33,9 +34,27 @@ class UpdateCcdAppellantData {
 
         boolean appellantNameChanged = updateCcdAppellantName(gapsAppellant, existingCcdAppellant);
         boolean appellantContactChanged = updateCcdAppellantContact(gapsAppellant, existingCcdAppellant);
+        boolean appellantIdentityChanged = updateCcdAppellantIdentity(gapsAppellant, existingCcdAppellant);
 
+        return appellantNameChanged || appellantContactChanged || appellantIdentityChanged;
+    }
 
-        return appellantNameChanged || appellantContactChanged;
+    private boolean updateCcdAppellantIdentity(Appellant gapsAppellant, Appellant existingCcdAppellant) {
+        Identity gapsAppellantIdentity = gapsAppellant.getIdentity();
+        Identity existingCcdAppellantIdentity = existingCcdAppellant.getIdentity();
+
+        if (null == existingCcdAppellantIdentity) {
+            existingCcdAppellant.setIdentity(gapsAppellantIdentity);
+            return true;
+        }
+
+        if (null != gapsAppellantIdentity && StringUtils.isNotBlank(gapsAppellantIdentity.getNino())
+            && !gapsAppellantIdentity.getNino().equals(existingCcdAppellantIdentity.getNino())) {
+            existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
+            return true;
+        }
+        return false;
+
     }
 
     private boolean updateCcdAppellantContact(Appellant gapsAppellant, Appellant existingCcdAppellant) {
