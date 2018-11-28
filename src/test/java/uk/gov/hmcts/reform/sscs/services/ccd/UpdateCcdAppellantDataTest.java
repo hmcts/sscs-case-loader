@@ -55,19 +55,22 @@ public class UpdateCcdAppellantDataTest {
     @Test
     @Parameters({
         "first-name, first-name, last-name, last-name, email@email.com, email@email.com, AB46575S, AB46575S,"
-            + "existingCaseEmail@email.com",
-        ", A,, Cherry,, existingCaseEmail@email.com,, CA 36 98 74 A, existingCaseEmail@email.com",
-        "null, A, null, Cherry, null, existingCaseEmail@email.com, null, CA 36 98 74 A, existingCaseEmail@email.com",
-        "null, A, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A, null",
-        "null, A, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A,",
-        "null, A, null, Cherry,,null, null, CA 36 98 74 A,null"
+            + "existingCaseEmail@email.com, existingFirstName",
+        ", existingFirstName,, Cherry,, existingCaseEmail@email.com,, CA 36 98 74 A, existingCaseEmail@email.com, existingFirstName",
+        "null, existingFirstName, null, Cherry, null, existingCaseEmail@email.com, null, CA 36 98 74 A, existingCaseEmail@email.com, "
+            + "existingFirstName",
+        "null, existingFirstName, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A, null, existingFirstName",
+        "null, existingFirstName, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A,, existingFirstName",
+        "null, existingFirstName, null, Cherry,,null, null, CA 36 98 74 A, null, existingFirstName",
+        "first-name, first-name, null, Cherry,,null, null, CA 36 98 74 A, null,",
+        "first-name, first-name, null, Cherry,,null, null, CA 36 98 74 A, null, null",
     })
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
         @Nullable String gapsFirstName, @Nullable String expectedExistingCcdFirstName,
         @Nullable String gapsLastName, @Nullable String expectedExistingCcdLastName,
         @Nullable String gapsContactEmail, @Nullable String expectedExistingCcdContactEmail,
         @Nullable String gapsNino, @Nullable String expectedExistingCcdNino,
-        @Nullable String existingCcdContactEmail) throws Exception {
+        @Nullable String existingCcdContactEmail, @Nullable String existingCddFirstName) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
@@ -93,6 +96,7 @@ public class UpdateCcdAppellantDataTest {
 
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail(existingCcdContactEmail);
+        existingCaseDetails.getData().getAppeal().getAppellant().getName().setFirstName(existingCddFirstName);
 
         updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
