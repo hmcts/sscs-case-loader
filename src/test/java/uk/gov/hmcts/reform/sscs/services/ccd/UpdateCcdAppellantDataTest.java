@@ -24,7 +24,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 public class UpdateCcdAppellantDataTest {
 
     private static final String CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON = "CaseDetailsWithSubscriptions.json";
-    private static final String NINO = "AB46575S";
 
     private final UpdateCcdAppellantData updateCcdAppellantData = new UpdateCcdAppellantData();
     private SscsCaseData gapsCaseData;
@@ -55,27 +54,32 @@ public class UpdateCcdAppellantDataTest {
 
     @Test
     @Parameters({
-        "first-name,first-name,last-name,last-name,email@email.com,email@email.com,AB46575S,AB46575S",
-        ",A,,Cherry,,existingCaseEmail@email.com,,CA 36 98 74 A",
-        "null,A,null,Cherry,null,existingCaseEmail@email.com,null,CA 36 98 74 A"
+        "first-name, first-name, last-name, last-name, email@email.com, email@email.com, AB46575S, AB46575S,"
+            + "existingCaseEmail@email.com",
+        ", A,, Cherry,, existingCaseEmail@email.com,, CA 36 98 74 A, existingCaseEmail@email.com",
+        "null, A, null, Cherry, null, existingCaseEmail@email.com, null, CA 36 98 74 A, existingCaseEmail@email.com",
+        "null, A, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A, null",
+        "null, A, null, Cherry, email@email.com, email@email.com, null, CA 36 98 74 A,",
+        "null, A, null, Cherry,,null, null, CA 36 98 74 A,null"
     })
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
-        @Nullable String firstName, String expectedFirstName,
-        @Nullable String lastName, String expectedLastName,
-        @Nullable String contactEmail, @Nullable String expectedContactEmail,
-        @Nullable String nino, String expectedNino) throws Exception {
+        @Nullable String gapsFirstName, @Nullable String expectedExistingCcdFirstName,
+        @Nullable String gapsLastName, @Nullable String expectedExistingCcdLastName,
+        @Nullable String gapsContactEmail, @Nullable String expectedExistingCcdContactEmail,
+        @Nullable String gapsNino, @Nullable String expectedExistingCcdNino,
+        @Nullable String existingCcdContactEmail) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
-                .firstName(firstName)
-                .lastName(lastName)
+                .firstName(gapsFirstName)
+                .lastName(gapsLastName)
                 .title("Mr")
                 .build())
             .contact(Contact.builder()
-                .email(contactEmail)
+                .email(gapsContactEmail)
                 .build())
             .identity(Identity.builder()
-                .nino(nino)
+                .nino(gapsNino)
                 .build())
             .build();
 
@@ -88,18 +92,18 @@ public class UpdateCcdAppellantDataTest {
         gapsCaseData.getAppeal().setAppellant(appellant);
 
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
-        existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail("existingCaseEmail@email.com");
+        existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail(existingCcdContactEmail);
 
         updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
-            equalTo(expectedFirstName));
+            equalTo(expectedExistingCcdFirstName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
-            equalTo(expectedLastName));
+            equalTo(expectedExistingCcdLastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(expectedContactEmail));
+            equalTo(expectedExistingCcdContactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
-            equalTo(expectedNino));
+            equalTo(expectedExistingCcdNino));
     }
 
 }
