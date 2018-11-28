@@ -5,7 +5,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
@@ -16,14 +20,13 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 
+@RunWith(JUnitParamsRunner.class)
 public class UpdateCcdAppellantDataTest {
 
     private static final String CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON = "CaseDetailsWithSubscriptions.json";
-    private static final String FIRST_NAME = "first-name";
     private static final String LAST_NAME = "last-name";
     private static final String EMAIL_EMAIL_COM = "email@email.com";
     private static final String NINO = "AB46575S";
-    private static final String DOB = "12-20-2018";
     private static final String MOBILE = "07777777777";
 
     private final UpdateCcdAppellantData updateCcdAppellantData = new UpdateCcdAppellantData();
@@ -54,11 +57,17 @@ public class UpdateCcdAppellantDataTest {
     }
 
     @Test
-    public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData() throws Exception {
+    @Parameters({
+        "first-name, first-name",
+        ",A",
+        "null, A"
+    })
+    public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
+        @Nullable String firstName, String expectedFirstName) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
-                .firstName(FIRST_NAME)
+                .firstName(firstName)
                 .lastName(LAST_NAME)
                 .title("Mr")
                 .build())
@@ -68,7 +77,6 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .identity(Identity.builder()
                 .nino(NINO)
-                .dob(DOB)
                 .build())
             .build();
 
@@ -84,8 +92,10 @@ public class UpdateCcdAppellantDataTest {
 
         updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(), equalTo(FIRST_NAME));
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(), equalTo(LAST_NAME));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
+            equalTo(expectedFirstName));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
+            equalTo(LAST_NAME));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
             equalTo(EMAIL_EMAIL_COM));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(), equalTo(NINO));
