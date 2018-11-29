@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 
+import java.io.IOException;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -51,7 +52,40 @@ public class UpdateCcdAppellantDataTest {
         assertThat(subscriptions.getAppellantSubscription().getTya(), equalTo("abcde12345"));
     }
 
-    //TODO test to cover when appeal is null or empty
+    @Test
+    public void givenWeHaveToUpdateTheExistingCcdAppealDataAndGivenTheGapsAppellantIsNullOrEmpty_shouldNotUpdate()
+        throws IOException {
+        gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(null)
+                .build())
+            .build();
+
+        existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A");
+        existingCaseDetails.getData().getAppeal().getAppellant().getContact()
+            .setEmail(existingCcdAppellantData.contactEmail);
+        existingCaseDetails.getData().getAppeal().getAppellant().getName()
+            .setFirstName(existingCcdAppellantData.firstName);
+        existingCaseDetails.getData().getAppeal().getAppellant().getName()
+            .setLastName(existingCcdAppellantData.lastName);
+        existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(existingCcdAppellantData.nino);
+
+
+        updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
+
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
+            equalTo(existingCcdAppellantData.firstName));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
+            equalTo(existingCcdAppellantData.lastName));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
+            equalTo(existingCcdAppellantData.contactEmail));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
+            equalTo(existingCcdAppellantData.nino));
+
+    }
 
     @Test
     @Parameters(method = "generateUpdateCaseDataScenarios")
