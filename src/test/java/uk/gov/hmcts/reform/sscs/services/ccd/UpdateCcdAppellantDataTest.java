@@ -73,9 +73,9 @@ public class UpdateCcdAppellantDataTest {
             .setLastName(existingCcdAppellantData.lastName);
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(existingCcdAppellantData.nino);
 
-
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
+        assertFalse(updateData);
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
             equalTo(existingCcdAppellantData.firstName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
@@ -84,7 +84,6 @@ public class UpdateCcdAppellantDataTest {
             equalTo(existingCcdAppellantData.contactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(existingCcdAppellantData.nino));
-        assertFalse(updateData);
     }
 
     public Object[] generateScenariosWhenGapsAppellantIsNullOrEmpty() {
@@ -145,6 +144,7 @@ public class UpdateCcdAppellantDataTest {
 
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
+        assertEquals(expectedUpdateData, updateData);
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.firstName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
@@ -153,8 +153,6 @@ public class UpdateCcdAppellantDataTest {
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.contactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.nino));
-        assertEquals(expectedUpdateData, updateData);
-
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
