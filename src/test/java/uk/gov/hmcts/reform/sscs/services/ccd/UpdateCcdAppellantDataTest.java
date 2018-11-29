@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 
 import java.io.IOException;
@@ -54,7 +55,60 @@ public class UpdateCcdAppellantDataTest {
         assertThat(subscriptions.getAppellantSubscription().getTya(), equalTo("abcde12345"));
     }
 
-    //TODO scenario when the existing ccd is null or empty
+    @Test
+    @Parameters(method = "generateScenariosWhenExistingCcdAppellantIsNullOrEmpty")
+    public void givenWeHaveToUpdateTheExistingCcdAppealDataAndGivenTheExistingAppellantIsNullOrEmpty_shouldUpdate(
+        SscsCaseData existingCcdCaseData) {
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S");
+
+        Appellant appellant = Appellant.builder()
+            .name(Name.builder()
+                .firstName(gapsAppellantData.firstName)
+                .lastName(gapsAppellantData.lastName)
+                .title("Mr")
+                .build())
+            .contact(Contact.builder()
+                .email(gapsAppellantData.contactEmail)
+                .build())
+            .identity(Identity.builder()
+                .nino(gapsAppellantData.nino)
+                .build())
+            .build();
+
+        gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(appellant)
+                .build())
+            .build();
+
+        boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
+
+        assertTrue(updateData);
+        assertThat(existingCcdCaseData.getAppeal().getAppellant().getName().getFirstName(),
+            equalTo(gapsAppellantData.firstName));
+        assertThat(existingCcdCaseData.getAppeal().getAppellant().getName().getLastName(),
+            equalTo(gapsAppellantData.lastName));
+        assertThat(existingCcdCaseData.getAppeal().getAppellant().getContact().getEmail(),
+            equalTo(gapsAppellantData.contactEmail));
+        assertThat(existingCcdCaseData.getAppeal().getAppellant().getIdentity().getNino(),
+            equalTo(gapsAppellantData.nino));
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object[] generateScenariosWhenExistingCcdAppellantIsNullOrEmpty() throws IOException {
+        SscsCaseDetails existingCaseDetailsWithEmptyFields = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        existingCaseDetailsWithEmptyFields.getData().getAppeal().setAppellant(null);
+
+        SscsCaseDetails existingCaseDetailsWithNullFields = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        existingCaseDetailsWithEmptyFields.getData().getAppeal().setAppellant(Appellant.builder().build());
+
+        return new Object[]{
+            new Object[]{existingCaseDetailsWithEmptyFields.getData()},
+            new Object[]{existingCaseDetailsWithNullFields.getData()}
+        };
+    }
+
 
     @Test
     @Parameters(method = "generateScenariosWhenGapsAppellantIsNullOrEmpty")
@@ -86,7 +140,8 @@ public class UpdateCcdAppellantDataTest {
             equalTo(existingCcdAppellantData.nino));
     }
 
-    public Object[] generateScenariosWhenGapsAppellantIsNullOrEmpty() {
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object[] generateScenariosWhenGapsAppellantIsNullOrEmpty() {
         SscsCaseData gapsCaseDataWithNullAppellant = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .appellant(null)
