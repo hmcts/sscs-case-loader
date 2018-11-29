@@ -20,35 +20,44 @@ class UpdateCcdCaseData {
 
     UpdateType updateCcdRecordForChangesAndReturnUpdateType(SscsCaseData gapsCaseData,
                                                             SscsCaseData existingCcdCaseData) {
-        boolean eventChanged = false;
-
-        if (thereIsAnEventChange(gapsCaseData, existingCcdCaseData)) {
-            eventChanged = true;
-            existingCcdCaseData.setEvents(gapsCaseData.getEvents());
-        }
-
+        boolean eventChange = updateEvents(gapsCaseData, existingCcdCaseData);
         boolean dataChange = updateCcdData(gapsCaseData, existingCcdCaseData);
         updateGeneratedFields(existingCcdCaseData);
+        return workOutUpdateType(eventChange, dataChange);
+    }
 
-        if (null != gapsCaseData.getDwpTimeExtension() && !gapsCaseData.getDwpTimeExtension().isEmpty()) {
-            existingCcdCaseData.setDwpTimeExtension(gapsCaseData.getDwpTimeExtension());
-        }
-
+    private UpdateType workOutUpdateType(boolean eventChanged, boolean dataChange) {
         if (eventChanged) {
             return UpdateType.EVENT_UPDATE;
         } else if (dataChange) {
             return UpdateType.DATA_UPDATE;
         }
-
         return UpdateType.NO_UPDATE;
     }
 
+    private boolean updateEvents(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        if (thereIsAnEventChange(gapsCaseData, existingCcdCaseData)) {
+            existingCcdCaseData.setEvents(gapsCaseData.getEvents());
+            return true;
+        }
+        return false;
+    }
+
     private boolean updateCcdData(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        boolean dwpTimeExtension = updateDwpTimeExtension(gapsCaseData, existingCcdCaseData);
         if (null != gapsCaseData.getAppeal()) {
             boolean updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
             boolean updateHearingOptions = updateHearingOptions(gapsCaseData, existingCcdCaseData);
             boolean updateHearingType = updateHearingType(gapsCaseData, existingCcdCaseData);
-            return updateParties || updateHearingOptions || updateHearingType;
+            return updateParties || updateHearingOptions || updateHearingType || dwpTimeExtension;
+        }
+        return false;
+    }
+
+    private boolean updateDwpTimeExtension(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        if (null != gapsCaseData.getDwpTimeExtension() && !gapsCaseData.getDwpTimeExtension().isEmpty()) {
+            existingCcdCaseData.setDwpTimeExtension(gapsCaseData.getDwpTimeExtension());
+            return true;
         }
         return false;
     }

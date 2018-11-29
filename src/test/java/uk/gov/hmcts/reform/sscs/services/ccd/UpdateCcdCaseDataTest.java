@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON;
+import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.buildCaseData;
 
 import java.io.IOException;
 import org.junit.Before;
@@ -34,8 +35,8 @@ public class UpdateCcdCaseDataTest {
     }
 
     @Test
-    public void givenAnEventChange_shouldUpdateExistingCcdCase() throws IOException {
-        SscsCaseData gapsCaseData = CcdCasesSenderTest.buildCaseData(GapsEvent.RESPONSE_RECEIVED);
+    public void givenAnEventChange_shouldUpdateEventsInExistingCcdCase() throws IOException {
+        SscsCaseData gapsCaseData = buildCaseData(GapsEvent.RESPONSE_RECEIVED);
 
         SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON);
 
@@ -53,4 +54,12 @@ public class UpdateCcdCaseDataTest {
         assertThat(gapsCaseData.getEvents().toArray(), equalTo(existingCaseDetails.getData().getEvents().toArray()));
         assertThat(updateType, is(UpdateType.EVENT_UPDATE));
     }
+
+    //TODO test when Appeal in null in both gapsCase and existingCddCase
+
+    //TODO test dwpTimeExtension
+
+    //TODO cover dataChange scenarios
+
+
 }
