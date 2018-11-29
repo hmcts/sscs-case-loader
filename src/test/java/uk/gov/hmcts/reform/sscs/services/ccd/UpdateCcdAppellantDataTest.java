@@ -53,13 +53,9 @@ public class UpdateCcdAppellantDataTest {
     }
 
     @Test
-    public void givenWeHaveToUpdateTheExistingCcdAppealDataAndGivenTheGapsAppellantIsNullOrEmpty_shouldNotUpdate()
-        throws IOException {
-        gapsCaseData = SscsCaseData.builder()
-            .appeal(Appeal.builder()
-                .appellant(null)
-                .build())
-            .build();
+    @Parameters(method = "generateScenariosWhenGapsAppellantIsNullOrEmpty")
+    public void givenWeHaveToUpdateTheExistingCcdAppealDataAndGivenTheGapsAppellantIsNullOrEmpty_shouldNotUpdate(
+        SscsCaseData gapsCaseData) throws IOException {
 
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
@@ -85,6 +81,25 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(existingCcdAppellantData.nino));
 
+    }
+
+    public Object[] generateScenariosWhenGapsAppellantIsNullOrEmpty() {
+        SscsCaseData gapsCaseDataWithNullAppellant = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(null)
+                .build())
+            .build();
+
+        SscsCaseData gapsCaseDataWithEmptyAppellant = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(Appellant.builder().build())
+                .build())
+            .build();
+
+        return new Object[]{
+            new Object[]{gapsCaseDataWithNullAppellant},
+            new Object[]{gapsCaseDataWithEmptyAppellant}
+        };
     }
 
     @Test
