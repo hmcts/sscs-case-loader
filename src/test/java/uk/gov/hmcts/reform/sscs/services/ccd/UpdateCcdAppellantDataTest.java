@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
@@ -70,7 +71,7 @@ public class UpdateCcdAppellantDataTest {
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(existingCcdAppellantData.nino);
 
 
-        updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
+        boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
             equalTo(existingCcdAppellantData.firstName));
@@ -80,7 +81,7 @@ public class UpdateCcdAppellantDataTest {
             equalTo(existingCcdAppellantData.contactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(existingCcdAppellantData.nino));
-
+        assertFalse(updateData);
     }
 
     public Object[] generateScenariosWhenGapsAppellantIsNullOrEmpty() {
