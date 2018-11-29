@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -52,6 +53,8 @@ public class UpdateCcdAppellantDataTest {
 
         assertThat(subscriptions.getAppellantSubscription().getTya(), equalTo("abcde12345"));
     }
+
+    //TODO scenario when the existing ccd is null or empty
 
     @Test
     @Parameters(method = "generateScenariosWhenGapsAppellantIsNullOrEmpty")
@@ -106,7 +109,7 @@ public class UpdateCcdAppellantDataTest {
     @Test
     @Parameters(method = "generateUpdateCaseDataScenarios")
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
-        GapsAndCcdDataUpdateScenario gapsAndCcdDataUpdateScenario) throws Exception {
+        GapsAndCcdDataUpdateScenario gapsAndCcdDataUpdateScenario, boolean expectedUpdateData) throws Exception {
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
@@ -140,7 +143,7 @@ public class UpdateCcdAppellantDataTest {
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.nino);
 
-        updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
+        boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.firstName));
@@ -150,6 +153,8 @@ public class UpdateCcdAppellantDataTest {
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.contactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.nino));
+        assertEquals(expectedUpdateData, updateData);
+
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -170,11 +175,11 @@ public class UpdateCcdAppellantDataTest {
             updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields();
 
         return new Object[]{
-            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths},
-            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields},
-            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields},
-            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields},
-            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields}
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields, false},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields, false},
+            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields, true},
+            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields, true}
         };
     }
 
