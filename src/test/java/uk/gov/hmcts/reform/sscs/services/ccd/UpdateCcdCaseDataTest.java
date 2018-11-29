@@ -11,6 +11,7 @@ import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.CASE_DETA
 import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.buildCaseData;
 
 import java.io.IOException;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,27 @@ public class UpdateCcdCaseDataTest {
         assertThat(updateType, is(UpdateType.EVENT_UPDATE));
     }
 
-    //TODO test when Appeal in null in both gapsCase and existingCddCase
+    @Test
+    public void givenDataChangeAndThatGapsAppealDataIsNull_shouldNotUpdateData() {
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .appeal(null)
+            .events(Collections.emptyList())
+            .build();
+
+        SscsCaseDetails existingCaseDetails = SscsCaseDetails.builder()
+            .data(SscsCaseData.builder()
+                .events(Collections.emptyList())
+                .build())
+            .build();
+
+        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
+            gapsCaseData, existingCaseDetails.getData());
+
+        assertThat(updateType, is(UpdateType.NO_UPDATE));
+    }
+
+
+    //TODO cover DATA_UPDATE flow
 
     //TODO test dwpTimeExtension
 
