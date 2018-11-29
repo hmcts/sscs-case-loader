@@ -51,6 +51,8 @@ public class UpdateCcdAppellantDataTest {
         assertThat(subscriptions.getAppellantSubscription().getTya(), equalTo("abcde12345"));
     }
 
+    //TODO test to cover when appeal is null or empty
+
     @Test
     @Parameters(method = "generateUpdateCaseDataScenarios")
     public void givenAppellantUpdatesInGapsData_shouldUpdateExistingCcdAppellantData(
@@ -111,10 +113,18 @@ public class UpdateCcdAppellantDataTest {
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields =
             updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields();
 
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields =
+            updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields =
+            updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields();
+
         return new Object[]{
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields},
-            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields}
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields},
+            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields},
+            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields}
         };
     }
 
@@ -162,6 +172,35 @@ public class UpdateCcdAppellantDataTest {
         return new GapsAndCcdDataUpdateScenario(
             gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
     }
+
+    private GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields() {
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S");
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S");
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "", "", "", "");
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    private GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields() {
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S");
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S");
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "null", "null", "null", "null");
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
 
     private class GapsAppellantData {
         String firstName;
