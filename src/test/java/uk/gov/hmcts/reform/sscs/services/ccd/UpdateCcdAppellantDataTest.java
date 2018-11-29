@@ -53,8 +53,6 @@ public class UpdateCcdAppellantDataTest {
 
     @Test
 //    @Parameters({
-//        "first-name, first-name, last-name, last-name, email@email.com, email@email.com, AB46575S, AB46575S,"
-//            + "existingCaseEmail@email.com, existingFirstName, existingLastName, CA 36 98 74 A",
 //        ", existingFirstName,, existingLastName,, existingCaseEmail@email.com,, CA 36 98 74 A, "
 //            + "existingCaseEmail@email.com, existingFirstName, existingLastName, CA 36 98 74 A",
 //        "null, existingFirstName, null, existingLastName, null, existingCaseEmail@email.com, null, CA 36 98 74 A, "
@@ -122,11 +120,19 @@ public class UpdateCcdAppellantDataTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateUpdateCaseDataScenarios() {
-        GapsAndCcdDataUpdateScenario gapsAndCcdDataUpdateScenario =
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths =
             updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths();
 
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields =
+            updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields =
+            updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields();
+
         return new Object[]{
-            new Object[]{gapsAndCcdDataUpdateScenario}
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields}
         };
     }
 
@@ -137,6 +143,36 @@ public class UpdateCcdAppellantDataTest {
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
             new ExpectedExistingCcdAppellantName("first-name", "last-name",
                 "email@email.com", "AB46575S");
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A");
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    private GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields() {
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "", "", "", "");
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
+                "existingCaseEmail@email.com", "CA 36 98 74 A");
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A");
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    private GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields() {
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            null, null, null, null);
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
+                "existingCaseEmail@email.com", "CA 36 98 74 A");
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
             "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
