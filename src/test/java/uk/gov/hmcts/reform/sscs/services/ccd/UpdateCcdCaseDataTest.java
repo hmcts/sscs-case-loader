@@ -1,114 +1,82 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
-import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON;
-import static uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSenderTest.buildCaseData;
 
-import java.io.IOException;
-import java.util.Collections;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtensionDetails;
+import org.mockito.MockitoAnnotations;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class UpdateCcdCaseDataTest {
 
+    private UpdateCcdCaseData updateCcdCaseData;
     @Mock
     private UpdateCcdAppellantData updateCcdAppellantData;
+    @Mock
+    private UpdateCcdHearingOptions updateCcdHearingOptions;
+    @Mock
+    private UpdateCcdHearingType updateCcdHearingType;
+    @Mock
+    private UpdateGeneratedFields updateGeneratedFields;
+    @Mock
+    private UpdateDwpTimeExtension updateDwpTimeExtension;
+    @Mock
+    private UpdateEvents updateEvents;
 
-    private UpdateCcdCaseData updateCcdCaseData;
-    private SscsCaseData gapsCaseData;
-    private SscsCaseDetails existingCaseDetails;
 
     @Before
     public void setUp() {
-        updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData);
+        MockitoAnnotations.initMocks(this);
+        updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData, updateCcdHearingOptions,
+            updateCcdHearingType, updateGeneratedFields, updateDwpTimeExtension, updateEvents);
     }
 
     @Test
-    public void givenAnEventChange_shouldUpdateEventsInExistingCcdCase() throws IOException {
-        gapsCaseData = buildCaseData(GapsEvent.RESPONSE_RECEIVED);
-        existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON);
+    @Parameters(method = "generateAppealScenarios")
+    public void givenCaseChange_shouldReturnUpdateTypeAccordingly(SscsCaseData gapsCaseData,
+                                                                  boolean updateEvent,
+                                                                  boolean updateAppellant,
+                                                                  UpdateType expectedUpdateType) {
+        given(updateEvents.update(any(), any())).willReturn(updateEvent);
 
-        assertEquals(1, existingCaseDetails.getData().getEvents().size());
-        assertEquals(2, gapsCaseData.getEvents().size());
-        assertThat(gapsCaseData.getEvents().toArray(),
-            not(equalTo(existingCaseDetails.getData().getEvents().toArray())));
+        given(updateCcdAppellantData.updateCcdAppellantData(any(), any())).willReturn(updateAppellant);
+        given(updateDwpTimeExtension.updateDwpTimeExtension(any(), any())).willReturn(false);
+        given(updateCcdHearingOptions.updateHearingOptions(any(), any(SscsCaseData.class))).willReturn(false);
+        given(updateCcdHearingType.updateHearingType(any(), any())).willReturn(false);
 
-        given(updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData()))
-            .willReturn(false);
+        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
+            gapsCaseData, null);
 
-        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(gapsCaseData,
-            existingCaseDetails.getData());
-
-        assertThat(gapsCaseData.getEvents().toArray(), equalTo(existingCaseDetails.getData().getEvents().toArray()));
-        assertThat(updateType, is(UpdateType.EVENT_UPDATE));
+        assertThat(updateType, is(expectedUpdateType));
     }
 
-    @Test
-    public void givenGapsAppealDataIsNull_shouldNotUpdateData() {
-        gapsCaseData = SscsCaseData.builder()
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object[] generateAppealScenarios() {
+        SscsCaseData sscsCaseDataWithNullAppeal = SscsCaseData.builder()
             .appeal(null)
-            .events(Collections.emptyList())
+            .build();
+        SscsCaseData sscsCaseDataWithAppeal = SscsCaseData.builder()
+            .appeal(Appeal.builder().build())
             .build();
 
-        existingCaseDetails = SscsCaseDetails.builder()
-            .data(SscsCaseData.builder()
-                .events(Collections.emptyList())
-                .build())
-            .build();
-
-        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
-            gapsCaseData, existingCaseDetails.getData());
-
-        assertThat(updateType, is(UpdateType.NO_UPDATE));
+        return new Object[]{
+            new Object[]{null, true, true, UpdateType.EVENT_UPDATE},
+            new Object[]{null, true, false, UpdateType.EVENT_UPDATE},
+            new Object[]{sscsCaseDataWithNullAppeal, true, true, UpdateType.EVENT_UPDATE},
+            new Object[]{sscsCaseDataWithNullAppeal, true, false, UpdateType.EVENT_UPDATE},
+            new Object[]{sscsCaseDataWithNullAppeal, false, true, UpdateType.NO_UPDATE},
+            new Object[]{sscsCaseDataWithAppeal, false, true, UpdateType.DATA_UPDATE}
+        };
     }
-
-    //TODO add scenarios for when dwpTime is empty, null, and different data.
-
-    @Test
-    public void givenDwpTimeExtensionChanged_shouldUpdateData() {
-        gapsCaseData = SscsCaseData.builder()
-            .dwpTimeExtension(Collections.singletonList(DwpTimeExtension.builder()
-                .value(DwpTimeExtensionDetails.builder()
-                    .granted("yes")
-                    .build())
-                .build()))
-            .events(Collections.emptyList())
-            .build();
-
-        existingCaseDetails = SscsCaseDetails.builder()
-            .data(SscsCaseData.builder()
-                .events(Collections.emptyList())
-                .build())
-            .build();
-
-        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
-            gapsCaseData, existingCaseDetails.getData());
-
-        assertThat(updateType, is(UpdateType.DATA_UPDATE));
-        assertThat(existingCaseDetails.getData().getDwpTimeExtension(), equalTo(gapsCaseData.getDwpTimeExtension()));
-    }
-
-    //TODO cover DATA_UPDATE flow
-
-    //TODO test dwpTimeExtension
-
-    //TODO cover dataChange scenarios
-
 
 }
