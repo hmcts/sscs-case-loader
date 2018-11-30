@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtensionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -29,6 +31,8 @@ public class UpdateCcdCaseDataTest {
     private UpdateCcdAppellantData updateCcdAppellantData;
 
     private UpdateCcdCaseData updateCcdCaseData;
+    private SscsCaseData gapsCaseData;
+    private SscsCaseDetails existingCaseDetails;
 
     @Before
     public void setUp() {
@@ -37,9 +41,8 @@ public class UpdateCcdCaseDataTest {
 
     @Test
     public void givenAnEventChange_shouldUpdateEventsInExistingCcdCase() throws IOException {
-        SscsCaseData gapsCaseData = buildCaseData(GapsEvent.RESPONSE_RECEIVED);
-
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON);
+        gapsCaseData = buildCaseData(GapsEvent.RESPONSE_RECEIVED);
+        existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON);
 
         assertEquals(1, existingCaseDetails.getData().getEvents().size());
         assertEquals(2, gapsCaseData.getEvents().size());
@@ -57,13 +60,13 @@ public class UpdateCcdCaseDataTest {
     }
 
     @Test
-    public void givenDataChangeAndThatGapsAppealDataIsNull_shouldNotUpdateData() {
-        SscsCaseData gapsCaseData = SscsCaseData.builder()
+    public void givenGapsAppealDataIsNull_shouldNotUpdateData() {
+        gapsCaseData = SscsCaseData.builder()
             .appeal(null)
             .events(Collections.emptyList())
             .build();
 
-        SscsCaseDetails existingCaseDetails = SscsCaseDetails.builder()
+        existingCaseDetails = SscsCaseDetails.builder()
             .data(SscsCaseData.builder()
                 .events(Collections.emptyList())
                 .build())
@@ -75,6 +78,31 @@ public class UpdateCcdCaseDataTest {
         assertThat(updateType, is(UpdateType.NO_UPDATE));
     }
 
+    //TODO add scenarios for when dwpTime is empty, null, and different data.
+
+    @Test
+    public void givenDwpTimeExtensionChanged_shouldUpdateData() {
+        gapsCaseData = SscsCaseData.builder()
+            .dwpTimeExtension(Collections.singletonList(DwpTimeExtension.builder()
+                .value(DwpTimeExtensionDetails.builder()
+                    .granted("yes")
+                    .build())
+                .build()))
+            .events(Collections.emptyList())
+            .build();
+
+        existingCaseDetails = SscsCaseDetails.builder()
+            .data(SscsCaseData.builder()
+                .events(Collections.emptyList())
+                .build())
+            .build();
+
+        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
+            gapsCaseData, existingCaseDetails.getData());
+
+        assertThat(updateType, is(UpdateType.DATA_UPDATE));
+        assertThat(existingCaseDetails.getData().getDwpTimeExtension(), equalTo(gapsCaseData.getDwpTimeExtension()));
+    }
 
     //TODO cover DATA_UPDATE flow
 
