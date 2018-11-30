@@ -81,9 +81,7 @@ public class ProcessCaseFile {
     }
 
     @After
-    public void teardown() throws IOException, ParserConfigurationException, SftpException {
-        cleanSftpFiles();
-        GenerateXml.cleanUpOldFiles();
+    public void teardown() throws IOException, ParserConfigurationException {
     }
 
     private void cleanSftpFiles() throws SftpException {
