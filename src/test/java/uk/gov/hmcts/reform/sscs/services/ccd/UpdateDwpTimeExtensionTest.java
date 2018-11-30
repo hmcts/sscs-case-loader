@@ -1,40 +1,61 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
 import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtensionDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 
+@RunWith(JUnitParamsRunner.class)
 public class UpdateDwpTimeExtensionTest {
     private final UpdateDwpTimeExtension updateDwpTimeExtension = new UpdateDwpTimeExtension();
 
     @Test
-    public void givenDwpTimeExtensionChanged_shouldUpdateData() {
-        SscsCaseData gapsCaseData = SscsCaseData.builder()
+    @Parameters(method = "generateDwpTimeExtensionUpdateScenarios")
+    public void givenDwpTimeExtensionChanged_shouldUpdateData(SscsCaseData gapsCaseData,
+                                                              SscsCaseData existingCaseData,
+                                                              boolean expectedUpdateDwp) {
+        boolean updateDwp = updateDwpTimeExtension.updateDwpTimeExtension(gapsCaseData, existingCaseData);
+
+        assertEquals(expectedUpdateDwp, updateDwp);
+        if (expectedUpdateDwp) {
+            assertThat(existingCaseData.getDwpTimeExtension(), equalTo(gapsCaseData.getDwpTimeExtension()));
+        }
+    }
+
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object[] generateDwpTimeExtensionUpdateScenarios() {
+        SscsCaseData gapsCaseDataWithDwpTimeExtension = SscsCaseData.builder()
             .dwpTimeExtension(Collections.singletonList(DwpTimeExtension.builder()
                 .value(DwpTimeExtensionDetails.builder()
                     .granted("yes")
                     .build())
                 .build()))
-            .events(Collections.emptyList())
             .build();
 
-        SscsCaseDetails existingCaseDetails = SscsCaseDetails.builder()
-            .data(SscsCaseData.builder()
-                .events(Collections.emptyList())
-                .build())
+        SscsCaseData gapsCaseDataWithNoDwpTimeExtension = SscsCaseData.builder()
+            .dwpTimeExtension(null)
             .build();
 
-        boolean updateDwp = updateDwpTimeExtension.updateDwpTimeExtension(gapsCaseData, existingCaseDetails.getData());
+        SscsCaseData gapsCaseDataWithEmptyDwpTimeExtension = SscsCaseData.builder()
+            .dwpTimeExtension(Collections.emptyList())
+            .build();
 
-        assertTrue(updateDwp);
-        assertThat(existingCaseDetails.getData().getDwpTimeExtension(), equalTo(gapsCaseData.getDwpTimeExtension()));
+        SscsCaseData existingCaseDetails = SscsCaseData.builder().build();
+
+        return new Object[]{
+            new Object[]{gapsCaseDataWithNoDwpTimeExtension, existingCaseDetails, false},
+            new Object[]{gapsCaseDataWithEmptyDwpTimeExtension, existingCaseDetails, false},
+            new Object[]{gapsCaseDataWithDwpTimeExtension, existingCaseDetails, true}
+        };
     }
 
 }
