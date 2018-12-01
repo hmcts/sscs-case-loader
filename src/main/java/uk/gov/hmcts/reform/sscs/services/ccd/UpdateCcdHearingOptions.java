@@ -7,24 +7,24 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
 @Service
 class UpdateCcdHearingOptions {
-    boolean updateHearingOptions(SscsCaseData gaps2CaseData,
+    boolean updateHearingOptions(SscsCaseData gapsCaseData,
                                  SscsCaseData existingCcdCaseData) {
         String gaps2WantsToAttend = null;
-        String ccdWantsToAttend = null;
+        String existingCcdWantsToAttend = null;
 
-        if (null != gaps2CaseData.getAppeal().getHearingOptions()
-            && StringUtils.isNotBlank(gaps2CaseData.getAppeal().getHearingOptions().getWantsToAttend())) {
-            gaps2WantsToAttend = gaps2CaseData.getAppeal().getHearingOptions().getWantsToAttend();
+        if (null != gapsCaseData.getAppeal().getHearingOptions()
+            && StringUtils.isNotBlank(gapsCaseData.getAppeal().getHearingOptions().getWantsToAttend())) {
+            gaps2WantsToAttend = gapsCaseData.getAppeal().getHearingOptions().getWantsToAttend();
         }
 
         if (null != existingCcdCaseData.getAppeal().getHearingOptions()
             && StringUtils.isNotBlank(existingCcdCaseData.getAppeal().getHearingOptions().getWantsToAttend())) {
-            ccdWantsToAttend = existingCcdCaseData.getAppeal().getHearingOptions().getWantsToAttend();
+            existingCcdWantsToAttend = existingCcdCaseData.getAppeal().getHearingOptions().getWantsToAttend();
         }
 
         if (StringUtils.isNotBlank(gaps2WantsToAttend)) {
-            if (StringUtils.isNotBlank(ccdWantsToAttend)) {
-                if (!gaps2WantsToAttend.equals(ccdWantsToAttend)) {
+            if (StringUtils.isNotBlank(existingCcdWantsToAttend)) {
+                if (!gaps2WantsToAttend.equals(existingCcdWantsToAttend)) {
                     existingCcdCaseData.getAppeal().getHearingOptions().setWantsToAttend(gaps2WantsToAttend);
                     return true;
                 }
