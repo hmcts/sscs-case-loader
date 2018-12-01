@@ -47,8 +47,83 @@ public class UpdateCcdHearingOptionsTest {
                 .build())
             .build();
 
+        SscsCaseData sscsCaseDataWithNullHearingOptions = SscsCaseData.builder()
+            .appeal(Appeal.builder().build())
+            .build();
+
+        SscsCaseData sscsCaseDataWithAnotherNullHearingOptions = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(null)
+                .build())
+            .build();
+
+        SscsCaseData sscsCaseDataWithEmptyHearingOptions = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder().build())
+                .build())
+            .build();
+
+        SscsCaseData sscsCaseDataWithNullWantsToAttend = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder()
+                    .wantsToAttend(null)
+                    .build())
+                .build())
+            .build();
+
+        SscsCaseData sscsCaseDataWithEmptyWantsToAttend = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder()
+                    .wantsToAttend("")
+                    .build())
+                .build())
+            .build();
+
+        SscsCaseData existingCcdCaseDataWithNullHearingOptions = SscsCaseData.builder()
+            .appeal(Appeal.builder().build())
+            .build();
+
+        SscsCaseData existingCcdCaseDataWithAnotherNullHearingOptions = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(null)
+                .build())
+            .build();
+
+        SscsCaseData existingCcdCaseDataWithEmptyHearingOptions = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder().build())
+                .build())
+            .build();
+
+        SscsCaseData existingCcdCaseDataWithEmptyWantsToAttend = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder()
+                    .wantsToAttend("")
+                    .build())
+                .build())
+            .build();
+
+        SscsCaseData existingCcdCaseDataWithNullWantsToAttend = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder()
+                    .wantsToAttend(null)
+                    .build())
+                .build())
+            .build();
+
+
         return new Object[]{
-            new Object[]{gapsCaseData, existingCcdCaseData, true, "yes"}
+            new Object[]{sscsCaseDataWithNullHearingOptions, existingCcdCaseData, false, "no"},
+            new Object[]{sscsCaseDataWithAnotherNullHearingOptions, existingCcdCaseData, false, "no"},
+            new Object[]{sscsCaseDataWithNullWantsToAttend, existingCcdCaseData, false, "no"},
+            new Object[]{sscsCaseDataWithEmptyWantsToAttend, existingCcdCaseData, false, "no"},
+            new Object[]{sscsCaseDataWithEmptyHearingOptions, existingCcdCaseData, false, "no"},
+            new Object[]{gapsCaseData, existingCcdCaseData, true, "yes"},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithNullHearingOptions, true, "yes"},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithAnotherNullHearingOptions, true, "yes"},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithEmptyHearingOptions, true, "yes"},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithEmptyWantsToAttend, true, "yes"},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithNullWantsToAttend, true, "yes"}
         };
     }
 }
