@@ -17,10 +17,6 @@ class UpdateEvents {
         if (caseData == null || caseData.getEvents() == null) {
             return false;
         }
-        if (existingCcdCaseData == null) {
-            return true;
-        }
-
         return existingCcdCaseData.getEvents() == null
             || caseData.getEvents().size() != existingCcdCaseData.getEvents().size();
     }

@@ -20,13 +20,13 @@ public class UpdateEventsTest {
     @Test
     @Parameters(method = "generateEventUpdateScenarios")
     public void givenAnEventChange_shouldUpdateEventsInExistingCcdCase(SscsCaseData gapsCaseData,
-                                                                       SscsCaseData existingCaseDetails,
+                                                                       SscsCaseData existingCaseData,
                                                                        boolean expectedUpdate) {
-        boolean update = updateEvents.update(gapsCaseData, existingCaseDetails);
+        boolean update = updateEvents.update(gapsCaseData, existingCaseData);
 
         if (gapsCaseData != null && gapsCaseData.getEvents() != null
-            && existingCaseDetails.getEvents() != null) {
-            assertThat(gapsCaseData.getEvents().toArray(), equalTo(existingCaseDetails.getEvents().toArray()));
+            && existingCaseData.getEvents() != null) {
+            assertThat(gapsCaseData.getEvents().toArray(), equalTo(existingCaseData.getEvents().toArray()));
         }
         assertEquals(expectedUpdate, update);
     }
@@ -37,11 +37,11 @@ public class UpdateEventsTest {
             .events(Collections.singletonList(Event.builder().build()))
             .build();
 
-        SscsCaseData existingCaseDetailsWithTwoScenarios = SscsCaseData.builder()
+        SscsCaseData existingCaseDataWithTwoEvents = SscsCaseData.builder()
             .events(Arrays.asList(Event.builder().build(), Event.builder().build()))
             .build();
 
-        SscsCaseData existingCaseDetailsOneScenarios = SscsCaseData.builder()
+        SscsCaseData existingCaseDataWithOneEvents = SscsCaseData.builder()
             .events(Collections.singletonList(Event.builder().build()))
             .build();
 
@@ -50,11 +50,11 @@ public class UpdateEventsTest {
             .build();
 
         return new Object[]{
-            new Object[]{sscsCaseDataWithNullEvent, existingCaseDetailsWithTwoScenarios, false},
+            new Object[]{sscsCaseDataWithNullEvent, existingCaseDataWithTwoEvents, false},
             new Object[]{gapsCaseDataWithOneEvent, sscsCaseDataWithNullEvent, true},
-            new Object[]{gapsCaseDataWithOneEvent, existingCaseDetailsWithTwoScenarios, true},
-            new Object[]{gapsCaseDataWithOneEvent, existingCaseDetailsOneScenarios, false},
-            new Object[]{null, existingCaseDetailsOneScenarios, false}
+            new Object[]{gapsCaseDataWithOneEvent, existingCaseDataWithTwoEvents, true},
+            new Object[]{gapsCaseDataWithOneEvent, existingCaseDataWithOneEvents, false},
+            new Object[]{null, existingCaseDataWithOneEvents, false},
         };
     }
 
