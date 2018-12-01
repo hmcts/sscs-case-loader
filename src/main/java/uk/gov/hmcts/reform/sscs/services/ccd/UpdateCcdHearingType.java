@@ -6,9 +6,9 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
 @Service
 class UpdateCcdHearingType {
-    boolean updateHearingType(SscsCaseData gaps2CaseData,
+    boolean updateHearingType(SscsCaseData gapsCaseData,
                               SscsCaseData existingCcdCaseData) {
-        String gaps2HearingType = gaps2CaseData.getAppeal().getHearingType();
+        String gaps2HearingType = gapsCaseData.getAppeal().getHearingType();
         if (StringUtils.isNotBlank(gaps2HearingType)) {
             String ccdHearingType = existingCcdCaseData.getAppeal().getHearingType();
             if (StringUtils.isNotBlank(ccdHearingType)) {

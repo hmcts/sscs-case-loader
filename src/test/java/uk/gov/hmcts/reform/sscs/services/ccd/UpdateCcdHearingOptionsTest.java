@@ -111,7 +111,6 @@ public class UpdateCcdHearingOptionsTest {
                 .build())
             .build();
 
-
         return new Object[]{
             new Object[]{sscsCaseDataWithNullHearingOptions, existingCcdCaseData, false, "no"},
             new Object[]{sscsCaseDataWithAnotherNullHearingOptions, existingCcdCaseData, false, "no"},
