@@ -28,6 +28,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAndCcdDataUpdateScenario;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAppellantData;
 
 @RunWith(JUnitParamsRunner.class)
 public class UpdateCcdAppellantDataTest {
@@ -65,8 +66,7 @@ public class UpdateCcdAppellantDataTest {
     @Parameters(method = "generateScenariosWhenExistingCcdAppellantIsNullOrEmpty")
     public void givenWeHaveToUpdateTheExistingCcdAppealDataAndGivenTheExistingAppellantIsNullOrEmpty_shouldUpdate(
         SscsCaseData existingCcdCaseData) {
-        UpdateCcdAppellantDataTestHelper.GapsAppellantData gapsAppellantData =
-            new UpdateCcdAppellantDataTestHelper.GapsAppellantData(
+        GapsAppellantData gapsAppellantData = new UpdateCcdAppellantDataTestHelper.GapsAppellantData(
                 "first-name", "last-name", "email@email.com", "AB46575S");
 
         Appellant appellant = Appellant.builder()
@@ -104,10 +104,10 @@ public class UpdateCcdAppellantDataTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateScenariosWhenExistingCcdAppellantIsNullOrEmpty() throws IOException {
-        SscsCaseDetails existingCaseDetailsWithEmptyFields = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
-        existingCaseDetailsWithEmptyFields.getData().getAppeal().setAppellant(null);
-
         SscsCaseDetails existingCaseDetailsWithNullFields = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        existingCaseDetailsWithNullFields.getData().getAppeal().setAppellant(null);
+
+        SscsCaseDetails existingCaseDetailsWithEmptyFields = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
         existingCaseDetailsWithEmptyFields.getData().getAppeal().setAppellant(Appellant.builder().build());
 
         return new Object[]{

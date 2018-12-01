@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
@@ -15,13 +14,6 @@ class UpdateCcdAppellantData {
                                    SscsCaseData existingCcdCaseData) {
         if (null == gapsCaseData.getAppeal().getAppellant()) {
             return false;
-        }
-
-        Appeal existingAppeal = existingCcdCaseData.getAppeal();
-
-        if (null == existingAppeal) {
-            existingCcdCaseData.setAppeal(gapsCaseData.getAppeal());
-            return true;
         }
 
         Appellant existingCcdAppellant = existingCcdCaseData.getAppeal().getAppellant();
