@@ -33,7 +33,7 @@ class UpdateGeneratedFields {
                 existingCcdCaseData.setGeneratedEmail(appellant.getContact().getEmail());
             }
             if (StringUtils.isNotBlank(appellant.getContact().getMobile())) {
-                existingCcdCaseData.setGeneratedEmail(appellant.getContact().getMobile());
+                existingCcdCaseData.setGeneratedMobile(appellant.getContact().getMobile());
             }
         }
     }

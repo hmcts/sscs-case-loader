@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -127,6 +128,51 @@ public class UpdateGeneratedFieldsTest {
             new Object[]{appellantWithNullDobAndNinoIdentity, null, null},
             new Object[]{appellantWithEmptyDobAndNinoIdentity, null, null},
             new Object[]{appellantWithIdentity, "1982-12-10", "NW 23 34 45 A"}
+        };
+    }
+
+    @Test
+    @Parameters(method = "generateAppellantContactScenarios")
+    public void givenValidData_shouldUpdateAppellantContact(Appellant appellant, String expectedEmail,
+                                                            String expectedMobile) {
+        SscsCaseData existingCcdCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(appellant)
+                .build())
+            .build();
+
+        updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
+
+        assertThat(existingCcdCaseData.getGeneratedEmail(), equalTo(expectedEmail));
+        assertThat(existingCcdCaseData.getGeneratedMobile(), equalTo(expectedMobile));
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object[] generateAppellantContactScenarios() {
+        Appellant appellantWithNullContact = Appellant.builder().build();
+
+        Appellant appellantWithNullEmailAndMobileContact = Appellant.builder()
+            .contact(Contact.builder().build())
+            .build();
+
+        Appellant appellantWithEmptyEmailAndMobileContact = Appellant.builder()
+            .contact(Contact.builder()
+                .email("")
+                .mobile("")
+                .build())
+            .build();
+        Appellant appellantWithContact = Appellant.builder()
+            .contact(Contact.builder()
+                .email("email@hmcts.net")
+                .mobile("07704244054")
+                .build())
+            .build();
+
+        return new Object[]{
+            new Object[]{appellantWithNullContact, null, null},
+            new Object[]{appellantWithNullEmailAndMobileContact, null, null},
+            new Object[]{appellantWithEmptyEmailAndMobileContact, null, null},
+            new Object[]{appellantWithContact, "email@hmcts.net", "07704244054"}
         };
     }
 
