@@ -42,7 +42,7 @@ public class UpdateGeneratedFieldsTest {
 
     @Test
     @Parameters(method = "generateAppellantScenarios")
-    public void givenValidData_shouldUpdateAppellantName(Appellant appellant) {
+    public void givenValidData_shouldUpdateAppellantName(Appellant appellant, String expectedLastName) {
         SscsCaseData existingCcdCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .appellant(appellant)
@@ -51,19 +51,32 @@ public class UpdateGeneratedFieldsTest {
 
         updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
 
-        String expectedLastName = existingCcdCaseData.getAppeal().getAppellant().getName().getLastName();
         assertThat(existingCcdCaseData.getGeneratedSurname(), equalTo(expectedLastName));
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateAppellantScenarios() {
-        Appellant appellant = Appellant.builder()
+        Appellant appellantWithLastName = Appellant.builder()
             .name(Name.builder()
                 .lastName("lastName")
                 .build())
             .build();
+
+        Appellant appellantWithNullLastName = Appellant.builder()
+            .name(Name.builder()
+                .build())
+            .build();
+
+        Appellant appellantWithEmptylLastName = Appellant.builder()
+            .name(Name.builder()
+                .lastName("")
+                .build())
+            .build();
+
         return new Object[]{
-            new Object[]{appellant}
+            new Object[]{appellantWithLastName, "lastName"},
+            new Object[]{appellantWithNullLastName, null},
+            new Object[]{appellantWithEmptylLastName, null}
         };
     }
 
