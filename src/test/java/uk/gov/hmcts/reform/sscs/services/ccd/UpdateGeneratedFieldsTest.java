@@ -83,5 +83,18 @@ public class UpdateGeneratedFieldsTest {
         };
     }
 
+    @Test
+    public void givenValidData_shouldUpdateAppellantIdentity() {
+        SscsCaseData existingCcdCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(Appellant.builder()
+                    .build())
+                .build())
+            .build();
 
+        updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
+
+        assertThat(existingCcdCaseData.getGeneratedDob(), equalTo(null));
+        assertThat(existingCcdCaseData.getGeneratedNino(), equalTo(null));
+    }
 }
