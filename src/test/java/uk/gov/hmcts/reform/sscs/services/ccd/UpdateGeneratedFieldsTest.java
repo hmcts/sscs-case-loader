@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
@@ -103,8 +104,29 @@ public class UpdateGeneratedFieldsTest {
     private Object[] generateAppellantIdentityScenarios() {
         Appellant appellantWithNullIdentity = Appellant.builder().build();
 
+        Appellant appellantWithNullDobAndNinoIdentity = Appellant.builder()
+            .identity(Identity.builder().build())
+            .build();
+
+        Appellant appellantWithEmptyDobAndNinoIdentity = Appellant.builder()
+            .identity(Identity.builder()
+                .dob("")
+                .nino("")
+                .build())
+            .build();
+
+        Appellant appellantWithIdentity = Appellant.builder()
+            .identity(Identity.builder()
+                .dob("1982-12-10")
+                .nino("NW 23 34 45 A")
+                .build())
+            .build();
+
         return new Object[]{
-            new Object[]{appellantWithNullIdentity, null, null}
+            new Object[]{appellantWithNullIdentity, null, null},
+            new Object[]{appellantWithNullDobAndNinoIdentity, null, null},
+            new Object[]{appellantWithEmptyDobAndNinoIdentity, null, null},
+            new Object[]{appellantWithIdentity, "1982-12-10", "NW 23 34 45 A"}
         };
     }
 
