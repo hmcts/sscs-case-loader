@@ -67,6 +67,8 @@ public class UpdateGeneratedFieldsTest {
                 .build())
             .build();
 
+        Appellant appellantWithNullName = Appellant.builder().build();
+
         Appellant appellantWithEmptylLastName = Appellant.builder()
             .name(Name.builder()
                 .lastName("")
@@ -76,7 +78,8 @@ public class UpdateGeneratedFieldsTest {
         return new Object[]{
             new Object[]{appellantWithLastName, "lastName"},
             new Object[]{appellantWithNullLastName, null},
-            new Object[]{appellantWithEmptylLastName, null}
+            new Object[]{appellantWithEmptylLastName, null},
+            new Object[]{appellantWithNullName, null}
         };
     }
 
