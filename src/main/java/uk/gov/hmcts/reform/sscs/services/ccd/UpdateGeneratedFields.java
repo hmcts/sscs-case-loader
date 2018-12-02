@@ -8,13 +8,17 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 @Service
 class UpdateGeneratedFields {
     void updateGeneratedFields(SscsCaseData existingCcdCaseData) {
-        if (null == existingCcdCaseData.getAppeal() || null == existingCcdCaseData.getAppeal().getAppellant()) {
-            return;
+        if (validData(existingCcdCaseData)) {
+            Appellant appellant = existingCcdCaseData.getAppeal().getAppellant();
+            updateAppellantName(existingCcdCaseData, appellant);
+            updateIdentity(existingCcdCaseData, appellant);
+            updateContact(existingCcdCaseData, appellant);
         }
-        Appellant appellant = existingCcdCaseData.getAppeal().getAppellant();
-        updateAppellantName(existingCcdCaseData, appellant);
-        updateIdentity(existingCcdCaseData, appellant);
-        updateContact(existingCcdCaseData, appellant);
+    }
+
+    private boolean validData(SscsCaseData existingCcdCaseData) {
+        return null != existingCcdCaseData && null != existingCcdCaseData.getAppeal()
+            && null != existingCcdCaseData.getAppeal().getAppellant();
     }
 
     private void updateAppellantName(SscsCaseData existingCcdCaseData, Appellant appellant) {
