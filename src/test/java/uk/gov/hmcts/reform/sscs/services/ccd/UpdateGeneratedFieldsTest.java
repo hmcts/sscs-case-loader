@@ -41,7 +41,7 @@ public class UpdateGeneratedFieldsTest {
     }
 
     @Test
-    @Parameters(method = "generateAppellantScenarios")
+    @Parameters(method = "generateAppellantNameScenarios")
     public void givenValidData_shouldUpdateAppellantName(Appellant appellant, String expectedLastName) {
         SscsCaseData existingCcdCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
@@ -55,7 +55,7 @@ public class UpdateGeneratedFieldsTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private Object[] generateAppellantScenarios() {
+    private Object[] generateAppellantNameScenarios() {
         Appellant appellantWithLastName = Appellant.builder()
             .name(Name.builder()
                 .lastName("lastName")
@@ -84,17 +84,28 @@ public class UpdateGeneratedFieldsTest {
     }
 
     @Test
-    public void givenValidData_shouldUpdateAppellantIdentity() {
+    @Parameters(method = "generateAppellantIdentityScenarios")
+    public void givenValidData_shouldUpdateAppellantIdentity(Appellant appellant, String expectedDob,
+                                                             String expectedNino) {
         SscsCaseData existingCcdCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
-                .appellant(Appellant.builder()
-                    .build())
+                .appellant(appellant)
                 .build())
             .build();
 
         updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
 
-        assertThat(existingCcdCaseData.getGeneratedDob(), equalTo(null));
-        assertThat(existingCcdCaseData.getGeneratedNino(), equalTo(null));
+        assertThat(existingCcdCaseData.getGeneratedDob(), equalTo(expectedDob));
+        assertThat(existingCcdCaseData.getGeneratedNino(), equalTo(expectedNino));
     }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private Object[] generateAppellantIdentityScenarios() {
+        Appellant appellantWithNullIdentity = Appellant.builder().build();
+
+        return new Object[]{
+            new Object[]{appellantWithNullIdentity, null, null}
+        };
+    }
+
 }
