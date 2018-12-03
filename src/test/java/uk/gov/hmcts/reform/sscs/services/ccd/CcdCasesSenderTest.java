@@ -3,9 +3,9 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
@@ -46,18 +46,17 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
+import uk.gov.hmcts.reform.sscs.models.UpdateType;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
 
-    private static final String CASE_DETAILS_JSON = "CaseDetailsWithOneEventAndNoEvidence.json";
+    static final String CASE_DETAILS_JSON = "CaseDetailsWithOneEventAndNoEvidence.json";
     private static final String CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON =
         "CaseDetailsWithOneEvidenceAndOneEvent.json";
     private static final String OAUTH2 = "token";
@@ -66,17 +65,9 @@ public class CcdCasesSenderTest {
     private static final String CASE_DETAILS_WITH_HEARINGS_JSON = "CaseDetailsWithHearings.json";
     private static final String CASE_DETAILS_WITH_NO_HEARINGS_JSON = "CaseDetailsWithNoHearings.json";
     private static final String CASE_DETAILS_WITH_HEARING_OPTIONS_JSON = "CaseDetailsWithHearingOptions.json";
-    private static final String CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON = "CaseDetailsWithAppealReceived.json";
-    public static final String SSCS_APPEAL_UPDATED_EVENT = "SSCS - appeal updated event";
-    public static final String UPDATED_SSCS = "Updated SSCS";
-    public static final String CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON = "CaseDetailsWithSubscriptions.json";
-    public static final String FIRST_NAME = "first-name";
-    public static final String LAST_NAME = "last-name";
-    public static final String EMAIL_EMAIL_COM = "email@email.com";
-    public static final String NINO = "AB46575S";
-    public static final String DOB = "12-20-2018";
-    public static final String MOBILE = "07777777777";
-
+    public static final String CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON = "CaseDetailsWithAppealReceived.json";
+    private static final String SSCS_APPEAL_UPDATED_EVENT = "SSCS - appeal updated event";
+    private static final String UPDATED_SSCS = "Updated SSCS";
 
     @Mock
     private UpdateCcdCaseService updateCcdCaseService;
@@ -84,6 +75,8 @@ public class CcdCasesSenderTest {
     private RegionalProcessingCenterService regionalProcessingCenterService;
     @Mock
     private CcdService ccdService;
+    @Mock
+    private UpdateCcdCaseData updateCcdCaseData;
 
     private CcdCasesSender ccdCasesSender;
     private IdamTokens idamTokens;
@@ -91,46 +84,16 @@ public class CcdCasesSenderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ccdCasesSender = new CcdCasesSender(ccdService, updateCcdCaseService, regionalProcessingCenterService);
+        ccdCasesSender = new CcdCasesSender(ccdService, updateCcdCaseService, regionalProcessingCenterService,
+            updateCcdCaseData);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
             .serviceAuthorization(SERVICE_AUTHORIZATION)
             .userId(USER_ID)
             .build();
-    }
 
-    @Test
-    public void givenACaseUpdate_shouldNotOverwriteSubscriptions() throws Exception {
-        SscsCaseData caseData = buildTestCaseDataWithEventAndEvidence();
-        Subscriptions subscription = Subscriptions.builder()
-            .appellantSubscription(Subscription.builder()
-                .tya("001")
-                .build())
-            .build();
-        caseData.setSubscriptions(subscription);
-        caseData.setAppeal(buildAppeal());
-
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_SUBSCRIPTIONS_JSON);
-
-        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("evidenceReceived"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("caseUpdated"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        Subscriptions subscriptions = caseDataArgumentCaptor.getValue().getSubscriptions();
-
-        assertNotNull(subscriptions);
-
-        assertThat(subscriptions.getAppellantSubscription().getTya(), equalTo("abcde12345"));
-
-
+        given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
+            .willReturn(UpdateType.EVENT_UPDATE);
     }
 
     @Test
@@ -161,6 +124,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(gapsCaseData, existingCaseDetails, idamTokens);
     }
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateGapsCaseDataScenarios() {
         SscsCaseData gapsCaseDataWithNullAppeal = SscsCaseData.builder()
             .appeal(null)
@@ -222,7 +186,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldUpdateCcdGivenThereIsADataChange() throws Exception {
+    public void shouldUpdateCcdGivenThereIsADataChange() {
         SscsCaseData caseData = SscsCaseData.builder()
             .events(Collections.singletonList(Event.builder()
                 .value(EventDetails.builder()
@@ -231,21 +195,29 @@ public class CcdCasesSenderTest {
                     .description("Appeal received")
                     .build())
                 .build()))
-            .appeal(buildAppeal())
             .build();
 
-        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
+            .willReturn(UpdateType.DATA_UPDATE);
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        SscsCaseDetails existingCcdCase = SscsCaseDetails.builder()
+            .id(1L)
+            .data(SscsCaseData.builder().build())
+            .build();
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCcdCase, idamTokens);
 
         verify(updateCcdCaseService, times(1))
-            .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq("caseUpdated"),
+            .updateCase(eq(SscsCaseData.builder().build()), anyLong(), eq("caseUpdated"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
     @Test
     public void shouldNotUpdateCcdGivenThereIsNoEventChangeOrDataChange() throws Exception {
         SscsCaseData caseData = buildTestCaseDataWithAppellantAndBenefitType();
+
+        given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
+            .willReturn(UpdateType.NO_UPDATE);
 
         ccdCasesSender.sendUpdateCcdCases(caseData,
             getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON), idamTokens);
@@ -280,7 +252,7 @@ public class CcdCasesSenderTest {
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
-    private SscsCaseData buildTestCaseDataWithEventAndEvidence() {
+    public static SscsCaseData buildTestCaseDataWithEventAndEvidence() {
         return SscsCaseData.builder()
             .evidence(Evidence.builder()
                 .documents(Collections.singletonList(Document.builder()
@@ -324,7 +296,7 @@ public class CcdCasesSenderTest {
             .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("evidenceReceived"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
 
-        verify(updateCcdCaseService, times(0))
+        verify(updateCcdCaseService, times(1))
             .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
 
@@ -491,41 +463,6 @@ public class CcdCasesSenderTest {
 
     }
 
-    @Test
-    public void shouldUpdateAppellantDetailsIfThereIsAChangeInGaps2Record() throws Exception {
-        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-
-        SscsCaseData caseData = buildTestCaseDataWithAppellantAndBenefitType();
-
-        Appellant appellant = Appellant.builder()
-            .name(Name.builder().firstName(FIRST_NAME).lastName(LAST_NAME).title("Mr").build())
-            .contact(Contact.builder().email(EMAIL_EMAIL_COM).mobile(MOBILE).build())
-            .identity(Identity.builder().nino(NINO).dob(DOB).build())
-            .build();
-
-        caseData.getAppeal().setAppellant(appellant);
-
-        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(caseDataArgumentCaptor.capture(), anyLong(), eq("caseUpdated"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        SscsCaseData sscsCaseData = caseDataArgumentCaptor.getValue();
-
-        assertThat(sscsCaseData.getAppeal().getAppellant().getName().getFirstName(), equalTo(FIRST_NAME));
-        assertThat(sscsCaseData.getAppeal().getAppellant().getName().getLastName(), equalTo(LAST_NAME));
-        assertThat(sscsCaseData.getAppeal().getAppellant().getContact().getEmail(), equalTo(EMAIL_EMAIL_COM));
-        assertThat(sscsCaseData.getAppeal().getAppellant().getIdentity().getNino(), equalTo(NINO));
-        assertThat(sscsCaseData.getGeneratedSurname(), equalTo(LAST_NAME));
-        assertThat(sscsCaseData.getGeneratedNino(), equalTo(NINO));
-        assertThat(sscsCaseData.getGeneratedEmail(), equalTo(EMAIL_EMAIL_COM));
-        assertThat(sscsCaseData.getGeneratedDob(), equalTo(DOB));
-        assertThat(sscsCaseData.getGeneratedMobile(), equalTo(MOBILE));
-    }
-
     private RegionalProcessingCenter getRegionalProcessingCenter() {
         return RegionalProcessingCenter.builder()
             .name("CARDIFF")
@@ -547,7 +484,7 @@ public class CcdCasesSenderTest {
                 .build());
     }
 
-    private SscsCaseData buildCaseData(GapsEvent event) {
+    public static SscsCaseData buildCaseData(GapsEvent event) {
         final Appeal appeal = buildAppeal();
         EventDetails appealCreatedEvent = EventDetails.builder()
             .type("appealCreated")
@@ -575,7 +512,7 @@ public class CcdCasesSenderTest {
             .build();
     }
 
-    private Appeal buildAppeal() {
+    public static Appeal buildAppeal() {
         Name name = Name.builder()
             .title("Mr")
             .firstName("User")
@@ -627,7 +564,7 @@ public class CcdCasesSenderTest {
 
     }
 
-    private SscsCaseData buildTestCaseDataWithAppellantAndBenefitType() {
+    public static SscsCaseData buildTestCaseDataWithAppellantAndBenefitType() {
         final Appeal appeal = buildAppeal();
 
         EventDetails event = EventDetails.builder()
