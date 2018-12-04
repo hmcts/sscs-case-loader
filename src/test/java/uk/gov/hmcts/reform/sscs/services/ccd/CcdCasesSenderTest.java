@@ -6,14 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
@@ -305,6 +298,66 @@ public class CcdCasesSenderTest {
         assertThat(evidence, not(equalTo(null)));
         assertThat(evidence.getDocuments().size(), equalTo(2));
 
+    }
+
+    @Test
+    public void shouldUpdateEvidenceWhenThereIsNoExistingEvidence() throws Exception {
+        final ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
+        final SscsCaseData caseData = SscsCaseData.builder()
+            .evidence(buildEvidence())
+            .events(Collections.singletonList(Event.builder()
+                .value(EventDetails.builder()
+                    .type(APPEAL_RECEIVED.getType())
+                    .date("2017-05-23T13:18:15.073")
+                    .description("Appeal received")
+                    .build())
+                .build()))
+            .appeal(buildAppeal())
+            .build();
+
+        final SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        existingCaseDetails.getData().setEvidence(null);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("evidenceReceived"),
+                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
+        verify(updateCcdCaseService, times(1))
+            .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
+                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
+        verifyNoMoreInteractions(updateCcdCaseService);
+        final Evidence evidence = caseDataArgumentCaptor.getValue().getEvidence();
+        assertThat(evidence, not(equalTo(null)));
+        assertThat(evidence.getDocuments().size(), equalTo(caseData.getEvidence().getDocuments().size()));
+    }
+
+    @Test
+    public void shouldNotUpdateEvidenceIfEvidenceIsUnchanged() throws Exception {
+        final SscsCaseData caseData = SscsCaseData.builder()
+            .evidence(buildEvidence())
+            .events(Collections.singletonList(Event.builder()
+                .value(EventDetails.builder()
+                    .type(APPEAL_RECEIVED.getType())
+                    .date("2017-05-23T13:18:15.073")
+                    .description("Appeal received")
+                    .build())
+                .build()))
+            .appeal(buildAppeal())
+            .build();
+
+        final SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        existingCaseDetails.getData().setEvidence(caseData.getEvidence());
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
+                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
+        verifyNoMoreInteractions(updateCcdCaseService);
     }
 
     @Test
