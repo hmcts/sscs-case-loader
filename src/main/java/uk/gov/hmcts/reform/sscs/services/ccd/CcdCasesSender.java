@@ -129,7 +129,7 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         SscsCaseData existingCaseData = existingCase.getData();
         Evidence existingEvidence = existingCaseData.getEvidence();
-        if (newEvidence != null && (existingEvidence == null || !existingEvidence.equals(newEvidence))) {
+        if (newEvidence != null && !newEvidence.equals(existingEvidence)) {
             existingCaseData.setEvidence(newEvidence);
             updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
                 SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
