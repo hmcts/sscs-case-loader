@@ -24,8 +24,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.exception.CreateCcdCaseException;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.idam.Authorize;
-import uk.gov.hmcts.reform.sscs.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -38,9 +36,6 @@ public class CreateCcdServiceTest {
     private CoreCaseDataApi coreCaseDataApi;
 
     @MockBean
-    private IdamApiClient idamApiClient;
-
-    @MockBean
     private SftpChannelAdapter channelAdapter;
 
     @Autowired
@@ -48,15 +43,9 @@ public class CreateCcdServiceTest {
 
     private SscsCaseData caseData;
     private IdamTokens idamTokens;
-    private Authorize authorize;
 
     @Before
     public void setUp() {
-        authorize = Authorize.builder()
-            .accessToken("accessToken")
-            .code("code")
-            .defaultUrl("defaultUrl")
-            .build();
         caseData = SscsCaseData.builder()
             .caseReference("SC068/17/00004")
             .appeal(Appeal.builder()
@@ -74,12 +63,6 @@ public class CreateCcdServiceTest {
 
     @Test(expected = CreateCcdCaseException.class)
     public void givenAnErrorOccursWhenStartCreatingCaseInCcd_shouldThrowException() {
-        given(idamApiClient.authorizeCodeType(any(), any(), any(), any()))
-            .willReturn(authorize);
-
-        given(idamApiClient.authorizeToken(any(), any(), any(), any(), any()))
-            .willReturn(authorize);
-
         given(coreCaseDataApi.startForCaseworker(any(), any(), any(), any(), any(), any()))
             .willThrow(new RuntimeException());
 
@@ -88,12 +71,6 @@ public class CreateCcdServiceTest {
 
     @Test
     public void shouldCreateCaseInCcd() {
-        given(idamApiClient.authorizeCodeType(any(), any(), any(), any()))
-            .willReturn(authorize);
-
-        given(idamApiClient.authorizeToken(any(), any(), any(), any(), any()))
-            .willReturn(authorize);
-
         given(coreCaseDataApi.startForCaseworker(any(), any(), any(), any(), any(), any()))
             .willReturn(StartEventResponse.builder().build());
 
@@ -107,12 +84,6 @@ public class CreateCcdServiceTest {
 
     @Test(expected = CreateCcdCaseException.class)
     public void givenAnErrorOccursWhenSubmittingACaseInCcd_shouldThrowException() {
-        given(idamApiClient.authorizeCodeType(any(), any(), any(), any()))
-            .willReturn(authorize);
-
-        given(idamApiClient.authorizeToken(any(), any(), any(), any(), any()))
-            .willReturn(authorize);
-
         given(coreCaseDataApi.startForCaseworker(any(), any(), any(), any(), any(), any()))
             .willReturn(StartEventResponse.builder().build());
 
