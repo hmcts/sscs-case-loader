@@ -34,12 +34,15 @@ class SscsCaseLoaderScheduler {
         log.info(logPrefix + " to process data using slot: {}", slotName);
         if ("PRODUCTION".equals(slotName)) {
             try {
-                log.info(logPrefix + " scheduler started : {} ", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                log.info(logPrefix + " scheduler started : {} ", 
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
                 caseLoaderService.setLogPrefix(logPrefix);
                 caseLoaderService.process();
-                log.info(logPrefix + " scheduler ended : {} ", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                log.info(logPrefix + " scheduler ended : {} ", 
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
             } catch (Exception e) {
-                log.error(logPrefix + " scheduler failed at " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) 
+                log.error(logPrefix + " scheduler failed at " 
+                            + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) 
                             + " due to exception: ", e);
             }
         }
