@@ -19,17 +19,21 @@ final class UpdateCcdRepresentative {
                 || !existingCcdCaseData.getAppeal().getRep().getContact().equals(rep.getContact())
             ) {
                 existingCcdCaseData.getAppeal().setRep(rep);
-                Subscriptions existingSubscriptions = existingCcdCaseData.getSubscriptions() != null
-                    ? existingCcdCaseData.getSubscriptions() : Subscriptions.builder().build();
-                Subscription newRepSubscription = gapsCaseData.getSubscriptions() != null
-                    ? gapsCaseData.getSubscriptions().getRepresentativeSubscription() : Subscription.builder().build();
-                existingSubscriptions = existingSubscriptions.toBuilder()
-                    .representativeSubscription(newRepSubscription).build();
-                existingCcdCaseData.setSubscriptions(existingSubscriptions);
+                updateRepresentativeSubscription(gapsCaseData, existingCcdCaseData);
                 repUpdated = true;
             }
         }
         return repUpdated;
+    }
+
+    private static void updateRepresentativeSubscription(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        Subscriptions existingSubscriptions = existingCcdCaseData.getSubscriptions() != null
+            ? existingCcdCaseData.getSubscriptions() : Subscriptions.builder().build();
+        Subscription newRepSubscription = gapsCaseData.getSubscriptions() != null
+            ? gapsCaseData.getSubscriptions().getRepresentativeSubscription() : Subscription.builder().build();
+        existingSubscriptions = existingSubscriptions.toBuilder()
+            .representativeSubscription(newRepSubscription).build();
+        existingCcdCaseData.setSubscriptions(existingSubscriptions);
     }
 
 
