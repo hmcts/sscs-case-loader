@@ -277,8 +277,6 @@ dependencies {
   runtime "org.springframework.boot:spring-boot-properties-migrator"
 }
 
-apply plugin: 'project-report'
-
 bootJar {
   archiveName 'sscs-case-loader.jar'
   manifest {
