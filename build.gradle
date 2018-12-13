@@ -259,6 +259,9 @@ dependencies {
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.1.1'
   compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
+  // added these due to vulnerability https://nvd.nist.gov/vuln/detail/CVE-2018-8088
+  compile group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-beta2'
+
   compileOnly 'org.projectlombok:lombok:1.18.2'
   apt "org.projectlombok:lombok:1.16.20"
 
