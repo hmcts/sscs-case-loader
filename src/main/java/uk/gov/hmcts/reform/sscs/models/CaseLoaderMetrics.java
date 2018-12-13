@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.models;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import org.apache.commons.lang.StringUtils;
 
 public class CaseLoaderMetrics {
 
@@ -72,7 +73,13 @@ public class CaseLoaderMetrics {
     }
 
     public void merge(CaseLoaderMetrics metrics) {
-        fileName += ", " + metrics.fileName;
+        if (StringUtils.isNotEmpty(metrics.fileName)) {
+            if (StringUtils.isNotEmpty(this.fileName)) {
+                fileName += ", " + metrics.fileName;
+            } else {
+                fileName = metrics.fileName;
+            }
+        }
 
         fileSize += metrics.fileSize;
 
