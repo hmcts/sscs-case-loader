@@ -58,6 +58,10 @@ data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+provider "azurerm" {
+  version = "1.19.0"
+}
+
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
