@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.any;
@@ -18,6 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
@@ -50,7 +54,7 @@ public class CaseLoaderServiceTest {
     @Mock
     private Gaps2File file;
     @Mock
-    private InputStream is;
+    private InputStream inputStream;
     @Mock
     private SearchCcdCaseService searchCcdCaseService;
     @Mock
@@ -63,7 +67,7 @@ public class CaseLoaderServiceTest {
     @Before
     public void setUp() {
         when(sftpSshService.getFiles()).thenReturn(newArrayList(file, file));
-        when(sftpSshService.readExtractFile(file)).thenReturn(is);
+        when(sftpSshService.readExtractFile(file)).thenReturn(inputStream);
         when(file.isDelta()).thenReturn(false).thenReturn(true);
 
         caseLoaderService = new CaseLoaderService(sftpSshService,
@@ -87,7 +91,7 @@ public class CaseLoaderServiceTest {
 
     @Test
     public void shouldLoadCasesGivenIncomingXmlFiles() {
-        when(transformService.transform(is)).thenReturn(newArrayList(caseData));
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
         caseLoaderService.process();
 
@@ -121,13 +125,35 @@ public class CaseLoaderServiceTest {
             .willReturn(idamTokens2)
             .willReturn(idamTokens3);
 
-        given(transformService.transform(is)).willReturn(buildCaseListWithGivenNumberOfElements(201));
+        given(transformService.transform(inputStream)).willReturn(buildCaseListWithGivenNumberOfElements(201));
 
-//        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, ))
+        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(any(SscsCaseData.class), any(IdamTokens.class)))
+            .willReturn(null)
+            .willReturn(SscsCaseDetails.builder().build());
 
         caseLoaderService.process();
 
         then(idamService).should(times(3)).getIdamTokens();
+
+        ArgumentCaptor<IdamTokens> idamTokensArgumentCaptor = ArgumentCaptor.forClass(IdamTokens.class);
+        then(searchCcdCaseService).should(times(201))
+            .findCaseByCaseRefOrCaseId(eq(caseData), idamTokensArgumentCaptor.capture());
+        List<IdamTokens> idamTokensValues = idamTokensArgumentCaptor.getAllValues();
+
+        long actualNumberOfIdamTokens = idamTokensValues.stream()
+            .filter(token -> token == idamTokens)
+            .count();
+        assertThat(actualNumberOfIdamTokens, is(equalTo(100L)));
+
+        long actualNumberOfIdamTokens2 = idamTokensValues.stream()
+            .filter(token -> token == idamTokens2)
+            .count();
+        assertThat(actualNumberOfIdamTokens2, is(equalTo(100L)));
+
+        long actualNumberOfIdamTokens3 = idamTokensValues.stream()
+            .filter(token -> token == idamTokens3)
+            .count();
+        assertThat(actualNumberOfIdamTokens3, is(equalTo(1L)));
 
         then(xmlValidator).should(times(2)).validateXml(file);
         then(sftpSshService).should(times(2)).move(file, true);
@@ -157,7 +183,7 @@ public class CaseLoaderServiceTest {
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
 
-        when(transformService.transform(is)).thenReturn(newArrayList(caseData));
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
         when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
@@ -188,7 +214,7 @@ public class CaseLoaderServiceTest {
             .thenThrow(new NumberFormatException())
             .thenReturn(sscsCaseDetails);
 
-        when(transformService.transform(is)).thenReturn(newArrayList(caseData));
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
         when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
@@ -218,7 +244,7 @@ public class CaseLoaderServiceTest {
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
 
-        when(transformService.transform(is)).thenReturn(newArrayList(caseData));
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
         when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
         when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
         when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
@@ -241,7 +267,7 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(refDataFactory).extract(is);
+        verify(refDataFactory).extract(inputStream);
         verify(sftpSshService, times(2)).move(file, true);
     }
 
@@ -249,7 +275,7 @@ public class CaseLoaderServiceTest {
     public void shouldThrowExceptionGivenReferenceExtractFails() throws XMLStreamException {
         when(file.isDelta()).thenReturn(false);
 
-        doThrow(new XMLStreamException()).when(refDataFactory).extract(is);
+        doThrow(new XMLStreamException()).when(refDataFactory).extract(inputStream);
 
         caseLoaderService.process();
 
