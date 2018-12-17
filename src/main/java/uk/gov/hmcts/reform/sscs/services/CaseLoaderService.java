@@ -4,6 +4,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -28,6 +29,9 @@ public class CaseLoaderService {
     private final RefDataFactory refDataFactory;
     private final IdamService idamService;
     private final SearchCcdCaseService searchCcdCaseService;
+
+    @Value("${number.processed.cases.to.refresh.tokens}")
+    private int numberOfProcessedCasesToRefreshTokens;
 
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
@@ -77,8 +81,9 @@ public class CaseLoaderService {
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 SscsCaseDetails sscsCaseDetails;
-                if (counter == 100) {
+                if (counter == numberOfProcessedCasesToRefreshTokens) {
                     idamTokens = idamService.getIdamTokens();
+                    log.info("*** case-loader *** renew idam and s2s tokens successfully");
                     counter = 0;
                 }
                 try {

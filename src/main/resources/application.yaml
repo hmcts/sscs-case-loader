@@ -23,9 +23,8 @@ idam:
 
 management:
   info.git.mode: full
-  endpoints:
-    health.show-details: always
-    web.base-path: /
+  endpoints.web.base-path: /
+  endpoint.health.show-details: always
 
 sftp:
   keyLocation:  ${GAPS2_KEY_LOCATION:|
@@ -78,6 +77,8 @@ slot.name: ${SLOT:dev}
 test.url: ${TEST_URL:http://localhost:8082}
 
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
+
+number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
 ---
 spring:
     profiles: development
