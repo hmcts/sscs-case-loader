@@ -45,11 +45,6 @@ public class CaseLoaderService {
     public void process() {
         List<Gaps2File> files = sftpSshService.getFiles();
         log.debug("*** case-loader *** About to start processing files: {}", files);
-        IdamTokens idamTokens = idamService.getIdamTokens();
-        loadDeltas(files, idamTokens);
-    }
-
-    private void loadDeltas(List<Gaps2File> files, IdamTokens idamTokens) {
         Gaps2File latestRef = null;
         for (Gaps2File file : files) {
             log.info("*** case-loader *** file being processed: {}", file.getName());
@@ -60,7 +55,7 @@ public class CaseLoaderService {
                     throw new TransformException(String.format("No reference data processed for this delta: %s",
                         file.getName()));
                 }
-                processDelta(idamTokens, file);
+                processDelta(file);
                 sftpSshService.move(file, true);
                 sftpSshService.move(latestRef, true);
             } else {
@@ -74,10 +69,11 @@ public class CaseLoaderService {
         }
     }
 
-    private void processDelta(IdamTokens idamTokens, Gaps2File file) {
+    private void processDelta(Gaps2File file) {
         List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
         log.info("*** case-loader *** file transformed to {} Cases successfully", cases.size());
         int counter = 0;
+        IdamTokens idamTokens = idamService.getIdamTokens();
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 SscsCaseDetails sscsCaseDetails;
