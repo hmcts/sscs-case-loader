@@ -114,6 +114,8 @@ module "sscs-case-loader" {
     SSCS_CASE_LOADER_CRON_SCHEDULE = "${var.sscs_case_loader_cron_schedule}"
     IGNORE_CASES_BEFORE_DATE       = "${var.ignore_cases_before_date}"
 
+    NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS = "${var.number_processed_cases_to_refresh_tokens}"
+
     # addtional log
     ROOT_LOGGING_LEVEL   = "${var.root_logging_level}"
     LOG_LEVEL_SPRING_WEB = "${var.log_level_spring_web}"
