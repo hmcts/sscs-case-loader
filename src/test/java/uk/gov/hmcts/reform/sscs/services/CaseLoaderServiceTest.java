@@ -63,6 +63,7 @@ public class CaseLoaderServiceTest {
     private SscsCaseData caseData;
 
     private CaseLoaderService caseLoaderService;
+    private IdamTokens idamTokens;
 
     @Before
     public void setUp() {
@@ -87,6 +88,12 @@ public class CaseLoaderServiceTest {
             .caseReference("caseRef")
             .appeal(appeal)
             .build();
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token("idamOauth2Token")
+            .serviceAuthorization("serviceAuthorization")
+            .userId("16")
+            .build();
+        when(idamService.getIdamTokens()).thenReturn(idamTokens);
     }
 
     @Test
@@ -171,22 +178,12 @@ public class CaseLoaderServiceTest {
 
     @Test
     public void shouldUpdateCaseUsingCaseRefGivenIncomingXmlFiles() {
-
         final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
-
-        IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token("idamOauth2Token")
-            .serviceAuthorization("serviceAuthorization")
-            .userId("16")
-            .build();
 
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
-        when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
-        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
-        when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
 
         caseLoaderService.process();
 
@@ -204,20 +201,11 @@ public class CaseLoaderServiceTest {
 
         final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
 
-        IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token("idamOauth2Token")
-            .serviceAuthorization("serviceAuthorization")
-            .userId("16")
-            .build();
-
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenThrow(new NumberFormatException())
             .thenReturn(sscsCaseDetails);
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
-        when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
-        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
-        when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
 
         caseLoaderService.process();
 
@@ -235,19 +223,10 @@ public class CaseLoaderServiceTest {
         caseData.setCaseReference(null);
         caseData.setCcdCaseId("1234567890");
 
-        IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token("idamOauth2Token")
-            .serviceAuthorization("serviceAuthorization")
-            .userId("16")
-            .build();
-
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
-        when(idamService.getIdamOauth2Token()).thenReturn("idamOauth2Token");
-        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorization");
-        when(idamService.getUserId("idamOauth2Token")).thenReturn("16");
 
         caseLoaderService.process();
 
