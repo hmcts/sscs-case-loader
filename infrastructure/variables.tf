@@ -101,5 +101,5 @@ variable "sftp_key_name" {
 }
 
 variable "number_processed_cases_to_refresh_tokens" {
-  default = "100"
+  default = "4000"
 }
