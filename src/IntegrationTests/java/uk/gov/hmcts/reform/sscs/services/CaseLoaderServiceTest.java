@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -16,6 +19,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -84,6 +88,43 @@ public class CaseLoaderServiceTest {
             .caseReference("caseRef")
             .appeal(appeal)
             .build();
+    }
+
+    @Test
+    public void givenTwoDeltas_shouldRenewIdamTokenForEachDelta() {
+        when(sftpSshService.getFiles()).thenReturn(newArrayList(file, file, file));
+        when(sftpSshService.readExtractFile(file)).thenReturn(inputStream);
+        when(file.isDelta()).thenReturn(false).thenReturn(true).thenReturn(true);
+
+        given(transformService.transform(inputStream)).willReturn(newArrayList(caseData));
+
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("oAuth2Token")
+            .serviceAuthorization("s2sToken")
+            .userId("16")
+            .build();
+
+        IdamTokens idamTokensRenewed = IdamTokens.builder()
+            .idamOauth2Token("oAuth2Token2")
+            .serviceAuthorization("s2sToken")
+            .userId("16")
+            .build();
+
+        given(idamService.getIdamTokens())
+            .willReturn(idamTokens)
+            .willReturn(idamTokensRenewed);
+
+        caseLoaderService.process();
+
+        then(idamService).should(times(2)).getIdamTokens();
+
+        ArgumentCaptor<IdamTokens> idamTokensArgumentCaptor = ArgumentCaptor.forClass(IdamTokens.class);
+        then(searchCcdCaseService).should(times(2))
+            .findCaseByCaseRefOrCaseId(eq(caseData), idamTokensArgumentCaptor.capture());
+
+        List<IdamTokens> values = idamTokensArgumentCaptor.getAllValues();
+        assertThat("oAuth2Token", is(equalTo(values.get(0).getIdamOauth2Token())));
+        assertThat("oAuth2Token2", is(equalTo(values.get(1).getIdamOauth2Token())));
     }
 
     @Test
