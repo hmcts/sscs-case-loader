@@ -58,6 +58,10 @@ data "azurerm_key_vault_secret" "gaps2-service-sftp-private-key" {
   vault_uri = "${data.azurerm_key_vault.sscs_key_vault.vault_uri}"
 }
 
+provider "azurerm" {
+  version = "1.19.0"
+}
+
 locals {
   aseName = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
 
@@ -109,6 +113,8 @@ module "sscs-case-loader" {
 
     SSCS_CASE_LOADER_CRON_SCHEDULE = "${var.sscs_case_loader_cron_schedule}"
     IGNORE_CASES_BEFORE_DATE       = "${var.ignore_cases_before_date}"
+
+    NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS = "${var.number_processed_cases_to_refresh_tokens}"
 
     # addtional log
     ROOT_LOGGING_LEVEL   = "${var.root_logging_level}"

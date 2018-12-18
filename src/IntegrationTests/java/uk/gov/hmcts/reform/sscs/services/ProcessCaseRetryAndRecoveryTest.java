@@ -181,6 +181,7 @@ public class ProcessCaseRetryAndRecoveryTest {
 
         when(authTokenGenerator.generate())
             .thenReturn(SERVER_AUTH)
+            .thenReturn(SERVER_AUTH)
             .thenReturn(SERVER_AUTH2);
 
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
