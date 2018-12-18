@@ -4,6 +4,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -29,6 +30,9 @@ public class CaseLoaderService {
     private final IdamService idamService;
     private final SearchCcdCaseService searchCcdCaseService;
 
+    @Value("${number.processed.cases.to.refresh.tokens}")
+    private int numberOfProcessedCasesToRefreshTokens;
+
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
                       CcdCasesSender ccdCasesSender, RefDataFactory refDataFactory, IdamService idamService,
@@ -43,15 +47,8 @@ public class CaseLoaderService {
     }
 
     public void process() {
-        log.debug("*** case-loader *** reading files from sFTP...");
         List<Gaps2File> files = sftpSshService.getFiles();
         log.debug("*** case-loader *** About to start processing files: {}", files);
-        String oauth2Token = idamService.getIdamOauth2Token();
-        IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token(oauth2Token)
-            .serviceAuthorization(idamService.generateServiceAuthorization())
-            .userId(idamService.getUserId(oauth2Token))
-            .build();
         Gaps2File latestRef = null;
         for (Gaps2File file : files) {
             log.info("*** case-loader *** file being processed: {}", file.getName());
@@ -62,7 +59,7 @@ public class CaseLoaderService {
                     throw new TransformException(String.format("No reference data processed for this delta: %s",
                         file.getName()));
                 }
-                processDelta(idamTokens, file);
+                processDelta(file);
                 sftpSshService.move(file, true);
                 sftpSshService.move(latestRef, true);
             } else {
@@ -76,32 +73,44 @@ public class CaseLoaderService {
         }
     }
 
-    private void processDelta(IdamTokens idamTokens, Gaps2File file) {
+    private void processDelta(Gaps2File file) {
         List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
         log.info("*** case-loader *** file transformed to {} Cases successfully", cases.size());
+        int counter = 0;
+        IdamTokens idamTokens = idamService.getIdamTokens();
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
-                SscsCaseDetails sscsCaseDetails;
-                
-                try {
-                    sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
-                } catch (NumberFormatException e) {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
-                        + " skipping case...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    continue;
+                idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
+                if (counter == numberOfProcessedCasesToRefreshTokens) {
+                    idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+                    log.info("*** case-loader *** renew idam token successfully");
+                    counter = 0;
                 }
-
-                if (null == sscsCaseDetails) {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
-                } else {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
-                }
+                processCase(idamTokens, caseData);
+                counter++;
             }
         }
     }
+
+    private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
+        SscsCaseDetails sscsCaseDetails;
+        try {
+            sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
+        } catch (NumberFormatException e) {
+            log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
+                    + " skipping case...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            return;
+        }
+        if (null == sscsCaseDetails) {
+            log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
+        } else {
+            log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+        }
+    }
+
 }
