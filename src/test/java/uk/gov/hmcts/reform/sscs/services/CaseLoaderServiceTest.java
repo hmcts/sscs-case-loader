@@ -184,8 +184,9 @@ public class CaseLoaderServiceTest {
     }
 
     @Test(expected = TransformException.class)
-    public void shouldThrowExceptionGivenNoReferenceFileLoaded() throws XMLStreamException {
+    public void shouldThrowExceptionGivenNoReferenceFileLoaded() {
         when(file.isDelta()).thenReturn(true);
         caseLoaderService.process();
     }
+
 }

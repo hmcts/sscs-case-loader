@@ -80,33 +80,36 @@ public class CaseLoaderService {
         IdamTokens idamTokens = idamService.getIdamTokens();
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
-                SscsCaseDetails sscsCaseDetails;
+                idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
                 if (counter == numberOfProcessedCasesToRefreshTokens) {
-                    idamTokens = idamService.getIdamTokens();
-                    log.info("*** case-loader *** renew idam and s2s tokens successfully");
+                    idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+                    log.info("*** case-loader *** renew idam token successfully after 100 cases processed");
                     counter = 0;
                 }
-                try {
-                    sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
-                } catch (NumberFormatException e) {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
-                            + " skipping case...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    continue;
-                }
-
-                if (null == sscsCaseDetails) {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
-                    counter++;
-                } else {
-                    log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
-                    counter++;
-                }
+                processCase(idamTokens, caseData);
+                counter++;
             }
+        }
+    }
+
+    private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
+        SscsCaseDetails sscsCaseDetails;
+        try {
+            sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
+        } catch (NumberFormatException e) {
+            log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
+                    + " skipping case...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            return;
+        }
+        if (null == sscsCaseDetails) {
+            log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
+        } else {
+            log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         }
     }
 
