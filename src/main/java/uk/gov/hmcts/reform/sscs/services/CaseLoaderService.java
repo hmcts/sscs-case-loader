@@ -83,7 +83,7 @@ public class CaseLoaderService {
                 idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
                 if (counter == numberOfProcessedCasesToRefreshTokens) {
                     idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-                    log.info("*** case-loader *** renew idam token successfully after 100 cases processed");
+                    log.info("*** case-loader *** renew idam token successfully");
                     counter = 0;
                 }
                 processCase(idamTokens, caseData);
