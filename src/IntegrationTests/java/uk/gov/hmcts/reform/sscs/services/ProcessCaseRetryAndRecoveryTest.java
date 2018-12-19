@@ -136,7 +136,7 @@ public class ProcessCaseRetryAndRecoveryTest {
 
 
     private void verifyFindCaseByCaseRefRetries3TimesIfFailureAndRecoverSuccessfully() {
-        verify(coreCaseDataApi, times(3)).searchForCaseworker(
+        verify(coreCaseDataApi, times(4)).searchForCaseworker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),

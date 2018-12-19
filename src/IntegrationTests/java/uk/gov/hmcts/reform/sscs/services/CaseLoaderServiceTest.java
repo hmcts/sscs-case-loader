@@ -119,12 +119,12 @@ public class CaseLoaderServiceTest {
         then(idamService).should(times(2)).getIdamTokens();
 
         ArgumentCaptor<IdamTokens> idamTokensArgumentCaptor = ArgumentCaptor.forClass(IdamTokens.class);
-        then(searchCcdCaseService).should(times(2))
+        then(searchCcdCaseService).should(times(4))
             .findCaseByCaseRefOrCaseId(eq(caseData), idamTokensArgumentCaptor.capture());
 
         List<IdamTokens> values = idamTokensArgumentCaptor.getAllValues();
-        assertThat("oAuth2Token", is(equalTo(values.get(0).getIdamOauth2Token())));
-        assertThat("oAuth2Token2", is(equalTo(values.get(1).getIdamOauth2Token())));
+        assertThat(values.get(0).getIdamOauth2Token(), is(equalTo("oAuth2Token")));
+        assertThat(values.get(1).getIdamOauth2Token(), is(equalTo("oAuth2Token")));
     }
 
     @Test
@@ -155,7 +155,7 @@ public class CaseLoaderServiceTest {
 
         then(idamService).should(times(201)).generateServiceAuthorization();
 
-        then(searchCcdCaseService).should(times(201))
+        then(searchCcdCaseService).should(times(402))
             .findCaseByCaseRefOrCaseId(eq(caseData), any(IdamTokens.class));
 
         then(xmlValidator).should(times(2)).validateXml(file);
@@ -198,7 +198,7 @@ public class CaseLoaderServiceTest {
         then(ccdCasesSender).should(never())
             .sendUpdateCcdCases(eq(caseDataWithInvalidScNumber), any(SscsCaseDetails.class), any(IdamTokens.class));
 
-        then(ccdCasesSender).should(times(1))
+        then(ccdCasesSender).should(times(2))
             .sendCreateCcdCases(eq(caseData), any(IdamTokens.class));
     }
 
