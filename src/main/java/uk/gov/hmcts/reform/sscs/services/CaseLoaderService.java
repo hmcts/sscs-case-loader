@@ -57,58 +57,55 @@ public class CaseLoaderService {
     }
 
     public void process() {
-        ccdCasesSender.setLogPrefix(logPrefix);
+        startMetrics();
         log.debug(logPrefix + " reading files from sFTP...");
         List<Gaps2File> files = sftpSshService.getFiles();
         log.debug(logPrefix + " About to start processing files: {}", files);
+        processDeltas(files);
+        metrics.setEndTime();
+        logMetrics();
+    }
 
+    private void processDeltas(List<Gaps2File> files) {
         Gaps2File latestRef = null;
-
-        if (null == metrics) {
-            metrics = new CaseLoaderMetrics();
-        }
-
-        metrics.setStartTime();
-
         for (Gaps2File file : files) {
             log.info(logPrefix + " file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
             log.debug(logPrefix + " file validated successfully: {}", file.getName());
             logPrefixWithFile = logPrefix + " " + file.getName();
             if (file.isDelta()) {
-                if (null == latestRef) {
-                    throw new TransformException(String.format(logPrefixWithFile 
-                        + " No reference data processed for this delta: %s",
-                        file.getName()));
-                }
-
+                throwExceptionIfRefFileIsNotLoaded(latestRef, file);
                 processDelta(file);
-                log.info(logPrefixWithFile + " Summary: \nStart: {}\nEnd: {}\nSize: {}\nRecords: {}\nTime: {}",
-                    fileMetrics.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME),
-                    fileMetrics.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME),
-                    fileMetrics.getFileSize(),
-                    fileMetrics.getRecordCount(),
-                    fileMetrics.getRunTime()
-                );
-
+                logFileMetrics();
                 metrics.merge(fileMetrics);
-
                 sftpSshService.move(file, true);
                 sftpSshService.move(latestRef, true);
             } else {
-                latestRef = file;
-                try {
-                    refDataFactory.extract(sftpSshService.readExtractFile(file));
-                } catch (XMLStreamException e) {
-                    throw new TransformException(logPrefixWithFile + " Error processing reference file", e);
-                }
+                latestRef = loadRefFileInMem(file);
             }
         }
+    }
 
-        metrics.setEndTime();
+    private Gaps2File loadRefFileInMem(Gaps2File file) {
+        try {
+            refDataFactory.extract(sftpSshService.readExtractFile(file));
+            return file;
+        } catch (XMLStreamException e) {
+            throw new TransformException(logPrefixWithFile + " Error processing reference file", e);
+        }
+    }
 
+    private void throwExceptionIfRefFileIsNotLoaded(Gaps2File latestRef, Gaps2File file) {
+        if (null == latestRef) {
+            throw new TransformException(String.format(logPrefixWithFile
+                    + " No reference data processed for this delta: %s",
+                file.getName()));
+        }
+    }
+
+    private void logMetrics() {
         log.info(logPrefix + " End Summary: \nStart: {}\nEnd: {}\nSize: {}\nRecords: {}\n"
-            + "Total Time: {}\nFiles Processed: {}",
+                + "Total Time: {}\nFiles Processed: {}",
             metrics.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME),
             metrics.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME),
             metrics.getFileSize(),
@@ -118,54 +115,49 @@ public class CaseLoaderService {
         );
     }
 
+    private void logFileMetrics() {
+        log.info(logPrefixWithFile + " Summary: \nStart: {}\nEnd: {}\nSize: {}\nRecords: {}\nTime: {}",
+            fileMetrics.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME),
+            fileMetrics.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME),
+            fileMetrics.getFileSize(),
+            fileMetrics.getRecordCount(),
+            fileMetrics.getRunTime()
+        );
+    }
+
+    private void startMetrics() {
+        ccdCasesSender.setLogPrefix(logPrefix);
+        metrics = new CaseLoaderMetrics();
+        metrics.setStartTime();
+    }
+
     private void processDelta(Gaps2File file) {
-        fileMetrics = new CaseLoaderMetrics();
-        fileMetrics.setStartTime();
-        fileMetrics.setFileName(file.getName());
-        fileMetrics.setFileSize(transformService.getLastStreamLength());
-
+        startFileMetrics(file);
         List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-
         fileMetrics.setRecordCount(cases.size());
-
         log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
         int counter = 0;
         IdamTokens idamTokens = idamService.getIdamTokens();
         for (SscsCaseData caseData : cases) {
             if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
-                
                 if (counter == numberOfProcessedCasesToRefreshTokens) {
                     idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-                    log.info("*** case-loader *** renew idam token successfully");
+                    log.info(logPrefixWithFile + " renew idam token successfully");
                     counter = 0;
-                }
-                SscsCaseDetails sscsCaseDetails;
-
-                try {
-                    sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
-                } catch (NumberFormatException e) {
-                    log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
-                        + " skipping case...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    continue;
-                }
-
-                if (null == sscsCaseDetails) {
-                    log.info(logPrefixWithFile + " case with SC {} and ccdID {} does not exist, it will be created...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
-                } else {
-                    log.info(logPrefixWithFile + " case with SC {} and ccdID {} exists, it will be updated...",
-                        caseData.getCaseReference(), caseData.getCcdCaseId());
-                    ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
                 }
                 processCase(idamTokens, caseData);
                 counter++;
             }
         }
-
         fileMetrics.setEndTime();
+    }
+
+    private void startFileMetrics(Gaps2File file) {
+        fileMetrics = new CaseLoaderMetrics();
+        fileMetrics.setStartTime();
+        fileMetrics.setFileName(file.getName());
+        fileMetrics.setFileSize(file.getSize());
     }
 
     private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
@@ -173,17 +165,17 @@ public class CaseLoaderService {
         try {
             sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
         } catch (NumberFormatException e) {
-            log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
                     + " skipping case...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             return;
         }
         if (null == sscsCaseDetails) {
-            log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} does not exist, it will be created...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
         } else {
-            log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} exists, it will be updated...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         }

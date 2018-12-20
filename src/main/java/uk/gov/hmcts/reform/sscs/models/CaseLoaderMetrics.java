@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import org.apache.commons.lang.StringUtils;
 
+
 public class CaseLoaderMetrics {
 
     private String fileName;
@@ -15,7 +16,7 @@ public class CaseLoaderMetrics {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-    
+
     public String getFileName() {
         return fileName;
     }

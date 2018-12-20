@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,7 +33,12 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
 import uk.gov.hmcts.reform.sscs.idam.Authorize;
 import uk.gov.hmcts.reform.sscs.idam.IdamApiClient;
 import uk.gov.hmcts.reform.sscs.idam.UserDetails;
@@ -103,7 +107,7 @@ public class ProcessCaseTest {
         when(channelAdapter.listFailed()).thenReturn(newArrayList());
         when(channelAdapter.listProcessed()).thenReturn(newArrayList());
         when(channelAdapter.listIncoming())
-            .thenReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+            .thenReturn(newArrayList(new Gaps2File(refFilename, 10L), new Gaps2File(deltaFilename, 10L)));
 
         when(channelAdapter.getInputStream(refFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
@@ -180,7 +184,7 @@ public class ProcessCaseTest {
 
         // SC reference case
 
-        verify(coreCaseDataApi, times(2)).searchForCaseworker(
+        verify(coreCaseDataApi, times(1)).searchForCaseworker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),
@@ -189,9 +193,28 @@ public class ProcessCaseTest {
             eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))
         );
 
+        verify(coreCaseDataApi, times(1)).submitForCaseworker(
+            eq(USER_AUTH_WITH_TYPE),
+            eq(SERVER_AUTH),
+            eq(USER_ID),
+            eq("SSCS"),
+            eq("Benefit"),
+            eq(true),
+            any(CaseDataContent.class)
+        );
+
         // CCD ID case
 
-        verify(coreCaseDataApi, times(2)).submitEventForCaseWorker(
+        verify(coreCaseDataApi, times(1)).readForCaseWorker(
+            eq(USER_AUTH_WITH_TYPE),
+            eq(SERVER_AUTH),
+            eq(USER_ID),
+            anyString(),
+            anyString(),
+            eq("1234567890")
+        );
+
+        verify(coreCaseDataApi, times(1)).submitEventForCaseWorker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
             eq(USER_ID),
@@ -199,7 +222,7 @@ public class ProcessCaseTest {
             eq("Benefit"),
             eq("456"),
             eq(true),
-            notNull(CaseDataContent.class)
+            any(CaseDataContent.class)
         );
     }
 

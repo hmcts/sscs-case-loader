@@ -13,6 +13,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,6 +45,9 @@ public class SftpChannelAdapterTest {
     private ChannelSftp channel;
 
     @Mock
+    private SftpATTRS sftpattrs;
+
+    @Mock
     private ChannelSftp.LsEntry entry;
 
     private final SftpSshProperties props = new SftpSshProperties();
@@ -70,6 +74,8 @@ public class SftpChannelAdapterTest {
             123)).thenReturn(session);
         when(session.openChannel("sftp")).thenReturn(channel);
         when(channel.get("xxx")).thenReturn(new ByteArrayInputStream("abc".getBytes()));
+
+        when(entry.getAttrs()).thenReturn(sftpattrs);
 
         sftp = new SftpChannelAdapter(jsch, props);
     }
@@ -119,6 +125,7 @@ public class SftpChannelAdapterTest {
             .thenReturn(dname3)
             .thenReturn(rname1)
             .thenReturn(rname3);
+
         when(channel.ls("*.xml")).thenReturn(new Vector(lsEntries)); //NOPMD
 
         List<Gaps2File> list = sftp.listIncoming();

@@ -32,7 +32,6 @@ public class TransformationService {
 
     private final TransformAppealCaseToCaseData transformAppealCaseToCaseData;
     private final ObjectMapper mapper;
-    private int lastStreamLength;
 
     TransformationService(TransformAppealCaseToCaseData transformAppealCaseToCaseData,
                           @Value("${sscs.case.loader.ignoreCasesBeforeDate}") String ignoreDate) {
@@ -51,8 +50,6 @@ public class TransformationService {
             throw new TransformException("Error reading input into string", e);
         }
 
-        lastStreamLength = xmlString.length();
-        
         JSONObject jsonObject = XML.toJSONObject(xmlString);
 
         Gaps2Extract result;
@@ -77,7 +74,4 @@ public class TransformationService {
             .collect(Collectors.toList());
     }
 
-    public int getLastStreamLength() {
-        return lastStreamLength;
-    }
 }

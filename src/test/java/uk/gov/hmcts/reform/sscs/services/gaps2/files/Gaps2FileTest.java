@@ -40,7 +40,7 @@ public class Gaps2FileTest {
 
     private Gaps2File getFile(String name, LocalDateTime timestamp) {
         String fileName = String.format(name, formatter.format(timestamp));
-        return new Gaps2File(fileName);
+        return new Gaps2File(fileName, 10L);
     }
 
     @Test
