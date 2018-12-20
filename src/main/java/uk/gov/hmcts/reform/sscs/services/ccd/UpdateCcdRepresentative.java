@@ -6,6 +6,9 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 
 final class UpdateCcdRepresentative {
+    private static final String YES = "Yes";
+    private static final String NO = "No";
+
     private UpdateCcdRepresentative() {
         // Empty
     }
@@ -27,13 +30,30 @@ final class UpdateCcdRepresentative {
     }
 
     private static void updateRepresentativeSubscription(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
-        Subscriptions existingSubscriptions = existingCcdCaseData.getSubscriptions() != null
-            ? existingCcdCaseData.getSubscriptions() : Subscriptions.builder().build();
+
         Subscription newRepSubscription = gapsCaseData.getSubscriptions() != null
             ? gapsCaseData.getSubscriptions().getRepresentativeSubscription() : Subscription.builder().build();
+
+        Subscriptions existingSubscriptions = existingCcdCaseData.getSubscriptions() != null
+            ? existingCcdCaseData.getSubscriptions() : Subscriptions.builder().build();
+
+        Subscription existingRepSubscription = existingSubscriptions.getRepresentativeSubscription();
+
+        Subscription updatedSubscription =
+            keepExistingSubscribedSubscriptions(newRepSubscription, existingRepSubscription);
+
         existingSubscriptions = existingSubscriptions.toBuilder()
-            .representativeSubscription(newRepSubscription).build();
+            .representativeSubscription(updatedSubscription).build();
+
         existingCcdCaseData.setSubscriptions(existingSubscriptions);
+    }
+
+    private static Subscription keepExistingSubscribedSubscriptions(Subscription newRepSubscription,
+                                                     Subscription existingRepSubscription) {
+        return newRepSubscription.toBuilder()
+            .subscribeSms(existingRepSubscription != null && existingRepSubscription.isSmsSubscribed() ? YES : NO)
+            .subscribeEmail(existingRepSubscription != null && existingRepSubscription.isEmailSubscribed() ? YES : NO)
+            .build();
     }
 
 
