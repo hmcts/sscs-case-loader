@@ -49,6 +49,7 @@ public class TransformationService {
         } catch (IOException e) {
             throw new TransformException("Error reading input into string", e);
         }
+
         JSONObject jsonObject = XML.toJSONObject(xmlString);
 
         Gaps2Extract result;

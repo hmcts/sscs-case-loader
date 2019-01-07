@@ -123,8 +123,8 @@ public class CaseLoaderServiceTest {
             .findCaseByCaseRefOrCaseId(eq(caseData), idamTokensArgumentCaptor.capture());
 
         List<IdamTokens> values = idamTokensArgumentCaptor.getAllValues();
-        assertThat("oAuth2Token", is(equalTo(values.get(0).getIdamOauth2Token())));
-        assertThat("oAuth2Token2", is(equalTo(values.get(1).getIdamOauth2Token())));
+        assertThat(values.get(0).getIdamOauth2Token(), is(equalTo("oAuth2Token")));
+        assertThat(values.get(1).getIdamOauth2Token(), is(equalTo("oAuth2Token2")));
     }
 
     @Test

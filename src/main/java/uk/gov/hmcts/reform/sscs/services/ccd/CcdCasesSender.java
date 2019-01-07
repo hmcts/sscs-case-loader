@@ -35,6 +35,7 @@ public class CcdCasesSender {
     private final UpdateCcdCaseService updateCcdCaseService;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
     private final UpdateCcdCaseData updateCcdCaseData;
+    private String logPrefix = "";
 
     @Autowired
     CcdCasesSender(CcdService ccdService,
@@ -45,6 +46,10 @@ public class CcdCasesSender {
         this.regionalProcessingCenterService = regionalProcessingCenterService;
         this.ccdService = ccdService;
         this.updateCcdCaseData = updateCcdCaseData;
+    }
+
+    public void setLogPrefix(String logPrefix) {
+        this.logPrefix = logPrefix;
     }
 
     public void sendCreateCcdCases(SscsCaseData caseData, IdamTokens idamTokens) {
@@ -87,7 +92,7 @@ public class CcdCasesSender {
                 .updateCase(existingCcdCaseData, existingCaseId, "caseUpdated",
                     SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         } else {
-            log.debug("*** case-loader *** No case update needed for case reference: {}", caseData.getCaseReference());
+            log.debug(logPrefix + " No case update needed for case reference: {}", caseData.getCaseReference());
         }
     }
 

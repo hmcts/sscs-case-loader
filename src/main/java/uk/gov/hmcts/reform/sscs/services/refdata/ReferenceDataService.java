@@ -34,7 +34,9 @@ public class ReferenceDataService {
         try {
             benefitType = refDataRepo.find(BAT_CODE_MAP, batCode, BENEFIT_DESC);
         } catch (Exception e) {
-            log.debug("Oops...Not found benefitType", e);
+            log.debug("Oops...Not found benefitType for caseCodeId '" + caseCodeId
+                + "', Benefit Type '" + benAssessType 
+                + "', BAT Code '" + batCode + "'", e);
             return "ERR";
         }
         return benefitType;
