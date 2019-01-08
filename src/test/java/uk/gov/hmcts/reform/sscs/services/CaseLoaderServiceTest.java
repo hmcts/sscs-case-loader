@@ -102,18 +102,14 @@ public class CaseLoaderServiceTest {
     public void shouldUpdateCaseUsingCaseRefGivenIncomingXmlFiles() {
         final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
 
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
+
         when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenReturn(sscsCaseDetails);
-
-        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
-        verify(sftpSshService, times(2)).move(file, true);
-        verify(searchCcdCaseService, times(1))
-            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
         verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         verify(sftpSshService, times(2)).move(file, true);
     }
@@ -153,10 +149,6 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
 
         verify(xmlValidator, times(2)).validateXml(file);
-        verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
-        verify(sftpSshService, times(2)).move(file, true);
-        verify(searchCcdCaseService, times(1))
-            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
         verify(ccdCasesSender, times(1)).sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         verify(sftpSshService, times(2)).move(file, true);
 

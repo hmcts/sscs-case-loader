@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.sscs.scheduler;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,14 +29,21 @@ class SscsCaseLoaderScheduler {
 
     @Scheduled(cron = "${sscs.case.loader.cron.schedule}")
     void run() {
-        log.info("*** case-loader to process data *** process.data: {}", slotName);
+        String logPrefix = "CASELOADER " + UUID.randomUUID().toString();
+
+        log.info(logPrefix + " to process data using slot: {}", slotName);
         if ("PRODUCTION".equals(slotName)) {
             try {
-                log.info("SSCS Case loader scheduler started : {} ", LocalDateTime.now());
+                log.info(logPrefix + " scheduler started : {} ", 
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                caseLoaderService.setLogPrefix(logPrefix);
                 caseLoaderService.process();
-                log.info("SSCS Case loader scheduler Ended : {} ", LocalDateTime.now());
+                log.info(logPrefix + " scheduler ended : {} ", 
+                            LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
             } catch (Exception e) {
-                log.error("SSCS Case loader failed :", e);
+                log.error(logPrefix + " scheduler failed at " 
+                            + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) 
+                            + " due to exception: ", e);
             }
         }
     }

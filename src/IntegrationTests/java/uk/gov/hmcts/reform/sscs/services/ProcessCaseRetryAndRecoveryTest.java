@@ -98,7 +98,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         when(channelAdapter.listFailed()).thenReturn(newArrayList());
         when(channelAdapter.listProcessed()).thenReturn(newArrayList());
         when(channelAdapter.listIncoming())
-            .thenReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+            .thenReturn(newArrayList(new Gaps2File(refFilename, 10L), new Gaps2File(deltaFilename, 10L)));
 
         when(channelAdapter.getInputStream(refFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
