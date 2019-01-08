@@ -22,56 +22,18 @@ public class TransformAppealCaseToCaseData {
         this.caseDataBuilder = caseDataBuilder;
     }
 
-    public SscsCaseData transform(AppealCase appealCase) {
+    public SscsCaseData transform(final AppealCase appealCase) {
         List<Parties> parties = appealCase.getParties();
 
-        Optional<Parties> party = (parties == null) ? Optional.empty() :
+        Optional<Parties> appellantParty = (parties == null) ? Optional.empty() :
             parties.stream().filter(f -> f.getRoleId() == 4).findFirst();
 
-        Name name = null;
-        Contact contact = null;
-        Identity identity = null;
-        HearingOptions hearingOptions = null;
-        String generatedNino = "";
-        String generatedSurname = "";
-        String generatedEmail = "";
-        String generatedMobile = "";
-        String generatedDob = "";
-        Appellant appellant = null;
-        RegionalProcessingCenter regionalProcessingCenter = null;
-        String region = null;
-
-        if (party.isPresent()) {
-            name = caseDataBuilder.buildName(party.get());
-            contact = caseDataBuilder.buildContact(party.get());
-            identity = caseDataBuilder.buildIdentity(party.get(), appealCase);
-            hearingOptions = caseDataBuilder.buildHearingOptions(party.get(), appealCase.getTribunalTypeId());
-            generatedNino = identity.getNino();
-            generatedSurname = name.getLastName();
-            generatedEmail = contact.getEmail();
-            generatedMobile = contact.getMobile();
-            generatedDob = identity.getDob();
-
-            appellant = Appellant.builder()
-                .name(name)
-                .contact(contact)
-                .identity(identity)
-                .build();
-
-            if (lookupRpcByVenueId) {
-                regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase, party.get());
-                region = (regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null;
-            }
-        }
+        Optional<Parties> representativeParty = (parties == null) ? Optional.empty() :
+            parties.stream().filter(f -> f.getRoleId() == 3).findFirst();
 
         BenefitType benefitType = caseDataBuilder.buildBenefitType(appealCase);
 
-        Appeal appeal = Appeal.builder()
-            .appellant(appellant)
-            .benefitType(benefitType)
-            .hearingOptions(hearingOptions)
-            .hearingType(HearingType.getHearingTypeByTribunalsTypeId(appealCase.getTribunalTypeId()).getValue())
-            .build();
+        Appeal appeal = getAppeal(appealCase, appellantParty, representativeParty, benefitType);
 
         List<Hearing> hearingsList = caseDataBuilder.buildHearings(appealCase);
 
@@ -80,22 +42,64 @@ public class TransformAppealCaseToCaseData {
         List<DwpTimeExtension> dwpTimeExtensionList = caseDataBuilder.buildDwpTimeExtensions(appealCase);
 
         List<Event> events = caseDataBuilder.buildEvent(appealCase);
+        RegionalProcessingCenter regionalProcessingCenter = appellantParty.map((Parties party) ->
+            regionalProcessingCenter(party, appealCase)).orElse(null);
         return SscsCaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
             .regionalProcessingCenter(regionalProcessingCenter)
-            .region(region)
+            .region((regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null)
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(events)
-            .generatedNino(generatedNino)
-            .generatedSurname(generatedSurname)
-            .generatedEmail(generatedEmail)
-            .generatedMobile(generatedMobile)
-            .generatedDob(generatedDob)
-            .subscriptions(caseDataBuilder.buildSubscriptions())
+            .generatedNino(appeal.getAppellant() != null ? appeal.getAppellant().getIdentity().getNino() : null)
+            .generatedSurname(appeal.getAppellant() != null ? appeal.getAppellant().getName().getLastName() : null)
+            .generatedEmail(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getEmail() : null)
+            .generatedMobile(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getMobile() : null)
+            .generatedDob(appeal.getAppellant() != null ? appeal.getAppellant().getIdentity().getDob() : null)
+            .subscriptions(caseDataBuilder.buildSubscriptions(representativeParty))
             .ccdCaseId(appealCase.getAdditionalRef())
+            .build();
+    }
+
+    private Appeal getAppeal(final AppealCase appealCase, final Optional<Parties> appellantParty,
+                             final Optional<Parties> representativeParty, final BenefitType benefitType) {
+        return Appeal.builder()
+                .appellant(appellantParty.map((Parties party) -> appellant(party, appealCase)).orElse(null))
+                .benefitType(benefitType)
+                .hearingOptions(appellantParty.map((Parties party) -> hearingOptions(party, appealCase)).orElse(null))
+                .hearingType(HearingType.getHearingTypeByTribunalsTypeId(appealCase.getTribunalTypeId()).getValue())
+                .rep(representativeParty.map(this::representative).orElse(null))
+                .build();
+    }
+
+    private RegionalProcessingCenter regionalProcessingCenter(final Parties appellantParty,
+                                                              final AppealCase appealCase) {
+        RegionalProcessingCenter regionalProcessingCenter = null;
+        if (lookupRpcByVenueId) {
+            regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase, appellantParty);
+        }
+        return regionalProcessingCenter;
+    }
+
+    private Appellant appellant(final Parties appellantParty, final AppealCase appealCase) {
+        return Appellant.builder()
+            .name(caseDataBuilder.buildName(appellantParty))
+            .contact(caseDataBuilder.buildContact(appellantParty))
+            .identity(caseDataBuilder.buildIdentity(appellantParty, appealCase))
+            .build();
+    }
+
+    private HearingOptions hearingOptions(final Parties appellantParty, final AppealCase appealCase) {
+        return caseDataBuilder.buildHearingOptions(appellantParty, appealCase.getTribunalTypeId());
+    }
+
+    private Representative representative(final Parties representativeParty) {
+        return Representative.builder()
+            .hasRepresentative("Yes")
+            .contact(caseDataBuilder.buildContact(representativeParty))
+            .name(caseDataBuilder.buildName(representativeParty))
             .build();
     }
 

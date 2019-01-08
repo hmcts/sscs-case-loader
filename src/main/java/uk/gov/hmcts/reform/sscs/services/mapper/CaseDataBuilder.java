@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.CharacterPredicates;
@@ -227,7 +228,7 @@ class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    Subscriptions buildSubscriptions() {
+    Subscriptions buildSubscriptions(final Optional<Parties> representativeParty) {
         Subscription appellantSubscription = Subscription.builder()
             .email("")
             .mobile("")
@@ -236,17 +237,17 @@ class CaseDataBuilder {
             .subscribeSms("")
             .tya(generateAppealNumber())
             .build();
-        Subscription supporterSubscription = Subscription.builder()
-            .email("")
-            .mobile("")
+        Subscription representativeSubscription = Subscription.builder()
+            .email(representativeParty.map(Parties::getEmail).orElse(""))
+            .mobile(representativeParty.map(Parties::getPhone2).orElse(""))
             .reason("")
-            .subscribeEmail("")
-            .subscribeSms("")
-            .tya("")
+            .subscribeEmail(NO)
+            .subscribeSms(NO)
+            .tya(representativeParty.isPresent() ? generateAppealNumber() : "")
             .build();
         return Subscriptions.builder()
             .appellantSubscription(appellantSubscription)
-            .supporterSubscription(supporterSubscription)
+            .representativeSubscription(representativeSubscription)
             .build();
     }
 

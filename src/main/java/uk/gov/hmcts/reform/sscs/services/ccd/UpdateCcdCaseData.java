@@ -49,13 +49,15 @@ class UpdateCcdCaseData {
         boolean updateParties = false;
         boolean updateHearingOptions = false;
         boolean updateHearingType = false;
+        boolean updateRepresentative = false;
 
         if (null != gapsCaseData && null != gapsCaseData.getAppeal()) {
             updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
             updateHearingOptions = updateCcdHearingOptions.updateHearingOptions(gapsCaseData, existingCcdCaseData);
             updateHearingType = updateCcdHearingType.updateHearingType(gapsCaseData, existingCcdCaseData);
+            updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
         }
-        return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType;
+        return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType || updateRepresentative;
     }
 
 }

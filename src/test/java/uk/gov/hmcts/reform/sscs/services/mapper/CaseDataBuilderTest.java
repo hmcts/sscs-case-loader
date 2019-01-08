@@ -10,6 +10,8 @@ import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,12 +81,36 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Test
     public void shouldBuildSubscriptionsWithAppealCaseNumber() {
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions();
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.empty());
         assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
-        assertNotNull("SupporterSubscription is null", subscriptions.getSupporterSubscription());
+        assertNotNull("Representative Subscription is null", subscriptions.getRepresentativeSubscription());
         String appealNumber = subscriptions.getAppellantSubscription().getTya();
         assertTrue("appealNumber is empty", !"".equals(appealNumber));
         assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
+        assertEquals("representative email is not empty", "", subscriptions.getRepresentativeSubscription().getEmail());
+    }
+
+    @Test
+    public void shouldBuildRepresentativeSubscriptionsWithAppealCaseNumber() {
+        Parties party = Parties.builder()
+            .email("my@email.com")
+            .phone2("090000")
+            .roleId(3)
+            .build();
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party));
+        assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
+        assertNotNull("Representative Subscription is null", subscriptions.getRepresentativeSubscription());
+        String appealNumber = subscriptions.getRepresentativeSubscription().getTya();
+        assertTrue("appealNumber is empty", !"".equals(appealNumber));
+        assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
+        assertEquals("email is not " + party.getEmail(),
+            party.getEmail(), subscriptions.getRepresentativeSubscription().getEmail());
+        assertEquals("mobile number is not " + party.getPhone1(),
+            party.getPhone2(), subscriptions.getRepresentativeSubscription().getMobile());
+        assertEquals("email should be un-subscribed", "No",
+            subscriptions.getRepresentativeSubscription().getSubscribeEmail());
+        assertEquals("sms should be un-subscribed", "No",
+            subscriptions.getRepresentativeSubscription().getSubscribeSms());
     }
 
     @Test

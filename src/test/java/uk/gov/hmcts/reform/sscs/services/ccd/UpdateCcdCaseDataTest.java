@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
@@ -39,6 +41,23 @@ public class UpdateCcdCaseDataTest {
         MockitoAnnotations.initMocks(this);
         updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData, updateCcdHearingOptions,
             updateCcdHearingType, updateGeneratedFields, updateDwpTimeExtension, updateEvents);
+    }
+
+    @Test
+    public void givenAChangeInRep_shouldUpdateTypeAccordingly() {
+        Name gapsName = Name.builder().lastName("Potter").build();
+        Appeal gapsAppeal = Appeal.builder().rep(Representative.builder().name(gapsName).build()).build();
+        Name existingName = Name.builder().lastName("Superman").build();
+        Appeal existingAppeal = Appeal.builder().rep(Representative.builder().name(existingName).build()).build();
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .appeal(gapsAppeal)
+            .build();
+        SscsCaseData existingCase = gapsCaseData.toBuilder().appeal(existingAppeal).build();
+
+        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
+            gapsCaseData, existingCase);
+
+        assertThat(updateType, is(UpdateType.DATA_UPDATE));
     }
 
     @Test
