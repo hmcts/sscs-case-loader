@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.models.CaseLoaderMetrics;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
@@ -29,6 +31,10 @@ public class CaseLoaderService {
     private final RefDataFactory refDataFactory;
     private final IdamService idamService;
     private final SearchCcdCaseService searchCcdCaseService;
+    private String logPrefix;
+    private String logPrefixWithFile;
+    private CaseLoaderMetrics metrics;
+    private CaseLoaderMetrics fileMetrics;
 
     @Value("${number.processed.cases.to.refresh.tokens}")
     private int numberOfProcessedCasesToRefreshTokens;
@@ -46,36 +52,90 @@ public class CaseLoaderService {
         this.searchCcdCaseService = searchCcdCaseService;
     }
 
+    public void setLogPrefix(String logPrefix) {
+        this.logPrefix = logPrefix;
+    }
+
     public void process() {
+        startMetrics();
+        log.debug(logPrefix + " reading files from sFTP...");
         List<Gaps2File> files = sftpSshService.getFiles();
-        log.debug("*** case-loader *** About to start processing files: {}", files);
+        log.debug(logPrefix + " About to start processing files: {}", files);
+        processDeltas(files);
+        metrics.setEndTime();
+        logMetrics();
+    }
+
+    private void processDeltas(List<Gaps2File> files) {
         Gaps2File latestRef = null;
         for (Gaps2File file : files) {
-            log.info("*** case-loader *** file being processed: {}", file.getName());
+            log.info(logPrefix + " file being processed: {}", file.getName());
             xmlValidator.validateXml(file);
-            log.debug("*** case-loader *** file validated successfully: {}", file.getName());
+            log.debug(logPrefix + " file validated successfully: {}", file.getName());
+            logPrefixWithFile = logPrefix + " " + file.getName();
             if (file.isDelta()) {
-                if (null == latestRef) {
-                    throw new TransformException(String.format("No reference data processed for this delta: %s",
-                        file.getName()));
-                }
+                throwExceptionIfRefFileIsNotLoaded(latestRef, file);
                 processDelta(file);
+                logFileMetrics();
+                metrics.merge(fileMetrics);
                 sftpSshService.move(file, true);
                 sftpSshService.move(latestRef, true);
             } else {
-                latestRef = file;
-                try {
-                    refDataFactory.extract(sftpSshService.readExtractFile(file));
-                } catch (XMLStreamException e) {
-                    throw new TransformException("Error processing reference file", e);
-                }
+                latestRef = loadRefFileInMem(file);
             }
         }
     }
 
+    private Gaps2File loadRefFileInMem(Gaps2File file) {
+        try {
+            refDataFactory.extract(sftpSshService.readExtractFile(file));
+            return file;
+        } catch (XMLStreamException e) {
+            throw new TransformException(logPrefixWithFile + " Error processing reference file", e);
+        }
+    }
+
+    private void throwExceptionIfRefFileIsNotLoaded(Gaps2File latestRef, Gaps2File file) {
+        if (null == latestRef) {
+            throw new TransformException(String.format(logPrefixWithFile
+                    + " No reference data processed for this delta: %s",
+                file.getName()));
+        }
+    }
+
+    private void logMetrics() {
+        log.info(logPrefix + " End Summary: \nStart: {}\nEnd: {}\nSize: {}\nRecords: {}\n"
+                + "Total Time: {}\nFiles Processed: {}",
+            metrics.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME),
+            metrics.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME),
+            metrics.getFileSize(),
+            metrics.getRecordCount(),
+            metrics.getRunTime(),
+            metrics.getFileName()
+        );
+    }
+
+    private void logFileMetrics() {
+        log.info(logPrefixWithFile + " Summary: \nStart: {}\nEnd: {}\nSize: {}\nRecords: {}\nTime: {}",
+            fileMetrics.getStartTime().format(DateTimeFormatter.ISO_DATE_TIME),
+            fileMetrics.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME),
+            fileMetrics.getFileSize(),
+            fileMetrics.getRecordCount(),
+            fileMetrics.getRunTime()
+        );
+    }
+
+    private void startMetrics() {
+        ccdCasesSender.setLogPrefix(logPrefix);
+        metrics = new CaseLoaderMetrics();
+        metrics.setStartTime();
+    }
+
     private void processDelta(Gaps2File file) {
+        startFileMetrics(file);
         List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-        log.info("*** case-loader *** file transformed to {} Cases successfully", cases.size());
+        fileMetrics.setRecordCount(cases.size());
+        log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
         int counter = 0;
         IdamTokens idamTokens = idamService.getIdamTokens();
         for (SscsCaseData caseData : cases) {
@@ -83,13 +143,21 @@ public class CaseLoaderService {
                 idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
                 if (counter == numberOfProcessedCasesToRefreshTokens) {
                     idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-                    log.info("*** case-loader *** renew idam token successfully");
+                    log.info(logPrefixWithFile + " renew idam token successfully");
                     counter = 0;
                 }
                 processCase(idamTokens, caseData);
                 counter++;
             }
         }
+        fileMetrics.setEndTime();
+    }
+
+    private void startFileMetrics(Gaps2File file) {
+        fileMetrics = new CaseLoaderMetrics();
+        fileMetrics.setStartTime();
+        fileMetrics.setFileName(file.getName());
+        fileMetrics.setFileSize(file.getSize());
     }
 
     private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
@@ -97,17 +165,17 @@ public class CaseLoaderService {
         try {
             sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
         } catch (NumberFormatException e) {
-            log.info("*** case-loader *** case with SC {} and ccdID {} could not be searched for,"
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
                     + " skipping case...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             return;
         }
         if (null == sscsCaseDetails) {
-            log.info("*** case-loader *** case with SC {} and ccdID {} does not exist, it will be created...",
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} does not exist, it will be created...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
         } else {
-            log.info("*** case-loader *** case with SC {} and ccdID {} exists, it will be updated...",
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} exists, it will be updated...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         }

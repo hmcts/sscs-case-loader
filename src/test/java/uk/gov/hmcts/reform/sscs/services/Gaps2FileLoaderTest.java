@@ -19,13 +19,13 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpSshService;
 @RunWith(MockitoJUnitRunner.class)
 public class Gaps2FileLoaderTest {
 
-    private final Gaps2File delta1 = new Gaps2File("SSCS_Extract_Delta_2018-01-01-01-01-01.xml");
-    private final Gaps2File delta2 = new Gaps2File("SSCS_Extract_Delta_2018-01-02-01-01-01.xml");
-    private final Gaps2File delta3 = new Gaps2File("SSCS_Extract_Delta_2018-01-03-01-01-01.xml");
+    private final Gaps2File delta1 = new Gaps2File("SSCS_Extract_Delta_2018-01-01-01-01-01.xml", 10L);
+    private final Gaps2File delta2 = new Gaps2File("SSCS_Extract_Delta_2018-01-02-01-01-01.xml", 10L);
+    private final Gaps2File delta3 = new Gaps2File("SSCS_Extract_Delta_2018-01-03-01-01-01.xml", 10L);
 
-    private final Gaps2File ref1 = new Gaps2File("SSCS_Extract_Reference_2018-01-01-01-01-01.xml");
-    private final Gaps2File ref2 = new Gaps2File("SSCS_Extract_Reference_2018-01-02-01-01-01.xml");
-    private final Gaps2File ref3 = new Gaps2File("SSCS_Extract_Reference_2018-01-03-01-01-01.xml");
+    private final Gaps2File ref1 = new Gaps2File("SSCS_Extract_Reference_2018-01-01-01-01-01.xml", 10L);
+    private final Gaps2File ref2 = new Gaps2File("SSCS_Extract_Reference_2018-01-02-01-01-01.xml", 10L);
+    private final Gaps2File ref3 = new Gaps2File("SSCS_Extract_Reference_2018-01-03-01-01-01.xml", 10L);
 
     @Mock
     private SftpSshService sftp;
