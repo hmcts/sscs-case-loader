@@ -57,7 +57,7 @@ public class UpdateCcdRepresentativeTest {
     }
 
     @Test
-    public void givenARepNameChangeWhenExitingNameIsNull_willChangeDataAndReturnTrue() {
+    public void givenARepNameChangeWhenExistingNameIsNull_willChangeDataAndReturnTrue() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
                 .appeal(Appeal.builder()
                         .rep(
