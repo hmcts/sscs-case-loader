@@ -245,6 +245,32 @@ public class CcdCasesSenderTest {
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
+    @Test
+    public void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceivedAndExisingEvidenceIsNull() throws Exception {
+        SscsCaseData caseData = SscsCaseData.builder()
+                .evidence(Evidence.builder()
+                        .documents(Collections.EMPTY_LIST)
+                        .build())
+                .events(Collections.singletonList(Event.builder()
+                        .value(EventDetails.builder()
+                                .type(APPEAL_RECEIVED.getType())
+                                .date("2017-05-23T13:18:15.073")
+                                .description("Appeal received")
+                                .build())
+                        .build()))
+                .build();
+        caseData.setAppeal(buildAppeal());
+
+        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        existingCaseDetails.getData().setEvidence(null);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(0))
+                .updateCase(any(SscsCaseData.class), anyLong(), eq("evidenceReceived"),
+                        eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+    }
+
     public static SscsCaseData buildTestCaseDataWithEventAndEvidence() {
         return SscsCaseData.builder()
             .evidence(Evidence.builder()

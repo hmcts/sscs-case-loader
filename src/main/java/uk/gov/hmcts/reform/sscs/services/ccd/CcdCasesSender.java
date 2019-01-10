@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
@@ -134,7 +135,8 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         SscsCaseData existingCaseData = existingCase.getData();
         Evidence existingEvidence = existingCaseData.getEvidence();
-        if (newEvidence != null && !newEvidence.equals(existingEvidence)) {
+        if (newEvidence != null && !CollectionUtils.isEmpty(newEvidence.getDocuments())
+                && !newEvidence.equals(existingEvidence)) {
             existingCaseData.setEvidence(newEvidence);
             updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
                 SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
