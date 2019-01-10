@@ -17,9 +17,11 @@ final class UpdateCcdRepresentative {
         boolean repUpdated = false;
         if (gapsCaseData.getAppeal() != null && gapsCaseData.getAppeal().getRep() != null) {
             Representative rep = gapsCaseData.getAppeal().getRep();
-            if (existingCcdCaseData.getAppeal().getRep() == null
-                || !existingCcdCaseData.getAppeal().getRep().getName().equals(rep.getName())
-                || !existingCcdCaseData.getAppeal().getRep().getContact().equals(rep.getContact())
+            Representative existingRepresentative = existingCcdCaseData.getAppeal().getRep();
+            if (existingRepresentative == null || existingRepresentative.getName() == null
+                || existingRepresentative.getContact() == null
+                || !existingRepresentative.getName().equals(rep.getName())
+                || !existingRepresentative.getContact().equals(rep.getContact())
             ) {
                 existingCcdCaseData.getAppeal().setRep(rep);
                 updateRepresentativeSubscription(gapsCaseData, existingCcdCaseData);
