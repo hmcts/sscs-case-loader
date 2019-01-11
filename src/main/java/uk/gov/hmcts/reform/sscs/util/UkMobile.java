@@ -11,7 +11,7 @@ public class UkMobile {
         // Void
     }
 
-    public static boolean check(String value) {
+    public static boolean validate(String value) {
         return value != null && UK_MOBILE.matcher(value).matches();
     }
 

@@ -9,6 +9,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
@@ -165,7 +166,11 @@ public class UpdateCcdRepresentativeTest {
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+
+        SscsCaseData expectedExistingRepsData = gapsCaseData.toBuilder().build();
+        expectedExistingRepsData.getAppeal().getRep().getContact().setMobile("07123456789");
+        assertEquals(expectedExistingRepsData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+
         assertEquals("07123456789", existingCaseData.getAppeal().getRep().getContact().getMobile());
         assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
             existingCaseData.getSubscriptions().getRepresentativeSubscription());
@@ -303,6 +308,12 @@ public class UpdateCcdRepresentativeTest {
                     .contact(Contact.builder()
                         .mobile("0770")
                         .build())
+                    .name(Name.builder()
+                        .firstName("Potter")
+                        .build())
+                    .address(Address.builder()
+                        .town("London")
+                        .build())
                     .build())
                 .build())
             .build();
@@ -311,20 +322,30 @@ public class UpdateCcdRepresentativeTest {
 
         assertTrue(actualUpdateRep);
         assertEquals("0770", existingCaseData.getAppeal().getRep().getContact().getMobile());
+        assertEquals("Potter", existingCaseData.getAppeal().getRep().getName().getFirstName());
+        assertEquals("London", existingCaseData.getAppeal().getRep().getAddress().getTown());
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateEdgeScenariosForGapsRepsData() {
-        SscsCaseData gapsCaseDataWithNullContact = SscsCaseData.builder()
+        SscsCaseData gapsCaseDataWithNullData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder().build())
+                .build())
+            .build();
+
+        SscsCaseData gapsCaseDataWithNullMobile = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(Representative.builder()
-                    .contact(null)
+                    .contact(Contact.builder()
+                        .build())
                     .build())
                 .build())
             .build();
 
         return new Object[]{
-            new Object[]{gapsCaseDataWithNullContact}
+            new Object[]{gapsCaseDataWithNullData},
+            new Object[]{gapsCaseDataWithNullMobile}
         };
     }
 }
