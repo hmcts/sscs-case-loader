@@ -174,7 +174,6 @@ public class UpdateCcdRepresentativeTest {
         expectedExistingRepsData.getAppeal().getRep().getContact().setMobile("07123456789");
         assertEquals(expectedExistingRepsData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
 
-        assertEquals("07123456789", existingCaseData.getAppeal().getRep().getContact().getMobile());
         assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
             existingCaseData.getSubscriptions().getRepresentativeSubscription());
     }
@@ -205,6 +204,7 @@ public class UpdateCcdRepresentativeTest {
         assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
         assertEquals(gapsCaseData.getAppeal().getRep().getContact().getMobile(),
             existingCaseData.getAppeal().getRep().getContact().getMobile());
+
         assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
             existingCaseData.getSubscriptions().getRepresentativeSubscription());
     }
@@ -273,7 +273,7 @@ public class UpdateCcdRepresentativeTest {
             .subscriptions(Subscriptions.builder().representativeSubscription(Subscription.builder()
                 .subscribeSms(oppositeOfSubscribed)
                 .subscribeEmail(oppositeOfSubscribed)
-                .mobile("0770")
+                .mobile("07123456700")
                 .email("update@email.com")
                 .build()).build())
             .build();
@@ -285,7 +285,7 @@ public class UpdateCcdRepresentativeTest {
             .subscriptions(Subscriptions.builder().representativeSubscription(Subscription.builder()
                 .subscribeSms(subscribed)
                 .subscribeEmail(subscribed)
-                .mobile("0999")
+                .mobile("07123456711")
                 .email("rep@mail.com")
                 .build()).build())
             .build();
@@ -297,7 +297,7 @@ public class UpdateCcdRepresentativeTest {
         assertEquals(subscribed, updatedRepSubscription.getSubscribeEmail());
         assertEquals(subscribed, updatedRepSubscription.getSubscribeSms());
         assertEquals("update@email.com", updatedRepSubscription.getEmail());
-        assertEquals("0770", updatedRepSubscription.getMobile());
+        assertEquals("07123456700", updatedRepSubscription.getMobile());
     }
 
     @Test
@@ -350,5 +350,54 @@ public class UpdateCcdRepresentativeTest {
             new Object[]{gapsCaseDataWithNullData},
             new Object[]{gapsCaseDataWithNullMobile}
         };
+    }
+
+    @Test
+    public void givenInvalidMobileNumberInGapsRepsSubscription_shouldNotOverwriteMobileInExistingRepsSubscription() {
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder()
+                    .name(Name.builder()
+                        .lastName("Potter")
+                        .build())
+                    .contact(Contact.builder()
+                        .email("harry@potter.com")
+                        .mobile("INVALID")
+                        .build())
+                    .build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .mobile("INVALID")
+                    .subscribeSms(YES)
+                    .build())
+                .build())
+            .build();
+
+        SscsCaseData existingCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder()
+                    .name(Name.builder()
+                        .lastName("Potter")
+                        .build())
+                    .contact(Contact.builder()
+                        .mobile("07123456789")
+                        .build())
+                    .build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .mobile("07123456789")
+                    .subscribeSms(NO)
+                    .build())
+                .build())
+            .build();
+
+        boolean actualUpdateRep = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
+
+        assertTrue(actualUpdateRep);
+        assertEquals("07123456789",
+            existingCaseData.getSubscriptions().getRepresentativeSubscription().getMobile());
+        assertEquals(NO, existingCaseData.getSubscriptions().getRepresentativeSubscription().getSubscribeSms());
     }
 }

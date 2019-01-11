@@ -55,7 +55,7 @@ final class UpdateCcdRepresentative {
         if (UkMobile.validate(rep.getContact().getMobile())) {
             mobileNumber = rep.getContact().getMobile();
         } else {
-            log.info("Invalid Uk mobile no: {} for the case reference: {}",
+            log.info("Invalid Uk mobile no: {} In Reps Contact Details for the case reference: {}",
                 rep.getContact().getMobile(), caseRef);
             Contact existingRepsContact = existingCcdCaseData.getAppeal().getRep().getContact();
             mobileNumber = existingRepsContact != null ? existingRepsContact.getMobile() : null;
@@ -70,7 +70,6 @@ final class UpdateCcdRepresentative {
     }
 
     private static void updateRepresentativeSubscription(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
-
         Subscription newRepSubscription = gapsCaseData.getSubscriptions() != null
             ? gapsCaseData.getSubscriptions().getRepresentativeSubscription() : Subscription.builder().build();
 
@@ -80,7 +79,8 @@ final class UpdateCcdRepresentative {
         Subscription existingRepSubscription = existingSubscriptions.getRepresentativeSubscription();
 
         Subscription updatedSubscription =
-            keepExistingSubscribedSubscriptions(newRepSubscription, existingRepSubscription);
+            keepExistingSubscribedSubscriptions(newRepSubscription, existingRepSubscription,
+                gapsCaseData.getCaseReference());
 
         existingSubscriptions = existingSubscriptions.toBuilder()
             .representativeSubscription(updatedSubscription).build();
@@ -89,11 +89,25 @@ final class UpdateCcdRepresentative {
     }
 
     private static Subscription keepExistingSubscribedSubscriptions(Subscription newRepSubscription,
-                                                                    Subscription existingRepSubscription) {
+                                                                    Subscription existingRepSubscription,
+                                                                    String caseReference) {
         return newRepSubscription.toBuilder()
             .subscribeSms(existingRepSubscription != null && existingRepSubscription.isSmsSubscribed() ? YES : NO)
             .subscribeEmail(existingRepSubscription != null && existingRepSubscription.isEmailSubscribed() ? YES : NO)
+            .mobile(getValidMobileNumber(newRepSubscription, existingRepSubscription, caseReference))
             .build();
+    }
+
+    private static String getValidMobileNumber(Subscription newRepSubscription, Subscription existingRepSubscription,
+                                               String caseReference) {
+        if (UkMobile.validate(newRepSubscription.getMobile())) {
+            return newRepSubscription.getMobile();
+        } else {
+            log.info("Invalid Uk mobile no: {} in Delta Reps Subscription for the case reference: {}",
+                newRepSubscription.getMobile(), caseReference);
+            return (existingRepSubscription != null) ? existingRepSubscription.getMobile() : null;
+
+        }
     }
 
 
