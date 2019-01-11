@@ -1,18 +1,16 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
-
+@Slf4j
 final class UpdateCcdRepresentative {
     private static final String YES = "Yes";
     private static final String NO = "No";
-    private static final org.slf4j.Logger LOG = getLogger(UpdateCcdRepresentative.class);
 
     private UpdateCcdRepresentative() {
         // Empty
@@ -28,11 +26,20 @@ final class UpdateCcdRepresentative {
                 || !existingRepresentative.getName().equals(rep.getName())
                 || !existingRepresentative.getContact().equals(rep.getContact())
             ) {
-                if (rep.getContact() != null && rep.getContact().getMobile() != null) {
-                    rep.getContact().setMobile(checkValidUkMobileNumberElseReturnExisting(rep, existingRepresentative,
-                            gapsCaseData.getCaseReference()));
+                if (rep.getContact() != null) {
+                    if (rep.getContact().getMobile() != null) {
+                        rep.getContact()
+                            .setMobile(checkValidUkMobileNumberElseReturnExisting(
+                                rep, existingRepresentative, gapsCaseData.getCaseReference()));
+                    }
+                    existingCcdCaseData.getAppeal().setRep(rep);
                 }
-                existingCcdCaseData.getAppeal().setRep(rep);
+                if (rep.getName() != null) {
+                    existingCcdCaseData.getAppeal().setRep(rep);
+                }
+                if (rep.getAddress() != null) {
+                    existingCcdCaseData.getAppeal().setRep(rep);
+                }
                 updateRepresentativeSubscription(gapsCaseData, existingCcdCaseData);
                 repUpdated = true;
             }
@@ -52,7 +59,7 @@ final class UpdateCcdRepresentative {
         }
 
         if (!isValidUkMobile) {
-            LOG.info("Invalid Uk mobile no: {} for the case reference: {}", caseReference, rep.getContact().getMobile());
+            log.info("Invalid Uk mobile no: {} for the case reference: {}", caseReference, rep.getContact().getMobile());
         }
         return validMobileNumber;
     }
@@ -77,7 +84,7 @@ final class UpdateCcdRepresentative {
     }
 
     private static Subscription keepExistingSubscribedSubscriptions(Subscription newRepSubscription,
-                                                     Subscription existingRepSubscription) {
+                                                                    Subscription existingRepSubscription) {
         return newRepSubscription.toBuilder()
             .subscribeSms(existingRepSubscription != null && existingRepSubscription.isSmsSubscribed() ? YES : NO)
             .subscribeEmail(existingRepSubscription != null && existingRepSubscription.isEmailSubscribed() ? YES : NO)
