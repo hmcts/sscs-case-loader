@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.sscs.util;
 
 import java.util.regex.Pattern;
 
-public class UkMobile {
+public final class UkMobile {
 
     private static final Pattern UK_MOBILE = Pattern.compile("(?:(?:\\+44[\\s]?)|(?:0[\\s]?))"
             + "(?:7[\\s]?)(?:\\d[\\s]?){9}");
