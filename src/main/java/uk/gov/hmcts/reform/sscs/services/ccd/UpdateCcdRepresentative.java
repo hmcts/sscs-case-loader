@@ -37,17 +37,16 @@ final class UpdateCcdRepresentative {
 
     private static void updateReps(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData, Representative rep) {
         if (existingCcdCaseData.getAppeal().getRep() == null) {
-            existingCcdCaseData.getAppeal().setRep(gapsCaseData.getAppeal().getRep());
-        } else {
-            if (rep.getContact() != null) {
-                updateContact(gapsCaseData.getCaseReference(), existingCcdCaseData, rep);
-            }
-            if (rep.getName() != null) {
-                existingCcdCaseData.getAppeal().getRep().setName(rep.getName());
-            }
-            if (rep.getAddress() != null) {
-                existingCcdCaseData.getAppeal().getRep().setAddress(rep.getAddress());
-            }
+            existingCcdCaseData.getAppeal().setRep(Representative.builder().build());
+        }
+        if (rep.getContact() != null) {
+            updateContact(gapsCaseData.getCaseReference(), existingCcdCaseData, rep);
+        }
+        if (rep.getName() != null) {
+            existingCcdCaseData.getAppeal().getRep().setName(rep.getName());
+        }
+        if (rep.getAddress() != null) {
+            existingCcdCaseData.getAppeal().getRep().setAddress(rep.getAddress());
         }
     }
 

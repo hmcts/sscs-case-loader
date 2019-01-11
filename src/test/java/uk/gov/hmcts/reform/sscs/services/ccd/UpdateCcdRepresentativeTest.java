@@ -27,8 +27,11 @@ public class UpdateCcdRepresentativeTest {
     public void givenARepChangeFromNullRep_willChangeDataAndReturnTrue() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
-                .rep(
-                    Representative.builder().name(Name.builder().lastName("Potter").build()).build()
+                .rep(Representative.builder()
+                    .name(Name.builder()
+                        .lastName("Potter")
+                        .build())
+                    .build()
                 ).build())
             .build();
 
