@@ -52,7 +52,7 @@ final class UpdateCcdRepresentative {
         }
 
         if (!isValidUkMobile) {
-            LOG.error("Invalid Uk mobile no: {} for the case: {}", caseReference, rep.getContact().getMobile());
+            LOG.info("Invalid Uk mobile no: {} for the case reference: {}", caseReference, rep.getContact().getMobile());
         }
         return validMobileNumber;
     }
