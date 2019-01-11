@@ -1,13 +1,18 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.util.UkMobile;
+
 
 final class UpdateCcdRepresentative {
     private static final String YES = "Yes";
     private static final String NO = "No";
+    private static final org.slf4j.Logger LOG = getLogger(UpdateCcdRepresentative.class);
 
     private UpdateCcdRepresentative() {
         // Empty
@@ -23,12 +28,33 @@ final class UpdateCcdRepresentative {
                 || !existingRepresentative.getName().equals(rep.getName())
                 || !existingRepresentative.getContact().equals(rep.getContact())
             ) {
+                if (rep.getContact() != null && rep.getContact().getMobile() != null) {
+                    rep.getContact().setMobile(checkValidUkMobileNumberElseReturnExisting(rep, existingRepresentative,
+                            gapsCaseData.getCaseReference()));
+                }
                 existingCcdCaseData.getAppeal().setRep(rep);
                 updateRepresentativeSubscription(gapsCaseData, existingCcdCaseData);
                 repUpdated = true;
             }
         }
         return repUpdated;
+    }
+
+    private static String checkValidUkMobileNumberElseReturnExisting(Representative rep,
+                                                                     Representative existingRepresentative,
+                                                                     String caseReference) {
+        String validMobileNumber = null;
+        boolean isValidUkMobile = UkMobile.check(rep.getContact().getMobile());
+        if (isValidUkMobile) {
+            validMobileNumber = rep.getContact().getMobile();
+        } else if (existingRepresentative != null && existingRepresentative.getContact() != null) {
+            validMobileNumber = existingRepresentative.getContact().getMobile();
+        }
+
+        if (!isValidUkMobile) {
+            LOG.error("Invalid Uk mobile no: {} for the case: {}", caseReference, rep.getContact().getMobile());
+        }
+        return validMobileNumber;
     }
 
     private static void updateRepresentativeSubscription(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {

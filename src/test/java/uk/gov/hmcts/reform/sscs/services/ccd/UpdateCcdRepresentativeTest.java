@@ -134,6 +134,65 @@ public class UpdateCcdRepresentativeTest {
     }
 
     @Test
+    public void givenARepInvalidUkMobile_willNotChangeExistingMobileAndReturnTrue() {
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                        .rep(
+                                Representative.builder().name(Name.builder().lastName("Potter").build())
+                                        .contact(Contact.builder().email("harry@potter.com").mobile("INVALID")
+                                                .build()).build()
+                        ).build())
+                .subscriptions(Subscriptions.builder().representativeSubscription(
+                        Subscription.builder().email("harry@potter.com").subscribeEmail(NO)
+                                .subscribeSms(NO).build()).build())
+                .build();
+
+        SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
+                .rep(
+                        Representative.builder().name(Name.builder().lastName("Potter").build())
+                                .contact(Contact.builder().mobile("07123456789").build()).build()
+                ).build())
+                .build();
+
+        boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
+        assertTrue("rep contact has changed", hasDataChanged);
+        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        assertEquals("07123456789", existingCaseData.getAppeal().getRep().getContact().getMobile());
+        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
+                existingCaseData.getSubscriptions().getRepresentativeSubscription());
+    }
+
+    @Test
+    public void givenARepValidUkMobile_willChangeExistingMobileAndReturnTrue() {
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                        .rep(
+                                Representative.builder().name(Name.builder().lastName("Potter").build())
+                                        .contact(Contact.builder().email("harry@potter.com").mobile("07111111111")
+                                                .build()).build()
+                        ).build())
+                .subscriptions(Subscriptions.builder().representativeSubscription(
+                        Subscription.builder().email("harry@potter.com").subscribeEmail(NO)
+                                .subscribeSms(NO).build()).build())
+                .build();
+
+        SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
+                .rep(
+                        Representative.builder().name(Name.builder().lastName("Potter").build())
+                                .contact(Contact.builder().mobile("07123456789").build()).build()
+                ).build())
+                .build();
+
+        boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
+        assertTrue("rep contact has changed", hasDataChanged);
+        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        assertEquals(gapsCaseData.getAppeal().getRep().getContact().getMobile(),
+                existingCaseData.getAppeal().getRep().getContact().getMobile());
+        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
+                existingCaseData.getSubscriptions().getRepresentativeSubscription());
+    }
+
+    @Test
     public void givenNoRepChange_willReturnFalseAndNotModifyData() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
