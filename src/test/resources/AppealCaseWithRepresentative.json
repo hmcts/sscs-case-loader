@@ -102,7 +102,8 @@
       "surname": "Superman",
       "email": "john@example.com",
       "phone1": null,
-      "phone2": "0123456789",
+      "phone2": "07123456789",
+
       "postCode": "L17 7AE",
       "disabilityNeeds": "N",
       "interpreterSignerId": null,

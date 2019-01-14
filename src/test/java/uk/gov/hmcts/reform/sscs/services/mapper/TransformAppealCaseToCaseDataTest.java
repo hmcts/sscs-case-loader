@@ -91,12 +91,12 @@ public class TransformAppealCaseToCaseDataTest {
         final Subscription expectedRepresentativeSubscription = Subscription.builder()
             .email("john@example.com")
             .subscribeEmail("No")
-            .mobile("0123456789")
+            .mobile("07123456789")
             .reason("")
             .subscribeSms("No")
             .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())
             .build();
-        final Contact expectedContact = Contact.builder().email("john@example.com").mobile("0123456789").build();
+        final Contact expectedContact = Contact.builder().email("john@example.com").mobile("07123456789").build();
         assertEquals("Representative Subscriptions is not as expected",
             expectedRepresentativeSubscription, caseData.getSubscriptions().getRepresentativeSubscription());
         assertNotNull("Representative must not be null", caseData.getAppeal().getRep());
