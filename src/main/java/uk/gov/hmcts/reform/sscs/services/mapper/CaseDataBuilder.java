@@ -38,7 +38,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
-import uk.gov.hmcts.reform.sscs.util.UkMobile;
+import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
 @Service
 @Slf4j
@@ -255,8 +255,8 @@ class CaseDataBuilder {
     private String validateMobile(Optional<Parties> representativeParty, String appealCaseRefNum) {
         if (representativeParty.isPresent()) {
             String mobileNumber = representativeParty.get().getPhone2();
-            if (UkMobile.validate(mobileNumber)) {
-                return mobileNumber;
+            if (PhoneNumbersUtil.isValidUkMobileNumber(mobileNumber)) {
+                return PhoneNumbersUtil.cleanPhoneNumber(mobileNumber).orElse(mobileNumber);
             } else {
                 log.info("Invalid Uk mobile no: {} In Reps Contact Details for the case reference: {}",
                     mobileNumber, appealCaseRefNum);

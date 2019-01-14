@@ -91,7 +91,7 @@ public class TransformAppealCaseToCaseDataTest {
         final Subscription expectedRepresentativeSubscription = Subscription.builder()
             .email("john@example.com")
             .subscribeEmail("No")
-            .mobile("07123456789")
+            .mobile("+447123456789")
             .reason("")
             .subscribeSms("No")
             .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())

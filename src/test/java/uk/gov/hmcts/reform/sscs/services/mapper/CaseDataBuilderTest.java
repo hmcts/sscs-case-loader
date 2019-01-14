@@ -117,7 +117,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
         assertEquals("email is not " + party.getEmail(),
             party.getEmail(), subscriptions.getRepresentativeSubscription().getEmail());
         assertEquals("mobile number is not " + party.getPhone1(),
-            party.getPhone2(), subscriptions.getRepresentativeSubscription().getMobile());
+            "+447123456789", subscriptions.getRepresentativeSubscription().getMobile());
         assertEquals("email should be un-subscribed", "No",
             subscriptions.getRepresentativeSubscription().getSubscribeEmail());
         assertEquals("sms should be un-subscribed", "No",
@@ -125,7 +125,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
-    @Parameters({"invalid,", "07123456789,07123456789"})
+    @Parameters({"invalid,", "07123456789,+447123456789"})
     public void givenInvalidMobile_shouldFallbackToEmptyString(String mobileNumber, String expectedMobileNumber) {
         Parties party = Parties.builder()
             .email("my@email.com")
