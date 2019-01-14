@@ -3,21 +3,31 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import org.mockito.MockitoAnnotations;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
@@ -25,7 +35,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     public static final String YES = "Yes";
@@ -41,6 +51,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         createAppealCase(getHearing());
     }
 
@@ -81,7 +92,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Test
     public void shouldBuildSubscriptionsWithAppealCaseNumber() {
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.empty());
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.empty(), null);
         assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
         assertNotNull("Representative Subscription is null", subscriptions.getRepresentativeSubscription());
         String appealNumber = subscriptions.getAppellantSubscription().getTya();
@@ -94,10 +105,10 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     public void shouldBuildRepresentativeSubscriptionsWithAppealCaseNumber() {
         Parties party = Parties.builder()
             .email("my@email.com")
-            .phone2("090000")
+            .phone2("07123456789")
             .roleId(3)
             .build();
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party));
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party), null);
         assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
         assertNotNull("Representative Subscription is null", subscriptions.getRepresentativeSubscription());
         String appealNumber = subscriptions.getRepresentativeSubscription().getTya();
@@ -111,6 +122,20 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             subscriptions.getRepresentativeSubscription().getSubscribeEmail());
         assertEquals("sms should be un-subscribed", "No",
             subscriptions.getRepresentativeSubscription().getSubscribeSms());
+    }
+
+    @Test
+    @Parameters({"invalid,", "07123456789,07123456789"})
+    public void givenInvalidMobile_shouldFallbackToEmptyString(String mobileNumber, String expectedMobileNumber) {
+        Parties party = Parties.builder()
+            .email("my@email.com")
+            .phone2(mobileNumber)
+            .roleId(3)
+            .build();
+
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party), null);
+
+        assertEquals(expectedMobileNumber, subscriptions.getRepresentativeSubscription().getMobile());
     }
 
     @Test
