@@ -184,7 +184,7 @@ public class UpdateCcdRepresentativeTest {
             .appeal(Appeal.builder()
                 .rep(
                     Representative.builder().name(Name.builder().lastName("Potter").build())
-                        .contact(Contact.builder().email("harry@potter.com").mobile("07111111111")
+                        .contact(Contact.builder().email("harry@potter.com").mobile("+447111111111")
                             .build()).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
@@ -297,7 +297,7 @@ public class UpdateCcdRepresentativeTest {
         assertEquals(subscribed, updatedRepSubscription.getSubscribeEmail());
         assertEquals(subscribed, updatedRepSubscription.getSubscribeSms());
         assertEquals("update@email.com", updatedRepSubscription.getEmail());
-        assertEquals("07123456700", updatedRepSubscription.getMobile());
+        assertEquals("+447123456700", updatedRepSubscription.getMobile());
     }
 
     @Test

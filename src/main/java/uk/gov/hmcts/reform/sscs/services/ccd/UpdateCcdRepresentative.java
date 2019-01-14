@@ -6,7 +6,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.util.UkMobile;
+import uk.gov.hmcts.reform.sscs.utility.PhoneNumbersUtil;
 
 @Slf4j
 final class UpdateCcdRepresentative {
@@ -52,8 +52,9 @@ final class UpdateCcdRepresentative {
 
     private static void updateContact(String caseRef, SscsCaseData existingCcdCaseData, Representative rep) {
         String mobileNumber;
-        if (UkMobile.validate(rep.getContact().getMobile())) {
-            mobileNumber = rep.getContact().getMobile();
+        if (PhoneNumbersUtil.isValidUkMobileNumber(rep.getContact().getMobile())) {
+            mobileNumber = PhoneNumbersUtil.cleanPhoneNumber(rep.getContact().getMobile())
+                .orElse(rep.getContact().getMobile());
         } else {
             log.info("Invalid Uk mobile no: {} In Reps Contact Details for the case reference: {}",
                 rep.getContact().getMobile(), caseRef);
@@ -100,8 +101,9 @@ final class UpdateCcdRepresentative {
 
     private static String getValidMobileNumber(Subscription newRepSubscription, Subscription existingRepSubscription,
                                                String caseReference) {
-        if (UkMobile.validate(newRepSubscription.getMobile())) {
-            return newRepSubscription.getMobile();
+        if (PhoneNumbersUtil.isValidUkMobileNumber(newRepSubscription.getMobile())) {
+            return PhoneNumbersUtil.cleanPhoneNumber(newRepSubscription.getMobile())
+                .orElse(newRepSubscription.getMobile());
         } else {
             log.info("Invalid Uk mobile no: {} in Delta Reps Subscription for the case reference: {}",
                 newRepSubscription.getMobile(), caseReference);
