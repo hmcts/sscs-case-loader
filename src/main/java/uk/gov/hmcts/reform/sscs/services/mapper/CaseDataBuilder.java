@@ -38,6 +38,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
+import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
 @Service
 @Slf4j
@@ -228,7 +229,7 @@ class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    Subscriptions buildSubscriptions(final Optional<Parties> representativeParty) {
+    Subscriptions buildSubscriptions(final Optional<Parties> representativeParty, String appealCaseRefNum) {
         Subscription appellantSubscription = Subscription.builder()
             .email("")
             .mobile("")
@@ -239,7 +240,7 @@ class CaseDataBuilder {
             .build();
         Subscription representativeSubscription = Subscription.builder()
             .email(representativeParty.map(Parties::getEmail).orElse(""))
-            .mobile(representativeParty.map(Parties::getPhone2).orElse(""))
+            .mobile(validateMobile(representativeParty, appealCaseRefNum))
             .reason("")
             .subscribeEmail(NO)
             .subscribeSms(NO)
@@ -249,6 +250,19 @@ class CaseDataBuilder {
             .appellantSubscription(appellantSubscription)
             .representativeSubscription(representativeSubscription)
             .build();
+    }
+
+    private String validateMobile(Optional<Parties> representativeParty, String appealCaseRefNum) {
+        if (representativeParty.isPresent()) {
+            String mobileNumber = representativeParty.get().getPhone2();
+            if (UkMobile.validate(mobileNumber)) {
+                return mobileNumber;
+            } else {
+                log.info("Invalid Uk mobile no: {} In Reps Contact Details for the case reference: {}",
+                    mobileNumber, appealCaseRefNum);
+            }
+        }
+        return "";
     }
 
     private String generateAppealNumber() {
