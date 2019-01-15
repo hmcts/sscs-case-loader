@@ -32,9 +32,9 @@ public class UkMobileTest {
     }
 
     @Test
-    public void shouldNotAcceptLandLineNumbers() {
+    public void shouldAcceptLandLineNumbers() {
 
-        Assert.assertFalse(UkMobile.validate("01234567890"));
-        Assert.assertFalse(UkMobile.validate("08001234567"));
+        Assert.assertTrue(UkMobile.validate("01234567890"));
+        Assert.assertTrue(UkMobile.validate("08001234567"));
     }
 }
