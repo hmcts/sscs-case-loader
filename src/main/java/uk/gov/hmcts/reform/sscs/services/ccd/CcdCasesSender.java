@@ -57,7 +57,8 @@ public class CcdCasesSender {
         if (!lookupRpcByVenueId) {
             addRegionalProcessingCenter(caseData);
         }
-        ccdService.createCase(caseData, idamTokens);
+        ccdService.createCase(caseData, "appealCreated", "SSCS - new case created",
+            "Created SSCS case from Case Loader with event appealCreated", idamTokens);
     }
 
     public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
