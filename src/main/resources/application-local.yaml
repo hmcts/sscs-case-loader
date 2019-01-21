@@ -27,7 +27,7 @@ management:
   endpoint.health.show-details: always
 
 sftp:
-  keyLocation:  ${GAPS2_KEY_LOCATION:|
+  keyLocation:  |
     -----BEGIN RSA PRIVATE KEY-----
     MIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl
     6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P
@@ -54,7 +54,7 @@ sftp:
     Gczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc
     fVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V
     jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
-    -----END RSA PRIVATE KEY-----}
+    -----END RSA PRIVATE KEY-----
   host: ${GAPS2_SFTP_HOST:localhost}
   port: ${GAPS2_SFTP_PORT:2222}
   username: ${GAPS2_SFTP_USER:sftp}
@@ -68,32 +68,13 @@ sscs.case.loader:
   url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
 
 logging.level:
-  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
-  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
 
-slot.name: ${SLOT:dev}
+slot.name: ${SLOT:PRODUCTION}
 
 test.url: ${TEST_URL:http://localhost:8082}
 
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
 
 number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
-
----
-#spring profile needed to run integration, smoke and functional tests to avoid the job schedule to kick in twice
-spring:
-  profiles: test
-
-scheduling.enabled: false
-
-logging.level:
-  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
-  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
-
-
----
-# spring profile to run caseloader locally
-spring:
-  profiles: local
-  profiles.include: local
-
