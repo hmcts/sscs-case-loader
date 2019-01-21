@@ -28,33 +28,33 @@ management:
 
 sftp:
   keyLocation:  ${GAPS2_KEY_LOCATION:|
-                -----BEGIN RSA PRIVATE KEY-----
-                MIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl
-                6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P
-                DC568Rno5Y3r780VYC6+QQcLSgC5E+45jW52CS3sJuZTJ+4vt6huG+m5MbKMPOVe
-                /QKnb20gNRsOGoX8oIHlbcogX62huUbAKgB9/eSj8kBSh1il19Xu6/WpBYORIZZM
-                0Bh5DDQIMULNc965X9BlO50N15er3fftfIjv1pl91i4E1v/Rv6W5qIM3rgzLEjP2
-                6n0+Lbhgpfc7yR/GoycUHJQrtd2PDKPjcv052wIDAQABAoIBAQCVxD9RWKWiXDhI
-                KuY1GrEsTSULveUI3CBtHOmWyVzGXUqdDtvoGsDxgtb0JwADVGNHsxDTXtm4hkTD
-                /oZJPNWBwI2lpx0cpM1FxvR3WvXy7XNNj+5RTVmp1taQK3JYnGyf0UXm5VD0gEQM
-                B0J/XfPboaQvPDk2CNR9wx7Vy7ddySnyc0q9QEDo+Hb30QiacZDvvM2H08AXgegm
-                FJTgR0xOgTncz/2Iw0xNL5rUA2+xnFvMeBqfOMLvSSvtTbwr4BQbup3r9uc5BYFC
-                4NASRRh7ZLjzzAE2IOrv64/j0kjhSTliEsxLuhaVZgbhFVKuMW3ZwbG+7VVfY5ra
-                IbErIPZZAoGBAOWeXHMGwzq8fPTKaHRRRpZ0Kk3DOWaLh2GuYn+XbjbfJTximzD9
-                TgFXUhKau8wsvQ3t2udc9BbWX1mTFKUo/JJJPzp6HVHRSCozk4KFB3zdT2Lz45yA
-                8jxaJFkGYiszpv+5tKU//cEHPr4pA+w7CPMk7RCe2VUkEXSHYXPA18TlAoGBAM1G
-                Io1xTJO4cwPje3vlHmbEaNrjnTAere7T9LH1Lv1dPGxKhKlnbGLVo6CFsYjhV6DB
-                bkSSiXlLT3uSuBakO1WRya0TLiYup7PCnTkjjivbFSxxbMqMxzi4RMx6pQde4qhd
-                d3wf3JjY1JPIgw5OINVtbkTHW01LoLW4EaKPwde/AoGBAMPzuQGQq9rcL+bXNPzO
-                v2Z2DAQArmOMfyQlJXmtSSkalTRLEhVklcUfN7MYyVscctoIOd9nvAYhO429rsij
-                iadtSsAkphDEgMlC6odf71vnoW/Yok1U3WQTqSEwCWbE1ac2W6sKSQsJm8m8RtS6
-                LJES2hxs8xtthFflkIyv7XLhAoGBAJZpHqZPb5IKJFSkGfZFg0o//qjtAV+iC0al
-                jnXbNyw1ZjHfRGewva2J51SWweiPXZsQQRED4rG66imc70C/5C4mHgWwuS8HHqDM
-                KFIW6HTgGhqvncyo7M110AuYjlXhQ+mkWwnbetOQhesnkEgqHUrl3VeOUCtKEB83
-                Gczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc
-                fVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V
-                jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
-                -----END RSA PRIVATE KEY-----}
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl
+    6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P
+    DC568Rno5Y3r780VYC6+QQcLSgC5E+45jW52CS3sJuZTJ+4vt6huG+m5MbKMPOVe
+    /QKnb20gNRsOGoX8oIHlbcogX62huUbAKgB9/eSj8kBSh1il19Xu6/WpBYORIZZM
+    0Bh5DDQIMULNc965X9BlO50N15er3fftfIjv1pl91i4E1v/Rv6W5qIM3rgzLEjP2
+    6n0+Lbhgpfc7yR/GoycUHJQrtd2PDKPjcv052wIDAQABAoIBAQCVxD9RWKWiXDhI
+    KuY1GrEsTSULveUI3CBtHOmWyVzGXUqdDtvoGsDxgtb0JwADVGNHsxDTXtm4hkTD
+    /oZJPNWBwI2lpx0cpM1FxvR3WvXy7XNNj+5RTVmp1taQK3JYnGyf0UXm5VD0gEQM
+    B0J/XfPboaQvPDk2CNR9wx7Vy7ddySnyc0q9QEDo+Hb30QiacZDvvM2H08AXgegm
+    FJTgR0xOgTncz/2Iw0xNL5rUA2+xnFvMeBqfOMLvSSvtTbwr4BQbup3r9uc5BYFC
+    4NASRRh7ZLjzzAE2IOrv64/j0kjhSTliEsxLuhaVZgbhFVKuMW3ZwbG+7VVfY5ra
+    IbErIPZZAoGBAOWeXHMGwzq8fPTKaHRRRpZ0Kk3DOWaLh2GuYn+XbjbfJTximzD9
+    TgFXUhKau8wsvQ3t2udc9BbWX1mTFKUo/JJJPzp6HVHRSCozk4KFB3zdT2Lz45yA
+    8jxaJFkGYiszpv+5tKU//cEHPr4pA+w7CPMk7RCe2VUkEXSHYXPA18TlAoGBAM1G
+    Io1xTJO4cwPje3vlHmbEaNrjnTAere7T9LH1Lv1dPGxKhKlnbGLVo6CFsYjhV6DB
+    bkSSiXlLT3uSuBakO1WRya0TLiYup7PCnTkjjivbFSxxbMqMxzi4RMx6pQde4qhd
+    d3wf3JjY1JPIgw5OINVtbkTHW01LoLW4EaKPwde/AoGBAMPzuQGQq9rcL+bXNPzO
+    v2Z2DAQArmOMfyQlJXmtSSkalTRLEhVklcUfN7MYyVscctoIOd9nvAYhO429rsij
+    iadtSsAkphDEgMlC6odf71vnoW/Yok1U3WQTqSEwCWbE1ac2W6sKSQsJm8m8RtS6
+    LJES2hxs8xtthFflkIyv7XLhAoGBAJZpHqZPb5IKJFSkGfZFg0o//qjtAV+iC0al
+    jnXbNyw1ZjHfRGewva2J51SWweiPXZsQQRED4rG66imc70C/5C4mHgWwuS8HHqDM
+    KFIW6HTgGhqvncyo7M110AuYjlXhQ+mkWwnbetOQhesnkEgqHUrl3VeOUCtKEB83
+    Gczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc
+    fVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V
+    jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
+    -----END RSA PRIVATE KEY-----}
   host: ${GAPS2_SFTP_HOST:localhost}
   port: ${GAPS2_SFTP_PORT:2222}
   username: ${GAPS2_SFTP_USER:sftp}
@@ -68,10 +68,9 @@ sscs.case.loader:
   url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
 
 logging.level:
-    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
-    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
+  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
-# change slot value to PRODUCTION to cause the service to start processing Deltas
 slot.name: ${SLOT:dev}
 
 test.url: ${TEST_URL:http://localhost:8082}
@@ -79,13 +78,57 @@ test.url: ${TEST_URL:http://localhost:8082}
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
 
 number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
+
 ---
+#spring profile needed to run integration, smoke and functional tests to avoid the job schedule to kick in twice
 spring:
-    profiles: development
+  profiles: test
 
 scheduling.enabled: false
 
 logging.level:
-    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
-    uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+
+
+---
+# spring profile to run caseloader locally
+spring:
+  profiles: local
+
+  sftp:
+    keyLocation:  |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEpgIBAAKCAQEAuB64U0n99/0/IuJM3SeiQaNLnWCKy+qMy+06D9UkpOrLHXpl
+      6DkEQsTEZ58Xs00j+T/xlf6wfyl2qJn9B/ZtkdGeGAsdrmGtGQZ6tQLTPP1f0q7P
+      DC568Rno5Y3r780VYC6+QQcLSgC5E+45jW52CS3sJuZTJ+4vt6huG+m5MbKMPOVe
+      /QKnb20gNRsOGoX8oIHlbcogX62huUbAKgB9/eSj8kBSh1il19Xu6/WpBYORIZZM
+      0Bh5DDQIMULNc965X9BlO50N15er3fftfIjv1pl91i4E1v/Rv6W5qIM3rgzLEjP2
+      6n0+Lbhgpfc7yR/GoycUHJQrtd2PDKPjcv052wIDAQABAoIBAQCVxD9RWKWiXDhI
+      KuY1GrEsTSULveUI3CBtHOmWyVzGXUqdDtvoGsDxgtb0JwADVGNHsxDTXtm4hkTD
+      /oZJPNWBwI2lpx0cpM1FxvR3WvXy7XNNj+5RTVmp1taQK3JYnGyf0UXm5VD0gEQM
+      B0J/XfPboaQvPDk2CNR9wx7Vy7ddySnyc0q9QEDo+Hb30QiacZDvvM2H08AXgegm
+      FJTgR0xOgTncz/2Iw0xNL5rUA2+xnFvMeBqfOMLvSSvtTbwr4BQbup3r9uc5BYFC
+      4NASRRh7ZLjzzAE2IOrv64/j0kjhSTliEsxLuhaVZgbhFVKuMW3ZwbG+7VVfY5ra
+      IbErIPZZAoGBAOWeXHMGwzq8fPTKaHRRRpZ0Kk3DOWaLh2GuYn+XbjbfJTximzD9
+      TgFXUhKau8wsvQ3t2udc9BbWX1mTFKUo/JJJPzp6HVHRSCozk4KFB3zdT2Lz45yA
+      8jxaJFkGYiszpv+5tKU//cEHPr4pA+w7CPMk7RCe2VUkEXSHYXPA18TlAoGBAM1G
+      Io1xTJO4cwPje3vlHmbEaNrjnTAere7T9LH1Lv1dPGxKhKlnbGLVo6CFsYjhV6DB
+      bkSSiXlLT3uSuBakO1WRya0TLiYup7PCnTkjjivbFSxxbMqMxzi4RMx6pQde4qhd
+      d3wf3JjY1JPIgw5OINVtbkTHW01LoLW4EaKPwde/AoGBAMPzuQGQq9rcL+bXNPzO
+      v2Z2DAQArmOMfyQlJXmtSSkalTRLEhVklcUfN7MYyVscctoIOd9nvAYhO429rsij
+      iadtSsAkphDEgMlC6odf71vnoW/Yok1U3WQTqSEwCWbE1ac2W6sKSQsJm8m8RtS6
+      LJES2hxs8xtthFflkIyv7XLhAoGBAJZpHqZPb5IKJFSkGfZFg0o//qjtAV+iC0al
+      jnXbNyw1ZjHfRGewva2J51SWweiPXZsQQRED4rG66imc70C/5C4mHgWwuS8HHqDM
+      KFIW6HTgGhqvncyo7M110AuYjlXhQ+mkWwnbetOQhesnkEgqHUrl3VeOUCtKEB83
+      Gczo01uXAoGBAIx3md2Bpj2q1320y6HDkfiTeBHBiO0lAmRUlxBYDD8j38voXgbc
+      fVIJ9ZmQlS1z1kvWUf1hVR3DGFj+81i6mdfQvwIBrHVqjY21gXH4QnsMUd/f9K/V
+      jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
+      -----END RSA PRIVATE KEY-----
+
+  logging.level:
+      org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
+      uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
+
+  slot.name: ${SLOT:PRODUCTION}
 

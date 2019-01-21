@@ -29,7 +29,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class CreateCcdServiceTest {
 
     @MockBean
