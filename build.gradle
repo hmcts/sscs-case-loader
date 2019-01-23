@@ -259,8 +259,8 @@ dependencies {
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.1.1'
   compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
-  compileOnly 'org.projectlombok:lombok:1.18.2'
-  apt "org.projectlombok:lombok:1.16.20"
+  compileOnly 'org.projectlombok:lombok:1.18.4'
+  apt "org.projectlombok:lombok:1.18.4"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '1.31.1'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '1.31.1'
