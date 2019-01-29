@@ -66,7 +66,8 @@ public class CreateCcdServiceTest {
         given(coreCaseDataApi.startForCaseworker(any(), any(), any(), any(), any(), any()))
             .willThrow(new RuntimeException());
 
-        ccdService.createCase(caseData, idamTokens);
+        ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+            "caseloader test description", idamTokens);
     }
 
     @Test
@@ -77,7 +78,8 @@ public class CreateCcdServiceTest {
         given(coreCaseDataApi.submitForCaseworker(any(), any(), any(), any(), any(), anyBoolean(), any()))
             .willReturn(CaseDetails.builder().build());
 
-        SscsCaseDetails actualCase = ccdService.createCase(caseData, idamTokens);
+        SscsCaseDetails actualCase = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+            "caseloader test description", idamTokens);
 
         assertThat(actualCase, is(notNullValue()));
     }
@@ -90,7 +92,8 @@ public class CreateCcdServiceTest {
         given(coreCaseDataApi.submitForCaseworker(any(), any(), any(), any(), any(), anyBoolean(), any()))
             .willThrow(new RuntimeException());
 
-        ccdService.createCase(caseData, idamTokens);
+        ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+            "caseloader test description", idamTokens);
     }
 
 }
