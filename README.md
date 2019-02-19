@@ -156,10 +156,11 @@ SSCS_Extract_Reference_2017-06-30-09-01-31.xml
 * Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project. 
 Please follow the instructions given in the README document.
 
-* Copy and paste application.yml from
+* Run the application using the "local" profile:
 ```bash
-https://tools.hmcts.net/confluence/display/SSCS/application.yml
+SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
 ```
+
 * Turn on debugging by editing sscs-case-loader/src/main/resources/application.yaml
 ```bash
 logging.level:
