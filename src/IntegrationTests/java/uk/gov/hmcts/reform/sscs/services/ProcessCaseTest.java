@@ -115,12 +115,12 @@ public class ProcessCaseTest {
         when(channelAdapter.getInputStream(deltaFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
 
-        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
-        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(idamApiClient.getUserDetails(eq(USER_AUTH_WITH_TYPE))).thenReturn(new UserDetails("16"));
