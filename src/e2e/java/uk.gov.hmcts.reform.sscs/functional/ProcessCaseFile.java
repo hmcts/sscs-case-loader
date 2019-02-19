@@ -34,7 +34,7 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class ProcessCaseFile {
 
     private static final org.slf4j.Logger LOG = getLogger(ProcessCaseFile.class);

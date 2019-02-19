@@ -42,7 +42,7 @@ import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class CaseLoaderServiceTest {
 
     @MockBean

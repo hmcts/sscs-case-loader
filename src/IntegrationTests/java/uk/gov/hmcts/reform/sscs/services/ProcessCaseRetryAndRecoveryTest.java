@@ -46,7 +46,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class ProcessCaseRetryAndRecoveryTest {
 
     private static final String USER_AUTH = "oauth2token";

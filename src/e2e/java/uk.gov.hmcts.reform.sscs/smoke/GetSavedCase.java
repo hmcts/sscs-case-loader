@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class GetSavedCase {
 
     private final String caseloaderinstance = System.getenv("TEST_URL");
