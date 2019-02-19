@@ -139,8 +139,7 @@ public class ProcessCaseTest {
                 .data(caseDataMap)
                 .build();
 
-        when(coreCaseDataApi.searchForCaseworker(
-            anyString(), anyString(), anyString(), anyString(), anyString(),
+        when(coreCaseDataApi.searchForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
             eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))))
             .thenReturn(new ArrayList<>());
 

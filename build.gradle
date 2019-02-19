@@ -245,7 +245,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.132'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.133'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
 
@@ -257,7 +257,6 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.1.1'
-  compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
   compileOnly 'org.projectlombok:lombok:1.18.2'
   apt "org.projectlombok:lombok:1.16.20"
