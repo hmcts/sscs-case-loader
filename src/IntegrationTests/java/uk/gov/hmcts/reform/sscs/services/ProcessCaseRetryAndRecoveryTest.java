@@ -106,12 +106,12 @@ public class ProcessCaseRetryAndRecoveryTest {
         when(channelAdapter.getInputStream(deltaFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
 
-        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
-        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
@@ -176,7 +176,7 @@ public class ProcessCaseRetryAndRecoveryTest {
     }
 
     private void mockIdamApi() {
-        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("url", "code", ""));
 
         when(authTokenGenerator.generate())
@@ -184,7 +184,7 @@ public class ProcessCaseRetryAndRecoveryTest {
             .thenReturn(SERVER_AUTH)
             .thenReturn(SERVER_AUTH2);
 
-        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", USER_AUTH))
             .thenReturn(new Authorize("", "", USER_AUTH2));
 
