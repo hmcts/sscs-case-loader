@@ -207,7 +207,7 @@ def versions = [
 ]
 
 ext {
-  springCloudVersion = 'Finchley.SR1'
+  springCloudVersion = 'Greenwich.SR1'
 }
 
 dependencyManagement {
