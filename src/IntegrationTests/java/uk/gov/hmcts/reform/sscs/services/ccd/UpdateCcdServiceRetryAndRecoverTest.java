@@ -25,7 +25,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class UpdateCcdServiceRetryAndRecoverTest {
 
     private static final String AUTHORIZATION = "authorization";

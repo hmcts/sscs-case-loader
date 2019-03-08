@@ -28,7 +28,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
 
     private static final String CASE_REF = "SC068/17/00013";

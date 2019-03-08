@@ -145,7 +145,7 @@ public class CcdCasesSenderTest {
         caseData.setRegionalProcessingCenter(getRegionalProcessingCenter());
 
         verify(ccdService, times(1))
-            .createCase(eq(caseData), eq(idamTokens));
+            .createCase(eq(caseData), eq("appealCreated"), any(String.class), any(String.class), eq(idamTokens));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class CcdCasesSenderTest {
 
         verifyZeroInteractions(regionalProcessingCenterService);
         verify(ccdService, times(1))
-            .createCase(eq(caseData), eq(idamTokens));
+            .createCase(eq(caseData), eq("appealCreated"), any(String.class), any(String.class), eq(idamTokens));
     }
 
     @Test
@@ -470,7 +470,8 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
 
-        verify(ccdService).createCase(caseDataArgumentCaptor.capture(), eq(idamTokens));
+        verify(ccdService).createCase(caseDataArgumentCaptor.capture(), eq("appealCreated"), any(String.class),
+            any(String.class), eq(idamTokens));
 
         assertThat(caseDataArgumentCaptor.getValue().getRegion(), equalTo(regionalProcessingCenter.getName()));
         assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(regionalProcessingCenter));

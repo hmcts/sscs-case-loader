@@ -86,7 +86,7 @@ checkstyle {
 }
 
 pmd {
-  toolVersion = "5.8.1"
+  toolVersion = "6.5.0"
   ignoreFailures = true
   sourceSets = [
     sourceSets.main,
@@ -217,7 +217,7 @@ dependencyManagement {
   dependencies {
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '27.0-jre') {
+    dependencySet(group: 'com.google.guava', version: '27.0.1-jre') {
       entry 'guava'
     }
   }
@@ -245,9 +245,9 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.131'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.138'
 
-  compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
+  compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
 
   compile group: 'org.json', name: 'json', version: '20180813'
 
@@ -257,12 +257,11 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.1.1'
-  compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
-  compileOnly 'org.projectlombok:lombok:1.18.2'
-  apt "org.projectlombok:lombok:1.16.20"
+  compileOnly 'org.projectlombok:lombok:1.18.6'
+  apt "org.projectlombok:lombok:1.18.6"
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '1.31.1'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.4.0'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '1.31.1'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'

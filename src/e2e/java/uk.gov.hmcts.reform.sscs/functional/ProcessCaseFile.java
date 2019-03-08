@@ -34,7 +34,7 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class ProcessCaseFile {
 
     private static final org.slf4j.Logger LOG = getLogger(ProcessCaseFile.class);
@@ -66,7 +66,8 @@ public class ProcessCaseFile {
             .build();
 
         SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
-        SscsCaseDetails caseDetails = ccdService.createCase(caseData, idamTokens);
+        SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+            "caseloader test description", idamTokens);
         ccdCaseId = String.valueOf(caseDetails.getId());
         LOG.info("Created test ccd case with id {}", ccdCaseId);
 
