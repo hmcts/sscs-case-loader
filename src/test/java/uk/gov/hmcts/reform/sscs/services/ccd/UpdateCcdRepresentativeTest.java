@@ -22,8 +22,8 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 public class UpdateCcdRepresentativeTest {
     private static final String YES = "Yes";
     private static final String NO = "No";
-    public static final String ABCDEFGH_1 = "abcdefgh1";
-    public static final String ABCDEFGH_2 = "ABCDEFGH2";
+    private static final String ABCDEFGH_1 = "abcdefgh1";
+    private static final String ABCDEFGH_2 = "ABCDEFGH2";
 
     @Test
     public void givenARepChangeFromNullRep_willChangeDataAndReturnTrue() {
@@ -99,7 +99,7 @@ public class UpdateCcdRepresentativeTest {
     }
 
     @Test
-    public void givenARepContactChange_willChangeDataAndReturnTrue() {
+    public void givenARepContactChange_willChangeDataButKeepExistingTyaAndReturnTrue() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(
@@ -125,14 +125,13 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
         assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
-        // should not change the existing tya number even though we have new tya number on gapsCaseData
         assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
         assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
                 existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
     }
 
     @Test
-    public void givenARepContactChangeWhenExistingContactIsNull_willChangeDataAndReturnTrue() {
+    public void givenARepContactChangeWhenExistingContactIsNull_willChangeDataButKeepExistingTyaAndReturnTrue() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(
@@ -156,7 +155,6 @@ public class UpdateCcdRepresentativeTest {
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
-        // should not change the existing tya number even though we have new tya number on gapsCaseData
         assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
         assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
                 existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
