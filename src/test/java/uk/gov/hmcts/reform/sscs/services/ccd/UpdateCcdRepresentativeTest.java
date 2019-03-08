@@ -22,6 +22,8 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 public class UpdateCcdRepresentativeTest {
     private static final String YES = "Yes";
     private static final String NO = "No";
+    public static final String ABCDEFGH_1 = "abcdefgh1";
+    public static final String ABCDEFGH_2 = "ABCDEFGH2";
 
     @Test
     public void givenARepChangeFromNullRep_willChangeDataAndReturnTrue() {
@@ -76,6 +78,8 @@ public class UpdateCcdRepresentativeTest {
                 .rep(
                     Representative.builder().name(Name.builder().lastName("Potter").build()).build()
                 ).build())
+            .subscriptions(Subscriptions.builder().representativeSubscription(
+                    Subscription.builder().tya(ABCDEFGH_1).email("harry@potter.com").subscribeEmail(NO).subscribeSms(NO).build()).build())
             .build();
 
         SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
@@ -102,21 +106,27 @@ public class UpdateCcdRepresentativeTest {
                         .contact(Contact.builder().email("harry@potter.com").build()).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
-                Subscription.builder().email("harry@potter.com").subscribeEmail(NO).subscribeSms(NO).build()).build())
+                Subscription.builder().tya(ABCDEFGH_1).email("harry@potter.com").subscribeEmail(NO).subscribeSms(NO).build()).build())
             .build();
 
-        SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
-            .rep(
-                Representative.builder().name(Name.builder().lastName("Potter").build())
-                    .contact(Contact.builder().email("harry.potter@wizards.com").build()).build()
-            ).build())
+        SscsCaseData existingCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(
+                    Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .contact(Contact.builder().email("harry.potter@wizards.com").build()).build()
+                ).build())
+            .subscriptions(Subscriptions.builder().representativeSubscription(
+                Subscription.builder().tya(ABCDEFGH_2).email("harry.potter@wizards.com").subscribeEmail(NO)
+                        .subscribeSms(NO).build()).build())
             .build();
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
         assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
-        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
-            existingCaseData.getSubscriptions().getRepresentativeSubscription());
+        // should not change the existing tya number even though we have new tya number on gapsCaseData
+        assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
+        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
+                existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
     }
 
     @Test
@@ -128,7 +138,7 @@ public class UpdateCcdRepresentativeTest {
                         .contact(Contact.builder().email("harry@potter.com").build()).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
-                Subscription.builder().email("harry@potter.com").subscribeEmail(NO)
+                Subscription.builder().tya(ABCDEFGH_1).email("harry@potter.com").subscribeEmail(NO)
                     .subscribeSms(NO).build()).build())
             .build();
 
@@ -137,13 +147,19 @@ public class UpdateCcdRepresentativeTest {
                 Representative.builder().name(Name.builder().lastName("Potter").build())
                     .contact(null).build()
             ).build())
+                .subscriptions(Subscriptions.builder().representativeSubscription(
+                        Subscription.builder().tya(ABCDEFGH_2).email("harry.potter@wizards.com").subscribeEmail(NO)
+                                .subscribeSms(NO).build()).build())
             .build();
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
-        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
-            existingCaseData.getSubscriptions().getRepresentativeSubscription());
+        // should not change the existing tya number even though we have new tya number on gapsCaseData
+        assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
+        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
+                existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
+        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
+                existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
     }
 
     @Test
