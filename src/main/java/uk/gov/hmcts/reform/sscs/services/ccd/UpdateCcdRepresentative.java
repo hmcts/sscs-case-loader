@@ -95,6 +95,7 @@ final class UpdateCcdRepresentative {
             .subscribeSms(existingRepSubscription != null && existingRepSubscription.isSmsSubscribed() ? YES : NO)
             .subscribeEmail(existingRepSubscription != null && existingRepSubscription.isEmailSubscribed() ? YES : NO)
             .mobile(getValidMobileNumber(newRepSubscription, existingRepSubscription, caseReference))
+            .tya(existingRepSubscription != null ? existingRepSubscription.getTya() : newRepSubscription.getTya())
             .build();
     }
 
