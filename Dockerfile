@@ -1,4 +1,4 @@
-FROM gradle:jdk8 as builder
+FROM hmcts/cnp-java-base:openjdk-8u191-jre-alpine3.9-2.0.1
 
 COPY . /home/gradle/src
 USER root
