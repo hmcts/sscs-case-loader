@@ -105,7 +105,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     public void shouldBuildRepresentativeSubscriptionsWithAppealCaseNumber() {
         Parties party = Parties.builder()
             .email("my@email.com")
-            .phone2("07123456789")
+            .phone1("07123456789")
             .roleId(3)
             .build();
         Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party), null);
@@ -116,8 +116,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
         assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
         assertEquals("email is not " + party.getEmail(),
             party.getEmail(), subscriptions.getRepresentativeSubscription().getEmail());
-        assertEquals("mobile number is not " + party.getPhone1(),
-            party.getPhone2(), subscriptions.getRepresentativeSubscription().getMobile());
+        assertEquals("mobile number is not " + party.getMobile(),
+            party.getMobile(), subscriptions.getRepresentativeSubscription().getMobile());
         assertEquals("email should be un-subscribed", "No",
             subscriptions.getRepresentativeSubscription().getSubscribeEmail());
         assertEquals("sms should be un-subscribed", "No",
@@ -125,11 +125,11 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
-    @Parameters({"invalid,", "07123456789,07123456789"})
+    @Parameters({",","invalid,", "07123456789,07123456789"})
     public void givenInvalidMobile_shouldFallbackToEmptyString(String mobileNumber, String expectedMobileNumber) {
         Parties party = Parties.builder()
             .email("my@email.com")
-            .phone2(mobileNumber)
+            .phone1(mobileNumber)
             .roleId(3)
             .build();
 

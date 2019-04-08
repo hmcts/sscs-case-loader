@@ -89,8 +89,8 @@ class CaseDataBuilder {
     Contact buildContact(Parties party) {
         return Contact.builder()
             .email(party.getEmail())
-            .phone(party.getPhone1())
-            .mobile(party.getPhone2())
+            .phone(party.getLandline())
+            .mobile(party.getMobile())
             .build();
     }
 
@@ -253,8 +253,10 @@ class CaseDataBuilder {
     }
 
     private String validateMobile(Optional<Parties> representativeParty, String appealCaseRefNum) {
-        if (representativeParty.isPresent()) {
-            String mobileNumber = representativeParty.get().getPhone2();
+        if (representativeParty.isPresent()
+            && representativeParty.get().getMobile() != null
+            && !representativeParty.get().getMobile().isEmpty()) {
+            String mobileNumber = representativeParty.get().getMobile();
             if (UkMobile.validate(mobileNumber)) {
                 return mobileNumber;
             } else {
