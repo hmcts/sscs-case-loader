@@ -58,7 +58,6 @@ public class TransformAppealCaseToCaseDataTest {
 
     @Test
     public void givenACaseData_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
-
         AppealCase appealCase = getAppealCase("AppealCase.json");
 
         SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
@@ -75,6 +74,87 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
         assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
         assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
+
+        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
+
+        assertThat(caseData.getGeneratedDob(), is(dob));
+    }
+
+    @Test
+    public void givenACaseDataWithAppointee_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
+        AppealCase appealCase = getAppealCase("AppealCaseWithAppointee.json");
+
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        String appealNumber = caseData.getSubscriptions().getAppellantSubscription().getTya();
+        assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
+        assertEquals("Appeal references are mapped (SC Reference)", "SC068/17/00013", caseData.getCaseReference());
+        assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
+        assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
+        assertThat(caseData.getRegion(), is(expectedRegionName));
+        assertThat(caseData.getAppeal().getHearingType(), is("oral"));
+        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
+        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
+        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
+        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
+        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
+        assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
+        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getMobile()));
+        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail()));
+
+        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
+
+        assertThat(caseData.getGeneratedDob(), is(dob));
+    }
+
+    @Test
+    public void givenACaseDataWithAppointeeNoEmail_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
+        AppealCase appealCase = getAppealCase("AppealCaseWithAppointeeNoEmail.json");
+
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        String appealNumber = caseData.getSubscriptions().getAppellantSubscription().getTya();
+        assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
+        assertEquals("Appeal references are mapped (SC Reference)", "SC068/17/00013", caseData.getCaseReference());
+        assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
+        assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
+        assertThat(caseData.getRegion(), is(expectedRegionName));
+        assertThat(caseData.getAppeal().getHearingType(), is("oral"));
+        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
+        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
+        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
+        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
+        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
+        assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
+        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getMobile()));
+        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(""));
+
+        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
+
+        assertThat(caseData.getGeneratedDob(), is(dob));
+    }
+
+    @Test
+    public void givenACaseDataWithAppointeeNoMobile_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
+        AppealCase appealCase = getAppealCase("AppealCaseWithAppointeeNoMobile.json");
+
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        String appealNumber = caseData.getSubscriptions().getAppellantSubscription().getTya();
+        assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
+        assertEquals("Appeal references are mapped (SC Reference)", "SC068/17/00013", caseData.getCaseReference());
+        assertEquals("Appeal references are mapped (CCD ID)", "1111222233334444", caseData.getCcdCaseId());
+        assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
+        assertThat(caseData.getRegion(), is(expectedRegionName));
+        assertThat(caseData.getAppeal().getHearingType(), is("oral"));
+        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
+        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
+        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
+        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
+        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
+        assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
+        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(""));
+        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail()));
 
         String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
 
@@ -100,8 +180,54 @@ public class TransformAppealCaseToCaseDataTest {
         assertEquals("Representative Subscriptions is not as expected",
             expectedRepresentativeSubscription, caseData.getSubscriptions().getRepresentativeSubscription());
         assertNotNull("Representative must not be null", caseData.getAppeal().getRep());
-        assertEquals("Contact should be equal",
-            expectedContact, caseData.getAppeal().getRep().getContact());
+        assertEquals("Contact should be equal", expectedContact, caseData.getAppeal().getRep().getContact());
+
+        assertThat(caseData.getSubscriptions().getRepresentativeSubscription().getMobile(), is(caseData.getAppeal().getRep().getContact().getMobile()));
+        assertThat(caseData.getSubscriptions().getRepresentativeSubscription().getEmail(), is(caseData.getAppeal().getRep().getContact().getEmail()));
+    }
+
+    @Test
+    public void givenACaseDataWithRepresentativeNoEmail_shouldTransformToCaseDataWithRepresentativeSubscription()
+        throws Exception {
+        final AppealCase appealCase = getAppealCase("AppealCaseWithRepresentativeNoEmail.json");
+        final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+        assertEquals("tya field should have a length of 10",
+            10, caseData.getSubscriptions().getRepresentativeSubscription().getTya().length());
+        final Subscription expectedRepresentativeSubscription = Subscription.builder()
+            .email("")
+            .subscribeEmail("No")
+            .mobile("07123456789")
+            .reason("")
+            .subscribeSms("No")
+            .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())
+            .build();
+        final Contact expectedContact = Contact.builder().mobile("07123456789").build();
+        assertEquals("Representative Subscriptions is not as expected",
+            expectedRepresentativeSubscription, caseData.getSubscriptions().getRepresentativeSubscription());
+        assertNotNull("Representative must not be null", caseData.getAppeal().getRep());
+        assertEquals("Contact should be equal", expectedContact, caseData.getAppeal().getRep().getContact());
+    }
+
+    @Test
+    public void givenACaseDataWithRepresentativeNoMobile_shouldTransformToCaseDataWithRepresentativeSubscription()
+        throws Exception {
+        final AppealCase appealCase = getAppealCase("AppealCaseWithRepresentativeNoMobile.json");
+        final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+        assertEquals("tya field should have a length of 10",
+            10, caseData.getSubscriptions().getRepresentativeSubscription().getTya().length());
+        final Subscription expectedRepresentativeSubscription = Subscription.builder()
+            .email("john@example.com")
+            .subscribeEmail("No")
+            .mobile("")
+            .reason("")
+            .subscribeSms("No")
+            .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())
+            .build();
+        final Contact expectedContact = Contact.builder().email("john@example.com").build();
+        assertEquals("Representative Subscriptions is not as expected",
+            expectedRepresentativeSubscription, caseData.getSubscriptions().getRepresentativeSubscription());
+        assertNotNull("Representative must not be null", caseData.getAppeal().getRep());
+        assertEquals("Contact should be equal", expectedContact, caseData.getAppeal().getRep().getContact());
     }
 
     private AppealCase getAppealCase(String filename) throws Exception {
