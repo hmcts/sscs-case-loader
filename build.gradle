@@ -259,7 +259,7 @@ dependencies {
   compile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
 
   compileOnly 'org.projectlombok:lombok:1.18.6'
-  apt "org.projectlombok:lombok:1.18.6"
+  annotationProcessor "org.projectlombok:lombok:1.18.6"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.5.1'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.5.1'

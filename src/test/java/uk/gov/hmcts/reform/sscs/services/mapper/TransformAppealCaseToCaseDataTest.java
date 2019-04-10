@@ -81,7 +81,8 @@ public class TransformAppealCaseToCaseDataTest {
     }
 
     @Test
-    public void givenACaseDataWithAppointee_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
+    public void givenACaseDataWithAppointee_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber()
+        throws Exception {
         AppealCase appealCase = getAppealCase("AppealCaseWithAppointee.json");
 
         SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
@@ -99,8 +100,14 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
         assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
-        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getMobile()));
-        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail()));
+        assertThat(
+            caseData.getSubscriptions().getAppointeeSubscription().getMobile(),
+            is(caseData.getAppeal().getAppellant().getAppointee().getContact().getMobile())
+        );
+        assertThat(
+            caseData.getSubscriptions().getAppointeeSubscription().getEmail(),
+            is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
+        );
 
         String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
 
@@ -108,7 +115,8 @@ public class TransformAppealCaseToCaseDataTest {
     }
 
     @Test
-    public void givenACaseDataWithAppointeeNoEmail_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
+    public void givenACaseDataWithAppointeeNoEmail_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber()
+        throws Exception {
         AppealCase appealCase = getAppealCase("AppealCaseWithAppointeeNoEmail.json");
 
         SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
@@ -126,7 +134,10 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
         assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
-        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getMobile()));
+        assertThat(
+            caseData.getSubscriptions().getAppointeeSubscription().getMobile(),
+            is(caseData.getAppeal().getAppellant().getAppointee().getContact().getMobile())
+        );
         assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(""));
 
         String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
@@ -135,7 +146,8 @@ public class TransformAppealCaseToCaseDataTest {
     }
 
     @Test
-    public void givenACaseDataWithAppointeeNoMobile_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
+    public void givenACaseDataWithAppointeeNoMobile_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber()
+        throws Exception {
         AppealCase appealCase = getAppealCase("AppealCaseWithAppointeeNoMobile.json");
 
         SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
@@ -154,7 +166,10 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
         assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(""));
-        assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail()));
+        assertThat(
+            caseData.getSubscriptions().getAppointeeSubscription().getEmail(),
+            is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
+        );
 
         String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
 
@@ -182,8 +197,14 @@ public class TransformAppealCaseToCaseDataTest {
         assertNotNull("Representative must not be null", caseData.getAppeal().getRep());
         assertEquals("Contact should be equal", expectedContact, caseData.getAppeal().getRep().getContact());
 
-        assertThat(caseData.getSubscriptions().getRepresentativeSubscription().getMobile(), is(caseData.getAppeal().getRep().getContact().getMobile()));
-        assertThat(caseData.getSubscriptions().getRepresentativeSubscription().getEmail(), is(caseData.getAppeal().getRep().getContact().getEmail()));
+        assertThat(
+            caseData.getSubscriptions().getRepresentativeSubscription().getMobile(),
+            is(caseData.getAppeal().getRep().getContact().getMobile())
+        );
+        assertThat(
+            caseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
+            is(caseData.getAppeal().getRep().getContact().getEmail())
+        );
     }
 
     @Test

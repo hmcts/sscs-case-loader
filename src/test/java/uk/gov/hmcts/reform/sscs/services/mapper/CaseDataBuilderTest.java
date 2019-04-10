@@ -135,8 +135,11 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
-    @Parameters({",","invalid,", "07123456789,07123456789"})
-    public void givenInvalidAppointeeMobile_shouldFallbackToEmptyString(String mobileNumber, String expectedMobileNumber) {
+    @Parameters({",", "invalid,", "07123456789,07123456789"})
+    public void givenInvalidAppointeeMobile_shouldFallbackToEmptyString(
+        String mobileNumber,
+        String expectedMobileNumber
+    ) {
         Parties party = Parties.builder()
             .email("my@email.com")
             .phone1(mobileNumber)
@@ -145,7 +148,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
         Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.empty(), Optional.of(party), null);
 
-        assertEquals(expectedMobileNumber, subscriptions.getRepresentativeSubscription().getMobile());
+        assertEquals(expectedMobileNumber, subscriptions.getAppointeeSubscription().getMobile());
     }
 
     @Test

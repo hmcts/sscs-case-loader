@@ -64,7 +64,9 @@ public class TransformAppealCaseToCaseData {
             .generatedEmail(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getEmail() : null)
             .generatedMobile(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getMobile() : null)
             .generatedDob(appeal.getAppellant() != null ? appeal.getAppellant().getIdentity().getDob() : null)
-            .subscriptions(caseDataBuilder.buildSubscriptions(representativeParty, appointeeParty, appealCase.getAppealCaseRefNum()))
+            .subscriptions(caseDataBuilder.buildSubscriptions(
+                representativeParty, appointeeParty, appealCase.getAppealCaseRefNum())
+            )
             .ccdCaseId(appealCase.getAdditionalRef())
             .build();
     }
@@ -75,7 +77,9 @@ public class TransformAppealCaseToCaseData {
                              final Optional<Parties> representativeParty,
                              final BenefitType benefitType) {
         return Appeal.builder()
-                .appellant(appellantParty.map((Parties party) -> appellant(party, appointeeParty, appealCase)).orElse(null))
+                .appellant(appellantParty.map(
+                    (Parties party) -> appellant(party, appointeeParty, appealCase)).orElse(null)
+                )
                 .benefitType(benefitType)
                 .hearingOptions(appellantParty.map((Parties party) -> hearingOptions(party, appealCase)).orElse(null))
                 .hearingType(HearingType.getHearingTypeByTribunalsTypeId(appealCase.getTribunalTypeId()).getValue())
@@ -92,7 +96,9 @@ public class TransformAppealCaseToCaseData {
         return regionalProcessingCenter;
     }
 
-    private Appellant appellant(final Parties appellantParty, final Optional<Parties> appointeeParty, final AppealCase appealCase) {
+    private Appellant appellant(final Parties appellantParty,
+                                final Optional<Parties> appointeeParty,
+                                final AppealCase appealCase) {
         return Appellant.builder()
             .name(caseDataBuilder.buildName(appellantParty))
             .contact(caseDataBuilder.buildContact(appellantParty))
