@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.buildSubscriptionWithDefaults;
+import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.APPELLANT_ROLE_ID;
 import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.APPOINTEE_ROLE_ID;
 import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.REP_ROLE_ID;
 
@@ -88,7 +89,9 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Test
     public void shouldBuildSubscriptionsWithAppealCaseNumber() {
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.empty(), Optional.empty(), null);
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(
+            Optional.empty(), Optional.empty(), Optional.empty(), null
+        );
         assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
         assertNotNull("Representative Subscription is null", subscriptions.getRepresentativeSubscription());
         String appealNumber = subscriptions.getAppellantSubscription().getTya();
@@ -104,9 +107,14 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             .phone1("07123456789")
             .roleId(REP_ROLE_ID)
             .build();
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party), Optional.empty(), null);
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(
+            Optional.empty(), Optional.of(party), Optional.empty(), null
+        );
+
         assertNotNull("AppellantSubscription is null", subscriptions.getAppellantSubscription());
         assertNotNull("Representative Subscription is null", subscriptions.getRepresentativeSubscription());
+        assertNotNull("AppointeeSubscription is null", subscriptions.getAppointeeSubscription());
+
         String appealNumber = subscriptions.getRepresentativeSubscription().getTya();
         assertTrue("appealNumber is empty", !"".equals(appealNumber));
         assertEquals("appealNumber length is not 10 digits", 10, appealNumber.length());
@@ -121,6 +129,25 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
+    @Parameters({",", "invalid,", "07123456789,07123456789"})
+    public void givenInvalidAppellantMobile_shouldFallbackToEmptyString(
+        String mobileNumber,
+        String expectedMobileNumber
+    ) {
+        Parties party = Parties.builder()
+            .email("my@email.com")
+            .phone1(mobileNumber)
+            .roleId(APPELLANT_ROLE_ID)
+            .build();
+
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(
+            Optional.of(party), Optional.empty(), Optional.empty(), null
+        );
+
+        assertEquals(expectedMobileNumber, subscriptions.getAppellantSubscription().getMobile());
+    }
+
+    @Test
     @Parameters({",","invalid,", "07123456789,07123456789"})
     public void givenInvalidRepMobile_shouldFallbackToEmptyString(String mobileNumber, String expectedMobileNumber) {
         Parties party = Parties.builder()
@@ -129,7 +156,9 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             .roleId(REP_ROLE_ID)
             .build();
 
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.of(party), Optional.empty(), null);
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(
+            Optional.empty(), Optional.of(party), Optional.empty(), null
+        );
 
         assertEquals(expectedMobileNumber, subscriptions.getRepresentativeSubscription().getMobile());
     }
@@ -146,21 +175,24 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             .roleId(APPOINTEE_ROLE_ID)
             .build();
 
-        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(Optional.empty(), Optional.of(party), null);
+        Subscriptions subscriptions = caseDataBuilder.buildSubscriptions(
+            Optional.empty(), Optional.empty(), Optional.of(party), null
+        );
 
         assertEquals(expectedMobileNumber, subscriptions.getAppointeeSubscription().getMobile());
     }
 
     @Test
     public void givenAnEmptyParty_shouldBuildEmptySubscription() {
-        Subscription subscription = buildSubscriptionWithDefaults(Optional.empty(), null);
+        String appealNumber = "";
+        Subscription subscription = buildSubscriptionWithDefaults(Optional.empty(), null, appealNumber);
 
         assertEquals("", subscription.getEmail());
         assertEquals("", subscription.getMobile());
         assertEquals("", subscription.getReason());
         assertEquals(NO, subscription.getSubscribeEmail());
         assertEquals(NO, subscription.getSubscribeSms());
-        assertEquals("", subscription.getTya());
+        assertEquals(appealNumber, subscription.getTya());
     }
 
     @Test
@@ -174,14 +206,15 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             .roleId(APPOINTEE_ROLE_ID)
             .build();
 
-        Subscription subscription = buildSubscriptionWithDefaults(Optional.of(party), null);
+        String appealNumber = "123";
+        Subscription subscription = buildSubscriptionWithDefaults(Optional.of(party), null, appealNumber);
 
         assertEquals(email, subscription.getEmail());
         assertEquals(mobile, subscription.getMobile());
         assertEquals("", subscription.getReason());
         assertEquals(NO, subscription.getSubscribeEmail());
         assertEquals(NO, subscription.getSubscribeSms());
-        assertNotNull(subscription.getTya());
+        assertEquals(appealNumber, subscription.getTya());
     }
 
     @Test

@@ -65,7 +65,7 @@ public class TransformAppealCaseToCaseData {
             .generatedMobile(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getMobile() : null)
             .generatedDob(appeal.getAppellant() != null ? appeal.getAppellant().getIdentity().getDob() : null)
             .subscriptions(caseDataBuilder.buildSubscriptions(
-                representativeParty, appointeeParty, appealCase.getAppealCaseRefNum())
+                appellantParty, representativeParty, appointeeParty, appealCase.getAppealCaseRefNum())
             )
             .ccdCaseId(appealCase.getAdditionalRef())
             .build();

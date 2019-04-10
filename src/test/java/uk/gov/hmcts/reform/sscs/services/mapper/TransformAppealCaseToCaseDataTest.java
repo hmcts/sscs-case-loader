@@ -72,6 +72,14 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
         assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
         assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
+        assertThat(
+            caseData.getSubscriptions().getAppellantSubscription().getEmail(),
+            is(caseData.getAppeal().getAppellant().getContact().getEmail())
+        );
+        assertThat(
+            caseData.getSubscriptions().getAppellantSubscription().getMobile(),
+            is(caseData.getAppeal().getAppellant().getContact().getMobile())
+        );
         assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
         assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
 
@@ -98,6 +106,8 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
         assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
         assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
+        assertThat(caseData.getSubscriptions().getAppellantSubscription().getEmail(), is(""));
+        assertThat(caseData.getSubscriptions().getAppellantSubscription().getMobile(), is(""));
         assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
         assertThat(

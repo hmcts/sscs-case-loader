@@ -230,20 +230,27 @@ class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    Subscriptions buildSubscriptions(final Optional<Parties> representativeParty,
+    Subscriptions buildSubscriptions(final Optional<Parties> appellantParty,
+                                     final Optional<Parties> representativeParty,
                                      final Optional<Parties> appointeeParty,
                                      String appealCaseRefNum) {
-        Subscription appellantSubscription = Subscription.builder()
-            .email("")
-            .mobile("")
-            .reason("")
-            .subscribeEmail("")
-            .subscribeSms("")
-            .tya(generateAppealNumber())
-            .build();
+        Subscription appellantSubscription = buildSubscriptionWithDefaults(
+            appellantParty,
+            appealCaseRefNum,
+            generateAppealNumber()
+        );
 
-        Subscription representativeSubscription = buildSubscriptionWithDefaults(representativeParty, appealCaseRefNum);
-        Subscription appointeeSubscription = buildSubscriptionWithDefaults(appointeeParty, appealCaseRefNum);
+        Subscription representativeSubscription = buildSubscriptionWithDefaults(
+            representativeParty,
+            appealCaseRefNum,
+            representativeParty.isPresent() ? generateAppealNumber() : ""
+        );
+
+        Subscription appointeeSubscription = buildSubscriptionWithDefaults(
+            appointeeParty,
+            appealCaseRefNum,
+            appointeeParty.isPresent() ? generateAppealNumber() : ""
+        );
 
         return Subscriptions.builder()
             .appellantSubscription(appellantSubscription)
@@ -252,14 +259,18 @@ class CaseDataBuilder {
             .build();
     }
 
-    protected static Subscription buildSubscriptionWithDefaults(Optional<Parties> party, String appealCaseRefNum) {
+    protected static Subscription buildSubscriptionWithDefaults(
+        Optional<Parties> party,
+        String appealCaseRefNum,
+        String appealNumber
+    ) {
         return Subscription.builder()
             .email(party.map(Parties::getEmail).orElse(""))
             .mobile(validateMobile(party, appealCaseRefNum))
             .reason("")
             .subscribeEmail(NO)
             .subscribeSms(NO)
-            .tya(party.isPresent() ? generateAppealNumber() : "")
+            .tya(appealNumber)
             .build();
     }
 
