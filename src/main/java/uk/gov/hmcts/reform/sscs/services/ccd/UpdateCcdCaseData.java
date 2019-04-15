@@ -31,8 +31,9 @@ class UpdateCcdCaseData {
                                                             SscsCaseData existingCcdCaseData) {
         boolean eventChange = updateEvents.update(gapsCaseData, existingCcdCaseData);
         boolean dataChange = updateCcdData(gapsCaseData, existingCcdCaseData);
+        boolean subscriptionChange = updateCcdSubscriptions(gapsCaseData, existingCcdCaseData);
         updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
-        return workOutUpdateType(eventChange, dataChange);
+        return workOutUpdateType(eventChange, dataChange || subscriptionChange);
     }
 
     private UpdateType workOutUpdateType(boolean eventChanged, boolean dataChange) {
@@ -60,4 +61,13 @@ class UpdateCcdCaseData {
         return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType || updateRepresentative;
     }
 
+    private boolean updateCcdSubscriptions(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        if (gapsCaseData.getSubscriptions().equals(existingCcdCaseData.getSubscriptions())) {
+            return false;
+        }
+
+        existingCcdCaseData.setSubscriptions(gapsCaseData.getSubscriptions());
+
+        return true;
+    }
 }

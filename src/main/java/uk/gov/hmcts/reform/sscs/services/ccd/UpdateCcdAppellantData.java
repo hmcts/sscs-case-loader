@@ -2,11 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 
 @Service
 class UpdateCcdAppellantData {
@@ -28,7 +24,9 @@ class UpdateCcdAppellantData {
         boolean appellantContactChanged = updateCcdAppellantContact(gapsAppellant, existingCcdAppellant);
         boolean appellantIdentityChanged = updateCcdAppellantIdentity(gapsAppellant, existingCcdAppellant);
 
-        return appellantNameChanged || appellantContactChanged || appellantIdentityChanged;
+        boolean appointeeChanged = updateCcdAppointee(gapsAppellant, existingCcdAppellant);
+
+        return appellantNameChanged || appellantContactChanged || appellantIdentityChanged || appointeeChanged;
     }
 
     private boolean updateCcdAppellantIdentity(Appellant gapsAppellant, Appellant existingCcdAppellant) {
@@ -63,6 +61,19 @@ class UpdateCcdAppellantData {
             existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
             return true;
         }
+
+        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getMobile())
+            && !gapsAppellantContact.getMobile().equals(existingCcdAppellantContact.getMobile())) {
+            existingCcdAppellantContact.setMobile(gapsAppellantContact.getMobile());
+            return true;
+        }
+
+        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getPhone())
+            && !gapsAppellantContact.getPhone().equals(existingCcdAppellantContact.getPhone())) {
+            existingCcdAppellantContact.setPhone(gapsAppellantContact.getPhone());
+            return true;
+        }
+
         return false;
     }
 
@@ -87,6 +98,99 @@ class UpdateCcdAppellantData {
                 dataChanged = true;
             }
         }
+        return dataChanged;
+    }
+
+    private boolean updateCcdAppointee(Appellant gapsAppellant, Appellant existingCcdAppellant) {
+        if (null == existingCcdAppellant.getAppointee()) {
+            existingCcdAppellant.setAppointee(gapsAppellant.getAppointee());
+            return true;
+        }
+
+        boolean appointeeNameChanged = updateCcdAppointeeName(gapsAppellant.getAppointee(), existingCcdAppellant.getAppointee());
+        boolean appointeeContactChanged = updateCcdAppointeeContact(gapsAppellant.getAppointee(), existingCcdAppellant.getAppointee());
+        boolean appointeeIdentityChanged = updateCcdAppointeeIdentity(gapsAppellant.getAppointee(), existingCcdAppellant.getAppointee());
+
+        return appointeeNameChanged || appointeeContactChanged || appointeeIdentityChanged;
+    }
+
+    private boolean updateCcdAppointeeIdentity(Appointee gapsAppointee, Appointee existingCcdAppointee) {
+        Identity gapsAppellantIdentity = gapsAppointee == null || gapsAppointee.getIdentity() == null
+            ? null : gapsAppointee.getIdentity();
+        Identity existingCcdAppellantIdentity =
+            existingCcdAppointee == null || existingCcdAppointee.getIdentity() == null
+            ? null : existingCcdAppointee.getIdentity();
+
+        if (null == existingCcdAppellantIdentity) {
+            existingCcdAppointee.setIdentity(gapsAppellantIdentity);
+            return true;
+        }
+
+        if (null != gapsAppellantIdentity && StringUtils.isNotBlank(gapsAppellantIdentity.getNino())
+            && !gapsAppellantIdentity.getNino().equals(existingCcdAppellantIdentity.getNino())) {
+            existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
+            return true;
+        }
+        return false;
+
+    }
+
+    private boolean updateCcdAppointeeContact(Appointee gapsAppointee, Appointee existingCcdAppointee) {
+        Contact gapsAppellantContact = gapsAppointee == null || gapsAppointee.getContact() == null
+            ? null : gapsAppointee.getContact();
+        Contact existingCcdAppellantContact = existingCcdAppointee == null || existingCcdAppointee.getContact() == null
+            ? null : existingCcdAppointee.getContact();
+
+        if (null == existingCcdAppellantContact) {
+            existingCcdAppointee.setContact(gapsAppellantContact);
+            return true;
+        }
+
+        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getEmail())
+            && !gapsAppellantContact.getEmail().equals(existingCcdAppellantContact.getEmail())) {
+            existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
+            return true;
+        }
+
+        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getMobile())
+            && !gapsAppellantContact.getMobile().equals(existingCcdAppellantContact.getMobile())) {
+            existingCcdAppellantContact.setMobile(gapsAppellantContact.getMobile());
+            return true;
+        }
+
+        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getPhone())
+            && !gapsAppellantContact.getPhone().equals(existingCcdAppellantContact.getPhone())) {
+            existingCcdAppellantContact.setPhone(gapsAppellantContact.getPhone());
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean updateCcdAppointeeName(Appointee gapsAppointee, Appointee existingCcdAppointee) {
+        Name gapsAppellantName = gapsAppointee == null || gapsAppointee.getName() == null
+            ? null : gapsAppointee.getName();
+        Name existingCcdAppellantName = existingCcdAppointee == null || existingCcdAppointee.getName() == null
+            ? null : existingCcdAppointee.getName();
+
+        if (null == existingCcdAppellantName) {
+            existingCcdAppointee.setName(gapsAppellantName);
+            return true;
+        }
+        boolean dataChanged = false;
+        if (null != gapsAppellantName) {
+            if (StringUtils.isNotBlank(gapsAppellantName.getFirstName())
+                && !gapsAppellantName.getFirstName().equals(existingCcdAppellantName.getFirstName())) {
+                existingCcdAppellantName.setFirstName(gapsAppellantName.getFirstName());
+                dataChanged = true;
+            }
+            if (StringUtils.isNotBlank(gapsAppellantName.getLastName())
+                && !gapsAppellantName.getLastName().equals(existingCcdAppellantName.getLastName())) {
+                existingCcdAppellantName.setLastName(gapsAppellantName.getLastName());
+                dataChanged = true;
+            }
+        }
+
         return dataChanged;
     }
 }
