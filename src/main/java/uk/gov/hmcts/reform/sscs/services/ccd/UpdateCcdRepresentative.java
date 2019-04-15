@@ -1,11 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
 @Slf4j
@@ -71,6 +67,7 @@ final class UpdateCcdRepresentative {
 
     private static void updateRepresentativeSubscription(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
         Subscription newRepSubscription = gapsCaseData.getSubscriptions() != null
+            && gapsCaseData.getSubscriptions().getRepresentativeSubscription() != null
             ? gapsCaseData.getSubscriptions().getRepresentativeSubscription() : Subscription.builder().build();
 
         Subscriptions existingSubscriptions = existingCcdCaseData.getSubscriptions() != null
