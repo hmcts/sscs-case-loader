@@ -102,14 +102,27 @@ class UpdateCcdAppellantData {
     }
 
     private boolean updateCcdAppointee(Appellant gapsAppellant, Appellant existingCcdAppellant) {
+        if (null == gapsAppellant.getAppointee()) {
+            return false;
+        }
+
         if (null == existingCcdAppellant.getAppointee()) {
             existingCcdAppellant.setAppointee(gapsAppellant.getAppointee());
             return true;
         }
 
-        boolean appointeeNameChanged = updateCcdAppointeeName(gapsAppellant.getAppointee(), existingCcdAppellant.getAppointee());
-        boolean appointeeContactChanged = updateCcdAppointeeContact(gapsAppellant.getAppointee(), existingCcdAppellant.getAppointee());
-        boolean appointeeIdentityChanged = updateCcdAppointeeIdentity(gapsAppellant.getAppointee(), existingCcdAppellant.getAppointee());
+        boolean appointeeNameChanged = updateCcdAppointeeName(
+            gapsAppellant.getAppointee(),
+            existingCcdAppellant.getAppointee()
+        );
+        boolean appointeeContactChanged = updateCcdAppointeeContact(
+            gapsAppellant.getAppointee(),
+            existingCcdAppellant.getAppointee()
+        );
+        boolean appointeeIdentityChanged = updateCcdAppointeeIdentity(
+            gapsAppellant.getAppointee(),
+            existingCcdAppellant.getAppointee()
+        );
 
         return appointeeNameChanged || appointeeContactChanged || appointeeIdentityChanged;
     }

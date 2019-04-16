@@ -62,12 +62,19 @@ class UpdateCcdCaseData {
     }
 
     private boolean updateCcdSubscriptions(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
-        if (gapsCaseData.getSubscriptions().equals(existingCcdCaseData.getSubscriptions())) {
-            return false;
+        if (existingCcdCaseData != null && gapsCaseData != null) {
+            if (existingCcdCaseData.getSubscriptions() != null
+                && existingCcdCaseData.getSubscriptions().equals(gapsCaseData.getSubscriptions())) {
+                return false;
+            }
+
+            if (gapsCaseData.getSubscriptions() != null) {
+                existingCcdCaseData.setSubscriptions(gapsCaseData.getSubscriptions());
+
+                return true;
+            }
         }
 
-        existingCcdCaseData.setSubscriptions(gapsCaseData.getSubscriptions());
-
-        return true;
+        return false;
     }
 }

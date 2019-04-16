@@ -11,7 +11,11 @@ import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHe
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeContactHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeIdentityHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths;
 
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;
@@ -186,6 +190,7 @@ public class UpdateCcdAppellantDataTest {
             .identity(Identity.builder()
                 .nino(gapsAndCcdDataUpdateScenario.gapsAppellantData.nino)
                 .build())
+            .appointee(gapsAndCcdDataUpdateScenario.gapsAppellantData.appointee)
             .build();
 
         gapsCaseData = SscsCaseData.builder()
@@ -205,6 +210,8 @@ public class UpdateCcdAppellantDataTest {
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.lastName);
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.nino);
+        existingCaseDetails.getData().getAppeal().getAppellant().setAppointee(
+            gapsAndCcdDataUpdateScenario.existingCcdAppellantData.appointee);
 
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
@@ -217,6 +224,8 @@ public class UpdateCcdAppellantDataTest {
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.contactEmail));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.nino));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee(),
+            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.appointee));
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -236,13 +245,29 @@ public class UpdateCcdAppellantDataTest {
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields =
             updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields();
 
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths =
+            updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeContactHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeContactHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeIdentityHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeIdentityHappyPaths();
+
+
         return new Object[]{
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields, false},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields, false},
             new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields, true},
-            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields, true}
+            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeContactHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeIdentityHappyPaths, true}
         };
     }
-
 }
