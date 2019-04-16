@@ -87,6 +87,8 @@ module "sscs-case-loader" {
   asp_rg       = "${var.product}-${var.component}-${var.env}"
   asp_name     = "${var.product}-${var.component}-${var.env}"
 
+  appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
+
   app_settings = {
     CORE_CASE_DATA_API_URL         = "${local.ccdApi}"
     CORE_CASE_DATA_JURISDICTION_ID = "${var.core_case_data_jurisdiction_id}"
