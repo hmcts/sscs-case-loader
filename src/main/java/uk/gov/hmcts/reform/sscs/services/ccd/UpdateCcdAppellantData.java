@@ -134,7 +134,7 @@ class UpdateCcdAppellantData {
             existingCcdAppointee == null || existingCcdAppointee.getIdentity() == null
             ? null : existingCcdAppointee.getIdentity();
 
-        if (null == existingCcdAppointeeIdentity) {
+        if (null == existingCcdAppointee.getIdentity()) {
             existingCcdAppointee.setIdentity(gapsAppointeeIdentity);
             return true;
         }
@@ -154,7 +154,7 @@ class UpdateCcdAppellantData {
         Contact existingCcdAppointeeContact = existingCcdAppointee == null || existingCcdAppointee.getContact() == null
             ? null : existingCcdAppointee.getContact();
 
-        if (null == existingCcdAppointeeContact) {
+        if (null == existingCcdAppointee.getContact()) {
             existingCcdAppointee.setContact(gapsAppointeeContact);
             return true;
         }
@@ -186,7 +186,7 @@ class UpdateCcdAppellantData {
         Name existingCcdAppellantName = existingCcdAppointee == null || existingCcdAppointee.getName() == null
             ? null : existingCcdAppointee.getName();
 
-        if (null == existingCcdAppellantName) {
+        if (null == existingCcdAppointee.getName()) {
             existingCcdAppointee.setName(gapsAppellantName);
             return true;
         }
