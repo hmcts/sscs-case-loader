@@ -128,20 +128,20 @@ class UpdateCcdAppellantData {
     }
 
     private boolean updateCcdAppointeeIdentity(Appointee gapsAppointee, Appointee existingCcdAppointee) {
-        Identity gapsAppellantIdentity = gapsAppointee == null || gapsAppointee.getIdentity() == null
+        Identity gapsAppointeeIdentity = gapsAppointee == null || gapsAppointee.getIdentity() == null
             ? null : gapsAppointee.getIdentity();
-        Identity existingCcdAppellantIdentity =
+        Identity existingCcdAppointeeIdentity =
             existingCcdAppointee == null || existingCcdAppointee.getIdentity() == null
             ? null : existingCcdAppointee.getIdentity();
 
-        if (null == existingCcdAppellantIdentity) {
-            existingCcdAppointee.setIdentity(gapsAppellantIdentity);
+        if (null == existingCcdAppointeeIdentity) {
+            existingCcdAppointee.setIdentity(gapsAppointeeIdentity);
             return true;
         }
 
-        if (null != gapsAppellantIdentity && StringUtils.isNotBlank(gapsAppellantIdentity.getNino())
-            && !gapsAppellantIdentity.getNino().equals(existingCcdAppellantIdentity.getNino())) {
-            existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
+        if (null != gapsAppointeeIdentity && StringUtils.isNotBlank(gapsAppointeeIdentity.getNino())
+            && !gapsAppointeeIdentity.getNino().equals(existingCcdAppointeeIdentity.getNino())) {
+            existingCcdAppointeeIdentity.setNino(gapsAppointeeIdentity.getNino());
             return true;
         }
         return false;

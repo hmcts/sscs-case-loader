@@ -13,9 +13,12 @@ import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHe
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeContactHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeIdentityHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths;
 
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;
@@ -80,7 +83,7 @@ public class UpdateCcdAppellantDataTest {
                 .title("Mr")
                 .build())
             .contact(Contact.builder()
-                .email(gapsAppellantData.contactEmail)
+                .email(gapsAppellantData.email)
                 .build())
             .identity(Identity.builder()
                 .nino(gapsAppellantData.nino)
@@ -101,7 +104,7 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getName().getLastName(),
             equalTo(gapsAppellantData.lastName));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(gapsAppellantData.contactEmail));
+            equalTo(gapsAppellantData.email));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAppellantData.nino));
     }
@@ -132,7 +135,7 @@ public class UpdateCcdAppellantDataTest {
                 "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
                 "CA 36 98 74 A");
         existingCaseDetails.getData().getAppeal().getAppellant().getContact()
-            .setEmail(existingCcdAppellantData.contactEmail);
+            .setEmail(existingCcdAppellantData.email);
         existingCaseDetails.getData().getAppeal().getAppellant().getName()
             .setFirstName(existingCcdAppellantData.firstName);
         existingCaseDetails.getData().getAppeal().getAppellant().getName()
@@ -147,7 +150,7 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
             equalTo(existingCcdAppellantData.lastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(existingCcdAppellantData.contactEmail));
+            equalTo(existingCcdAppellantData.email));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(existingCcdAppellantData.nino));
     }
@@ -185,7 +188,9 @@ public class UpdateCcdAppellantDataTest {
                 .title("Mr")
                 .build())
             .contact(Contact.builder()
-                .email(gapsAndCcdDataUpdateScenario.gapsAppellantData.contactEmail)
+                .email(gapsAndCcdDataUpdateScenario.gapsAppellantData.email)
+                .mobile(gapsAndCcdDataUpdateScenario.gapsAppellantData.mobile)
+                .phone(gapsAndCcdDataUpdateScenario.gapsAppellantData.phone)
                 .build())
             .identity(Identity.builder()
                 .nino(gapsAndCcdDataUpdateScenario.gapsAppellantData.nino)
@@ -203,7 +208,7 @@ public class UpdateCcdAppellantDataTest {
 
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail(
-            gapsAndCcdDataUpdateScenario.existingCcdAppellantData.contactEmail);
+            gapsAndCcdDataUpdateScenario.existingCcdAppellantData.email);
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setFirstName(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.firstName);
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setLastName(
@@ -221,7 +226,7 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.lastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.contactEmail));
+            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.email));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.nino));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee(),
@@ -254,9 +259,17 @@ public class UpdateCcdAppellantDataTest {
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths =
             updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths();
 
-        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeIdentityHappyPaths =
-            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeIdentityHappyPaths();
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeIdentityHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths();
 
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths();
 
         return new Object[]{
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths, true},
@@ -267,7 +280,10 @@ public class UpdateCcdAppellantDataTest {
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeContactHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths, true},
-            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeIdentityHappyPaths, true}
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeIdentityHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths, true}
         };
     }
 }
