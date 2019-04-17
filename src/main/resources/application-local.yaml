@@ -89,9 +89,3 @@ test.url: ${TEST_URL:http://localhost:8082}
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
 
 number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
-
----
-spring:
-  profiles: dev
-
-scheduling.enabled: false
