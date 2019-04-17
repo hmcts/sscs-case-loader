@@ -102,7 +102,7 @@ final class UpdateCcdAppellantDataTestHelper {
             gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
     }
 
-    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeContactHappyPaths() {
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithNewAppointeeContactHappyPaths() {
         Appointee appointeeNewData = Appointee.builder()
             .name(Name.builder().firstName("Ap").lastName("Pointee").build())
             .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
@@ -130,7 +130,7 @@ final class UpdateCcdAppellantDataTestHelper {
             gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
     }
 
-    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths() {
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithNewAppointeeNameHappyPaths() {
         Appointee appointeeNewData = Appointee.builder()
             .name(Name.builder().firstName("Ap").lastName("Pointee").build())
             .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
@@ -238,6 +238,151 @@ final class UpdateCcdAppellantDataTestHelper {
             .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
             .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
             .identity(Identity.builder().dob("01/01/1998").nino("AB000000C").build())
+            .build();
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A", appointeeExistingData);
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeEmailHappyPaths() {
+        Appointee appointeeNewData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S", appointeeNewData);
+
+        Appointee appointeeExistingData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("test@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A", appointeeExistingData);
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeMobileHappyPaths() {
+        Appointee appointeeNewData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S", appointeeNewData);
+
+        Appointee appointeeExistingData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000000").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A", appointeeExistingData);
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeePhoneHappyPaths() {
+        Appointee appointeeNewData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S", appointeeNewData);
+
+        Appointee appointeeExistingData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000000").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A", appointeeExistingData);
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeFirstNameHappyPaths() {
+        Appointee appointeeNewData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S", appointeeNewData);
+
+        Appointee appointeeExistingData = Appointee.builder()
+            .name(Name.builder().firstName("Zz").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
+            "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
+            "CA 36 98 74 A", appointeeExistingData);
+        return new GapsAndCcdDataUpdateScenario(
+            gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
+    }
+
+    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeLastNameHappyPaths() {
+        Appointee appointeeNewData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        GapsAppellantData gapsAppellantData = new GapsAppellantData(
+            "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+                "email@email.com", "AB46575S", appointeeNewData);
+
+        Appointee appointeeExistingData = Appointee.builder()
+            .name(Name.builder().firstName("Ap").lastName("Zzzzzzz").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
             .build();
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(

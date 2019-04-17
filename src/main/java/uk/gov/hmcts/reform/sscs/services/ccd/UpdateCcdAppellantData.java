@@ -149,31 +149,31 @@ class UpdateCcdAppellantData {
     }
 
     private boolean updateCcdAppointeeContact(Appointee gapsAppointee, Appointee existingCcdAppointee) {
-        Contact gapsAppellantContact = gapsAppointee == null || gapsAppointee.getContact() == null
+        Contact gapsAppointeeContact = gapsAppointee == null || gapsAppointee.getContact() == null
             ? null : gapsAppointee.getContact();
-        Contact existingCcdAppellantContact = existingCcdAppointee == null || existingCcdAppointee.getContact() == null
+        Contact existingCcdAppointeeContact = existingCcdAppointee == null || existingCcdAppointee.getContact() == null
             ? null : existingCcdAppointee.getContact();
 
-        if (null == existingCcdAppellantContact) {
-            existingCcdAppointee.setContact(gapsAppellantContact);
+        if (null == existingCcdAppointeeContact) {
+            existingCcdAppointee.setContact(gapsAppointeeContact);
             return true;
         }
 
-        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getEmail())
-            && !gapsAppellantContact.getEmail().equals(existingCcdAppellantContact.getEmail())) {
-            existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
+        if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getEmail())
+            && !gapsAppointeeContact.getEmail().equals(existingCcdAppointeeContact.getEmail())) {
+            existingCcdAppointeeContact.setEmail(gapsAppointeeContact.getEmail());
             return true;
         }
 
-        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getMobile())
-            && !gapsAppellantContact.getMobile().equals(existingCcdAppellantContact.getMobile())) {
-            existingCcdAppellantContact.setMobile(gapsAppellantContact.getMobile());
+        if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getMobile())
+            && !gapsAppointeeContact.getMobile().equals(existingCcdAppointeeContact.getMobile())) {
+            existingCcdAppointeeContact.setMobile(gapsAppointeeContact.getMobile());
             return true;
         }
 
-        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getPhone())
-            && !gapsAppellantContact.getPhone().equals(existingCcdAppellantContact.getPhone())) {
-            existingCcdAppellantContact.setPhone(gapsAppellantContact.getPhone());
+        if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getPhone())
+            && !gapsAppointeeContact.getPhone().equals(existingCcdAppointeeContact.getPhone())) {
+            existingCcdAppointeeContact.setPhone(gapsAppointeeContact.getPhone());
             return true;
         }
 

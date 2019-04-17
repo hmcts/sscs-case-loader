@@ -13,10 +13,15 @@ import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHe
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeContactHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeContactHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeEmailHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeFirstNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeLastNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeMobileHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeePhoneHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths;
 
@@ -253,11 +258,11 @@ public class UpdateCcdAppellantDataTest {
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths =
             updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths();
 
-        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeContactHappyPaths =
-            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeContactHappyPaths();
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeContactHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithNewAppointeeContactHappyPaths();
 
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths =
-            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNameHappyPaths();
+            updateCcdDataWhenThereAreGapsDataWithNewAppointeeNameHappyPaths();
 
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeIdentityHappyPaths =
             updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths();
@@ -271,6 +276,21 @@ public class UpdateCcdAppellantDataTest {
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths =
             updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths();
 
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeEmailHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeEmailHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeMobileHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeMobileHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeePhoneHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeePhoneHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeFirstNameHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeFirstNameHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeLastNameHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeLastNameHappyPaths();
+
         return new Object[]{
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields, false},
@@ -278,12 +298,17 @@ public class UpdateCcdAppellantDataTest {
             new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields, true},
             new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths, true},
-            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeContactHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeContactHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeIdentityHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths, true},
-            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths, true}
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeEmailHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeMobileHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeePhoneHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeFirstNameHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeLastNameHappyPaths, true}
         };
     }
 }
