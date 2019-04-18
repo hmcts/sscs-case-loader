@@ -6,13 +6,17 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
+import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import io.restassured.RestAssured;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -33,8 +37,8 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 import uk.gov.hmcts.reform.tools.GenerateXml;
 
 @RunWith(SpringRunner.class)
+@TestPropertySource(locations = "classpath:config/application_e2e.yaml")
 @SpringBootTest
-@ActiveProfiles("test")
 public class ProcessCaseFile {
 
     private static final org.slf4j.Logger LOG = getLogger(ProcessCaseFile.class);
