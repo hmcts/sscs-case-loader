@@ -78,31 +78,3 @@ test.url: ${TEST_URL:http://localhost:8082}
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
 
 number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
-
----
-#spring profile needed to run integration, smoke and functional tests to avoid the job schedule to kick in twice
-spring:
-  profiles: test
-
-scheduling.enabled: false
-
-logging.level:
-  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
-  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}
-  uk.gov.hmcts.reform.sscs.idam.IdamApiClient: DEBUG
-  uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi: DEBUG
-
-feign:
-  client:
-    config:
-      idam-api:
-        loggerLevel: full
-      core-case-data-api:
-        loggerLevel: full
-
----
-# spring profile to run caseloader locally
-spring:
-  profiles: local
-  profiles.include: local
-
