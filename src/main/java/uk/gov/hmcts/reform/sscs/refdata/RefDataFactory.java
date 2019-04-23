@@ -31,7 +31,9 @@ public class RefDataFactory {
 
         RefDataRepository repo = new RefDataRepository();
 
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+        xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(refDataInputStream);
 
         String tagContent = null;
