@@ -13,6 +13,7 @@ public class UkMobileTest {
         Assert.assertTrue(UkMobile.validate("07123 456 789"));
         Assert.assertTrue(UkMobile.validate("+447123456789"));
         Assert.assertTrue(UkMobile.validate("+44 7123 456 789"));
+        Assert.assertTrue(UkMobile.validate(""));
     }
 
     @Test
