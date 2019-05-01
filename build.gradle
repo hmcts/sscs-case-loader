@@ -218,11 +218,16 @@ dependencyManagement {
     dependencySet(group: 'com.google.guava', version: '27.1-jre') {
       entry 'guava'
     }
+    // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.19') {
+      entry 'tomcat-embed-core'
+      entry 'tomcat-embed-el'
+      entry 'tomcat-embed-websocket'
+    }
   }
 }
 
 dependencies {
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
