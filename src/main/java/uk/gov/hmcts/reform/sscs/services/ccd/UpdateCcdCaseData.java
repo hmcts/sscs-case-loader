@@ -3,12 +3,11 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
 @Service
 class UpdateCcdCaseData {
-    private static final Subscriptions EMPTY_SUBSCRIPTIONS = Subscriptions.builder().build();
+
     private final UpdateCcdAppellantData updateCcdAppellantData;
     private final UpdateCcdHearingOptions updateCcdHearingOptions;
     private final UpdateCcdHearingType updateCcdHearingType;
@@ -32,9 +31,8 @@ class UpdateCcdCaseData {
                                                             SscsCaseData existingCcdCaseData) {
         boolean eventChange = updateEvents.update(gapsCaseData, existingCcdCaseData);
         boolean dataChange = updateCcdData(gapsCaseData, existingCcdCaseData);
-        boolean subscriptionChange = updateCcdSubscriptions(gapsCaseData, existingCcdCaseData);
         updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
-        return workOutUpdateType(eventChange, dataChange || subscriptionChange);
+        return workOutUpdateType(eventChange, dataChange);
     }
 
     private UpdateType workOutUpdateType(boolean eventChanged, boolean dataChange) {
@@ -62,20 +60,4 @@ class UpdateCcdCaseData {
         return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType || updateRepresentative;
     }
 
-    private boolean updateCcdSubscriptions(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
-        if (existingCcdCaseData != null && gapsCaseData != null) {
-            if (existingCcdCaseData.getSubscriptions() != null
-                && existingCcdCaseData.getSubscriptions().equals(gapsCaseData.getSubscriptions())) {
-                return false;
-            }
-
-            if (!EMPTY_SUBSCRIPTIONS.equals(gapsCaseData.getSubscriptions())) {
-                existingCcdCaseData.setSubscriptions(gapsCaseData.getSubscriptions());
-
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

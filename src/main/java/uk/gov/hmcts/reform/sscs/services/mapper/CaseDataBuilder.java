@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,8 +89,8 @@ class CaseDataBuilder {
     Contact buildContact(Parties party) {
         return Contact.builder()
             .email(party.getEmail())
-            .phone(party.getLandline())
-            .mobile(party.getMobile())
+            .phone(party.getPhone1())
+            .mobile(party.getPhone2())
             .build();
     }
 
@@ -230,64 +229,43 @@ class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    Subscriptions buildSubscriptions(final Optional<Parties> appellantParty,
-                                     final Optional<Parties> representativeParty,
-                                     final Optional<Parties> appointeeParty,
-                                     String appealCaseRefNum) {
-        Subscription appellantSubscription = buildSubscriptionWithDefaults(
-            appellantParty,
-            appealCaseRefNum,
-            generateAppealNumber()
-        );
-
-        Subscription representativeSubscription = buildSubscriptionWithDefaults(
-            representativeParty,
-            appealCaseRefNum,
-            representativeParty.isPresent() ? generateAppealNumber() : ""
-        );
-
-        Subscription appointeeSubscription = buildSubscriptionWithDefaults(
-            appointeeParty,
-            appealCaseRefNum,
-            appointeeParty.isPresent() ? generateAppealNumber() : ""
-        );
-
-        return Subscriptions.builder()
-            .appellantSubscription(appellantSubscription)
-            .representativeSubscription(representativeSubscription)
-            .appointeeSubscription(appointeeSubscription)
+    Subscriptions buildSubscriptions(final Optional<Parties> representativeParty, String appealCaseRefNum) {
+        Subscription appellantSubscription = Subscription.builder()
+            .email("")
+            .mobile("")
+            .reason("")
+            .subscribeEmail("")
+            .subscribeSms("")
+            .tya(generateAppealNumber())
             .build();
-    }
-
-    protected static Subscription buildSubscriptionWithDefaults(
-        Optional<Parties> party,
-        String appealCaseRefNum,
-        String appealNumber
-    ) {
-        return Subscription.builder()
-            .email(party.map(Parties::getEmail).orElse(""))
-            .mobile(validateMobile(party, appealCaseRefNum))
+        Subscription representativeSubscription = Subscription.builder()
+            .email(representativeParty.map(Parties::getEmail).orElse(""))
+            .mobile(validateMobile(representativeParty, appealCaseRefNum))
             .reason("")
             .subscribeEmail(NO)
             .subscribeSms(NO)
-            .tya(appealNumber)
+            .tya(representativeParty.isPresent() ? generateAppealNumber() : "")
+            .build();
+        return Subscriptions.builder()
+            .appellantSubscription(appellantSubscription)
+            .representativeSubscription(representativeSubscription)
             .build();
     }
 
-    private static String validateMobile(Optional<Parties> party, String appealCaseRefNum) {
-        if (party.isPresent() && StringUtils.isNotBlank(party.get().getMobile())) {
-            String mobileNumber = party.get().getMobile();
+    private String validateMobile(Optional<Parties> representativeParty, String appealCaseRefNum) {
+        if (representativeParty.isPresent()) {
+            String mobileNumber = representativeParty.get().getPhone2();
             if (UkMobile.validate(mobileNumber)) {
                 return mobileNumber;
             } else {
-                log.info("Invalid Uk mobile no: {} In party Contact Details for the case reference: {}",
+                log.info("Invalid Uk mobile no: {} In Reps Contact Details for the case reference: {}",
                     mobileNumber, appealCaseRefNum);
             }
         }
         return "";
     }
 
-    private static String generateAppealNumber() {
+    private String generateAppealNumber() {
         SecureRandom random = new SecureRandom();
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
             .withinRange('0', 'z')
