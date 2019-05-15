@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -12,10 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
 @RunWith(JUnitParamsRunner.class)
@@ -58,6 +57,50 @@ public class UpdateCcdCaseDataTest {
             gapsCaseData, existingCase);
 
         assertThat(updateType, is(UpdateType.DATA_UPDATE));
+    }
+
+    @Test
+    public void givenAChangeInRep_shouldNotUnsubscribeRepOrAppellant() {
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder().rep(Representative.builder()
+                .name(Name.builder().lastName("Potter").build()).build()).build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .subscribeEmail("No").email("harry.potter@mail.com").build())
+                .appellantSubscription(Subscription.builder()
+                    .email("appellant@email.com").subscribeEmail("No").build())
+                .build())
+            .build();
+
+        SscsCaseData existingCase = gapsCaseData.toBuilder()
+            .appeal(
+                Appeal.builder()
+                    .rep(Representative.builder()
+                        .name(Name.builder().lastName("Superman").build()).build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .appellantSubscription(Subscription.builder()
+                    .email("appellant@email.com").subscribeEmail("Yes").build())
+                .representativeSubscription(Subscription.builder()
+                    .subscribeEmail("Yes").email("superman@mail.com").build())
+                .build()
+            )
+            .build();
+
+        final Subscription expectedAppellantSubscription = Subscription.builder()
+            .email("appellant@email.com").subscribeEmail("Yes").build();
+
+        final Subscription expectedRepSubscription = Subscription.builder()
+            .email("harry.potter@mail.com").subscribeSms("No").subscribeEmail("Yes").build();
+
+        UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
+            gapsCaseData, existingCase);
+
+        assertEquals(UpdateType.DATA_UPDATE, updateType);
+        assertEquals(expectedAppellantSubscription, existingCase.getSubscriptions().getAppellantSubscription());
+        assertEquals(expectedRepSubscription, existingCase.getSubscriptions().getRepresentativeSubscription());
+        assertNull(existingCase.getSubscriptions().getAppointeeSubscription());
+
     }
 
     @Test

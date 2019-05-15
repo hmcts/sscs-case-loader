@@ -6,8 +6,6 @@ import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
 @Slf4j
 final class UpdateCcdRepresentative {
-    private static final String YES = "Yes";
-    private static final String NO = "No";
 
     private UpdateCcdRepresentative() {
         // Empty
@@ -24,7 +22,20 @@ final class UpdateCcdRepresentative {
                 || !existingRepresentative.getContact().equals(rep.getContact())
             ) {
                 updateReps(gapsCaseData, existingCcdCaseData, rep);
-                updateRepresentativeSubscription(gapsCaseData, existingCcdCaseData);
+                final UpdateSubscription.SubscriptionUpdate subscriptionUpdate =
+                    new UpdateSubscription.SubscriptionUpdate() {
+                    @Override
+                    public Subscription getSubscription(Subscriptions subscriptions) {
+                        return subscriptions.getRepresentativeSubscription();
+                    }
+
+                    @Override
+                    public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                        return existingCcdCaseData.getSubscriptions().toBuilder()
+                            .representativeSubscription(subscription).build();
+                    }
+                };
+                UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, subscriptionUpdate);
                 repUpdated = true;
             }
         }
@@ -64,49 +75,5 @@ final class UpdateCcdRepresentative {
 
         existingCcdCaseData.getAppeal().getRep().setContact(contact);
     }
-
-    private static void updateRepresentativeSubscription(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
-        Subscription newRepSubscription = gapsCaseData.getSubscriptions() != null
-            && gapsCaseData.getSubscriptions().getRepresentativeSubscription() != null
-            ? gapsCaseData.getSubscriptions().getRepresentativeSubscription() : Subscription.builder().build();
-
-        Subscriptions existingSubscriptions = existingCcdCaseData.getSubscriptions() != null
-            ? existingCcdCaseData.getSubscriptions() : Subscriptions.builder().build();
-
-        Subscription existingRepSubscription = existingSubscriptions.getRepresentativeSubscription();
-
-        Subscription updatedSubscription =
-            keepExistingSubscribedSubscriptions(newRepSubscription, existingRepSubscription,
-                gapsCaseData.getCaseReference());
-
-        existingSubscriptions = existingSubscriptions.toBuilder()
-            .representativeSubscription(updatedSubscription).build();
-
-        existingCcdCaseData.setSubscriptions(existingSubscriptions);
-    }
-
-    private static Subscription keepExistingSubscribedSubscriptions(Subscription newRepSubscription,
-                                                                    Subscription existingRepSubscription,
-                                                                    String caseReference) {
-        return newRepSubscription.toBuilder()
-            .subscribeSms(existingRepSubscription != null && existingRepSubscription.isSmsSubscribed() ? YES : NO)
-            .subscribeEmail(existingRepSubscription != null && existingRepSubscription.isEmailSubscribed() ? YES : NO)
-            .mobile(getValidMobileNumber(newRepSubscription, existingRepSubscription, caseReference))
-            .tya(existingRepSubscription != null ? existingRepSubscription.getTya() : newRepSubscription.getTya())
-            .build();
-    }
-
-    private static String getValidMobileNumber(Subscription newRepSubscription, Subscription existingRepSubscription,
-                                               String caseReference) {
-        if (UkMobile.validate(newRepSubscription.getMobile())) {
-            return newRepSubscription.getMobile();
-        } else {
-            log.info("Invalid Uk mobile no: {} in Delta Reps Subscription for the case reference: {}",
-                newRepSubscription.getMobile(), caseReference);
-            return (existingRepSubscription != null) ? existingRepSubscription.getMobile() : null;
-
-        }
-    }
-
 
 }

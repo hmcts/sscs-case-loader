@@ -243,13 +243,13 @@ class CaseDataBuilder {
         Subscription representativeSubscription = buildSubscriptionWithDefaults(
             representativeParty,
             appealCaseRefNum,
-            representativeParty.isPresent() ? generateAppealNumber() : ""
+            representativeParty.isPresent() ? generateAppealNumber() : StringUtils.EMPTY
         );
 
         Subscription appointeeSubscription = buildSubscriptionWithDefaults(
             appointeeParty,
             appealCaseRefNum,
-            appointeeParty.isPresent() ? generateAppealNumber() : ""
+            appointeeParty.isPresent() ? generateAppealNumber() : StringUtils.EMPTY
         );
 
         return Subscriptions.builder()
@@ -265,9 +265,9 @@ class CaseDataBuilder {
         String appealNumber
     ) {
         return Subscription.builder()
-            .email(party.map(Parties::getEmail).orElse(""))
+            .email(party.map(Parties::getEmail).orElse(StringUtils.EMPTY))
             .mobile(validateMobile(party, appealCaseRefNum))
-            .reason("")
+            .reason(StringUtils.EMPTY)
             .subscribeEmail(NO)
             .subscribeSms(NO)
             .tya(appealNumber)
@@ -284,7 +284,7 @@ class CaseDataBuilder {
                     mobileNumber, appealCaseRefNum);
             }
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
     private static String generateAppealNumber() {

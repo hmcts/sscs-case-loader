@@ -26,6 +26,44 @@ class UpdateCcdAppellantData {
 
         boolean appointeeChanged = updateCcdAppointee(gapsAppellant, existingCcdAppellant);
 
+        boolean hasAppointee = gapsAppellant.getAppointee() != null
+            && gapsAppellant.getAppointee().getName() != null
+            && gapsAppellant.getAppointee().getName().getLastName() != null;
+
+        if (!hasAppointee && (appellantNameChanged || appellantContactChanged)) {
+            final UpdateSubscription.SubscriptionUpdate appellantSubscriptionUpdate =
+                new UpdateSubscription.SubscriptionUpdate() {
+                @Override
+                public Subscription getSubscription(Subscriptions subscriptions) {
+                    return subscriptions.getAppellantSubscription();
+                }
+
+                @Override
+                public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                    return existingCcdCaseData.getSubscriptions().toBuilder()
+                        .appellantSubscription(subscription).build();
+                }
+            };
+            UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, appellantSubscriptionUpdate);
+        }
+
+        if (appointeeChanged) {
+            final UpdateSubscription.SubscriptionUpdate appointeeSubscriptionUpdate =
+                new UpdateSubscription.SubscriptionUpdate() {
+                @Override
+                public Subscription getSubscription(Subscriptions subscriptions) {
+                    return subscriptions.getAppointeeSubscription();
+                }
+
+                @Override
+                public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                    return existingCcdCaseData.getSubscriptions().toBuilder()
+                        .appointeeSubscription(subscription).build();
+                }
+            };
+            UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, appointeeSubscriptionUpdate);
+        }
+
         return appellantNameChanged || appellantContactChanged || appellantIdentityChanged || appointeeChanged;
     }
 
@@ -132,7 +170,7 @@ class UpdateCcdAppellantData {
             ? null : gapsAppointee.getIdentity();
         Identity existingCcdAppointeeIdentity =
             existingCcdAppointee == null || existingCcdAppointee.getIdentity() == null
-            ? null : existingCcdAppointee.getIdentity();
+                ? null : existingCcdAppointee.getIdentity();
 
         if (null == existingCcdAppointeeIdentity) {
             if (null == existingCcdAppointee) {
