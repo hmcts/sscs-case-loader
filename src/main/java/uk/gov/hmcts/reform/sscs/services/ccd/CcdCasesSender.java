@@ -11,12 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -136,11 +131,14 @@ public class CcdCasesSender {
         Evidence newEvidence = caseData.getEvidence();
         SscsCaseData existingCaseData = existingCase.getData();
         Evidence existingEvidence = existingCaseData.getEvidence();
-        if (newEvidence != null && !CollectionUtils.isEmpty(newEvidence.getDocuments())
-                && !newEvidence.equals(existingEvidence)) {
-            existingCaseData.setEvidence(newEvidence);
-            updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
-                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+        if (newEvidence != null && !CollectionUtils.isEmpty(newEvidence.getDocuments())) {
+            if (existingEvidence == null || CollectionUtils.isEmpty(existingEvidence.getDocuments())
+                    || !(org.apache.commons.collections4.CollectionUtils.isEqualCollection(newEvidence.getDocuments(),
+                    existingEvidence.getDocuments()))) {
+                existingCaseData.setEvidence(newEvidence);
+                updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
+                        SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+            }
         }
     }
 
