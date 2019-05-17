@@ -132,14 +132,30 @@ public class CcdCasesSender {
         SscsCaseData existingCaseData = existingCase.getData();
         Evidence existingEvidence = existingCaseData.getEvidence();
         if (newEvidence != null && !CollectionUtils.isEmpty(newEvidence.getDocuments())) {
-            if (existingEvidence == null || CollectionUtils.isEmpty(existingEvidence.getDocuments())
-                    || !(org.apache.commons.collections4.CollectionUtils.isEqualCollection(newEvidence.getDocuments(),
-                    existingEvidence.getDocuments()))) {
-                existingCaseData.setEvidence(newEvidence);
+            Evidence updatedEvidence = addNewEvidenceIfFound(newEvidence, existingEvidence);
+            if (updatedEvidence != null) {
+                existingCaseData.setEvidence(updatedEvidence);
                 updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
                         SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
             }
         }
+    }
+
+    private Evidence addNewEvidenceIfFound(Evidence newEvidence, Evidence existingEvidence) {
+        Evidence updatedEvidence = null;
+
+        if (existingEvidence == null || CollectionUtils.isEmpty(existingEvidence.getDocuments())) {
+            updatedEvidence = newEvidence;
+        } else {
+            List<Document> newToAddDocuments = newEvidence.getDocuments().stream()
+                    .filter(nd -> !existingEvidence.getDocuments().contains(nd)).collect(toList());
+
+            if (!CollectionUtils.isEmpty(newToAddDocuments)) {
+                existingEvidence.getDocuments().addAll(newToAddDocuments);
+                updatedEvidence = existingEvidence;
+            }
+        }
+        return updatedEvidence;
     }
 
     private void addRegionalProcessingCenter(SscsCaseData caseData) {

@@ -361,7 +361,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldUpdateEvidenceWhenThereIsExistingEvidence() throws Exception {
+    public void shouldUpdateEvidenceWhenThereIsDifferentExistingEvidence() throws Exception {
         final ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
         final SscsCaseData caseData = SscsCaseData.builder()
                 .evidence(buildEvidence("2017-05-24"))
@@ -391,9 +391,7 @@ public class CcdCasesSenderTest {
         verifyNoMoreInteractions(updateCcdCaseService);
         final Evidence evidence = caseDataArgumentCaptor.getValue().getEvidence();
         assertThat(evidence, not(equalTo(null)));
-        assertThat(evidence.getDocuments().size(), equalTo(caseData.getEvidence().getDocuments().size()));
-        assertThat(evidence.getDocuments().get(0).getValue().getDateReceived(),
-                equalTo(caseData.getEvidence().getDocuments().get(0).getValue().getDateReceived()));
+        assertThat(evidence.getDocuments().size(), equalTo(caseData.getEvidence().getDocuments().size() + 1));
     }
 
     @Test
