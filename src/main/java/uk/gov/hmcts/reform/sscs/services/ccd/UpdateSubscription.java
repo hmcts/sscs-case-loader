@@ -41,6 +41,7 @@ class UpdateSubscription {
                                                                     Subscription exisitingSubscription,
                                                                     String caseReference) {
         return newSubscription.toBuilder()
+            .wantSmsNotifications(exisitingSubscription != null ? exisitingSubscription.getWantSmsNotifications() : NO)
             .subscribeSms(exisitingSubscription != null && exisitingSubscription.isSmsSubscribed() ? YES : NO)
             .subscribeEmail(exisitingSubscription != null && exisitingSubscription.isEmailSubscribed() ? YES : NO)
             .mobile(getValidMobileNumber(newSubscription, exisitingSubscription, caseReference))
@@ -56,7 +57,6 @@ class UpdateSubscription {
             log.info("Invalid Uk mobile no: {} in Delta Reps Subscription for the case reference: {}",
                 newSubscription.getMobile(), caseReference);
             return (existingSubscription != null) ? existingSubscription.getMobile() : null;
-
         }
     }
 

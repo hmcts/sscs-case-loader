@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 
 @Service
+@Slf4j
 public class TransformAppealCaseToCaseData {
     public static final int APPELLANT_ROLE_ID = 4;
     public static final int REP_ROLE_ID = 3;
@@ -30,6 +32,11 @@ public class TransformAppealCaseToCaseData {
 
         Optional<Parties> appellantParty = (parties == null) ? Optional.empty() :
             parties.stream().filter(f -> f.getRoleId() == APPELLANT_ROLE_ID).findFirst();
+
+        if (!appellantParty.isPresent()) {
+            log.error("An appeal, for caseId {}, exists without an appellant. This cannot be possible.",
+                appealCase.getAppealCaseId());
+        }
 
         Optional<Parties> representativeParty = (parties == null) ? Optional.empty() :
             parties.stream().filter(f -> f.getRoleId() == REP_ROLE_ID).findFirst();

@@ -172,7 +172,7 @@ public class UpdateCcdRepresentativeTest {
                             .build()).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
-                Subscription.builder().email("harry@potter.com").subscribeEmail(NO)
+                Subscription.builder().email("harry@potter.com").subscribeEmail(NO).wantSmsNotifications(NO)
                     .subscribeSms(NO).build()).build())
             .build();
 
@@ -205,6 +205,7 @@ public class UpdateCcdRepresentativeTest {
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
                 Subscription.builder().email("harry@potter.com").subscribeEmail(NO)
+                    .wantSmsNotifications(NO)
                     .subscribeSms(NO).build()).build())
             .build();
 
