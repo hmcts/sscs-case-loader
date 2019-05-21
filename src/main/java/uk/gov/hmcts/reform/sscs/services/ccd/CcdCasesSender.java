@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -84,30 +85,30 @@ public class CcdCasesSender {
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             caseData, existingCcdCaseData);
-
-        if (hasCaseRefBeenAdded(caseData, existingCcdCaseData)) {
+        if (UpdateType.EVENT_UPDATE == updateType) {
+            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, caseData.getLatestEventType());
+        } else if (hasCaseRefBeenAdded(caseData, existingCcdCaseData)) {
             //Override event to appealReceived if new case ref has been added
-            updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, APPEAL_RECEIVED.getType(),
-                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
-        } else if (UpdateType.EVENT_UPDATE == updateType) {
-            existingCcdCaseData.setCaseReference(caseData.getCaseReference());
-            updateCcdCaseService
-                .updateCase(existingCcdCaseData, existingCaseId, caseData.getLatestEventType(),
-                    SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, APPEAL_RECEIVED.getType());
         } else if (UpdateType.DATA_UPDATE == updateType) {
-            existingCcdCaseData.setCaseReference(caseData.getCaseReference());
-            updateCcdCaseService
-                .updateCase(existingCcdCaseData, existingCaseId, "caseUpdated",
-                    SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, "caseUpdated");
         } else {
             log.debug(logPrefix + " No case update needed for case reference: {}", caseData.getCaseReference());
         }
     }
 
+    private void updateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
+                            IdamTokens idamTokens, String eventType) {
+        existingCcdCaseData.setCaseReference(caseData.getCaseReference());
+        updateCcdCaseService
+            .updateCase(existingCcdCaseData, existingCaseId, eventType,
+                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+    }
+
     private boolean hasCaseRefBeenAdded(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
-        return (null == existingCcdCaseData || null == existingCcdCaseData.getCaseReference()
-            || existingCcdCaseData.getCaseReference().isEmpty())
-            && (null != caseData.getCaseReference() && !caseData.getCaseReference().isEmpty());
+        return null != existingCcdCaseData
+            && StringUtils.isBlank(existingCcdCaseData.getCaseReference())
+            && !StringUtils.isBlank(caseData.getCaseReference());
     }
 
     private void addMissingExistingHearings(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
