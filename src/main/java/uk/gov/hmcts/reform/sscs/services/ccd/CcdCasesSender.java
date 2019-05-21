@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,6 @@ public class CcdCasesSender {
         String latestEventType = caseData.getLatestEventType();
         if (latestEventType != null) {
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
-            existingCcdCaseData.setCaseReference(caseData.getCaseReference());
             addMissingInfo(caseData, existingCcdCaseData);
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
             ifThereIsChangesThenUpdateCase(caseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
@@ -85,17 +85,29 @@ public class CcdCasesSender {
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             caseData, existingCcdCaseData);
 
-        if (UpdateType.EVENT_UPDATE == updateType) {
+        if (hasCaseRefBeenAdded(caseData, existingCcdCaseData)) {
+            //Override event to appealReceived if new case ref has been added
+            updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, APPEAL_RECEIVED.getType(),
+                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+        } else if (UpdateType.EVENT_UPDATE == updateType) {
+            existingCcdCaseData.setCaseReference(caseData.getCaseReference());
             updateCcdCaseService
                 .updateCase(existingCcdCaseData, existingCaseId, caseData.getLatestEventType(),
                     SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         } else if (UpdateType.DATA_UPDATE == updateType) {
+            existingCcdCaseData.setCaseReference(caseData.getCaseReference());
             updateCcdCaseService
                 .updateCase(existingCcdCaseData, existingCaseId, "caseUpdated",
                     SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
         } else {
             log.debug(logPrefix + " No case update needed for case reference: {}", caseData.getCaseReference());
         }
+    }
+
+    private boolean hasCaseRefBeenAdded(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
+        return (null == existingCcdCaseData || null == existingCcdCaseData.getCaseReference()
+            || existingCcdCaseData.getCaseReference().isEmpty())
+            && (null != caseData.getCaseReference() && !caseData.getCaseReference().isEmpty());
     }
 
     private void addMissingExistingHearings(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {

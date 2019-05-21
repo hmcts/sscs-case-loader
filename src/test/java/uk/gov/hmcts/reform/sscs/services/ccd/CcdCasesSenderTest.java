@@ -161,6 +161,20 @@ public class CcdCasesSenderTest {
     }
 
     @Test
+    public void shouldOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAdded() throws Exception {
+        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
+            .thenReturn(getRegionalProcessingCenter());
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        sscsCaseDetails.getData().setCaseReference(null);
+        ccdCasesSender.sendUpdateCcdCases(buildCaseData(RESPONSE_RECEIVED),
+            sscsCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(APPEAL_RECEIVED.getType()),
+                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+    }
+
+    @Test
     @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
         "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
     public void shouldUpdateCcdGivenThereIsAnEventChange(GapsEvent gapsEvent) throws Exception {
