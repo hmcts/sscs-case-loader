@@ -266,7 +266,7 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok:1.18.6"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.6.1'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.5.1'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.6.2'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
