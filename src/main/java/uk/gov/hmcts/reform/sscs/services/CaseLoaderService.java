@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.exceptions.CcdException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -138,19 +140,34 @@ public class CaseLoaderService {
         log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
         int counter = 0;
         IdamTokens idamTokens = idamService.getIdamTokens();
-        for (SscsCaseData caseData : cases) {
-            if (!caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
-                idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
-                if (counter == numberOfProcessedCasesToRefreshTokens) {
-                    idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-                    log.info(logPrefixWithFile + " renew idam token successfully");
-                    counter = 0;
-                }
-                processCase(idamTokens, caseData);
-                counter++;
-            }
-        }
+        processCasesFromDelta(file, cases, counter, idamTokens);
         fileMetrics.setEndTime();
+    }
+
+    private void processCasesFromDelta(Gaps2File file, List<SscsCaseData> cases, int counter, IdamTokens idamTokens) {
+        for (SscsCaseData caseData : cases) {
+            if (caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
+                continue;
+            }
+            idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
+            if (counter == numberOfProcessedCasesToRefreshTokens) {
+                idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
+                log.info(logPrefixWithFile + " renew idam token successfully");
+                counter = 0;
+            }
+            try {
+                processCase(idamTokens, caseData);
+            } catch (Exception e) {
+                sftpSshService.move(file, false);
+                log.error(logPrefix + " Error while processing the file: {} "
+                        + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                        + " due to exception: ", file.getName(), e);
+                throw new CcdException(logPrefixWithFile + " Error processing reference file: "
+                        + file.getName(), e);
+
+            }
+            counter++;
+        }
     }
 
     private void startFileMetrics(Gaps2File file) {
