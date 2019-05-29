@@ -162,7 +162,7 @@ public class CaseLoaderService {
                 log.error(logPrefix + " Error while processing the file: {} "
                         + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                         + " due to exception: ", file.getName(), e);
-                throw new CcdException(logPrefixWithFile + " Error processing reference file: "
+                throw new CcdException(logPrefixWithFile + " Error processing the file: "
                         + file.getName(), e);
 
             }
