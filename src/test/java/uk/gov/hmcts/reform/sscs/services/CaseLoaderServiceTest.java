@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.exceptions.CcdException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -179,6 +180,23 @@ public class CaseLoaderServiceTest {
     public void shouldThrowExceptionGivenNoReferenceFileLoaded() {
         when(file.isDelta()).thenReturn(true);
         caseLoaderService.process();
+    }
+
+    @Test(expected = CcdException.class)
+    public void shouldThrowExceptionWhileUpdatingCase() {
+        final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
+        caseData.setCaseReference(null);
+        caseData.setCcdCaseId("1234567890");
+
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
+
+        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+                .thenReturn(sscsCaseDetails);
+
+        doThrow(RuntimeException.class).when(ccdCasesSender).sendUpdateCcdCases(any(), any(), any());
+
+        caseLoaderService.process();
+
     }
 
 }
