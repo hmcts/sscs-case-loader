@@ -1,32 +1,32 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeContactHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeEmailHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeFirstNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeLastNameHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeMobileHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeePhoneHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths;
 
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAndCcdDataUpdateScenario;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAppellantData;
 
@@ -38,6 +38,94 @@ public class UpdateCcdAppellantDataTest {
     private final UpdateCcdAppellantData updateCcdAppellantData = new UpdateCcdAppellantData();
     private SscsCaseData gapsCaseData;
     private SscsCaseDetails existingCaseDetails;
+    private final Name name = Name.builder().lastName("Potter").build();
+    private final Name newName = Name.builder().lastName("Superman").build();
+
+    @Test
+    public void givenAChangeInAppointee_shouldNotUnsubscribeAppointeeOrRep() {
+
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder().name(name).build())
+                .appellant(Appellant.builder().name(name)
+                    .appointee(Appointee.builder().name(name).build())
+                    .build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .subscribeSms("No").subscribeEmail("No").email("harry.potter@mail.com").build())
+                .appointeeSubscription(Subscription.builder()
+                    .email("appointee.new@email.com").subscribeEmail("No").build())
+                .build())
+            .build();
+
+        SscsCaseData existingCase = gapsCaseData.toBuilder()
+            .appeal(gapsCaseData.getAppeal().toBuilder()
+                .appellant(Appellant.builder().name(name)
+                    .appointee(Appointee.builder().name(newName).build()).build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com").build())
+                .appointeeSubscription(Subscription.builder()
+                    .subscribeSms("Yes").mobile("0777").email("appointee.old@email.com").subscribeEmail("Yes").build())
+                .build()
+            ).build();
+
+        final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
+            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+
+        final Subscription expectedAppointeeSubscription = Subscription.builder().email("appointee.new@email.com")
+            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+
+        boolean isUpdated = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCase);
+        assertTrue(isUpdated);
+        assertEquals(newName, existingCase.getAppeal().getAppellant().getAppointee().getName());
+        assertEquals(expectedRepSubscription, existingCase.getSubscriptions().getRepresentativeSubscription());
+        assertEquals(expectedAppointeeSubscription, existingCase.getSubscriptions().getAppointeeSubscription());
+        assertNull(existingCase.getSubscriptions().getAppellantSubscription());
+    }
+
+    @Test
+    public void givenAChangeInAppellant_shouldNotUnsubscribeAppellantOrRep() {
+
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder().name(name).build())
+                .appellant(Appellant.builder().name(newName).build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder().subscribeSms("No")
+                    .subscribeEmail("No").email("harry.potter@mail.com").build())
+                .appellantSubscription(Subscription.builder()
+                    .email("appellant.new@email.com").subscribeEmail("No").build())
+                .build())
+            .build();
+
+        SscsCaseData existingCase = gapsCaseData.toBuilder()
+            .appeal(gapsCaseData.getAppeal().toBuilder()
+                .appellant(Appellant.builder().name(name).build()).build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com").build())
+                .appellantSubscription(Subscription.builder()
+                    .email("appellant.old@email.com").subscribeEmail("Yes").subscribeSms("Yes").mobile("0777").build())
+                .build()
+            ).build();
+
+        final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
+            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+
+        final Subscription expectedAppointeeSubscription = Subscription.builder()
+            .email("appellant.new@email.com").subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+
+        boolean isUpdated = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCase);
+        assertTrue(isUpdated);
+        assertEquals(newName, existingCase.getAppeal().getAppellant().getName());
+        assertEquals(expectedRepSubscription, existingCase.getSubscriptions().getRepresentativeSubscription());
+        assertEquals(expectedAppointeeSubscription, existingCase.getSubscriptions().getAppellantSubscription());
+        assertNull(existingCase.getSubscriptions().getAppointeeSubscription());
+    }
 
     @Test
     public void givenAppellantUpdatesInGapsData_shouldNotOverwriteSubscriptions() throws Exception {
@@ -76,7 +164,7 @@ public class UpdateCcdAppellantDataTest {
                 .title("Mr")
                 .build())
             .contact(Contact.builder()
-                .email(gapsAppellantData.contactEmail)
+                .email(gapsAppellantData.email)
                 .build())
             .identity(Identity.builder()
                 .nino(gapsAppellantData.nino)
@@ -97,7 +185,7 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getName().getLastName(),
             equalTo(gapsAppellantData.lastName));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(gapsAppellantData.contactEmail));
+            equalTo(gapsAppellantData.email));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAppellantData.nino));
     }
@@ -128,7 +216,7 @@ public class UpdateCcdAppellantDataTest {
                 "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
                 "CA 36 98 74 A");
         existingCaseDetails.getData().getAppeal().getAppellant().getContact()
-            .setEmail(existingCcdAppellantData.contactEmail);
+            .setEmail(existingCcdAppellantData.email);
         existingCaseDetails.getData().getAppeal().getAppellant().getName()
             .setFirstName(existingCcdAppellantData.firstName);
         existingCaseDetails.getData().getAppeal().getAppellant().getName()
@@ -143,7 +231,7 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
             equalTo(existingCcdAppellantData.lastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(existingCcdAppellantData.contactEmail));
+            equalTo(existingCcdAppellantData.email));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(existingCcdAppellantData.nino));
     }
@@ -181,11 +269,14 @@ public class UpdateCcdAppellantDataTest {
                 .title("Mr")
                 .build())
             .contact(Contact.builder()
-                .email(gapsAndCcdDataUpdateScenario.gapsAppellantData.contactEmail)
+                .email(gapsAndCcdDataUpdateScenario.gapsAppellantData.email)
+                .mobile(gapsAndCcdDataUpdateScenario.gapsAppellantData.mobile)
+                .phone(gapsAndCcdDataUpdateScenario.gapsAppellantData.phone)
                 .build())
             .identity(Identity.builder()
                 .nino(gapsAndCcdDataUpdateScenario.gapsAppellantData.nino)
                 .build())
+            .appointee(gapsAndCcdDataUpdateScenario.gapsAppellantData.appointee)
             .build();
 
         gapsCaseData = SscsCaseData.builder()
@@ -198,13 +289,15 @@ public class UpdateCcdAppellantDataTest {
 
         existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail(
-            gapsAndCcdDataUpdateScenario.existingCcdAppellantData.contactEmail);
+            gapsAndCcdDataUpdateScenario.existingCcdAppellantData.email);
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setFirstName(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.firstName);
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setLastName(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.lastName);
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.nino);
+        existingCaseDetails.getData().getAppeal().getAppellant().setAppointee(
+            gapsAndCcdDataUpdateScenario.existingCcdAppellantData.appointee);
 
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
@@ -214,9 +307,11 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.lastName));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.contactEmail));
+            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.email));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.nino));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee(),
+            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.appointee));
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
@@ -236,13 +331,60 @@ public class UpdateCcdAppellantDataTest {
         GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields =
             updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields();
 
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths =
+            updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeContactHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithNewAppointeeContactHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithNewAppointeeNameHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeIdentityHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeEmailHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeEmailHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeMobileHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeMobileHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeePhoneHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeePhoneHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeFirstNameHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeFirstNameHappyPaths();
+
+        GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeLastNameHappyPaths =
+            updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeLastNameHappyPaths();
+
         return new Object[]{
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths, true},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields, false},
             new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields, false},
             new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields, true},
-            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields, true}
+            new Object[]{updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeContactHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeNameHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeIdentityHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeEmailHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeMobileHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeePhoneHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeFirstNameHappyPaths, true},
+            new Object[]{updateCcdDataWhenThereAreGapsDataUpdatesWithUpdatedAppointeeLastNameHappyPaths, true}
         };
     }
-
 }
