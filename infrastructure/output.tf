@@ -9,3 +9,7 @@ output "vaultName" {
 output "microserviceName" {
   value = "${var.component}"
 }
+
+output "send_to_dwp_enabled" {
+  value = "${var.send_to_dwp_enabled}"
+}
