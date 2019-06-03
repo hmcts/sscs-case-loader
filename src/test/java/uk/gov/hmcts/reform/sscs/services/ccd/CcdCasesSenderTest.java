@@ -87,6 +87,8 @@ public class CcdCasesSenderTest {
 
         given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
             .willReturn(UpdateType.EVENT_UPDATE);
+
+        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", false);
     }
 
     @Test
@@ -135,7 +137,25 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldCreateInCcdGivenThereIsANewCaseAfterIgnoreCasesBeforeDateProperty() {
+    public void shouldCreateInCcdGivenThereIsANewCaseAndDwpFeatureFlagOnAfterIgnoreCasesBeforeDateProperty() {
+        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", true);
+
+        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
+            .thenReturn(getRegionalProcessingCenter());
+        ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);
+
+        SscsCaseData caseData = buildCaseData(APPEAL_RECEIVED);
+        caseData.setRegion(getRegionalProcessingCenter().getName());
+        caseData.setRegionalProcessingCenter(getRegionalProcessingCenter());
+
+        verify(ccdService, times(1))
+            .createCase(eq(caseData), eq("validAppealCreated"), any(String.class), any(String.class), eq(idamTokens));
+    }
+
+    @Test
+    public void shouldCreateInCcdGivenThereIsANewCaseAndDwpFeatureFlagOffAfterIgnoreCasesBeforeDateProperty() {
+        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", false);
+
         when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
             .thenReturn(getRegionalProcessingCenter());
         ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);

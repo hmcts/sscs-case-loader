@@ -35,6 +35,9 @@ public class CcdCasesSender {
     private final UpdateCcdCaseData updateCcdCaseData;
     private String logPrefix = "";
 
+    @Value("${feature.send_to_dwp}")
+    private Boolean sendToDwpFeature;
+
     @Autowired
     CcdCasesSender(CcdService ccdService,
                    UpdateCcdCaseService updateCcdCaseService,
@@ -54,8 +57,11 @@ public class CcdCasesSender {
         if (!lookupRpcByVenueId) {
             addRegionalProcessingCenter(caseData);
         }
-        ccdService.createCase(caseData, "appealCreated", "SSCS - new case created",
-            "Created SSCS case from Case Loader with event appealCreated", idamTokens);
+
+        String event = sendToDwpFeature ? EventType.VALID_APPEAL_CREATED.getCcdType() : EventType.SYA_APPEAL_CREATED.getCcdType();
+
+        ccdService.createCase(caseData, event, "SSCS - new case created",
+            "Created SSCS case from Case Loader with event " +  event, idamTokens);
     }
 
     public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
