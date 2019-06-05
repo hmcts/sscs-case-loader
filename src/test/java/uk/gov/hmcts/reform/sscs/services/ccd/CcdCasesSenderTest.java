@@ -142,14 +142,21 @@ public class CcdCasesSenderTest {
 
         when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
             .thenReturn(getRegionalProcessingCenter());
+        when(ccdService.createCase(any(SscsCaseData.class), eq("validAppealCreated"), any(String.class),
+            any(String.class), eq(idamTokens))).thenReturn(SscsCaseDetails.builder().id(1234L).build());
+
         ccdCasesSender.sendCreateCcdCases(buildCaseData(APPEAL_RECEIVED), idamTokens);
 
         SscsCaseData caseData = buildCaseData(APPEAL_RECEIVED);
+
         caseData.setRegion(getRegionalProcessingCenter().getName());
         caseData.setRegionalProcessingCenter(getRegionalProcessingCenter());
 
         verify(ccdService, times(1))
             .createCase(eq(caseData), eq("validAppealCreated"), any(String.class), any(String.class), eq(idamTokens));
+
+        verify(ccdService, times(1))
+            .updateCase(eq(caseData), eq(1234L), eq("sendToDwp"), any(String.class), any(String.class), eq(idamTokens));
     }
 
     @Test
