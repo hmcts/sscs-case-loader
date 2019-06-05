@@ -40,10 +40,10 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 
-env.TF_LOG = 'DEBUG'
-env.TEST_VAR = 'TRUE'
-
 withPipeline(type, product, component) {
+  echo env.CHANGE_TITLE
+  env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
+  echo env.CHANGE_TITLE
   enableSlackNotifications('#sscs-tech')
   loadVaultSecrets(secrets)
 }
