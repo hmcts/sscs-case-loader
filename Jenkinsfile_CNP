@@ -41,9 +41,11 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 
 withPipeline(type, product, component) {
-  echo env.CHANGE_TITLE
-  env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
-  echo env.CHANGE_TITLE
+  onPR {
+    echo env.CHANGE_TITLE
+    env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
+    echo env.CHANGE_TITLE
+  }
   enableSlackNotifications('#sscs-tech')
   loadVaultSecrets(secrets)
 }
