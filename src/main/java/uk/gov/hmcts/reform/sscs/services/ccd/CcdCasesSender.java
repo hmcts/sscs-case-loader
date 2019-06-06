@@ -64,8 +64,8 @@ public class CcdCasesSender {
                 "SSCS - new case created", "Created SSCS case from Case Loader with event validAppealCreated",
                 idamTokens);
 
-            ccdService.updateCase(caseData, caseDetails.getId(), SEND_TO_DWP.getCcdType(),"Send to DWP",
-                "Send to DWP event has been triggered from case loader", idamTokens);
+            ccdService.updateCase(caseData, caseDetails.getId(), SENT_TO_DWP.getCcdType(),"Sent to DWP",
+                "Sent to DWP event has been triggered from case loader", idamTokens);
 
         } else {
             ccdService.createCase(caseData, SYA_APPEAL_CREATED.getCcdType(), "SSCS - new case created",

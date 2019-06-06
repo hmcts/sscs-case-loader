@@ -156,7 +156,7 @@ public class CcdCasesSenderTest {
             .createCase(eq(caseData), eq("validAppealCreated"), any(String.class), any(String.class), eq(idamTokens));
 
         verify(ccdService, times(1))
-            .updateCase(eq(caseData), eq(1234L), eq("sendToDwp"), any(String.class), any(String.class), eq(idamTokens));
+            .updateCase(eq(caseData), eq(1234L), eq("sentToDwp"), any(String.class), any(String.class), eq(idamTokens));
     }
 
     @Test

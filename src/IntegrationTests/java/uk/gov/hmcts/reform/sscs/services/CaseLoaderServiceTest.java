@@ -239,7 +239,7 @@ public class CaseLoaderServiceTest {
 
         verify(ccdService).createCase(eq(caseData), eq(VALID_APPEAL_CREATED.getCcdType()), any(), any(),
             any(IdamTokens.class));
-        verify(ccdService).updateCase(eq(caseData), any(), eq(SEND_TO_DWP.getCcdType()), any(), any(),
+        verify(ccdService).updateCase(eq(caseData), any(), eq(SENT_TO_DWP.getCcdType()), any(), any(),
             any(IdamTokens.class));
         verifyNoMoreInteractions(ccdService);
     }
