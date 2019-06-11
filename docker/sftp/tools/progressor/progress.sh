@@ -8,16 +8,25 @@
 #                                                                                                 #
 ###################################################################################################
 
-if [ -z $2 ]; then
+if [ -z $3 ]; then
   echo "#########################################################"
-  echo "   Please supply your phone number and email address"
+  echo " Usage:
+  echo "
+  echo " ./progress.sh <phone_number> <hmcts_email> <prefix>"
   echo
-  echo "   ./progress.sh 07182992882 iama.example@hmcts.net"
+  echo " phone_number: Your mobile number for text messages"
+  echo " hmcts_email : Your @hmcts.net email address"
+  echo " prefix      : The directory of your XML templates"
+  echo
+  echo " E.g.:"
+  echo " ./progress.sh 01827983728 jane.smith@hmcts.net sscs-5270"
+  echo
   echo "#########################################################"
   exit
 fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+FILE_PREFIX="$3"
 
 PHONE=$1
 EMAIL=$2
@@ -25,7 +34,7 @@ EMAIL=$2
 INCOMING_DIR="${SCRIPT_DIR}/../../data/incoming"
 
 CASE_REFERENCE="SC068-$RANDOM-$RANDOM"
-BASE_XML_TEMPLATE_NAME="sscs-5270-00"
+FILE_SUFFIX="$3"
 
 echo "Cleaning up the XML directories"
 
@@ -34,8 +43,9 @@ sudo rm ${INCOMING_DIR}/processed/* &> /dev/null
 sudo rm ${INCOMING_DIR}/failed/* &> /dev/null
 
 function loadCase() {
+
   #################################################################################
-  echo "Processing XML file number $1"
+  echo "Processing XML file number $FILE_SUFFIX"
   #################################################################################
 
   DATE_STAMP=$(date +%F_%T)
@@ -47,8 +57,6 @@ function loadCase() {
   SOURCE_REFERENCE_FILE="${SCRIPT_DIR}/SSCS_Extract_Reference.xml"
   REFERENCE_XML_FILE="${INCOMING_DIR}/SSCS_Extract_Reference_${DATE_STAMP_FORMATTED}.xml"
 
-  SOURCE_FILENAME="${BASE_XML_TEMPLATE_NAME}$1.xml"
-  SOURCE_FILE="${SCRIPT_DIR}/${SOURCE_FILENAME}"
   TMP_FILE="/tmp/${SOURCE_FILENAME}"
 
   echo "Copying template to temporary directory for updating..."
@@ -130,22 +138,36 @@ echo "Opening URL: $URL"
 xdg-open $URL &>/dev/null
 printf "Waiting for user to update CCD"
 
-EVENT_COUNT="0"
-while [ ${EVENT_COUNT} != "3" ];
-do
-  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID};"))
-  EVENT_COUNT=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
-  printf "."
-  sleep 1
-done
+#EVENT_COUNT="0"
+#while [ ${EVENT_COUNT} != "2" ];
+#do
+#  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID};"))
+#  EVENT_COUNT=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
+#  printf "."
+#  sleep 1
+#done
 
 echo
 
 XML_FILE_NUMBER=1
-while test -f "${SCRIPT_DIR}/${BASE_XML_TEMPLATE_NAME}${XML_FILE_NUMBER}.xml"
+
+if [ $(echo -n ${XML_FILE_NUMBER} | wc -c) = "1" ]; then
+  XML_FILE_NUMBER_PADDED="0${XML_FILE_NUMBER}"
+else
+  XML_FILE_NUMBER_PADDED="${XML_FILE_NUMBER}"
+fi
+
+SOURCE_FILENAME="${FILE_PREFIX}-${XML_FILE_NUMBER_PADDED}.xml"
+SOURCE_FILE="${SCRIPT_DIR}/${FILE_SUFFIX}/${SOURCE_FILENAME}"
+
+echo "Source file is ${SOURCE_FILE}"
+
+while test -f "${SOURCE_FILE}"
 do
   loadCase $XML_FILE_NUMBER
   let XML_FILE_NUMBER=${XML_FILE_NUMBER}+1
+  SOURCE_FILENAME="${FILE_PREFIX}-${XML_FILE_NUMBER_PADDED}.xml"
+  SOURCE_FILE="${SCRIPT_DIR}/${FILE_SUFFIX}/${SOURCE_FILENAME}"
 done
 
 sudo chmod -R 777 ${INCOMING_DIR}
