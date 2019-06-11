@@ -45,7 +45,7 @@ sudo rm ${INCOMING_DIR}/failed/* &> /dev/null
 function loadCase() {
 
   #################################################################################
-  echo "Processing XML file number $FILE_SUFFIX"
+  echo "Processing file ${SOURCE_FILENAME}"
   #################################################################################
 
   DATE_STAMP=$(date +%F_%T)
@@ -138,36 +138,41 @@ echo "Opening URL: $URL"
 xdg-open $URL &>/dev/null
 printf "Waiting for user to update CCD"
 
-#EVENT_COUNT="0"
-#while [ ${EVENT_COUNT} != "2" ];
-#do
-#  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID};"))
-#  EVENT_COUNT=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
-#  printf "."
-#  sleep 1
-#done
+EVENT_COUNT="0"
+while [ ${EVENT_COUNT} != "2" ];
+do
+  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID};"))
+  EVENT_COUNT=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
+  printf "."
+  sleep 1
+done
 
 echo
 
 XML_FILE_NUMBER=1
 
-if [ $(echo -n ${XML_FILE_NUMBER} | wc -c) = "1" ]; then
-  XML_FILE_NUMBER_PADDED="0${XML_FILE_NUMBER}"
-else
-  XML_FILE_NUMBER_PADDED="${XML_FILE_NUMBER}"
-fi
-
-SOURCE_FILENAME="${FILE_PREFIX}-${XML_FILE_NUMBER_PADDED}.xml"
-SOURCE_FILE="${SCRIPT_DIR}/${FILE_SUFFIX}/${SOURCE_FILENAME}"
-
 echo "Source file is ${SOURCE_FILE}"
 
-while test -f "${SOURCE_FILE}"
+while true;
 do
-  loadCase $XML_FILE_NUMBER
-  let XML_FILE_NUMBER=${XML_FILE_NUMBER}+1
+
+  if [ $(echo -n ${XML_FILE_NUMBER} | wc -c) = "1" ]; then
+    XML_FILE_NUMBER_PADDED="0${XML_FILE_NUMBER}"
+  else
+    XML_FILE_NUMBER_PADDED="${XML_FILE_NUMBER}"
+  fi
+
   SOURCE_FILENAME="${FILE_PREFIX}-${XML_FILE_NUMBER_PADDED}.xml"
   SOURCE_FILE="${SCRIPT_DIR}/${FILE_SUFFIX}/${SOURCE_FILENAME}"
+
+  if [ ! -f "${SOURCE_FILE}" ]; then
+     echo "All files processed."
+     exit 0
+  fi
+
+  loadCase $XML_FILE_NUMBER
+  let XML_FILE_NUMBER=${XML_FILE_NUMBER}+1
+
 done
 
 sudo chmod -R 777 ${INCOMING_DIR}
