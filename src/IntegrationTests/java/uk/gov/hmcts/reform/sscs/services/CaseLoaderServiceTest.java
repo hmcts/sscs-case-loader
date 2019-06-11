@@ -8,9 +8,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,10 +25,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -56,7 +57,7 @@ public class CaseLoaderServiceTest {
     @MockBean
     private TransformationService transformService;
     @MockBean
-    private CcdCasesSender ccdCasesSender;
+    private CcdService ccdService;
     @MockBean
     private RefDataFactory refDataFactory;
     @Mock
@@ -72,6 +73,9 @@ public class CaseLoaderServiceTest {
 
     @Autowired
     private CaseLoaderService caseLoaderService;
+
+    @Autowired
+    private CcdCasesSender ccdCasesSender;
 
     @Before
     public void setUp() {
@@ -97,6 +101,10 @@ public class CaseLoaderServiceTest {
         when(file.isDelta()).thenReturn(false).thenReturn(true).thenReturn(true);
 
         given(transformService.transform(inputStream)).willReturn(newArrayList(caseData));
+
+        given(ccdService.createCase(eq(caseData), eq(VALID_APPEAL_CREATED.getCcdType()), any(), any(),
+            any(IdamTokens.class)))
+            .willReturn(SscsCaseDetails.builder().id(1234L).build());
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("oAuth2Token")
@@ -173,7 +181,9 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void givenNumberFormatExceptionIsThrown_shouldCarryOnProcessingNextCases() {
+    public void givenNumberFormatExIsThrownAndFeatureFlagOff_shouldCarryOnProcessingNextCasesAndNotSendCaseToDwp() {
+        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", false);
+
         Appeal appeal = Appeal.builder()
             .benefitType(BenefitType.builder()
                 .code("PIP")
@@ -194,12 +204,44 @@ public class CaseLoaderServiceTest {
 
         caseLoaderService.process();
 
-        then(ccdCasesSender).should(never()).sendCreateCcdCases(eq(caseDataWithInvalidScNumber), any(IdamTokens.class));
-        then(ccdCasesSender).should(never())
-            .sendUpdateCcdCases(eq(caseDataWithInvalidScNumber), any(SscsCaseDetails.class), any(IdamTokens.class));
+        verify(ccdService).createCase(eq(caseData), eq(SYA_APPEAL_CREATED.getCcdType()), any(), any(),
+            any(IdamTokens.class));
+        verifyNoMoreInteractions(ccdService);
+    }
 
-        then(ccdCasesSender).should(times(1))
-            .sendCreateCcdCases(eq(caseData), any(IdamTokens.class));
+    @Test
+    public void givenNumberFormatExceptionIsThrownAndFeatureFlagOn_shouldCarryOnProcessingNextCasesAndSendCaseToDwp() {
+        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", true);
+
+        Appeal appeal = Appeal.builder()
+            .benefitType(BenefitType.builder()
+                .code("PIP")
+                .build())
+            .build();
+        SscsCaseData caseDataWithInvalidScNumber = SscsCaseData.builder()
+            .caseReference("invalidCaseRef")
+            .appeal(appeal)
+            .build();
+
+        List<SscsCaseData> cases = Arrays.asList(caseDataWithInvalidScNumber, caseData);
+        given(transformService.transform(inputStream)).willReturn(cases);
+
+        given(idamService.getIdamTokens()).willReturn(IdamTokens.builder().build());
+
+        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseDataWithInvalidScNumber), any(IdamTokens.class)))
+            .willThrow(NumberFormatException.class);
+
+        given(ccdService.createCase(eq(caseData), eq(VALID_APPEAL_CREATED.getCcdType()), any(), any(),
+            any(IdamTokens.class)))
+            .willReturn(SscsCaseDetails.builder().id(1234L).build());
+
+        caseLoaderService.process();
+
+        verify(ccdService).createCase(eq(caseData), eq(VALID_APPEAL_CREATED.getCcdType()), any(), any(),
+            any(IdamTokens.class));
+        verify(ccdService).updateCase(eq(caseData), any(), eq(SENT_TO_DWP.getCcdType()), any(), any(),
+            any(IdamTokens.class));
+        verifyNoMoreInteractions(ccdService);
     }
 
 }

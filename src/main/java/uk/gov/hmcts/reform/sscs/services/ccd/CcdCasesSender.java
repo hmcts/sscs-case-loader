@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ public class CcdCasesSender {
     private final UpdateCcdCaseData updateCcdCaseData;
     private String logPrefix = "";
 
+    @Value("${feature.send_to_dwp}")
+    private Boolean sendToDwpFeature;
+
     @Autowired
     CcdCasesSender(CcdService ccdService,
                    UpdateCcdCaseService updateCcdCaseService,
@@ -54,8 +58,19 @@ public class CcdCasesSender {
         if (!lookupRpcByVenueId) {
             addRegionalProcessingCenter(caseData);
         }
-        ccdService.createCase(caseData, "appealCreated", "SSCS - new case created",
-            "Created SSCS case from Case Loader with event appealCreated", idamTokens);
+
+        if (sendToDwpFeature) {
+            SscsCaseDetails caseDetails = ccdService.createCase(caseData, VALID_APPEAL_CREATED.getCcdType(),
+                "SSCS - new case created", "Created SSCS case from Case Loader with event validAppealCreated",
+                idamTokens);
+
+            ccdService.updateCase(caseData, caseDetails.getId(), SENT_TO_DWP.getCcdType(),"Sent to DWP",
+                "Sent to DWP event has been triggered from case loader", idamTokens);
+
+        } else {
+            ccdService.createCase(caseData, SYA_APPEAL_CREATED.getCcdType(), "SSCS - new case created",
+                "Created SSCS case from Case Loader with event appealCreated", idamTokens);
+        }
     }
 
     public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
