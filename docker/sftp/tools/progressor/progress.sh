@@ -1,43 +1,58 @@
 #!/usr/bin/env bash
 
 #################################################################################
-# You can hardcode your details here, otherwise you will be prompted for them
-# each time.
-#################################################################################
-PHONE=07813072017
-EMAIL=christopher.moreton@hmcts.net
-
-#################################################################################
-# This script will progress a case through various states.
+# This script will progress a case through various states, relieving you
+# of a lot of the manual steps:
 #
-# 1) Create a new CCD case via the Tribunals API
-# 2) Determine the ID of the case in the CCD database
-# 3) Use the CCD GUI to add a Case Reference to the case to allow Case Loader
-#    to identify it. It will also log you into the CCD GUI, if necessary
-# 4) Place the case in Appeal Lodged state
-# 5) Place the case into Response Received state
-# 6) Add a hearing date
+# - Prepare the incoming/processed/failed directories
+# - Create a new CCD case via the Tribunals API
+# - Determine the ID of the case in the CCD database
+# - Use the CCD GUI to add a Case Reference to the case
+# - Place the case in Appeal Lodged state
+# - Place the case into Response Received state
+# - Add a hearing date
 #
 # Prerequisites
 #
 # 1) You have the sscs-docker setup running
 #################################################################################
 
+if [ -z $2 ]; then
+  echo "#########################################################"
+  echo "   Please supply your phone number and email address"
+  echo
+  echo "   ./progress.sh 07182992882 iama.example@hmcts.net"
+  echo "#########################################################"
+  exit
+fi
+
+PHONE=$1
+EMAIL=$2
+
 EXTRACT_DELTA_XML="SSCS_Extract_Delta_2018-05-24-16-14-19.xml"
 
 INCOMING_DIR="../../data/incoming"
+
+XML_FILE="${INCOMING_DIR}/${EXTRACT_DELTA_XML}"
 CASE_REFERENCE="SC068-$RANDOM-$RANDOM"
 
 function cleanFiles() {
   sudo rm ${INCOMING_DIR}/processed/* &> /dev/null
+  sudo rm ${INCOMING_DIR}/failed/* &> /dev/null
   sudo rm ${INCOMING_DIR}/${EXTRACT_DELTA_XML} &> /dev/null
   sudo chmod -R 777 $INCOMING_DIR &> /dev/null
 }
 
 function loadCase() {
+
+  SOURCE_FILE=sscs-5270-00$1.xml
+  TARGET_FILE=$2
+
+  echo "Copying $SOURCE_FILE to $TARGET_FILE"
+  cp $SOURCE_FILE $TARGET_FILE
+
   echo "Updating XML"
 
-  cp sscs-5270-00$1.xml $XML_FILE
   sed -i "s/{APPEAL_CASE_ID}/${APPEAL_CASE_ID}/g" $2
   sed -i "s/{EMAIL}/${EMAIL}/g" $2
   sed -i "s/{PHONE}/${PHONE}/g" $2
@@ -50,7 +65,7 @@ function loadCase() {
 
   printf "Waiting for new files to appear in processed directory..."
 
-  until test -f $INCOMING_DIR/processed/${EXTRACT_DELTA_XML}
+  until test -f ${INCOMING_DIR}/processed/${EXTRACT_DELTA_XML}
   do
     printf "."
     sleep 1
@@ -116,7 +131,6 @@ echo
 #################################################################################
 echo "Setting Appeal Lodged Status..."
 #################################################################################
-XML_FILE="${INCOMING_DIR}/${EXTRACT_DELTA_XML}"
 
 loadCase 1 $XML_FILE
 
