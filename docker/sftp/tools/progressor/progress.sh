@@ -29,43 +29,46 @@ fi
 PHONE=$1
 EMAIL=$2
 
-EXTRACT_DELTA_XML="SSCS_Extract_Delta_2018-05-24-16-14-19.xml"
-
 INCOMING_DIR="../../data/incoming"
 
-XML_FILE="${INCOMING_DIR}/${EXTRACT_DELTA_XML}"
 CASE_REFERENCE="SC068-$RANDOM-$RANDOM"
 
-function cleanFiles() {
-  sudo rm ${INCOMING_DIR}/processed/* &> /dev/null
-  sudo rm ${INCOMING_DIR}/failed/* &> /dev/null
-  sudo rm ${INCOMING_DIR}/${EXTRACT_DELTA_XML} &> /dev/null
-  sudo chmod -R 777 $INCOMING_DIR &> /dev/null
-}
+echo "Cleaning up the XML directories"
+
+sudo rm ${INCOMING_DIR}/*Delta*
+sudo rm ${INCOMING_DIR}/processed/*
+sudo rm ${INCOMING_DIR}/failed/*
 
 function loadCase() {
 
-  SOURCE_FILE=sscs-5270-00$1.xml
-  TARGET_FILE=$2
+  DATE_STAMP=$(date +%F_%T)
+  DATE_STAMP_FORMATTED=${DATE_STAMP//[_:]/-}
 
-  echo "Copying $SOURCE_FILE to $TARGET_FILE"
-  cp $SOURCE_FILE $TARGET_FILE
+  EXTRACT_DELTA_XML="SSCS_Extract_Delta_${DATE_STAMP_FORMATTED}.xml"
+  INCOMING_XML_FILE="${INCOMING_DIR}/${EXTRACT_DELTA_XML}"
+  PROCESSED_XML_FILE="${INCOMING_DIR}/processed/${EXTRACT_DELTA_XML}"
+
+  SOURCE_FILE=sscs-5270-00$1.xml
+  TMP_FILE=/tmp/${SOURCE_FILE}
+
+  echo "Copying ${SOURCE_FILE} to ${TMP_FILE}"
+  cp ${SOURCE_FILE} ${TMP_FILE}
 
   echo "Updating XML"
 
-  sed -i "s/{APPEAL_CASE_ID}/${APPEAL_CASE_ID}/g" $2
-  sed -i "s/{EMAIL}/${EMAIL}/g" $2
-  sed -i "s/{PHONE}/${PHONE}/g" $2
-  sed -i "s/{CASE_REFERENCE}/${CASE_REFERENCE}/g" $2
+  sed -i "s/{APPEAL_CASE_ID}/${APPEAL_CASE_ID}/g" ${TMP_FILE}
+  sed -i "s/{EMAIL}/${EMAIL}/g" ${TMP_FILE}
+  sed -i "s/{PHONE}/${PHONE}/g" ${TMP_FILE}
+  sed -i "s/{CASE_REFERENCE}/${CASE_REFERENCE}/g" ${TMP_FILE}
 
-  sleep 10
+  echo "Copying ${TMP_FILE} to ${INCOMING_XML_FILE}"
+  cp ${TMP_FILE} ${INCOMING_XML_FILE}
 
-  echo "Removing processed files to trigger loading of new XML..."
-  cleanFiles
+  sleep 1
 
   printf "Waiting for new files to appear in processed directory..."
 
-  until test -f ${INCOMING_DIR}/processed/${EXTRACT_DELTA_XML}
+  until test -f ${PROCESSED_XML_FILE}
   do
     printf "."
     sleep 1
@@ -74,8 +77,8 @@ function loadCase() {
   echo
 }
 
-echo "Cleaning processed directory and previous import file"
-cleanFiles
+echo "Making sure I can write to the output directories"
+sudo chmod -R 777 $INCOMING_DIR &> /dev/null
 
 BODY="{\"benefitType\":{\"description\":\"Personal Independence Payment\",\"code\":\"PIP\"},\"postCodeCheck\":\"ln8 3dy\",\"mrn\":{\"date\":\"15-05-2019\",\"dateAppealSubmitted\":\"30-05-2019\",\"dwpIssuingOffice\":\"DWP PIP (1)\"},\"isAppointee\":false,\"appellant\":{\"title\":\"Mrs.\",\"firstName\":\"Ap\",\"lastName\":\"Pellant\",\"dob\":\"01-01-1998\",\"nino\":\"AB123456C\",\"contactDetails\":{\"addressLine1\":\"1 Appellant Ave\",\"addressLine2\":\"\",\"townCity\":\"Appellant-ville\",\"county\":\"Appellant County\",\"postCode\":\"TS1 1ST\",\"phoneNumber\":\"${PHONE}\",\"emailAddress\":\"${EMAIL}\"}},\"smsNotify\":{\"wantsSMSNotifications\":true,\"useSameNumber\":true,\"smsNumber\":\"${PHONE}\"},\"hasRepresentative\":false,\"reasonsForAppealing\":{\"reasons\":[{\"whatYouDisagreeWith\":\"Under payment\",\"reasonForAppealing\":\"I need more money.\"}],\"otherReasons\":\"\"},\"evidenceProvide\":false,\"hearing\":{\"wantsToAttend\":false},\"signAndSubmit\":{\"signer\":\"Mr Ap Pellant\"}}\n"
 
@@ -132,13 +135,13 @@ echo
 echo "Setting Appeal Lodged Status..."
 #################################################################################
 
-loadCase 1 $XML_FILE
+loadCase 1
 
 ##################################################################################
 echo "Setting DWP Responded Status..."
 ##################################################################################
 
-loadCase 2 $XML_FILE
+loadCase 2
 
 sudo chmod -R 777 ${INCOMING_DIR}
 
