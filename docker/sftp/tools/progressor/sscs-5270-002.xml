@@ -22,7 +22,7 @@
       <INITIALS>S</INITIALS>
       <Surname>Appellant</Surname>
       <Email>{EMAIL}</Email>
-      <Phone_1>07831292016</Phone_1>
+      <Phone_1>{PHONE}</Phone_1>
       <Postcode>TS1 1ST</Postcode>
       <Role_Id>4</Role_Id>
       <Attending>Y</Attending>
