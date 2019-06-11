@@ -1,21 +1,12 @@
 #!/usr/bin/env bash
 
-#################################################################################
-# This script will progress a case through various states, relieving you
-# of a lot of the manual steps:
-#
-# - Prepare the incoming/processed/failed directories
-# - Create a new CCD case via the Tribunals API
-# - Determine the ID of the case in the CCD database
-# - Use the CCD GUI to add a Case Reference to the case
-# - Place the case in Appeal Lodged state
-# - Place the case into Response Received state
-# - Add a hearing date
-#
-# Prerequisites
-#
-# 1) You have the sscs-docker setup running
-#################################################################################
+###################################################################################################
+#                                                                                                 #
+# This script is discussed in more detail at                                                      #
+#                                                                                                 #
+# https://tools.hmcts.net/confluence/display/SSCS/Case+Creation+and+Progression+Automation+Script #
+#                                                                                                 #
+###################################################################################################
 
 if [ -z $2 ]; then
   echo "#########################################################"
@@ -26,18 +17,20 @@ if [ -z $2 ]; then
   exit
 fi
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 PHONE=$1
 EMAIL=$2
 
-INCOMING_DIR="../../data/incoming"
+INCOMING_DIR="${SCRIPT_DIR}/../../data/incoming"
 
 CASE_REFERENCE="SC068-$RANDOM-$RANDOM"
 
 echo "Cleaning up the XML directories"
 
-sudo rm ${INCOMING_DIR}/*Delta*
-sudo rm ${INCOMING_DIR}/processed/*
-sudo rm ${INCOMING_DIR}/failed/*
+sudo rm ${INCOMING_DIR}/* &> /dev/null
+sudo rm ${INCOMING_DIR}/processed/* &> /dev/null
+sudo rm ${INCOMING_DIR}/failed/* &> /dev/null
 
 function loadCase() {
 
@@ -47,9 +40,12 @@ function loadCase() {
   EXTRACT_DELTA_XML="SSCS_Extract_Delta_${DATE_STAMP_FORMATTED}.xml"
   INCOMING_XML_FILE="${INCOMING_DIR}/${EXTRACT_DELTA_XML}"
   PROCESSED_XML_FILE="${INCOMING_DIR}/processed/${EXTRACT_DELTA_XML}"
+  SOURCE_REFERENCE_FILE="${SCRIPT_DIR}/SSCS_Extract_Reference.xml"
+  REFERENCE_XML_FILE="${INCOMING_DIR}/SSCS_Extract_Reference_${DATE_STAMP_FORMATTED}.xml"
 
-  SOURCE_FILE=sscs-5270-00$1.xml
-  TMP_FILE=/tmp/${SOURCE_FILE}
+  SOURCE_FILENAME="sscs-5270-00$1.xml"
+  SOURCE_FILE="${SCRIPT_DIR}/${SOURCE_FILENAME}"
+  TMP_FILE="/tmp/${SOURCE_FILENAME}"
 
   echo "Copying ${SOURCE_FILE} to ${TMP_FILE}"
   cp ${SOURCE_FILE} ${TMP_FILE}
@@ -63,6 +59,9 @@ function loadCase() {
 
   echo "Copying ${TMP_FILE} to ${INCOMING_XML_FILE}"
   cp ${TMP_FILE} ${INCOMING_XML_FILE}
+
+  echo "Copying ${SOURCE_REFERENCE_FILE} to ${REFERENCE_XML_FILE}"
+  cp ${SOURCE_REFERENCE_FILE} ${REFERENCE_XML_FILE}
 
   sleep 1
 
@@ -125,9 +124,16 @@ echo "Use the CCD front end to add the case reference ${CASE_REFERENCE} to the c
 URL="http://localhost:3451/case/SSCS/Benefit/${DB_REFERENCE}/trigger/caseUpdated/caseUpdated1.0"
 echo "Opening URL: $URL"
 xdg-open $URL &>/dev/null
-printf "Waiting for user to update CCD... press [RETURN] when ready."
+printf "Waiting for user to update CCD"
 
-read
+EVENT_COUNT="0"
+while [ ${EVENT_COUNT} != "3" ];
+do
+  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID};"))
+  EVENT_COUNT=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
+  printf "."
+  sleep 1
+done
 
 echo
 

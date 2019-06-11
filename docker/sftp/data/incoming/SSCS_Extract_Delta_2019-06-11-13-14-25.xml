@@ -2,8 +2,8 @@
 <Appeal_Cases>
   <Appeal_Case>
     <Extract_Time_UTC>2018-03-06T20:26:05.1+00:00</Extract_Time_UTC>
-    <Appeal_Case_Id>142</Appeal_Case_Id>
-    <Appeal_Case_RefNum>SC068-19780-18687</Appeal_Case_RefNum>
+    <Appeal_Case_Id>152</Appeal_Case_Id>
+    <Appeal_Case_RefNum>SC068-25520-15183</Appeal_Case_RefNum>
     <Appeal_Case_Confidential>N</Appeal_Case_Confidential>
     <!--PIP benefit type-->
     <Appeal_Case_Case_Code_Id>1707</Appeal_Case_Case_Code_Id>
@@ -31,7 +31,12 @@
       <DOB>1982-12-11T00:00:00+00:00</DOB>
     </Parties>
     <Major_Status>
-      <Status_Id>18</Status_Id>
+      <Status_Id>600</Status_Id>
+      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>3</Status_Id>
       <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
       <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
     </Major_Status>

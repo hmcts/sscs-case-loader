@@ -31,6 +31,16 @@
       <DOB>1982-12-11T00:00:00+00:00</DOB>
     </Parties>
     <Major_Status>
+      <Status_Id>600</Status_Id>
+      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>3</Status_Id>
+      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
       <Status_Id>18</Status_Id>
       <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
       <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
