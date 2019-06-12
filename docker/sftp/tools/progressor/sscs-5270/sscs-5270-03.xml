@@ -1,0 +1,60 @@
+<?xml version="1.0" standalone="yes"?>
+<Appeal_Cases>
+  <Appeal_Case>
+    <Extract_Time_UTC>2018-03-06T20:26:05.1+00:00</Extract_Time_UTC>
+    <Appeal_Case_Id>{APPEAL_CASE_ID}</Appeal_Case_Id>
+    <Appeal_Case_RefNum>{CASE_REFERENCE}</Appeal_Case_RefNum>
+    <Appeal_Case_Confidential>N</Appeal_Case_Confidential>
+    <!--PIP benefit type-->
+    <Appeal_Case_Case_Code_Id>1707</Appeal_Case_Case_Code_Id>
+    <Tribunal_Type_Id>1</Tribunal_Type_Id>
+    <Appeal_Case_Date_Appeal_Received>2018-03-05T00:00:00+00:00</Appeal_Case_Date_Appeal_Received>
+    <Appeal_Case_Date_of_Decision>2018-02-25T00:00:00+00:00</Appeal_Case_Date_of_Decision>
+    <Appeal_Case_Date_Appeal_Made>2018-03-05T00:00:00+00:00</Appeal_Case_Date_Appeal_Made>
+    <Appeal_Case_NINO>AB123456C</Appeal_Case_NINO>
+    <Appeal_Case_Major_Id>3</Appeal_Case_Major_Id>
+    <Appeal_Case_BF_Date>2018-04-10T00:00:00+01:00</Appeal_Case_BF_Date>
+    <Originating_Office_Id>1682</Originating_Office_Id>
+    <Admin_Team_Id>68</Admin_Team_Id>
+    <Parties>
+      <PTTP_ID>5534639</PTTP_ID>
+      <Title>Miss</Title>
+      <INITIALS>S</INITIALS>
+      <Surname>Appellant</Surname>
+      <Email>{EMAIL}</Email>
+      <Phone_1>{PHONE}</Phone_1>
+      <Postcode>TS1 1ST</Postcode>
+      <Role_Id>4</Role_Id>
+      <Attending>Y</Attending>
+      <Disability_Needs>N</Disability_Needs>
+      <Interpreter_Signer_Id>206</Interpreter_Signer_Id>
+      <DOB>1982-12-11T00:00:00+00:00</DOB>
+    </Parties>
+    <Hearing>
+      <Hearing_Id>1</Hearing_Id>
+      <Date_Hearing_Notification>2019-02-28T00:00:00+00:00</Date_Hearing_Notification>
+      <Session_Date>2019-06-12T14:00:00+01:00</Session_Date>
+      <Venue_Id>68</Venue_Id>
+    </Hearing>
+    <Major_Status>
+      <Status_Id>600</Status_Id>
+      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>3</Status_Id>
+      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>18</Status_Id>
+      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>24</Status_Id>
+      <Date_Set>2019-02-28T00:00:00+00:00</Date_Set>
+      <BF_Date>2019-06-12T14:00:00+01:00</BF_Date>
+    </Major_Status>
+  </Appeal_Case>
+</Appeal_Cases>
