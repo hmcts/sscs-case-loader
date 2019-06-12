@@ -34,7 +34,6 @@ EMAIL=$2
 INCOMING_DIR="${SCRIPT_DIR}/../../data/incoming"
 
 CASE_REFERENCE="SC068-$RANDOM-$RANDOM"
-FILE_SUFFIX="$3"
 
 echo "Cleaning up the XML directories"
 
@@ -91,18 +90,18 @@ function loadCase() {
 echo "Making sure I can write to the output directories"
 sudo chmod -R 777 $INCOMING_DIR &> /dev/null
 
-BODY="{\"benefitType\":{\"description\":\"Personal Independence Payment\",\"code\":\"PIP\"},\"postCodeCheck\":\"ln8 3dy\",\"mrn\":{\"date\":\"15-05-2019\",\"dateAppealSubmitted\":\"30-05-2019\",\"dwpIssuingOffice\":\"DWP PIP (1)\"},\"isAppointee\":false,\"appellant\":{\"title\":\"Mrs.\",\"firstName\":\"Ap\",\"lastName\":\"Pellant\",\"dob\":\"01-01-1998\",\"nino\":\"AB123456C\",\"contactDetails\":{\"addressLine1\":\"1 Appellant Ave\",\"addressLine2\":\"\",\"townCity\":\"Appellant-ville\",\"county\":\"Appellant County\",\"postCode\":\"TS1 1ST\",\"phoneNumber\":\"${PHONE}\",\"emailAddress\":\"${EMAIL}\"}},\"smsNotify\":{\"wantsSMSNotifications\":true,\"useSameNumber\":true,\"smsNumber\":\"${PHONE}\"},\"hasRepresentative\":false,\"reasonsForAppealing\":{\"reasons\":[{\"whatYouDisagreeWith\":\"Under payment\",\"reasonForAppealing\":\"I need more money.\"}],\"otherReasons\":\"\"},\"evidenceProvide\":false,\"hearing\":{\"wantsToAttend\":false},\"signAndSubmit\":{\"signer\":\"Mr Ap Pellant\"}}\n"
-
 #################################################################################
 echo "Deleting all benefit cases from CCD database..."
 #################################################################################
 docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "delete from case_event;"
 docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "delete from case_data;"
 
+BODY="{\"benefitType\":{\"description\":\"Personal Independence Payment\",\"code\":\"PIP\"},\"postCodeCheck\":\"ln8 3dy\",\"mrn\":{\"date\":\"15-05-2019\",\"dateAppealSubmitted\":\"30-05-2019\",\"dwpIssuingOffice\":\"DWP PIP (1)\"},\"isAppointee\":false,\"appellant\":{\"title\":\"Mrs.\",\"firstName\":\"Ap\",\"lastName\":\"Pellant\",\"dob\":\"01-01-1998\",\"nino\":\"AB123456C\",\"contactDetails\":{\"addressLine1\":\"1 Appellant Ave\",\"addressLine2\":\"\",\"townCity\":\"Appellant-ville\",\"county\":\"Appellant County\",\"postCode\":\"TS1 1ST\",\"phoneNumber\":\"${PHONE}\",\"emailAddress\":\"${EMAIL}\"}},\"smsNotify\":{\"wantsSMSNotifications\":true,\"useSameNumber\":true,\"smsNumber\":\"${PHONE}\"},\"hasRepresentative\":false,\"reasonsForAppealing\":{\"reasons\":[{\"whatYouDisagreeWith\":\"Under payment\",\"reasonForAppealing\":\"I need more money.\"}],\"otherReasons\":\"\"},\"evidenceProvide\":false,\"hearing\":{\"wantsToAttend\":true},\"signAndSubmit\":{\"signer\":\"Mr Ap Pellant\"}}\n"
+
 #################################################################################
 echo "Creating case..."
 #################################################################################
-echo $BODY | \
+echo ${BODY} | \
   http POST http://localhost:8080/appeals \
   Accept:'*/*' \
   Cache-Control:no-cache \
@@ -120,7 +119,7 @@ echo "Discovering case ID..."
 SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select max(id) from case_data"))
 APPEAL_CASE_ID=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
 
-if [ $APPEAL_CASE_ID = "(0" ]; then
+if [ ${APPEAL_CASE_ID} = "(0" ]; then
   echo "Case creation failed..."
   exit 1
 fi
@@ -135,13 +134,13 @@ echo "Reference is ${DB_REFERENCE}"
 echo "Use the CCD front end to add the case reference ${CASE_REFERENCE} to the case."
 URL="http://localhost:3451/case/SSCS/Benefit/${DB_REFERENCE}/trigger/caseUpdated/caseUpdated1.0"
 echo "Opening URL: $URL"
-xdg-open $URL &>/dev/null
+xdg-open ${URL} &>/dev/null
 printf "Waiting for user to update CCD"
 
 EVENT_COUNT="0"
-while [ ${EVENT_COUNT} != "2" ];
+while [ ${EVENT_COUNT} != "1" ];
 do
-  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID};"))
+  SELECT_OUTPUT=($(docker exec -it compose_ccd-shared-database_1 psql -U postgres ccd_data -c "select count(*) from case_event where case_data_id=${APPEAL_CASE_ID} and event_id='caseUpdated';"))
   EVENT_COUNT=$(echo ${SELECT_OUTPUT[3]}|tr -d '\r')
   printf "."
   sleep 1
@@ -150,8 +149,6 @@ done
 echo
 
 XML_FILE_NUMBER=1
-
-echo "Source file is ${SOURCE_FILE}"
 
 while true;
 do
@@ -163,7 +160,9 @@ do
   fi
 
   SOURCE_FILENAME="${FILE_PREFIX}-${XML_FILE_NUMBER_PADDED}.xml"
-  SOURCE_FILE="${SCRIPT_DIR}/${FILE_SUFFIX}/${SOURCE_FILENAME}"
+  SOURCE_FILE="${SCRIPT_DIR}/${FILE_PREFIX}/${SOURCE_FILENAME}"
+
+  echo "Source file is ${SOURCE_FILE}"
 
   if [ ! -f "${SOURCE_FILE}" ]; then
      echo "All files processed."
@@ -176,4 +175,8 @@ do
 done
 
 sudo chmod -R 777 ${INCOMING_DIR}
+
+URL="http://localhost:3451/case/SSCS/Benefit/${DB_REFERENCE}#events"
+
+xdg-open ${URL} &> /dev/null
 
