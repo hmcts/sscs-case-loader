@@ -145,7 +145,7 @@ public class ProcessCaseRetryAndRecoveryTest {
             any());
 
         verify(coreCaseDataApi, times(1)).searchForCaseworker(
-            eq(USER_AUTH2_WITH_TYPE),
+            eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH2),
             eq(USER_ID),
             anyString(),
@@ -185,8 +185,7 @@ public class ProcessCaseRetryAndRecoveryTest {
             .thenReturn(SERVER_AUTH2);
 
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(new Authorize("", "", USER_AUTH))
-            .thenReturn(new Authorize("", "", USER_AUTH2));
+            .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(idamApiClient.getUserDetails(anyString())).thenReturn(new UserDetails("16"));
     }
