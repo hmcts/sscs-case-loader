@@ -7,7 +7,7 @@
     <Appeal_Case_Confidential>N</Appeal_Case_Confidential>
     <!--PIP benefit type-->
     <Appeal_Case_Case_Code_Id>1707</Appeal_Case_Case_Code_Id>
-    <Tribunal_Type_Id>1</Tribunal_Type_Id>
+    <Tribunal_Type_Id>2</Tribunal_Type_Id>
     <Appeal_Case_Date_Appeal_Received>2018-03-05T00:00:00+00:00</Appeal_Case_Date_Appeal_Received>
     <Appeal_Case_Date_of_Decision>2018-02-25T00:00:00+00:00</Appeal_Case_Date_of_Decision>
     <Appeal_Case_Date_Appeal_Made>2018-03-05T00:00:00+00:00</Appeal_Case_Date_Appeal_Made>
@@ -42,8 +42,8 @@
     </Major_Status>
     <Major_Status>
       <Status_Id>18</Status_Id>
-      <Date_Set>2019-04-22T12:46:30.143+00:00</Date_Set>
-      <BF_Date>2019-04-22T12:46:00+00:00</BF_Date>
+      <Date_Set>2019-04-23T12:46:30.143+00:00</Date_Set>
+      <BF_Date>2019-04-23T12:46:00+00:00</BF_Date>
     </Major_Status>
   </Appeal_Case>
 </Appeal_Cases>
