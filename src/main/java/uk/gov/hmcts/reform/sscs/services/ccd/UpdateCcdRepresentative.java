@@ -13,33 +13,84 @@ final class UpdateCcdRepresentative {
 
     static boolean updateCcdRepresentative(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
         boolean repUpdated = false;
-        if (gapsCaseData.getAppeal() != null && gapsCaseData.getAppeal().getRep() != null) {
-            Representative rep = gapsCaseData.getAppeal().getRep();
-            Representative existingRepresentative = existingCcdCaseData.getAppeal().getRep();
-            if (existingRepresentative == null || existingRepresentative.getName() == null
-                || existingRepresentative.getContact() == null
-                || !existingRepresentative.getName().equals(rep.getName())
-                || !existingRepresentative.getContact().equals(rep.getContact())
-            ) {
-                updateReps(gapsCaseData, existingCcdCaseData, rep);
-                final UpdateSubscription.SubscriptionUpdate subscriptionUpdate =
-                    new UpdateSubscription.SubscriptionUpdate() {
-                    @Override
-                    public Subscription getSubscription(Subscriptions subscriptions) {
-                        return subscriptions.getRepresentativeSubscription();
-                    }
-
-                    @Override
-                    public Subscriptions updateExistingSubscriptions(Subscription subscription) {
-                        return existingCcdCaseData.getSubscriptions().toBuilder()
-                            .representativeSubscription(subscription).build();
-                    }
-                };
-                UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, subscriptionUpdate);
+        if (gapsCaseData.getAppeal() != null) {
+            if (gapsCaseData.getAppeal().getRep() != null) {
+                Representative rep = gapsCaseData.getAppeal().getRep();
+                Representative existingRepresentative = existingCcdCaseData.getAppeal().getRep();
+                if (hasRepChanged(rep, existingRepresentative)) {
+                    updateReps(gapsCaseData, existingCcdCaseData, rep);
+                    UpdateSubscription.updateSubscription(
+                        gapsCaseData,
+                        existingCcdCaseData,
+                        getRepSubscriptionUpdate(existingCcdCaseData)
+                    );
+                    repUpdated = true;
+                }
+            } else if (hasExistingRepSubscription(existingCcdCaseData)) {
+                // No rep, clear down rep subscription
+                UpdateSubscription.updateSubscription(
+                    gapsCaseData,
+                    existingCcdCaseData,
+                    getClearedRepSubscriptionUpdate(existingCcdCaseData)
+                );
                 repUpdated = true;
             }
         }
         return repUpdated;
+    }
+
+    private static boolean hasExistingRepSubscription(SscsCaseData existingCcdCaseData) {
+        return existingCcdCaseData != null
+            && existingCcdCaseData.getSubscriptions() != null
+            && existingCcdCaseData.getSubscriptions().getRepresentativeSubscription() != null
+            && existingCcdCaseData.getSubscriptions().getRepresentativeSubscription().getSubscribeSms() != null
+            && existingCcdCaseData.getSubscriptions().getRepresentativeSubscription().getSubscribeEmail() != null;
+    }
+
+    private static boolean hasRepChanged(Representative rep, Representative existingRepresentative) {
+        return existingRepresentative == null
+            || existingRepresentative.getName() == null
+            || existingRepresentative.getContact() == null
+            || !existingRepresentative.getName().equals(rep.getName())
+            || !existingRepresentative.getContact().equals(rep.getContact());
+    }
+
+    private static UpdateSubscription.SubscriptionUpdate getClearedRepSubscriptionUpdate(SscsCaseData caseData) {
+        return new UpdateSubscription.SubscriptionUpdate() {
+            @Override
+            public Subscription getSubscription(Subscriptions subscriptions) {
+                return subscriptions.getRepresentativeSubscription();
+            }
+
+            @Override
+            public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                Subscription clearedSubscription = subscription.toBuilder()
+                    .wantSmsNotifications("No")
+                    .mobile("")
+                    .subscribeSms("No")
+                    .email("")
+                    .subscribeEmail("No")
+                    .build();
+
+                return caseData.getSubscriptions().toBuilder()
+                    .representativeSubscription(clearedSubscription).build();
+            }
+        };
+    }
+
+    private static UpdateSubscription.SubscriptionUpdate getRepSubscriptionUpdate(SscsCaseData caseData) {
+        return new UpdateSubscription.SubscriptionUpdate() {
+            @Override
+            public Subscription getSubscription(Subscriptions subscriptions) {
+                return subscriptions.getRepresentativeSubscription();
+            }
+
+            @Override
+            public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                return caseData.getSubscriptions().toBuilder()
+                    .representativeSubscription(subscription).build();
+            }
+        };
     }
 
     private static void updateReps(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData, Representative rep) {
