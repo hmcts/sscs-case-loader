@@ -34,7 +34,7 @@
       <Hearing_Id>1</Hearing_Id>
       <Date_Hearing_Notification>2019-05-28T00:00:00+00:00</Date_Hearing_Notification>
       <Session_Date>2019-06-22T14:01:00+01:00</Session_Date>
-      <Appeal_Time>2019-06-22T14:00:00+01:00</Appeal_Time>
+      <Appeal_Time>2019-06-22T14:01:00+01:00</Appeal_Time>
       <Venue_Id>68</Venue_Id>
     </Hearing>
     <Major_Status>
@@ -51,6 +51,11 @@
       <Status_Id>18</Status_Id>
       <Date_Set>2019-04-23T12:46:30.143+00:00</Date_Set>
       <BF_Date>2019-04-23T12:46:00+00:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>24</Status_Id>
+      <Date_Set>2019-04-28T00:15:00+00:00</Date_Set>
+      <BF_Date>2019-06-22T14:00:00+01:00</BF_Date>
     </Major_Status>
     <Major_Status>
       <Status_Id>24</Status_Id>
