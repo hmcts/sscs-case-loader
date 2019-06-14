@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.exceptions.CcdException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -179,6 +180,11 @@ public class CaseLoaderService {
 
     private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
         SscsCaseDetails sscsCaseDetails;
+
+        caseData.getAppeal().getAppellant().getIdentity().setNino(
+            SscsCcdConvertService.removeSpacesFromNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
+        );
+
         try {
             sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
         } catch (NumberFormatException e) {
