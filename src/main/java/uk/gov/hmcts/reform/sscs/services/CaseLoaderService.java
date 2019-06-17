@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.hasAppellantIdentify;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -181,9 +183,11 @@ public class CaseLoaderService {
     private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
         SscsCaseDetails sscsCaseDetails;
 
-        caseData.getAppeal().getAppellant().getIdentity().setNino(
-            SscsCcdConvertService.removeSpacesFromNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
-        );
+        if (hasAppellantIdentify(caseData)) {
+            caseData.getAppeal().getAppellant().getIdentity().setNino(
+                SscsCcdConvertService.removeSpacesFromNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
+            );
+        }
 
         try {
             sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
