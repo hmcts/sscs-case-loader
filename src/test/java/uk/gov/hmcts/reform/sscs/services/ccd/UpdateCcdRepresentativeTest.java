@@ -244,7 +244,7 @@ public class UpdateCcdRepresentativeTest {
     }
 
     @Test
-    public void givenNullRepChange_willReturnFalseAndNotModifyData() {
+    public void givenNullRepChangeWithoutSubscription_willReturnFalseAndNotModifyData() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder().build())
             .build();
@@ -259,6 +259,51 @@ public class UpdateCcdRepresentativeTest {
 
         assertFalse(hasDataChanged);
         assertEquals(existingCaseData, originalExistingCaseData);
+    }
+
+    @Test
+    public void givenNullRepChangeWhenHadRepSubscription_willReturnFalseAndNotModifyData() {
+        SscsCaseData newCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder().build())
+            .build();
+
+        SscsCaseData ccdCaseData = SscsCaseData.builder().appeal(Appeal.builder()
+            .rep(
+                Representative.builder().name(Name.builder().lastName("Potter").build()).build()
+            ).build())
+            .subscriptions(
+                Subscriptions.builder()
+                    .representativeSubscription(
+                        Subscription.builder()
+                            .wantSmsNotifications("Yes")
+                            .subscribeEmail("Yes")
+                            .email("test@test.com")
+                            .subscribeSms("Yes")
+                            .mobile("07811111111")
+                            .build()
+                    )
+                    .build()
+            )
+            .build();
+        SscsCaseData expectedCaseData = ccdCaseData.toBuilder()
+            .subscriptions(
+                Subscriptions.builder()
+                    .representativeSubscription(
+                        Subscription.builder()
+                            .wantSmsNotifications("No")
+                            .subscribeEmail("No")
+                            .email("")
+                            .subscribeSms("No")
+                            .mobile("")
+                            .build()
+                    )
+                    .build()
+            )
+            .build();
+        boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(newCaseData, ccdCaseData);
+
+        assertTrue(hasDataChanged);
+        assertEquals(expectedCaseData, ccdCaseData);
     }
 
     @Test
