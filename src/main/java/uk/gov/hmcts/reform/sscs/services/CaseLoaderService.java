@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.hasAppellantIdentify;
+import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.normaliseNino;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
-import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.exceptions.CcdException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -185,7 +185,7 @@ public class CaseLoaderService {
 
         if (hasAppellantIdentify(caseData)) {
             caseData.getAppeal().getAppellant().getIdentity().setNino(
-                SscsCcdConvertService.removeSpacesFromNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
+                normaliseNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
             );
         }
 
