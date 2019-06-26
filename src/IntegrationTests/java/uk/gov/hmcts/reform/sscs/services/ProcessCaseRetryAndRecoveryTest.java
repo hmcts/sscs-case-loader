@@ -52,7 +52,6 @@ public class ProcessCaseRetryAndRecoveryTest {
     private static final String USER_AUTH = "oauth2token";
     private static final String USER_AUTH_WITH_TYPE = "Bearer " + USER_AUTH;
     private static final String USER_AUTH2 = "oauth2token2";
-    private static final String USER_AUTH2_WITH_TYPE = "Bearer " + USER_AUTH2;
     private static final String USER_ID = "16";
     private static final String SERVER_AUTH = "s2s token";
     private static final String SERVER_AUTH2 = "s2s token2";
@@ -143,14 +142,6 @@ public class ProcessCaseRetryAndRecoveryTest {
             anyString(),
             anyString(),
             any());
-
-        verify(coreCaseDataApi, times(1)).searchForCaseworker(
-            eq(USER_AUTH2_WITH_TYPE),
-            eq(SERVER_AUTH2),
-            eq(USER_ID),
-            anyString(),
-            anyString(),
-            any());
     }
 
     private void mockCcdApi() {
@@ -185,8 +176,7 @@ public class ProcessCaseRetryAndRecoveryTest {
             .thenReturn(SERVER_AUTH2);
 
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(new Authorize("", "", USER_AUTH))
-            .thenReturn(new Authorize("", "", USER_AUTH2));
+            .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(idamApiClient.getUserDetails(anyString())).thenReturn(new UserDetails("16"));
     }
