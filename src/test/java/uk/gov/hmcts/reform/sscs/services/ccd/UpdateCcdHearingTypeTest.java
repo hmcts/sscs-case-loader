@@ -46,6 +46,12 @@ public class UpdateCcdHearingTypeTest {
                 .build())
             .build();
 
+        SscsCaseData gapsCaseDataWithCorHearingType = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingType("paper")
+                .build())
+            .build();
+
         SscsCaseData existingCcdCase = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .hearingType("paper")
@@ -63,12 +69,21 @@ public class UpdateCcdHearingTypeTest {
                 .build())
             .build();
 
+        SscsCaseData existingCcdCaseCorHearingType = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingType("cor")
+                .build())
+            .build();
+
+
+
         return new Object[]{
             new Object[]{gapsCaseDataWithNullHearingType, existingCcdCase, false, "paper"},
             new Object[]{gapsCaseDataWithMoreEmptyHearingType, existingCcdCase, false, "paper"},
             new Object[]{gapsCaseData, existingCcdCase, true, "oral"},
             new Object[]{gapsCaseData, existingCcdCaseWithNullHearingType, true, "oral"},
-            new Object[]{gapsCaseData, existingCcdCaseWithEmptyHearingType, true, "oral"}
+            new Object[]{gapsCaseData, existingCcdCaseWithEmptyHearingType, true, "oral"},
+            new Object[]{gapsCaseDataWithCorHearingType, existingCcdCaseCorHearingType, false, "cor"}
         };
     }
 
