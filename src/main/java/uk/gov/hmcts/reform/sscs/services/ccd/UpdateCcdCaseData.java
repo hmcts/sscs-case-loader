@@ -3,12 +3,10 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
 @Service
 class UpdateCcdCaseData {
-    private static final Subscriptions EMPTY_SUBSCRIPTIONS = Subscriptions.builder().build();
     private final UpdateCcdAppellantData updateCcdAppellantData;
     private final UpdateCcdHearingOptions updateCcdHearingOptions;
     private final UpdateCcdHearingType updateCcdHearingType;
