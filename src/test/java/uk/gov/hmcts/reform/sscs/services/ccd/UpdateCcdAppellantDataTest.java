@@ -1,7 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields;
@@ -26,7 +31,17 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAndCcdDataUpdateScenario;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAppellantData;
 
@@ -53,9 +68,16 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("No").subscribeEmail("No").email("harry.potter@mail.com").build())
+                    .subscribeSms("No")
+                    .subscribeEmail("No")
+                    .wantSmsNotifications("No")
+                    .email("harry.potter@mail.com")
+                    .build())
                 .appointeeSubscription(Subscription.builder()
-                    .email("appointee.new@email.com").subscribeEmail("No").build())
+                    .email("appointee.new@email.com")
+                    .subscribeEmail("No")
+                    .wantSmsNotifications("No")
+                    .build())
                 .build())
             .build();
 
@@ -66,17 +88,37 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com").build())
+                    .subscribeSms("Yes")
+                    .mobile("0777")
+                    .subscribeEmail("Yes")
+                    .wantSmsNotifications("Yes")
+                    .email("harry.potter@mail.com")
+                    .build())
                 .appointeeSubscription(Subscription.builder()
-                    .subscribeSms("Yes").mobile("0777").email("appointee.old@email.com").subscribeEmail("Yes").build())
+                    .subscribeSms("Yes")
+                    .wantSmsNotifications("Yes")
+                    .mobile("0777")
+                    .email("appointee.old@email.com")
+                    .subscribeEmail("Yes")
+                    .build())
                 .build()
             ).build();
 
-        final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
-            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+        final Subscription expectedRepSubscription = Subscription.builder()
+            .email("harry.potter@mail.com")
+            .subscribeSms("Yes")
+            .mobile("0777")
+            .wantSmsNotifications("Yes")
+            .subscribeEmail("Yes")
+            .build();
 
-        final Subscription expectedAppointeeSubscription = Subscription.builder().email("appointee.new@email.com")
-            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+        final Subscription expectedAppointeeSubscription = Subscription.builder()
+            .email("appointee.new@email.com")
+            .subscribeSms("Yes")
+            .wantSmsNotifications("Yes")
+            .mobile("0777")
+            .subscribeEmail("Yes")
+            .build();
 
         boolean isUpdated = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCase);
         assertTrue(isUpdated);
@@ -95,10 +137,17 @@ public class UpdateCcdAppellantDataTest {
                 .appellant(Appellant.builder().name(newName).build())
                 .build())
             .subscriptions(Subscriptions.builder()
-                .representativeSubscription(Subscription.builder().subscribeSms("No")
-                    .subscribeEmail("No").email("harry.potter@mail.com").build())
+                .representativeSubscription(Subscription.builder()
+                    .subscribeSms("No")
+                    .subscribeEmail("No")
+                    .wantSmsNotifications("No")
+                    .email("harry.potter@mail.com")
+                    .build())
                 .appellantSubscription(Subscription.builder()
-                    .email("appellant.new@email.com").subscribeEmail("No").build())
+                    .email("appellant.new@email.com")
+                    .wantSmsNotifications("No")
+                    .subscribeEmail("No")
+                    .build())
                 .build())
             .build();
 
@@ -107,17 +156,37 @@ public class UpdateCcdAppellantDataTest {
                 .appellant(Appellant.builder().name(name).build()).build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com").build())
+                    .subscribeSms("Yes")
+                    .mobile("0777")
+                    .subscribeEmail("Yes")
+                    .wantSmsNotifications("Yes")
+                    .email("harry.potter@mail.com")
+                    .build())
                 .appellantSubscription(Subscription.builder()
-                    .email("appellant.old@email.com").subscribeEmail("Yes").subscribeSms("Yes").mobile("0777").build())
+                    .email("appellant.old@email.com")
+                    .subscribeEmail("Yes")
+                    .wantSmsNotifications("Yes")
+                    .subscribeSms("Yes")
+                    .mobile("0777")
+                    .build())
                 .build()
             ).build();
 
-        final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
-            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+        final Subscription expectedRepSubscription = Subscription.builder()
+            .email("harry.potter@mail.com")
+            .subscribeSms("Yes")
+            .wantSmsNotifications("Yes")
+            .mobile("0777")
+            .subscribeEmail("Yes")
+            .build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder()
-            .email("appellant.new@email.com").subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+            .email("appellant.new@email.com")
+            .subscribeSms("Yes")
+            .wantSmsNotifications("Yes")
+            .mobile("0777")
+            .subscribeEmail("Yes")
+            .build();
 
         boolean isUpdated = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCase);
         assertTrue(isUpdated);
@@ -155,7 +224,7 @@ public class UpdateCcdAppellantDataTest {
     public void givenWeHaveToUpdateTheExistingCcdAppealDataAndGivenTheExistingAppellantIsNullOrEmpty_shouldUpdate(
         SscsCaseData existingCcdCaseData) {
         GapsAppellantData gapsAppellantData = new UpdateCcdAppellantDataTestHelper.GapsAppellantData(
-                "first-name", "last-name", "email@email.com", "AB46575S");
+            "first-name", "last-name", "email@email.com", "AB46575S");
 
         Appellant appellant = Appellant.builder()
             .name(Name.builder()
