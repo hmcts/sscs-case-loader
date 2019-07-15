@@ -131,4 +131,26 @@
     <cve>CVE-2018-1260</cve>
     <cve>CVE-2018-15758</cve>
   </suppress>
+  <suppress>
+    <cpe>cpe:2.3:a:checkstyle:checkstyle:6.19</cpe>
+    <cve>CVE-2019-9658</cve>
+  </suppress>
+  <suppress>
+    <cpe>cpe:2.3:a:fasterxml:jackson:2.9.8</cpe>
+    <cve>CVE-2019-12086</cve>
+  </suppress>
+  <suppress>
+    <cpe>cpe:2.3:a:apache:tomcat-embed-core:9.0.17</cpe>
+    <cve>CVE-2019-10072</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+            file name: jruby-stdlib-9.2.7.0.jar: jquery.js
+            JRuby ships a pretty old version of jquery in some dependency for Rdoc.
+            We don't generate any rdoc, so we should be fine.
+        ]]>
+    </notes>
+    <cve>CVE-2015-9251</cve>
+    <cve>CVE-2019-11358</cve>
+  </suppress>
 </suppressions>
