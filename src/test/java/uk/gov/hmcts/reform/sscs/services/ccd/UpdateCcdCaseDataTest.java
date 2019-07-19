@@ -30,16 +30,33 @@ public class UpdateCcdCaseDataTest {
     @Mock
     private UpdateGeneratedFields updateGeneratedFields;
     @Mock
+    private UpdateCcdRpc updateCcdRpc;
+    @Mock
     private UpdateDwpTimeExtension updateDwpTimeExtension;
     @Mock
     private UpdateEvents updateEvents;
+
+    private static SscsCaseData SSCS_CASE_DATA_WITH_NULL_APPEAL = SscsCaseData.builder()
+        .appeal(null)
+        .build();
+    private static SscsCaseData SSCS_CASE_DATA_WITH_APPEAL = SscsCaseData.builder()
+        .appeal(Appeal.builder().build())
+        .build();
+    private static SscsCaseData SSCS_CASE_DATA_WITH_NULL_APPEAL_AND_NULL_RPC =
+        SSCS_CASE_DATA_WITH_NULL_APPEAL.toBuilder()
+            .regionalProcessingCenter(null)
+            .build();
+    private static SscsCaseData SSCS_CASE_DATA_WITH_APPEAL_AND_RPC =
+        SSCS_CASE_DATA_WITH_APPEAL.toBuilder()
+            .regionalProcessingCenter(RegionalProcessingCenter.builder().build())
+            .build();
 
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData, updateCcdHearingOptions,
-            updateCcdHearingType, updateGeneratedFields, updateDwpTimeExtension, updateEvents);
+            updateCcdHearingType, updateGeneratedFields, updateDwpTimeExtension, updateEvents, updateCcdRpc);
     }
 
     @Test
@@ -115,6 +132,7 @@ public class UpdateCcdCaseDataTest {
         given(updateDwpTimeExtension.updateDwpTimeExtension(any(), any())).willReturn(false);
         given(updateCcdHearingOptions.updateHearingOptions(any(), any(SscsCaseData.class))).willReturn(false);
         given(updateCcdHearingType.updateHearingType(any(), any())).willReturn(false);
+        given(updateCcdRpc.updateCcdRpc(any(), any())).willReturn(false);
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             gapsCaseData, null);
@@ -124,20 +142,15 @@ public class UpdateCcdCaseDataTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateAppealScenarios() {
-        SscsCaseData sscsCaseDataWithNullAppeal = SscsCaseData.builder()
-            .appeal(null)
-            .build();
-        SscsCaseData sscsCaseDataWithAppeal = SscsCaseData.builder()
-            .appeal(Appeal.builder().build())
-            .build();
-
         return new Object[]{
             new Object[]{null, true, true, UpdateType.EVENT_UPDATE},
             new Object[]{null, true, false, UpdateType.EVENT_UPDATE},
-            new Object[]{sscsCaseDataWithNullAppeal, true, true, UpdateType.EVENT_UPDATE},
-            new Object[]{sscsCaseDataWithNullAppeal, true, false, UpdateType.EVENT_UPDATE},
-            new Object[]{sscsCaseDataWithNullAppeal, false, true, UpdateType.NO_UPDATE},
-            new Object[]{sscsCaseDataWithAppeal, false, true, UpdateType.DATA_UPDATE}
+            new Object[]{SSCS_CASE_DATA_WITH_NULL_APPEAL, true, true, UpdateType.EVENT_UPDATE},
+            new Object[]{SSCS_CASE_DATA_WITH_NULL_APPEAL, true, false, UpdateType.EVENT_UPDATE},
+            new Object[]{SSCS_CASE_DATA_WITH_NULL_APPEAL, false, true, UpdateType.NO_UPDATE},
+            new Object[]{SSCS_CASE_DATA_WITH_APPEAL, false, true, UpdateType.DATA_UPDATE},
+            new Object[]{SSCS_CASE_DATA_WITH_NULL_APPEAL_AND_NULL_RPC, false, true, UpdateType.NO_UPDATE},
+            new Object[]{SSCS_CASE_DATA_WITH_APPEAL_AND_RPC, false, true, UpdateType.DATA_UPDATE}
         };
     }
 
