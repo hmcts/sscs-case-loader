@@ -20,6 +20,7 @@ class UpdateCcdRpc {
         RegionalProcessingCenter existingRpc = existingCcdCaseData.getRegionalProcessingCenter();
         if (hasRpcChanged(gapsRpc, existingRpc)) {
             existingCcdCaseData.setRegionalProcessingCenter(gapsRpc);
+            existingCcdCaseData.setRegion(gapsRpc.getName());
             rpcUpdated = true;
         }
 

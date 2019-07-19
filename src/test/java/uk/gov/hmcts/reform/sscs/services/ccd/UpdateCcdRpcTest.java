@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -101,45 +102,46 @@ public class UpdateCcdRpcTest {
 
     @Test
     public void returnTrueWhenCcdDataHasDifferentRpcName() {
-        assertTrue(
-            classUnderTest.updateCcdRpc(
-                SscsCaseData.builder()
-                    .regionalProcessingCenter(
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+                .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
-                            .name("Another name")
-                            .address1("1 Some Street")
-                            .build())
-                    .build(),
-                SscsCaseData.builder()
-                    .regionalProcessingCenter(
+                                .name("Another name")
+                                .address1("1 Some Street")
+                                .build())
+                .build();
+
+        SscsCaseData existingCcdCaseData = SscsCaseData.builder()
+                .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
-                            .name("Some name")
-                            .address1("1 Some Street")
-                            .build())
-                    .build()
-            )
-        );
+                                .name("Some name")
+                                .address1("1 Some Street")
+                                .build())
+                .build();
+
+        assertTrue(classUnderTest.updateCcdRpc(gapsCaseData, existingCcdCaseData));
+        assertEquals(gapsCaseData.getRegionalProcessingCenter(), existingCcdCaseData.getRegionalProcessingCenter());
+        assertEquals(existingCcdCaseData.getRegionalProcessingCenter().getName(), existingCcdCaseData.getRegion());
     }
 
     @Test
     public void returnTrueWhenCcdDataHasDifferentRpcAddress() {
-        assertTrue(
-            classUnderTest.updateCcdRpc(
-                SscsCaseData.builder()
-                    .regionalProcessingCenter(
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+                .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
-                            .name("Some name")
-                            .address1("1 Another Street")
-                            .build())
-                    .build(),
-                SscsCaseData.builder()
-                    .regionalProcessingCenter(
+                                .name("Some name")
+                                .address1("1 Another Street")
+                                .build())
+                .build();
+
+        SscsCaseData existingCcdCaseData = SscsCaseData.builder()
+                .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
-                            .name("Some name")
-                            .address1("1 Some Street")
-                            .build())
-                    .build()
-            )
-        );
+                                .name("Some name")
+                                .address1("1 Some Street")
+                                .build())
+                .build();
+        assertTrue(classUnderTest.updateCcdRpc(gapsCaseData, existingCcdCaseData));
+        assertEquals(gapsCaseData.getRegionalProcessingCenter(), existingCcdCaseData.getRegionalProcessingCenter());
+        assertEquals(existingCcdCaseData.getRegionalProcessingCenter().getName(), existingCcdCaseData.getRegion());
     }
 }
