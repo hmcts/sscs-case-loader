@@ -75,7 +75,7 @@ slot.name: ${SLOT:dev}
 
 test.url: ${TEST_URL:http://localhost:8082}
 
-rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:false}
+rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:true}
 
 number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
 

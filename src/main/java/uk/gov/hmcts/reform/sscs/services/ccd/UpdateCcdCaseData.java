@@ -13,17 +13,20 @@ class UpdateCcdCaseData {
     private final UpdateGeneratedFields updateGeneratedFields;
     private final UpdateDwpTimeExtension updateDwpTimeExtension;
     private final UpdateEvents updateEvents;
+    private final UpdateCcdRpc updateCcdRpc;
 
     @Autowired
     UpdateCcdCaseData(UpdateCcdAppellantData updateCcdAppellantData, UpdateCcdHearingOptions updateCcdHearingOptions,
                       UpdateCcdHearingType updateCcdHearingType, UpdateGeneratedFields updateGeneratedFields,
-                      UpdateDwpTimeExtension updateDwpTimeExtension, UpdateEvents updateEvents) {
+                      UpdateDwpTimeExtension updateDwpTimeExtension, UpdateEvents updateEvents,
+                      UpdateCcdRpc updateCcdRpc) {
         this.updateCcdAppellantData = updateCcdAppellantData;
         this.updateCcdHearingOptions = updateCcdHearingOptions;
         this.updateCcdHearingType = updateCcdHearingType;
         this.updateGeneratedFields = updateGeneratedFields;
         this.updateDwpTimeExtension = updateDwpTimeExtension;
         this.updateEvents = updateEvents;
+        this.updateCcdRpc = updateCcdRpc;
     }
 
     UpdateType updateCcdRecordForChangesAndReturnUpdateType(SscsCaseData gapsCaseData,
@@ -49,14 +52,17 @@ class UpdateCcdCaseData {
         boolean updateHearingOptions = false;
         boolean updateHearingType = false;
         boolean updateRepresentative = false;
+        boolean updateRpc = false;
 
         if (null != gapsCaseData && null != gapsCaseData.getAppeal()) {
             updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
             updateHearingOptions = updateCcdHearingOptions.updateHearingOptions(gapsCaseData, existingCcdCaseData);
             updateHearingType = updateCcdHearingType.updateHearingType(gapsCaseData, existingCcdCaseData);
             updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
+            updateRpc = updateCcdRpc.updateCcdRpc(gapsCaseData, existingCcdCaseData);
         }
-        return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType || updateRepresentative;
+        return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType || updateRepresentative
+            || updateRpc;
     }
 
 }
