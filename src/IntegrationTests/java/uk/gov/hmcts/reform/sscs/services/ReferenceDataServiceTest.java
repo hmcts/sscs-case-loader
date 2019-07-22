@@ -45,7 +45,7 @@ public class ReferenceDataServiceTest {
             .regionalProcessingCentre("SSCS Birmingham")
             .venName("Milton Keynes Magistrates Court")
             .venAddressLine1("301 Silbury Boulevard")
-            .venAddressLine2(" Witan Gate East")
+            .venAddressLine2("Witan Gate East")
             .venAddressTown("Central Milton Keynes")
             .venAddressCounty("")
             .venAddressPostcode("MK9 2AJ")
