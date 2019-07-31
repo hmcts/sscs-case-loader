@@ -1,4 +1,6 @@
-FROM hmcts/cnp-java-base:openjdk-8u191-jre-alpine3.9-2.0.1
+ARG APP_INSIGHTS_AGENT_VERSION=2.3.1
+
+FROM hmctspublic.azurecr.io/base/java:openjdk-8-distroless-1.0
 
 COPY . /home/gradle/src
 USER root
@@ -8,8 +10,7 @@ USER gradle
 WORKDIR /home/gradle/src
 RUN gradle assemble
 
-FROM openjdk:8-jre-alpine
-
+COPY lib/applicationinsights-agent-2.3.1.jar lib/AI-Agent.xml /opt/app/
 COPY --from=builder /home/gradle/src/build/libs/sscs-case-loader.jar /opt/app/
 
 WORKDIR /opt/app
