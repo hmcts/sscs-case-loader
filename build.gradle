@@ -184,10 +184,6 @@ configurations {
   e2eCompile.extendsFrom(testCompile)
 }
 
-bootRun {
-  systemProperty 'server.port', '8082'
-}
-
 def springBootVersion = '2.1.5.RELEASE'
 
 dependencyManagement {
