@@ -92,6 +92,6 @@ public class AppealCase {
         Optional<MajorStatus> first = majorStatus.stream()
             .filter(ms -> appealRecieved.contains(ms.getStatusId()))
             .findFirst();
-        return first.isPresent() ? first.get().getDateSet().toLocalDate() : LocalDate.of(1900, 01, 01);
+        return first.isPresent() ? first.get().getDateSet().toLocalDate() : LocalDate.of(1900, 1, 1);
     }
 }
