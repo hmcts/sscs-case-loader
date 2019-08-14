@@ -1,13 +1,17 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -48,12 +52,17 @@ public class TransformAppealCaseToCaseDataTest {
         final CaseDataBuilder caseDataBuilder =
             new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService);
 
-        transformAppealCaseToCaseData =
-            new TransformAppealCaseToCaseData(caseDataBuilder);
+        transformAppealCaseToCaseData = new TransformAppealCaseToCaseData(caseDataBuilder);
         ReflectionTestUtils.setField(transformAppealCaseToCaseData, "lookupRpcByVenueId", true);
 
         when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcessingCentre);
         when(referenceDataService.getTbtCode("2")).thenReturn("O");
+    }
+
+    @Test
+    @Ignore
+    public void givenGapsCaseWithAppellantAndAppointee_shouldStoreThemBasedOnTheCorrectRoleId() {
+
     }
 
     @Test
@@ -267,13 +276,9 @@ public class TransformAppealCaseToCaseDataTest {
             .indentOutput(true)
             .build();
 
-        String appealCaseJson =
-            IOUtils.toString(
-                TransformAppealCaseToCaseDataTest.class
-                    .getClassLoader()
-                    .getResourceAsStream(filename),
-                StandardCharsets.UTF_8.name()
-            );
+        String appealCaseJson = IOUtils.toString(Objects.requireNonNull(TransformAppealCaseToCaseDataTest.class
+            .getClassLoader().getResourceAsStream(filename)), StandardCharsets.UTF_8.name()
+        );
 
         return mapper.readerFor(AppealCase.class).readValue(appealCaseJson);
     }
