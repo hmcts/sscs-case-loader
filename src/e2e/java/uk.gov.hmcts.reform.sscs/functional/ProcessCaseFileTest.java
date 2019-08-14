@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -16,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -40,9 +40,8 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
 @SpringBootTest
+@Slf4j
 public class ProcessCaseFileTest {
-
-    private static final org.slf4j.Logger LOG = getLogger(ProcessCaseFileTest.class);
 
     @Value("${test.url}")
     private String testUrl;
@@ -73,7 +72,7 @@ public class ProcessCaseFileTest {
         SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
         ccdCaseId = String.valueOf(caseDetails.getId());
-        LOG.info("Created test ccd case with id {}", ccdCaseId);
+        log.info("Created test ccd case with id {}", ccdCaseId);
 
         String path = Objects.requireNonNull(getClass().getClassLoader()
             .getResource("SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml")).getFile();
