@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -11,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -60,9 +60,14 @@ public class TransformAppealCaseToCaseDataTest {
     }
 
     @Test
-    @Ignore
-    public void givenGapsCaseWithAppellantAndAppointee_shouldStoreThemBasedOnTheCorrectRoleId() {
+    public void givenGapsCaseWithOneSinglePartyAndRoleIdEqualTo4_shouldStoreItAsAppellant() throws Exception {
+        AppealCase appealCase = getAppealCase("AppealCase.json");
 
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        assertNotNull(caseData.getAppeal().getAppellant());
+        assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Elderberry"));
+        assertNull(caseData.getAppeal().getAppellant().getAppointee());
     }
 
     @Test
