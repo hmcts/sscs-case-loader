@@ -71,6 +71,18 @@ public class TransformAppealCaseToCaseDataTest {
     }
 
     @Test
+    public void givenGapsCaseWithPartyWithRoleIdEqualTo24_shouldStoreItAsAppellant() throws Exception {
+        AppealCase appealCaseWithAppointee = getAppealCase("AppealCaseWithAppointee.json");
+
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCaseWithAppointee);
+
+        assertNotNull(caseData.getAppeal().getAppellant());
+        assertNotNull(caseData.getAppeal().getAppellant().getAppointee());
+        assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Appellant"));
+        assertThat(caseData.getAppeal().getAppellant().getAppointee().getName().getLastName(), is("Appointee"));
+    }
+
+    @Test
     public void givenACaseData_shouldBeTransformToCaseDataWithSubscriptionsAndAppealNumber() throws Exception {
         AppealCase appealCase = getAppealCase("AppealCase.json");
 
@@ -133,9 +145,7 @@ public class TransformAppealCaseToCaseDataTest {
             is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
         );
 
-        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
-
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
     }
 
     @Test
@@ -164,9 +174,7 @@ public class TransformAppealCaseToCaseDataTest {
         );
         assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(""));
 
-        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
-
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
     }
 
     @Test
@@ -195,9 +203,7 @@ public class TransformAppealCaseToCaseDataTest {
             is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
         );
 
-        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
-
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
     }
 
     @Test

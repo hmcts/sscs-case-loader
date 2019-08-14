@@ -86,8 +86,8 @@
     {
       "initials": "E",
       "title": "Mrs.",
-      "surname": "Elderberry",
-      "email": null,
+      "surname": "Appointee",
+      "email": "appointee@test.com",
       "phone1": null,
       "phone2": null,
       "postCode": "L17 7AE",
@@ -99,8 +99,8 @@
     {
       "initials": "Ap",
       "title": "Mrs.",
-      "surname": "Pointee",
-      "email": "appointee@test.com",
+      "surname": "Appellant",
+      "email": "appellant@test.com",
       "phone1": null,
       "phone2": null,
       "postCode": "TS2 2ST",
