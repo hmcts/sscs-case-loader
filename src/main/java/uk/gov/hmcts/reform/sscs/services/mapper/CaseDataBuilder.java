@@ -175,7 +175,12 @@ class CaseDataBuilder {
 
                     hearingsList.add(uk.gov.hmcts.reform.sscs.ccd.domain.Hearing.builder().value(hearings).build());
                 } else {
-                    log.info("*** case-loader *** venue missing: " + appealCase.getHearing().get(0).getVenueId());
+                    log.info("*** case-loader *** venue missing: {} for CCD ID {} / SC number {} "
+                                    + "and hearing session date {}",
+                            appealCase.getHearing().get(0).getVenueId(),
+                            appealCase.getAppealCaseId(),
+                            appealCase.getAppealCaseRefNum(),
+                            hearing.getSessionDate());
                     return Collections.emptyList();
                 }
             }
