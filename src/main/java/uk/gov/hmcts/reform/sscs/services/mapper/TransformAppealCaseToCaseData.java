@@ -43,22 +43,21 @@ public class TransformAppealCaseToCaseData {
         List<Parties> parties = appealCase.getParties();
 
         Optional<Parties> appointeeParty = (parties == null) ? Optional.empty() :
-            parties.stream().filter(f -> f.getRoleId() == APPOINTEE_ROLE_ID).findFirst();
+            parties.stream().filter(p -> getPartiesGivenRoleId(p, APPOINTEE_ROLE_ID)).findFirst();
         Optional<Parties> appellantParty;
         if (!appointeeParty.isPresent()) {
             appellantParty = (parties == null) ? Optional.empty() :
-                parties.stream().filter(f -> f.getRoleId() == APPELLANT_ROLE_ID).findFirst();
+                parties.stream().filter(p -> getPartiesGivenRoleId(p, APPELLANT_ROLE_ID)).findFirst();
             if (!appellantParty.isPresent()) {
                 log.error("An appeal, for caseId {}, exists without an appellant", appealCase.getAppealCaseId());
             }
         } else {
             appellantParty = appointeeParty;
-            appointeeParty = parties.stream().filter(f -> f.getRoleId() == APPELLANT_ROLE_ID).findFirst();
+            appointeeParty = parties.stream().filter(p -> getPartiesGivenRoleId(p, APPELLANT_ROLE_ID)).findFirst();
         }
 
         Optional<Parties> representativeParty = (parties == null) ? Optional.empty() :
-            parties.stream().filter(f -> f.getRoleId() == REP_ROLE_ID).findFirst();
-
+            parties.stream().filter(p -> getPartiesGivenRoleId(p, REP_ROLE_ID)).findFirst();
 
         BenefitType benefitType = caseDataBuilder.buildBenefitType(appealCase);
 
@@ -92,6 +91,10 @@ public class TransformAppealCaseToCaseData {
             )
             .ccdCaseId(appealCase.getAdditionalRef())
             .build();
+    }
+
+    private boolean getPartiesGivenRoleId(Parties p, int roleId) {
+        return roleId == p.getRoleId();
     }
 
     private Appeal getAppeal(final AppealCase appealCase,
