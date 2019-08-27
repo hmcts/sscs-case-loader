@@ -60,18 +60,33 @@ public class TransformationService {
         }
         List<AppealCase> appealCases = result.getAppealCases().getAppealCaseList();
 
-        return (appealCases == null) ? Collections.emptyList() : appealCases.stream()
-            .filter(c -> c.getCreateDate() != null && ignoreCasesBeforeDate.isBefore(c.getCreateDate()))
-            .filter(c -> {
-                if (c.getAppealCaseNino() == null) {
-                    log.debug("NINO({}) is null for case number({}):", c.getAppealCaseNino(), c.getAppealCaseRefNum());
-                    return false;
-                }
-                return !ROBOTIC_NINO_FOR_TESTING_PURPOSE.equalsIgnoreCase(c.getAppealCaseNino()
-                    .replaceAll("\\s+", ""));
-            })
+        return (appealCases == null) ? Collections.emptyList() : doTransformGapsCasesToSscsCases(appealCases);
+    }
+
+    private List<SscsCaseData> doTransformGapsCasesToSscsCases(List<AppealCase> appealCases) {
+        return appealCases.stream()
+            .filter(c -> isCaseCreatedDateBeforeThan(c.getCreateDate()))
+            .filter(c -> !isNinoNull(c.getAppealCaseNino(), c.getAppealCaseRefNum()))
+            .filter(c -> !isAroboticTestCase(c))
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
+    }
+
+    private boolean isCaseCreatedDateBeforeThan(LocalDate dateCreation) {
+        return dateCreation != null && ignoreCasesBeforeDate.isBefore(dateCreation);
+    }
+
+    private boolean isAroboticTestCase(AppealCase c) {
+        return ROBOTIC_NINO_FOR_TESTING_PURPOSE
+            .equalsIgnoreCase(c.getAppealCaseNino().replaceAll("\\s+", ""));
+    }
+
+    private boolean isNinoNull(String nino, String caseRef) {
+        if (nino == null) {
+            log.debug("NINO is null for case number({}):", caseRef);
+            return true;
+        }
+        return false;
     }
 
 }

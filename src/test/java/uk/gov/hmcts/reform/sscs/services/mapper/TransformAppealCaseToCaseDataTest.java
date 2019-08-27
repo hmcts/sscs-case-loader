@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,12 +52,34 @@ public class TransformAppealCaseToCaseDataTest {
         final CaseDataBuilder caseDataBuilder =
             new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService);
 
-        transformAppealCaseToCaseData =
-            new TransformAppealCaseToCaseData(caseDataBuilder);
+        transformAppealCaseToCaseData = new TransformAppealCaseToCaseData(caseDataBuilder);
         ReflectionTestUtils.setField(transformAppealCaseToCaseData, "lookupRpcByVenueId", true);
 
         when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcessingCentre);
         when(referenceDataService.getTbtCode("2")).thenReturn("O");
+    }
+
+    @Test
+    public void givenGapsCaseWithOneSinglePartyAndRoleIdEqualTo4_shouldStoreItAsAppellant() throws Exception {
+        AppealCase appealCase = getAppealCase("AppealCase.json");
+
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        assertNotNull(caseData.getAppeal().getAppellant());
+        assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Elderberry"));
+        assertNull(caseData.getAppeal().getAppellant().getAppointee());
+    }
+
+    @Test
+    public void givenGapsCaseWithPartyWithRoleIdEqualTo24_shouldStoreItAsAppellant() throws Exception {
+        AppealCase appealCaseWithAppointee = getAppealCase("AppealCaseWithAppointee.json");
+
+        SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCaseWithAppointee);
+
+        assertNotNull(caseData.getAppeal().getAppellant());
+        assertNotNull(caseData.getAppeal().getAppellant().getAppointee());
+        assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Appellant"));
+        assertThat(caseData.getAppeal().getAppellant().getAppointee().getName().getLastName(), is("Appointee"));
     }
 
     @Test
@@ -119,9 +145,7 @@ public class TransformAppealCaseToCaseDataTest {
             is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
         );
 
-        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
-
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
     }
 
     @Test
@@ -150,9 +174,7 @@ public class TransformAppealCaseToCaseDataTest {
         );
         assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(""));
 
-        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
-
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
     }
 
     @Test
@@ -181,9 +203,7 @@ public class TransformAppealCaseToCaseDataTest {
             is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
         );
 
-        String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
-
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
     }
 
     @Test
@@ -267,13 +287,9 @@ public class TransformAppealCaseToCaseDataTest {
             .indentOutput(true)
             .build();
 
-        String appealCaseJson =
-            IOUtils.toString(
-                TransformAppealCaseToCaseDataTest.class
-                    .getClassLoader()
-                    .getResourceAsStream(filename),
-                StandardCharsets.UTF_8.name()
-            );
+        String appealCaseJson = IOUtils.toString(Objects.requireNonNull(TransformAppealCaseToCaseDataTest.class
+            .getClassLoader().getResourceAsStream(filename)), StandardCharsets.UTF_8.name()
+        );
 
         return mapper.readerFor(AppealCase.class).readValue(appealCaseJson);
     }

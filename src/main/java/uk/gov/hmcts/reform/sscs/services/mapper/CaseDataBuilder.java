@@ -264,11 +264,8 @@ class CaseDataBuilder {
             .build();
     }
 
-    protected static Subscription buildSubscriptionWithDefaults(
-        Optional<Parties> party,
-        String appealCaseRefNum,
-        String appealNumber
-    ) {
+    protected static Subscription buildSubscriptionWithDefaults(Optional<Parties> party, String appealCaseRefNum,
+                                                                String appealNumber) {
         return Subscription.builder()
             .email(party.map(Parties::getEmail).orElse(StringUtils.EMPTY))
             .mobile(validateMobile(party, appealCaseRefNum))

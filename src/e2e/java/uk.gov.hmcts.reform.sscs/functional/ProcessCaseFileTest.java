@@ -2,11 +2,9 @@ package uk.gov.hmcts.reform.sscs.functional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import io.restassured.RestAssured;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -14,14 +12,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
@@ -39,14 +40,12 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
 @SpringBootTest
-public class ProcessCaseFile {
+@Slf4j
+public class ProcessCaseFileTest {
 
-    private static final org.slf4j.Logger LOG = getLogger(ProcessCaseFile.class);
+    @Value("${test.url}")
+    private String testUrl;
 
-    private static final String caseloaderinstance = System.getenv("TEST_URL");
-    private static final String localInstance = "http://localhost:8082";
-
-    String filename;
     private static final String outputdir = "src/test/resources/updates";
 
     @Autowired
@@ -73,16 +72,17 @@ public class ProcessCaseFile {
         SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
         ccdCaseId = String.valueOf(caseDetails.getId());
-        LOG.info("Created test ccd case with id {}", ccdCaseId);
+        log.info("Created test ccd case with id {}", ccdCaseId);
 
-        String path = getClass().getClassLoader().getResource("SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml").getFile();
+        String path = Objects.requireNonNull(getClass().getClassLoader()
+            .getResource("SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml")).getFile();
         String ccdCasesXml = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         ccdCasesXml = ccdCasesXml.replace("1_CCD_ID_REPLACED_BY_TEST", ccdCaseId);
 
         cleanSftpFiles();
-        writeXmlToSftp(ccdCasesXml, "SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml");
+        writeXmlToSftp(ccdCasesXml);
         GenerateXml.generateXmlForAppeals();
-        copy(outputdir, filename);
+        copy(outputdir);
     }
 
     @After
@@ -112,21 +112,22 @@ public class ProcessCaseFile {
         }
     }
 
-    private void writeXmlToSftp(String xml, String filename) throws SftpException {
+    private void writeXmlToSftp(String xml) throws SftpException {
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
-        sftpChannel.put(new ByteArrayInputStream(xml.getBytes()), "/incoming/" + filename);
+        sftpChannel.put(new ByteArrayInputStream(xml.getBytes()),
+            "/incoming/" + "SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml");
     }
 
-    public void copy(String outputdir, String filename) {
+    public void copy(String outputdir) {
         ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
         try {
             File folder = new File(outputdir);
             File[] files = folder.listFiles();
-            for (File file : files) {
+            for (File file : Objects.requireNonNull(files)) {
                 sftpChannel.put(new FileInputStream(file), file.getName()); //NOPMD
             }
         } catch (SftpException e) {
-            throw new SftpCustomException("Failed to copy/delete generated xml to sftp", filename, e);
+            throw new SftpCustomException("Failed to copy/delete generated xml to sftp", outputdir, e);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -136,8 +137,7 @@ public class ProcessCaseFile {
     @Test
     public void processCaseFileAndVerifyCcd() {
 
-        RestAssured.baseURI =
-            StringUtils.isBlank(caseloaderinstance) ? localInstance : caseloaderinstance;
+        RestAssured.baseURI = testUrl;
 
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured

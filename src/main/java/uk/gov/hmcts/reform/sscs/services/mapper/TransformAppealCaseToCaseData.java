@@ -6,7 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 
@@ -30,19 +42,22 @@ public class TransformAppealCaseToCaseData {
     public SscsCaseData transform(final AppealCase appealCase) {
         List<Parties> parties = appealCase.getParties();
 
-        Optional<Parties> appellantParty = (parties == null) ? Optional.empty() :
-            parties.stream().filter(f -> f.getRoleId() == APPELLANT_ROLE_ID).findFirst();
-
-        if (!appellantParty.isPresent()) {
-            log.error("An appeal, for caseId {}, exists without an appellant. This cannot be possible.",
-                appealCase.getAppealCaseId());
+        Optional<Parties> appointeeParty = (parties == null) ? Optional.empty() :
+            parties.stream().filter(p -> getPartiesGivenRoleId(p, APPOINTEE_ROLE_ID)).findFirst();
+        Optional<Parties> appellantParty;
+        if (!appointeeParty.isPresent()) {
+            appellantParty = (parties == null) ? Optional.empty() :
+                parties.stream().filter(p -> getPartiesGivenRoleId(p, APPELLANT_ROLE_ID)).findFirst();
+            if (!appellantParty.isPresent()) {
+                log.error("An appeal, for caseId {}, exists without an appellant", appealCase.getAppealCaseId());
+            }
+        } else {
+            appellantParty = appointeeParty;
+            appointeeParty = parties.stream().filter(p -> getPartiesGivenRoleId(p, APPELLANT_ROLE_ID)).findFirst();
         }
 
         Optional<Parties> representativeParty = (parties == null) ? Optional.empty() :
-            parties.stream().filter(f -> f.getRoleId() == REP_ROLE_ID).findFirst();
-
-        Optional<Parties> appointeeParty = (parties == null) ? Optional.empty() :
-            parties.stream().filter(f -> f.getRoleId() == APPOINTEE_ROLE_ID).findFirst();
+            parties.stream().filter(p -> getPartiesGivenRoleId(p, REP_ROLE_ID)).findFirst();
 
         BenefitType benefitType = caseDataBuilder.buildBenefitType(appealCase);
 
@@ -78,20 +93,24 @@ public class TransformAppealCaseToCaseData {
             .build();
     }
 
+    private boolean getPartiesGivenRoleId(Parties p, int roleId) {
+        return roleId == p.getRoleId();
+    }
+
     private Appeal getAppeal(final AppealCase appealCase,
                              final Optional<Parties> appellantParty,
                              final Optional<Parties> appointeeParty,
                              final Optional<Parties> representativeParty,
                              final BenefitType benefitType) {
         return Appeal.builder()
-                .appellant(appellantParty.map(
-                    (Parties party) -> appellant(party, appointeeParty, appealCase)).orElse(null)
-                )
-                .benefitType(benefitType)
-                .hearingOptions(appellantParty.map((Parties party) -> hearingOptions(party, appealCase)).orElse(null))
-                .hearingType(HearingType.getHearingTypeByTribunalsTypeId(appealCase.getTribunalTypeId()).getValue())
-                .rep(representativeParty.map(this::representative).orElse(null))
-                .build();
+            .appellant(appellantParty.map(
+                (Parties party) -> appellant(party, appointeeParty, appealCase)).orElse(null)
+            )
+            .benefitType(benefitType)
+            .hearingOptions(appellantParty.map((Parties party) -> hearingOptions(party, appealCase)).orElse(null))
+            .hearingType(HearingType.getHearingTypeByTribunalsTypeId(appealCase.getTribunalTypeId()).getValue())
+            .rep(representativeParty.map(this::representative).orElse(null))
+            .build();
     }
 
     private RegionalProcessingCenter regionalProcessingCenter(final Parties appellantParty,
