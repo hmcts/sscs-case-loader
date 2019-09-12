@@ -22,7 +22,7 @@ class UpdateCcdAppellantData {
 
         boolean appellantNameChanged = updateCcdAppellantName(gapsAppellant, existingCcdAppellant);
         boolean appellantContactChanged = updateCcdAppellantContact(gapsAppellant, existingCcdAppellant);
-        boolean appellantIdentityChanged = updateCcdAppellantIdentity(gapsAppellant, existingCcdAppellant);
+        boolean appellantIdentityChanged = updateCcdAppellantIdentity(gapsCaseData, existingCcdCaseData);
 
         boolean appointeeChanged = updateCcdAppointee(gapsAppellant, existingCcdAppellant);
 
@@ -67,7 +67,10 @@ class UpdateCcdAppellantData {
         return appellantNameChanged || appellantContactChanged || appellantIdentityChanged || appointeeChanged;
     }
 
-    private boolean updateCcdAppellantIdentity(Appellant gapsAppellant, Appellant existingCcdAppellant) {
+    private boolean updateCcdAppellantIdentity(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        Appellant existingCcdAppellant = existingCcdCaseData.getAppeal().getAppellant();
+        Appellant gapsAppellant = gapsCaseData.getAppeal().getAppellant();
+
         Identity gapsAppellantIdentity = gapsAppellant.getIdentity();
         Identity existingCcdAppellantIdentity = existingCcdAppellant.getIdentity();
 
@@ -81,6 +84,13 @@ class UpdateCcdAppellantData {
             existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
             return true;
         }
+
+        if (null != gapsAppellantIdentity && StringUtils.isNotBlank(gapsAppellantIdentity.getNino())
+                && !gapsAppellantIdentity.getNino().equals(existingCcdCaseData.getGeneratedNino())) {
+            existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
+            return true;
+        }
+
         return false;
 
     }
