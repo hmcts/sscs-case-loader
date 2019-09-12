@@ -77,6 +77,7 @@ public class RefDataFactory {
     }
 
     private void addBenefitType(RefDataRepository repo) {
+        repo.add(BAT_CODE_MAP, "001", BENEFIT_DESC, "UC");
         repo.add(BAT_CODE_MAP, "002", BENEFIT_DESC, "PIP");
         repo.add(BAT_CODE_MAP, "003", BENEFIT_DESC, "PIP");
         repo.add(BAT_CODE_MAP, "051", BENEFIT_DESC, "ESA");
