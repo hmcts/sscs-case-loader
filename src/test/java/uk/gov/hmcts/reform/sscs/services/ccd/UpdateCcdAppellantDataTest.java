@@ -55,6 +55,8 @@ public class UpdateCcdAppellantDataTest {
     private SscsCaseDetails existingCaseDetails;
     private final Name name = Name.builder().lastName("Potter").build();
     private final Name newName = Name.builder().lastName("Superman").build();
+    private final String normalisedNino = "AB554466B";
+    private final String deNormalisedNino = "AB 55 44 66 B";
 
     @Test
     public void givenAChangeInAppointee_shouldNotUnsubscribeAppointeeOrRep() {
@@ -326,10 +328,8 @@ public class UpdateCcdAppellantDataTest {
     }
 
     @Test
-    public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdGeneratedNinoAndReturnUpdateTrue() throws Exception {
-        String normalisedNino = "AB554466B";
-        String deNormalisedNino = "AB 55 44 66 B";
-
+    public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdGeneratedNinoAndReturnUpdateTrue()
+            throws Exception {
         Appellant appellant = Appellant.builder()
                 .name(Name.builder().build())
                 .contact(Contact.builder().build())
@@ -370,9 +370,6 @@ public class UpdateCcdAppellantDataTest {
 
     @Test
     public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdNinoAndReturnUpdateTrue() throws Exception {
-        String normalisedNino = "AB554466B";
-        String deNormalisedNino = "AB 55 44 66 B";
-
         Appellant appellant = Appellant.builder()
                 .name(Name.builder().build())
                 .contact(Contact.builder().build())
@@ -412,9 +409,8 @@ public class UpdateCcdAppellantDataTest {
     }
 
     @Test
-    public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdNinoAndGenratedNionThenReturnUpdateFalse() throws Exception {
-        String normalisedNino = "AB554466B";
-
+    public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdNinoAndGenratedNionThenReturnUpdateFalse()
+            throws Exception {
         Appellant appellant = Appellant.builder()
                 .name(Name.builder().build())
                 .contact(Contact.builder().build())
