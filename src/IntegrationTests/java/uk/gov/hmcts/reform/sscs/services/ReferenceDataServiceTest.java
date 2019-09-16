@@ -52,6 +52,7 @@ public class ReferenceDataServiceTest {
             .venAddressTelNo("")
             .districtId("201")
             .url("https://goo.gl/maps/kcmv9MvxoVE2")
+            .active("Yes")
             .build();
 
         assertEquals(venueDetails, referenceDataService.getVenueDetails("43"));
