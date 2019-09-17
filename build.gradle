@@ -269,7 +269,7 @@ dependencies {
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.7.0'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.5.1'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.8.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
