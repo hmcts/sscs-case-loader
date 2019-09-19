@@ -68,8 +68,10 @@ sscs.case.loader:
   url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
 
 logging.level:
-  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
-  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+  org.springframework.web: ${LOG_LEVEL_SPRING_WEB:DEBUG}
+  uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:DEBUG}
+  uk.gov.hmcts.reform.sscs.idam.IdamApiClient: DEBUG
+  uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi: DEBUG
 
 slot.name: ${SLOT:dev}
 
