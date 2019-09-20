@@ -3,9 +3,7 @@ package uk.gov.hmcts.reform.sscs.refdata;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.OFFICE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.TRIBUNAL_TYPE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
 
 import java.io.ByteArrayInputStream;
@@ -72,5 +70,9 @@ public class RefDataFactoryTest {
         assertThat(repo.find(OFFICE, "1959", OFFICE_ID), is("1959"));
         assertThat(repo.find(OFFICE, "1959", OFF_NAME), is("Liverpool"));
         assertThat(repo.find(TRIBUNAL_TYPE, "1", TBT_CODE), is("P"));
+        assertThat(repo.find(BAT_CODE_MAP, "001", BENEFIT_DESC), is("UC"));
+        assertThat(repo.find(BAT_CODE_MAP, "002", BENEFIT_DESC), is("PIP"));
+        assertThat(repo.find(BAT_CODE_MAP, "051", BENEFIT_DESC), is("ESA"));
+
     }
 }
