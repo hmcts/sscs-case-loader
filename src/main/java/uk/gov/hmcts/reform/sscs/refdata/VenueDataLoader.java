@@ -42,6 +42,7 @@ public class VenueDataLoader {
                         .districtId(line[10])
                         .url(line[11])
                         .active(line[12])
+                        .comments(line[13])
                         .build())
             );
         } catch (IOException e) {
