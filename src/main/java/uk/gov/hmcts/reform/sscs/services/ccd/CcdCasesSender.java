@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
@@ -68,16 +69,24 @@ public class CcdCasesSender {
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             caseData, existingCcdCaseData);
-        if (UpdateType.EVENT_UPDATE == updateType) {
+        if (isEventResponseReceivedAndCaseReadyToList(caseData)) {
+            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
+        } else if (UpdateType.EVENT_UPDATE == updateType) {
             updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, caseData.getLatestEventType());
         } else if (hasCaseRefBeenAdded(caseData, existingCcdCaseData)) {
             //Override event to appealReceived if new case ref has been added
-            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, APPEAL_RECEIVED.getType());
+            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, APPEAL_RECEIVED.getCcdType());
         } else if (UpdateType.DATA_UPDATE == updateType) {
-            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, "caseUpdated");
+            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
         } else {
             log.debug(logPrefix + " No case update needed for case reference: {}", caseData.getCaseReference());
         }
+    }
+
+    private boolean isEventResponseReceivedAndCaseReadyToList(SscsCaseData caseData) {
+        return caseData.getLatestEventType().equals(DWP_RESPOND.getCcdType())
+            && caseData.getCreatedInGapsFrom() != null
+            && caseData.getCreatedInGapsFrom().equals(READY_TO_LIST.getCcdType());
     }
 
     private void updateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
