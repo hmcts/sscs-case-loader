@@ -83,6 +83,7 @@ public class UpdateCcdRpcTest {
         assertFalse(
             classUnderTest.updateCcdRpc(
                 SscsCaseData.builder()
+                    .dwpRegionalCentre("BIRMINGHAM")
                     .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
                             .name("Some name")
@@ -90,6 +91,7 @@ public class UpdateCcdRpcTest {
                             .build())
                     .build(),
                 SscsCaseData.builder()
+                    .dwpRegionalCentre("BIRMINGHAM")
                     .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
                             .name("Some name")
@@ -101,7 +103,7 @@ public class UpdateCcdRpcTest {
     }
 
     @Test
-    public void returnTrueWhenCcdDataHasDifferentRpcName() {
+    public void returnTrueWhenCcdDataHasDifferentRpcAddressName() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
                 .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
@@ -143,5 +145,28 @@ public class UpdateCcdRpcTest {
         assertTrue(classUnderTest.updateCcdRpc(gapsCaseData, existingCcdCaseData));
         assertEquals(gapsCaseData.getRegionalProcessingCenter(), existingCcdCaseData.getRegionalProcessingCenter());
         assertEquals(existingCcdCaseData.getRegionalProcessingCenter().getName(), existingCcdCaseData.getRegion());
+    }
+
+    @Test
+    public void returnTrueWhenCcdDataHasDifferentRpcName() {
+        SscsCaseData gapsCaseData = SscsCaseData.builder()
+            .dwpRegionalCentre("SUTTON")
+            .regionalProcessingCenter(
+                RegionalProcessingCenter.builder()
+                    .name("Some name")
+                    .address1("1 Another Street")
+                    .build())
+            .build();
+
+        SscsCaseData existingCcdCaseData = SscsCaseData.builder()
+            .dwpRegionalCentre("BIRMINGHAM")
+            .regionalProcessingCenter(
+                RegionalProcessingCenter.builder()
+                    .name("Some name")
+                    .address1("1 Another Street")
+                    .build())
+            .build();
+
+        assertTrue(classUnderTest.updateCcdRpc(gapsCaseData, existingCcdCaseData));
     }
 }

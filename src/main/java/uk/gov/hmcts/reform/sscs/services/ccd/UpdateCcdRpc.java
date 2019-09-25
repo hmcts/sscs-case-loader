@@ -18,7 +18,9 @@ class UpdateCcdRpc {
 
         RegionalProcessingCenter gapsRpc = gapsCaseData.getRegionalProcessingCenter();
         RegionalProcessingCenter existingRpc = existingCcdCaseData.getRegionalProcessingCenter();
-        if (hasRpcChanged(gapsRpc, existingRpc)) {
+
+        if (hasDwpRpcNameChanged(gapsCaseData.getDwpRegionalCentre(), existingCcdCaseData.getDwpRegionalCentre())
+            || hasRpcAddressChanged(gapsRpc, existingRpc)) {
             existingCcdCaseData.setRegionalProcessingCenter(gapsRpc);
             existingCcdCaseData.setRegion(gapsRpc.getName());
             rpcUpdated = true;
@@ -27,8 +29,12 @@ class UpdateCcdRpc {
         return rpcUpdated;
     }
 
+    private static boolean hasDwpRpcNameChanged(String gapsDwpRegionalCentre, String existingDwpRegionalCentre) {
+        return existingDwpRegionalCentre == null
+            || !existingDwpRegionalCentre.equals(gapsDwpRegionalCentre);
+    }
 
-    private static boolean hasRpcChanged(RegionalProcessingCenter gapsRpc, RegionalProcessingCenter existingRpc) {
+    private static boolean hasRpcAddressChanged(RegionalProcessingCenter gapsRpc, RegionalProcessingCenter existingRpc) {
         return existingRpc == null
             || existingRpc.getName() == null
             || existingRpc.getAddress1() == null
