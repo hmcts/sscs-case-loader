@@ -198,9 +198,8 @@ public class CaseLoaderService {
             return;
         }
         if (null == sscsCaseDetails) {
-            log.info(logPrefixWithFile + " case with SC {} and ccdID {} does not exist, it will be created...",
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} does not exist, skipping case creation...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
-            ccdCasesSender.sendCreateCcdCases(caseData, idamTokens);
         } else {
             log.info(logPrefixWithFile + " case with SC {} and ccdID {} exists, it will be updated...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());

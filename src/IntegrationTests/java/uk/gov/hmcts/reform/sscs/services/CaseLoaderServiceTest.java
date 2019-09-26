@@ -9,7 +9,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.SENT_TO_DWP;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.VALID_APPEAL_CREATED;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,13 +26,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataFactory;
@@ -66,6 +64,8 @@ public class CaseLoaderServiceTest {
     private InputStream inputStream;
     @MockBean
     private SearchCcdCaseService searchCcdCaseService;
+    @MockBean
+    private UpdateCcdCaseService updateCcdCaseService;
     @MockBean
     private IdamService idamService;
 
@@ -181,9 +181,7 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void givenNumberFormatExIsThrownAndFeatureFlagOff_shouldCarryOnProcessingNextCasesAndNotSendCaseToDwp() {
-        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", false);
-
+    public void givenNumberFormatExceptionIsThrown_shouldCarryOnProcessingNextCasesAndSendCaseToDwp() {
         Appeal appeal = Appeal.builder()
             .benefitType(BenefitType.builder()
                 .code("PIP")
@@ -194,36 +192,16 @@ public class CaseLoaderServiceTest {
             .appeal(appeal)
             .build();
 
-        List<SscsCaseData> cases = Arrays.asList(caseDataWithInvalidScNumber, caseData);
-        given(transformService.transform(inputStream)).willReturn(cases);
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().type(SENT_TO_DWP.getCcdType()).build()).build());
 
-        given(idamService.getIdamTokens()).willReturn(IdamTokens.builder().build());
-
-        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseDataWithInvalidScNumber), any(IdamTokens.class)))
-            .willThrow(NumberFormatException.class);
-
-        caseLoaderService.process();
-
-        verify(ccdService).createCase(eq(caseData), eq(SYA_APPEAL_CREATED.getCcdType()), any(), any(),
-            any(IdamTokens.class));
-        verifyNoMoreInteractions(ccdService);
-    }
-
-    @Test
-    public void givenNumberFormatExceptionIsThrownAndFeatureFlagOn_shouldCarryOnProcessingNextCasesAndSendCaseToDwp() {
-        ReflectionTestUtils.setField(ccdCasesSender, "sendToDwpFeature", true);
-
-        Appeal appeal = Appeal.builder()
-            .benefitType(BenefitType.builder()
-                .code("PIP")
-                .build())
-            .build();
-        SscsCaseData caseDataWithInvalidScNumber = SscsCaseData.builder()
-            .caseReference("invalidCaseRef")
+        SscsCaseData updatedCaseData = SscsCaseData.builder()
+            .events(events)
+            .caseReference("caseRef")
             .appeal(appeal)
             .build();
 
-        List<SscsCaseData> cases = Arrays.asList(caseDataWithInvalidScNumber, caseData);
+        List<SscsCaseData> cases = Arrays.asList(caseDataWithInvalidScNumber, updatedCaseData);
         given(transformService.transform(inputStream)).willReturn(cases);
 
         given(idamService.getIdamTokens()).willReturn(IdamTokens.builder().build());
@@ -231,15 +209,12 @@ public class CaseLoaderServiceTest {
         given(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseDataWithInvalidScNumber), any(IdamTokens.class)))
             .willThrow(NumberFormatException.class);
 
-        given(ccdService.createCase(eq(caseData), eq(VALID_APPEAL_CREATED.getCcdType()), any(), any(),
-            any(IdamTokens.class)))
-            .willReturn(SscsCaseDetails.builder().id(1234L).build());
+        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
+            .willReturn(SscsCaseDetails.builder().data(caseData).id(123L).build());
 
         caseLoaderService.process();
 
-        verify(ccdService).createCase(eq(caseData), eq(VALID_APPEAL_CREATED.getCcdType()), any(), any(),
-            any(IdamTokens.class));
-        verify(ccdService).updateCase(eq(caseData), any(), eq(SENT_TO_DWP.getCcdType()), any(), any(),
+        verify(updateCcdCaseService).updateCase(eq(updatedCaseData), any(), eq(SENT_TO_DWP.getCcdType()), any(), any(),
             any(IdamTokens.class));
         verifyNoMoreInteractions(ccdService);
     }

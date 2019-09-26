@@ -192,16 +192,6 @@ public class ProcessCaseTest {
             eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))
         );
 
-        verify(coreCaseDataApi, times(1)).submitForCaseworker(
-            eq(USER_AUTH_WITH_TYPE),
-            eq(SERVER_AUTH),
-            eq(USER_ID),
-            eq("SSCS"),
-            eq("Benefit"),
-            eq(true),
-            any(CaseDataContent.class)
-        );
-
         // CCD ID case
 
         verify(coreCaseDataApi, times(1)).readForCaseWorker(
