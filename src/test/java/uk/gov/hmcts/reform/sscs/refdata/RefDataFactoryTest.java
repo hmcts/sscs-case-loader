@@ -70,7 +70,6 @@ public class RefDataFactoryTest {
         assertThat(repo.find(OFFICE, "1959", OFFICE_ID), is("1959"));
         assertThat(repo.find(OFFICE, "1959", OFF_NAME), is("Liverpool"));
         assertThat(repo.find(TRIBUNAL_TYPE, "1", TBT_CODE), is("P"));
-        assertThat(repo.find(BAT_CODE_MAP, "001", BENEFIT_DESC), is("UC"));
         assertThat(repo.find(BAT_CODE_MAP, "002", BENEFIT_DESC), is("PIP"));
         assertThat(repo.find(BAT_CODE_MAP, "051", BENEFIT_DESC), is("ESA"));
 
