@@ -18,4 +18,6 @@ public class VenueDetails {
     private String venAddressTelNo;
     private String districtId;
     private String url;
+    private String active;
+    private String comments;
 }
