@@ -79,6 +79,3 @@ number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TO
 
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
-
-feature:
-  send_to_dwp: ${SEND_TO_DWP_ENABLED:false}

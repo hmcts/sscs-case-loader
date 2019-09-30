@@ -107,8 +107,6 @@ module "sscs-case-loader" {
     IDAM_OAUTH2_CLIENT_SECRET = "${data.azurerm_key_vault_secret.idam-sscs-oauth2-client-secret.value}"
     IDAM_OAUTH2_REDIRECT_URL  = "${var.idam_redirect_url}"
 
-    SEND_TO_DWP_ENABLED    = "${var.send_to_dwp_enabled}"
-
     GAPS2_KEY_LOCATION = "${replace(data.azurerm_key_vault_secret.gaps2-service-sftp-private-key.value, "\\n", "\n")}"
     GAPS2_SFTP_HOST    = "${data.azurerm_key_vault_secret.sftp-host.value}"
     GAPS2_SFTP_PORT    = "${data.azurerm_key_vault_secret.sftp-port.value}"
