@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
@@ -30,47 +28,22 @@ public class CcdCasesSender {
     private static final String UPDATED_SSCS = "Updated SSCS";
     @Value("${rpc.venue.id.enabled}")
     private boolean lookupRpcByVenueId;
-    private final CcdService ccdService;
     private final UpdateCcdCaseService updateCcdCaseService;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
     private final UpdateCcdCaseData updateCcdCaseData;
     private String logPrefix = "";
 
-    @Value("${feature.send_to_dwp}")
-    private Boolean sendToDwpFeature;
-
     @Autowired
-    CcdCasesSender(CcdService ccdService,
-                   UpdateCcdCaseService updateCcdCaseService,
+    CcdCasesSender(UpdateCcdCaseService updateCcdCaseService,
                    RegionalProcessingCenterService regionalProcessingCenterService,
                    UpdateCcdCaseData updateCcdCaseData) {
         this.updateCcdCaseService = updateCcdCaseService;
         this.regionalProcessingCenterService = regionalProcessingCenterService;
-        this.ccdService = ccdService;
         this.updateCcdCaseData = updateCcdCaseData;
     }
 
     public void setLogPrefix(String logPrefix) {
         this.logPrefix = logPrefix;
-    }
-
-    public void sendCreateCcdCases(SscsCaseData caseData, IdamTokens idamTokens) {
-        if (!lookupRpcByVenueId) {
-            addRegionalProcessingCenter(caseData);
-        }
-
-        if (sendToDwpFeature) {
-            SscsCaseDetails caseDetails = ccdService.createCase(caseData, VALID_APPEAL_CREATED.getCcdType(),
-                "SSCS - new case created", "Created SSCS case from Case Loader with event validAppealCreated",
-                idamTokens);
-
-            ccdService.updateCase(caseData, caseDetails.getId(), SENT_TO_DWP.getCcdType(),"Sent to DWP",
-                "Sent to DWP event has been triggered from case loader", idamTokens);
-
-        } else {
-            ccdService.createCase(caseData, SYA_APPEAL_CREATED.getCcdType(), "SSCS - new case created",
-                "Created SSCS case from Case Loader with event appealCreated", idamTokens);
-        }
     }
 
     public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
