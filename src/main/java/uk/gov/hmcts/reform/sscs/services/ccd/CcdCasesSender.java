@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
-import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 
 import java.util.ArrayList;
 import java.util.List;
