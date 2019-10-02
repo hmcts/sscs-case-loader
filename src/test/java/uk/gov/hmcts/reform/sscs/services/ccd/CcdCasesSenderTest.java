@@ -172,8 +172,8 @@ public class CcdCasesSenderTest {
         when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
             .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        sscsCaseDetails.getData().setCreatedInGapsFrom(READY_TO_LIST.getCcdType());
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
-        caseData.setCreatedInGapsFrom(READY_TO_LIST.getCcdType());
         ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
 
         verify(updateCcdCaseService, times(1))
