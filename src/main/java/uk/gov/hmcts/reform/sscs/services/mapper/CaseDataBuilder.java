@@ -165,6 +165,10 @@ class CaseDataBuilder {
                         .build();
 
                     String appealTime = hearing.getAppealTime();
+                    String activeInActive = "Yes".equalsIgnoreCase(venueDetails.getActive()) ? "active" : "inactive";
+                    log.info("Hearing booked for case {} on {} at {} venue {}",
+                            appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
+                            venueDetails.getVenueId());
                     hearings = HearingDetails.builder()
                         .venue(venue)
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
