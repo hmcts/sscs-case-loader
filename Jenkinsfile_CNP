@@ -41,17 +41,11 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
-
 withPipeline(type, product, component) {
-  onPR {
-    log.info(env.CHANGE_TITLE)
-    env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
-    log.info(env.CHANGE_TITLE)
-  }
+  enableDockerBuild()
+  installCharts()
+  loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
-    loadVaultSecrets(secrets)
-    enableDockerBuild()
-    installCharts()
-    setVaultName('sscs')
-    enableAksStagingDeployment()
+  enableAksStagingDeployment()
 }
+
