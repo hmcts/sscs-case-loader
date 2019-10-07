@@ -1,0 +1,35 @@
+java:
+  image: 'https://hmctspublic.azurecr.io/sscs/case-loader:latest'
+  applicationPort: 8081
+  aadIdentityName: sscs
+  ingressHost: sscs-case-loader-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+  keyVaults:
+    sscs:
+      resourceGroup: sscs
+      secrets:
+      - idam-api
+      - idam-sscs-systemupdate-user
+      - idam-sscs-systemupdate-password
+      - sscs-s2s-secret
+      - s2s-micro
+      - idam-s2s-api
+      - ccd-api
+      - idam-redirect
+      - idam-sscs-oauth2-client-secret
+      - idam-oauth-user
+      - ccd-jid
+      - ccd-tid
+      - sftp-dir
+      - sftp-user
+      - sftp-host
+      - sftp-port
+      - gaps2-service-sftp-private-key
+  environment:
+    CORE_CASE_DATA_JURISDICTION_ID: SSCS
+    SSCS_CASE_LOADER_CRON_SCHEDULE: 0/10 * * * * ?
+    IGNORE_CASES_BEFORE_DATE: 1017-07-01
+    SSCS_CASE_LOADER_URL: http://localhost:8082
+    LOG_LEVEL_SPRING_WEB: INFO
+    LOG_LEVEL_SSCS: INFO
+    RPC_VENUE_ID_ENABLED: true
+    NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS: 100
