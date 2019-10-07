@@ -6,9 +6,11 @@ import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -159,11 +161,38 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent),
             sscsCaseDetails, idamTokens);
 
-        SscsCaseData caseData = buildCaseData(gapsEvent);
-        caseData.setRegion(getRegionalProcessingCenter().getName());
-        caseData.setRegionalProcessingCenter(getRegionalProcessingCenter());
         verify(updateCcdCaseService, times(1))
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(gapsEvent.getType()),
+                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+    }
+
+    @Test
+    public void givenCreatedInGapsFromFieldSetToReadyToListAndResponseReceivedEvent_thenTriggerCaseUpdatedEvent()
+        throws IOException {
+        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
+            .thenReturn(getRegionalProcessingCenter());
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        sscsCaseDetails.getData().setCreatedInGapsFrom(READY_TO_LIST.getCcdType());
+        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(CASE_UPDATED.getCcdType()),
+                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+    }
+
+    @Test
+    public void givenCreatedInGapsFromFieldSetToValidAppealAndResponseReceivedEvent_thenProcessResponseReceivedEvent()
+        throws IOException {
+        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
+            .thenReturn(getRegionalProcessingCenter());
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        caseData.setCreatedInGapsFrom(VALID_APPEAL.getCcdType());
+        ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(DWP_RESPOND.getCcdType()),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
