@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -58,5 +59,32 @@ public class TransformationServiceTest {
         is = getClass().getClassLoader().getResourceAsStream("delta_with_no_cases.xml");
         caseDataList = transformationService.transform(is);
         assertThat(caseDataList.size(), is(0));
+    }
+
+    @Test
+    public void givenAGapsCaseWithACreationDateBeforeThanTheIgnoreDate_shouldNotBeProcessed() {
+        is = getClass().getClassLoader().getResourceAsStream("process_ignore_case_test_delta.xml");
+        caseDataList = transformationService.transform(is);
+
+        assertThat(caseDataList.size(), is(0));
+        verifyZeroInteractions(transformAppealCaseToCaseData);
+    }
+
+    @Test
+    public void givenAGapsCaseWithACaseWithNoNino_shouldNotBeProcessed() {
+        is = getClass().getClassLoader().getResourceAsStream("process_case_with_no_nino_test_delta.xml");
+        caseDataList = transformationService.transform(is);
+
+        assertThat(caseDataList.size(), is(0));
+        verifyZeroInteractions(transformAppealCaseToCaseData);
+    }
+
+    @Test
+    public void givenAGapsCaseWithACaseWithRoboticNino_shouldNotBeProcessed() {
+        is = getClass().getClassLoader().getResourceAsStream("process_case_with_robotic_nino_test_delta.xml");
+        caseDataList = transformationService.transform(is);
+
+        assertThat(caseDataList.size(), is(0));
+        verifyZeroInteractions(transformAppealCaseToCaseData);
     }
 }

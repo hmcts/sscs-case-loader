@@ -2,17 +2,43 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
   <suppress>
     <notes><![CDATA[
-   file name: jackson-databind-2.9.3.jar
+   file name: spring-security-crypto-5.1.3.RELEASE.jar
    ]]></notes>
-    <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
-    <cve>CVE-2017-17485</cve>
+    <gav regex="true">^org\.springframework\.security:spring-.*:.*$</gav>
+    <cve>CVE-2018-1258</cve>
+    <cve>CVE-2019-3795</cve>
+    <cve>CVE-2011-2731</cve>
+    <cve>CVE-2011-2732</cve>
+    <cve>CVE-2012-5055</cve>
+    <cve>CVE-2016-4977</cve>
+    <cve>CVE-2018-1260</cve>
+    <cve>CVE-2018-15758</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: bcprov-jdk15on-1.56.jar
+   ]]></notes>
+    <gav regex="true">^org\.bouncycastle:bcprov-jdk15on:.*$</gav>
+    <cve>CVE-2017-13098</cve>
+    <cve>CVE-2018-1000180</cve>
+    <cve>CVE-2018-1000613</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
    file name: jackson-databind-2.9.3.jar
    ]]></notes>
     <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+    <cve>CVE-2017-17485</cve>
     <cve>CVE-2018-7489</cve>
+    <cve>CVE-2019-12384</cve>
+    <cve>CVE-2019-12814</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: gradle-pitest-plugin-1.4.0.jar
+   ]]></notes>
+    <sha1>29a4ed185eeca1d90b0f4160911029ec692e746f</sha1>
+    <cve>CVE-2019-11065</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
@@ -55,5 +81,72 @@
    ]]></notes>
     <gav regex="true">^com\.google\.guava:guava:.*$</gav>
     <cve>CVE-2018-10237</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jul-to-slf4j-1.7.25.jar
+   ]]></notes>
+    <gav regex="true">^org\.slf4j:jul-to-slf4j:.*$</gav>
+    <cve>CVE-2018-8088</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: slf4j-api-1.7.25.jar
+   ]]></notes>
+    <gav regex="true">^org\.slf4j:slf4j-api:.*$</gav>
+    <cve>CVE-2018-8088</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+            only relates to ssl which we don't do at the java app level
+            ]]></notes>
+    <gav regex="true">.*</gav>
+    <cve>CVE-2014-3488</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+            only relates to ssl which we don't do at the java app level
+            ]]></notes>
+    <gav regex="true">.*</gav>
+    <cve>CVE-2015-2156</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-security-crypto-5.0.12.RELEASE.jar
+   ]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-crypto:.*$</gav>
+    <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[No fix is available]]></notes>
+    <gav regex="true">^org\.springframework\.security:spring-security-rsa:1\.0\.7\.RELEASE$</gav>
+    <cve>CVE-2011-2731</cve>
+    <cve>CVE-2011-2732</cve>
+    <cve>CVE-2012-5055</cve>
+    <cve>CVE-2016-4977</cve>
+    <cve>CVE-2018-1260</cve>
+    <cve>CVE-2018-15758</cve>
+  </suppress>
+  <suppress>
+    <cpe>cpe:2.3:a:checkstyle:checkstyle:6.19</cpe>
+    <cve>CVE-2019-9658</cve>
+  </suppress>
+  <suppress>
+    <cpe>cpe:2.3:a:fasterxml:jackson:2.9.8</cpe>
+    <cve>CVE-2019-12086</cve>
+  </suppress>
+  <suppress>
+    <cpe>cpe:2.3:a:apache:tomcat-embed-core:9.0.17</cpe>
+    <cve>CVE-2019-10072</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+            file name: jruby-stdlib-9.2.7.0.jar: jquery.js
+            JRuby ships a pretty old version of jquery in some dependency for Rdoc.
+            We don't generate any rdoc, so we should be fine.
+        ]]>
+    </notes>
+    <cve>CVE-2015-9251</cve>
+    <cve>CVE-2019-11358</cve>
   </suppress>
 </suppressions>

@@ -1,4 +1,6 @@
-FROM gradle:4.10.2-jdk8-slim as builder
+ARG APP_INSIGHTS_AGENT_VERSION=2.3.1
+
+FROM hmctspublic.azurecr.io/base/java:openjdk-8-distroless-1.2
 
 WORKDIR /app
 COPY . .
@@ -6,9 +8,8 @@ COPY . .
 USER root
 RUN gradle build --no-daemon --console plain
 
-FROM openjdk:8-jre-alpine
-
-COPY --from=builder /app/build/libs/sscs-case-loader.jar /opt/app/
+COPY lib/AI-Agent.xml /opt/app/
+COPY --from=builder /home/gradle/src/build/libs/sscs-case-loader.jar /opt/app/
 
 WORKDIR /opt/app
 

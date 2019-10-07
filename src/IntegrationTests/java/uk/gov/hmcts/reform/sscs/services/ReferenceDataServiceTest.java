@@ -40,24 +40,23 @@ public class ReferenceDataServiceTest {
     @Test
     public void givenVenueIdShouldReturnVenueDetails() {
         VenueDetails venueDetails = VenueDetails.builder()
-            .venueId("2")
-            .threeDigitReference("SC028")
+            .venueId("43")
+            .threeDigitReference("SC043")
             .regionalProcessingCentre("SSCS Birmingham")
-            .venName("The Hilton Hotel")
-            .venAddressLine1("Elton Way")
-            .venAddressLine2("")
-            .venAddressTown("Watford")
-            .venAddressCounty("Hertfordshire")
-            .venAddressPostcode("WD25 8HA")
+            .venName("Milton Keynes Magistrates Court")
+            .venAddressLine1("301 Silbury Boulevard")
+            .venAddressLine2("Witan Gate East")
+            .venAddressTown("Central Milton Keynes")
+            .venAddressCounty("")
+            .venAddressPostcode("MK9 2AJ")
             .venAddressTelNo("")
-            .districtId("401")
-            .url("https://www.google.com/maps/place/Hilton+Watford/@51.6619157,-0.3606389,"
-                + "16.22z/data=!4m13!1m7!3m6!1s0x48761540757265d5:0xcef8473b5922e8fd!2sElton+Way,+Watford+WD25+8HH,"
-                + "+UK!3b1!8m2!3d51.6618537!4d-0.3565498!3m4!1s0x4876044da1f6b35b:0x6f27a262bd6fd675!8m2!3d51.66515!4d"
-                + "-0.3607142")
+            .districtId("201")
+            .url("https://goo.gl/maps/kcmv9MvxoVE2")
+            .active("Yes")
+            .comments("")
             .build();
 
-        assertEquals(venueDetails, referenceDataService.getVenueDetails("2"));
+        assertEquals(venueDetails, referenceDataService.getVenueDetails("43"));
 
     }
 

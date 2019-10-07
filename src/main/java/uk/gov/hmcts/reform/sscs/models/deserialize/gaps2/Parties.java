@@ -42,4 +42,12 @@ public class Parties {
         this.dob = dob;
         this.roleId = roleId;
     }
+
+    public String getMobile() {
+        return phone1;
+    }
+
+    public String getLandline() {
+        return phone2;
+    }
 }

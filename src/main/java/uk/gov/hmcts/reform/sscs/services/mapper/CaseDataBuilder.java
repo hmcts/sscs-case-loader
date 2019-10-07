@@ -4,8 +4,10 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
+import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
 @Service
 @Slf4j
@@ -87,8 +90,8 @@ class CaseDataBuilder {
     Contact buildContact(Parties party) {
         return Contact.builder()
             .email(party.getEmail())
-            .phone(party.getPhone1())
-            .mobile(party.getPhone2())
+            .phone(party.getLandline())
+            .mobile(party.getMobile())
             .build();
     }
 
@@ -172,7 +175,12 @@ class CaseDataBuilder {
 
                     hearingsList.add(uk.gov.hmcts.reform.sscs.ccd.domain.Hearing.builder().value(hearings).build());
                 } else {
-                    log.info("*** case-loader *** venue missing: " + appealCase.getHearing().get(0).getVenueId());
+                    log.info("*** case-loader *** venue missing: {} for CCD ID {} / SC number {} "
+                                    + "and hearing session date {}",
+                            appealCase.getHearing().get(0).getVenueId(),
+                            appealCase.getAppealCaseId(),
+                            appealCase.getAppealCaseRefNum(),
+                            hearing.getSessionDate());
                     return Collections.emptyList();
                 }
             }
@@ -227,30 +235,61 @@ class CaseDataBuilder {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
     }
 
-    Subscriptions buildSubscriptions() {
-        Subscription appellantSubscription = Subscription.builder()
-            .email("")
-            .mobile("")
-            .reason("")
-            .subscribeEmail("")
-            .subscribeSms("")
-            .tya(generateAppealNumber())
-            .build();
-        Subscription supporterSubscription = Subscription.builder()
-            .email("")
-            .mobile("")
-            .reason("")
-            .subscribeEmail("")
-            .subscribeSms("")
-            .tya("")
-            .build();
+    Subscriptions buildSubscriptions(final Optional<Parties> appellantParty,
+                                     final Optional<Parties> representativeParty,
+                                     final Optional<Parties> appointeeParty,
+                                     String appealCaseRefNum) {
+        Subscription appellantSubscription = buildSubscriptionWithDefaults(
+            appellantParty,
+            appealCaseRefNum,
+            generateAppealNumber()
+        );
+
+        Subscription representativeSubscription = buildSubscriptionWithDefaults(
+            representativeParty,
+            appealCaseRefNum,
+            representativeParty.isPresent() ? generateAppealNumber() : StringUtils.EMPTY
+        );
+
+        Subscription appointeeSubscription = buildSubscriptionWithDefaults(
+            appointeeParty,
+            appealCaseRefNum,
+            appointeeParty.isPresent() ? generateAppealNumber() : StringUtils.EMPTY
+        );
+
         return Subscriptions.builder()
             .appellantSubscription(appellantSubscription)
-            .supporterSubscription(supporterSubscription)
+            .representativeSubscription(representativeSubscription)
+            .appointeeSubscription(appointeeSubscription)
             .build();
     }
 
-    private String generateAppealNumber() {
+    protected static Subscription buildSubscriptionWithDefaults(Optional<Parties> party, String appealCaseRefNum,
+                                                                String appealNumber) {
+        return Subscription.builder()
+            .email(party.map(Parties::getEmail).orElse(StringUtils.EMPTY))
+            .mobile(validateMobile(party, appealCaseRefNum))
+            .reason(StringUtils.EMPTY)
+            .subscribeEmail(NO)
+            .subscribeSms(NO)
+            .tya(appealNumber)
+            .build();
+    }
+
+    private static String validateMobile(Optional<Parties> party, String appealCaseRefNum) {
+        if (party.isPresent() && StringUtils.isNotBlank(party.get().getMobile())) {
+            String mobileNumber = party.get().getMobile();
+            if (UkMobile.validate(mobileNumber)) {
+                return mobileNumber;
+            } else {
+                log.info("Invalid Uk mobile no: {} In party Contact Details for the case reference: {}",
+                    mobileNumber, appealCaseRefNum);
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private static String generateAppealNumber() {
         SecureRandom random = new SecureRandom();
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
             .withinRange('0', 'z')

@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class SearchCcdServiceByCaseIdRetryAndRecoverTest {
 
     private static final String CASE_ID = "1111222233334444";

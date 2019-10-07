@@ -31,7 +31,9 @@ public class RefDataFactory {
 
         RefDataRepository repo = new RefDataRepository();
 
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+        xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(refDataInputStream);
 
         String tagContent = null;
@@ -75,6 +77,7 @@ public class RefDataFactory {
     }
 
     private void addBenefitType(RefDataRepository repo) {
+        repo.add(BAT_CODE_MAP, "001", BENEFIT_DESC, "UC");
         repo.add(BAT_CODE_MAP, "002", BENEFIT_DESC, "PIP");
         repo.add(BAT_CODE_MAP, "003", BENEFIT_DESC, "PIP");
         repo.add(BAT_CODE_MAP, "051", BENEFIT_DESC, "ESA");

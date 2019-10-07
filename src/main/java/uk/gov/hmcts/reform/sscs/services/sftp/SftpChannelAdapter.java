@@ -103,7 +103,9 @@ public class SftpChannelAdapter {
         } catch (SftpException e) {
             throw new SftpCustomException("Failed reading incoming directory", e);
         }
-        return ls.stream().map(e -> new Gaps2File(e.getFilename())).sorted().collect(Collectors.toList());
+        return ls.stream().map(e -> new Gaps2File(e.getFilename(), e.getAttrs().getSize()))
+            .sorted()
+            .collect(Collectors.toList());
     }
 
     public InputStream getInputStream(String fileName) {

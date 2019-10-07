@@ -1,39 +1,35 @@
 #!groovy
+@Library("Infrastructure") _
+
 properties([
   [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/sscs-case-loader.git'],
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
-@Library("Infrastructure")
-
 def type = "java"
 def product = "sscs"
 def component = "case-loader"
 
-List<LinkedHashMap<String, Object>> secrets = [
-  secret('sftp-host', 'GAPS2_SFTP_HOST'),
-  secret('sftp-port', 'GAPS2_SFTP_PORT'),
-  secret('gaps2-service-sftp-private-key', 'GAPS2_KEY_LOCATION'),
-  secret('sftp-user', 'GAPS2_SFTP_USER'),
-  secret('sftp-dir', 'GAPS2_SFTP_DIR'),
-  secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
-  secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
-  secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
-  secret('idam-api', 'IDAM_URL'),
-  secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
-  secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
-  secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
-  secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
-  secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
-
-  secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
-  secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-  secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
-
-  // Used by Kubernetes
-  secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
-  secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
-  secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
+def secrets = [
+  'sscs-${env}': [
+    secret('sftp-host', 'GAPS2_SFTP_HOST'),
+    secret('sftp-port', 'GAPS2_SFTP_PORT'),
+    secret('gaps2-service-sftp-private-key', 'GAPS2_KEY_LOCATION'),
+    secret('sftp-user', 'GAPS2_SFTP_USER'),
+    secret('sftp-dir', 'GAPS2_SFTP_DIR'),
+    secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
+    secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
+    secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
+    secret('idam-api', 'IDAM_URL'),
+    secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
+    secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+    secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
+    secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
+    secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
+    secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
+    secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
+  ]
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -46,10 +42,12 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 
-env.TF_LOG = 'DEBUG'
-env.TEST_VAR = 'TRUE'
-
 withPipeline(type, product, component) {
+  onPR {
+    log.info(env.CHANGE_TITLE)
+    env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
+    log.info(env.CHANGE_TITLE)
+  }
   enableSlackNotifications('#sscs-tech')
     loadVaultSecrets(secrets)
     enableDockerBuild()

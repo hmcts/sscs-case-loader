@@ -3,37 +3,27 @@ package uk.gov.hmcts.reform.sscs.services.gaps2.files;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import lombok.Getter;
+import lombok.ToString;
 
+@ToString
+@Getter
 public class Gaps2File implements Comparable<Gaps2File> {
 
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
     private final String name;
     private final LocalDateTime date;
+    private final long size;
 
-    public Gaps2File(String name) {
+    public Gaps2File(String name, long size) {
         this.name = name;
         this.date = LocalDateTime.from(format.parse(name, new ParsePosition(name.lastIndexOf('_') + 1)));
-    }
-
-    public String getName() {
-        return name;
+        this.size = size;
     }
 
     public boolean isDelta() {
         return name.contains("Delta");
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    @Override
-    public String toString() {
-        return "Gaps2File{"
-            + "name='" + name + '\''
-            + ", date=" + date
-            + '}';
     }
 
     @Override

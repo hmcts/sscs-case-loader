@@ -99,3 +99,12 @@ variable "raw_product" {
 variable "sftp_key_name" {
   default = "gaps2-service-sftp-private-key"
 }
+
+variable "number_processed_cases_to_refresh_tokens" {
+  default = "4000"
+}
+
+variable "appinsights_instrumentation_key" {
+  description = "Instrumentation key of the App Insights instance this webapp should use. Module will create own App Insights resource if this is not provided"
+  default     = ""
+}

@@ -3,12 +3,13 @@ plugins {
   id 'checkstyle'
   id 'pmd'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.0.6.RELEASE'
-  id 'org.springframework.boot' version '2.0.4.RELEASE'
-  id 'org.owasp.dependencycheck' version '3.2.1'
-  id 'com.github.ben-manes.versions' version '0.17.0'
-  id 'net.ltgt.apt' version '0.14'
-  id 'org.sonarqube' version '2.6.2'
+  id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+  id 'org.springframework.boot' version '2.1.5.RELEASE'
+  id 'org.owasp.dependencycheck' version '5.2.1'
+  id 'com.github.ben-manes.versions' version '0.21.0'
+  id 'net.ltgt.apt' version '0.21'
+  id 'org.sonarqube' version '2.7.1'
+  id "com.gorylenko.gradle-git-properties" version "2.0.0"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -29,8 +30,6 @@ compileTestJava {
 targetCompatibility = 1.8
 
 mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp'
-
-check.dependsOn dependencyCheckAnalyze
 
 sourceSets {
   integrationTest {
@@ -79,13 +78,13 @@ task functional(type: Test) {
 
 checkstyle {
   maxWarnings = 0
-  toolVersion = '8.8'
+  toolVersion = '8.18'
   // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
   configDir = new File(rootDir, 'config/checkstyle')
 }
 
 pmd {
-  toolVersion = "5.8.1"
+  toolVersion = "6.5.0"
   ignoreFailures = true
   sourceSets = [
     sourceSets.main,
@@ -172,7 +171,7 @@ sonarqube {
     property "sonar.projectKey", "SSCSCL"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
-    property "sonar.exclusions", "**/sscs/models/**, **/sscs/CaseLoaderApp.java"
+    property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java"
 
   }
 }
@@ -185,11 +184,7 @@ configurations {
   e2eCompile.extendsFrom(testCompile)
 }
 
-bootRun {
-  systemProperty 'server.port', '8082'
-}
-
-def springBootVersion = '2.0.5.RELEASE'
+def springBootVersion = '2.1.5.RELEASE'
 
 dependencyManagement {
   imports {
@@ -199,14 +194,16 @@ dependencyManagement {
 
 def versions = [
   logback         : '1.2.3',
-  reformLogging   : '3.0.4',
+  reformLogging   : '5.0.1',
   springBoot      : springBootVersion,
   springHystrix   : '1.4.2.RELEASE',
   springfoxSwagger: '2.8.0'
 ]
 
+ext["rest-assured.version"] = '4.0.0'
+
 ext {
-  springCloudVersion = 'Finchley.SR1'
+  springCloudVersion = 'Greenwich.SR1'
 }
 
 dependencyManagement {
@@ -214,16 +211,22 @@ dependencyManagement {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
   }
   dependencies {
+    dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '27.0-jre') {
+    dependencySet(group: 'com.google.guava', version: '27.1-jre') {
       entry 'guava'
+    }
+    // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.19') {
+      entry 'tomcat-embed-core'
+      entry 'tomcat-embed-el'
+      entry 'tomcat-embed-websocket'
     }
   }
 }
 
 dependencies {
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
@@ -238,31 +241,39 @@ dependencies {
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
 
-  compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'
+  compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.4.RELEASE'
 
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '0.0.120'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.0.74'
 
-  compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
+  compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.62'
 
   compile group: 'org.json', name: 'json', version: '20180813'
 
   compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
   compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8'
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
-  compile group: 'io.rest-assured', name: 'rest-assured', version: '3.1.1'
-  compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '10.0.1'
 
-  compileOnly 'org.projectlombok:lombok:1.18.2'
-  apt "org.projectlombok:lombok:1.16.20"
+  compile group: 'com.microsoft.azure', name: 'applicationinsights-logging-logback', version: '2.4.1'
+  compile group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.4.1'
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '1.31.1'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '1.31.1'
+  compileOnly 'org.projectlombok:lombok:1.18.8'
+  annotationProcessor "org.projectlombok:lombok:1.18.6"
+  testCompileOnly 'org.projectlombok:lombok:1.18.8'
+  testAnnotationProcessor "org.projectlombok:lombok:1.18.8"
+  e2eCompile 'org.projectlombok:lombok:1.18.8'
+  e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
+
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.7.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.5.1'
+  testCompile group: 'io.rest-assured', name: 'rest-assured'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 

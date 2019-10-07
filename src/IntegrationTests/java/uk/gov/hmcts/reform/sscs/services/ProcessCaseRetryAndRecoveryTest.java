@@ -46,13 +46,12 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("development")
+@ActiveProfiles("test")
 public class ProcessCaseRetryAndRecoveryTest {
 
     private static final String USER_AUTH = "oauth2token";
     private static final String USER_AUTH_WITH_TYPE = "Bearer " + USER_AUTH;
     private static final String USER_AUTH2 = "oauth2token2";
-    private static final String USER_AUTH2_WITH_TYPE = "Bearer " + USER_AUTH2;
     private static final String USER_ID = "16";
     private static final String SERVER_AUTH = "s2s token";
     private static final String SERVER_AUTH2 = "s2s token2";
@@ -98,7 +97,7 @@ public class ProcessCaseRetryAndRecoveryTest {
         when(channelAdapter.listFailed()).thenReturn(newArrayList());
         when(channelAdapter.listProcessed()).thenReturn(newArrayList());
         when(channelAdapter.listIncoming())
-            .thenReturn(newArrayList(new Gaps2File(refFilename), new Gaps2File(deltaFilename)));
+            .thenReturn(newArrayList(new Gaps2File(refFilename, 10L), new Gaps2File(deltaFilename, 10L)));
 
         when(channelAdapter.getInputStream(refFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("SSCS_Extract_Reference_2017-05-24-16-14-19.xml"));
@@ -106,12 +105,12 @@ public class ProcessCaseRetryAndRecoveryTest {
         when(channelAdapter.getInputStream(deltaFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
 
-        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("url", "code", ""));
 
         given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
-        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
@@ -143,14 +142,6 @@ public class ProcessCaseRetryAndRecoveryTest {
             anyString(),
             anyString(),
             any());
-
-        verify(coreCaseDataApi, times(1)).searchForCaseworker(
-            eq(USER_AUTH2_WITH_TYPE),
-            eq(SERVER_AUTH2),
-            eq(USER_ID),
-            anyString(),
-            anyString(),
-            any());
     }
 
     private void mockCcdApi() {
@@ -176,16 +167,16 @@ public class ProcessCaseRetryAndRecoveryTest {
     }
 
     private void mockIdamApi() {
-        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString()))
+        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("url", "code", ""));
 
         when(authTokenGenerator.generate())
             .thenReturn(SERVER_AUTH)
+            .thenReturn(SERVER_AUTH)
             .thenReturn(SERVER_AUTH2);
 
-        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(new Authorize("", "", USER_AUTH))
-            .thenReturn(new Authorize("", "", USER_AUTH2));
+        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(idamApiClient.getUserDetails(anyString())).thenReturn(new UserDetails("16"));
     }
