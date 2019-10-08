@@ -1,10 +1,10 @@
 #!groovy
-@Library("Infrastructure") _
-
 properties([
   [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/sscs-case-loader.git'],
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
+
+@Library("Infrastructure")
 
 def type = "java"
 def product = "sscs"
