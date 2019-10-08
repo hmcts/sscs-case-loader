@@ -172,7 +172,6 @@ sonarqube {
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java"
-
   }
 }
 
@@ -233,10 +232,14 @@ dependencies {
   compile 'org.springframework.batch:spring-batch-test'
   compile 'com.h2database:h2'
 
+  compile 'org.unix4j:unix4j-command:0.5'
+
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   compile group: 'org.springframework', name: 'spring-context-support'
+
+  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.0.4'
 
   compile group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
   compile group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
