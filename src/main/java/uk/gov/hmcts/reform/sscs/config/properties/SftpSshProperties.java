@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
-import org.unix4j.Unix4j;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 
 @Configuration
@@ -61,7 +60,6 @@ public class SftpSshProperties {
     }
 
     public void setKeyLocation(String keyLocation) {
-
         this.keyLocation = keyLocation;
     }
 
