@@ -58,7 +58,7 @@ public class SftpSshProperties {
     }
 
     public void setKeyLocation(String keyLocation) {
-        this.keyLocation = keyLocation;
+        this.keyLocation = keyLocation.replace("\\n", "\n");
     }
 
     public String getProcessedFile(Gaps2File file) {
