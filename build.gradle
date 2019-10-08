@@ -227,6 +227,12 @@ dependencyManagement {
 }
 
 dependencies {
+
+  compile 'org.springframework.boot:spring-boot-starter-batch'
+  compile 'org.springframework.boot:spring-boot-starter-test'
+  compile 'org.springframework.batch:spring-batch-test'
+  compile 'com.h2database:h2'
+
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
@@ -235,14 +241,10 @@ dependencies {
   compile group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
   compile group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
 
-  compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
-
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
 
   compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.4.RELEASE'
-
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
@@ -280,6 +282,7 @@ dependencies {
   testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
   runtime "org.springframework.boot:spring-boot-properties-migrator"
+
 }
 
 bootJar {
