@@ -58,22 +58,22 @@ task integration(type: Test) {
   setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
-task smoke(type: Test) {
-  group = 'verification'
-  description = 'Executes non-destructive smoke tests against a running case loader'
+task functionalPreDeploy(type: Test) {
+  group = 'Functional Tests'
+  description = 'Place delta files on the sftp server ready to be consumed when AKS job is created'
   setTestClassesDirs(sourceSets.e2e.output.classesDirs)
   setClasspath(sourceSets.e2e.runtimeClasspath)
-  include "uk/gov/hmcts/reform/sscs/smoke/**"
-  exclude "uk/gov/hmcts/reform/sscs/functional/**"
+  include "uk/gov/hmcts/reform/sscs/functional/predeploy/**"
+  exclude "uk/gov/hmcts/reform/sscs/functional/postdeploy/**"
 }
 
-task functional(type: Test) {
+task functionalPostDeploy(type: Test) {
   group = 'Functional Tests'
-  description = 'Executes non-destructive functional tests in AAT against a running case loader'
+  description = 'Verifies that files from functionPreDeploy step were processed following job creation in AKS'
   setTestClassesDirs(sourceSets.e2e.output.classesDirs)
   setClasspath(sourceSets.e2e.runtimeClasspath)
-  include "uk/gov/hmcts/reform/sscs/functional/**"
-  exclude "uk/gov/hmcts/reform/sscs/smoke/**"
+  include "uk/gov/hmcts/reform/sscs/functional/postdeploy/**"
+  exclude "uk/gov/hmcts/reform/sscs/functional/predeploy/**"
 }
 
 checkstyle {

@@ -1,30 +1,21 @@
-package uk.gov.hmcts.reform.sscs.functional;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+package uk.gov.hmcts.reform.sscs.functional.postdeploy;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-import io.restassured.RestAssured;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -41,10 +32,7 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
 @SpringBootTest
 @Slf4j
-public class ProcessCaseFileTest {
-
-    @Value("${test.url}")
-    private String testUrl;
+public class ProcessCaseFileSetup {
 
     private static final String outputdir = "src/test/resources/updates";
 
@@ -131,29 +119,4 @@ public class ProcessCaseFileTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void processCaseFileAndVerifyCcd() {
-
-        RestAssured.baseURI = testUrl;
-
-        RestAssured.useRelaxedHTTPSValidation();
-        RestAssured
-            .given()
-            .when()
-            .get("/functional-test")
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .and()
-            .extract().body().asString();
-
-        SscsCaseDetails updatedCcdCase = ccdService.getByCaseId(Long.parseLong(ccdCaseId), idamTokens);
-        assertNotNull(updatedCcdCase);
-
-        SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();
-
-        assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
-        assertEquals(3, updatedCcdCaseData.getEvents().size());
-        assertEquals("appealCreated", updatedCcdCase.getState());
-    }
 }
