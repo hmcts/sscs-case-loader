@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.functional.postdeploy;
+package uk.gov.hmcts.reform.sscs.functional.predeploy;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,19 +47,26 @@ public class ProcessCaseFileSetup {
     private String ccdCaseId;
     private IdamTokens idamTokens;
 
-    @Before
+    @Test
     public void setup() throws ParserConfigurationException, TransformerException, IOException, SftpException {
 
+        log.info("Getting oAuth2 token...");
         String oauth2Token = idamService.getIdamOauth2Token();
+
+        log.info("Building IDAM tokens...");
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(oauth2Token)
             .serviceAuthorization(idamService.generateServiceAuthorization())
             .userId(idamService.getUserId(oauth2Token))
             .build();
 
+        log.info("Building minimal case data...");
         SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
+
+        log.info("Creating CCD case...");
         SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
+
         ccdCaseId = String.valueOf(caseDetails.getId());
         log.info("Created test ccd case with id {}", ccdCaseId);
 
@@ -71,10 +79,6 @@ public class ProcessCaseFileSetup {
         writeXmlToSftp(ccdCasesXml);
         GenerateXml.generateXmlForAppeals();
         copy(outputdir);
-    }
-
-    @After
-    public void teardown() throws IOException, ParserConfigurationException {
     }
 
     private void cleanSftpFiles() throws SftpException {
