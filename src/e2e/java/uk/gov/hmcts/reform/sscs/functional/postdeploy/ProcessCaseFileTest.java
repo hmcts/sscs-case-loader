@@ -18,6 +18,11 @@ import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.util.Scanner;
+
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
 @SpringBootTest
@@ -36,7 +41,12 @@ public class ProcessCaseFileTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void processCaseFileAndVerifyCcd() {
+    public void processCaseFileAndVerifyCcd() throws FileNotFoundException {
+
+        String tmpFileName = System.getProperty("java.io.tmpdir") + "/ccdCaseId.tmp";
+        String s = new Scanner(new File(tmpFileName)).useDelimiter("\\Z").next();
+
+        ccdCaseId = s.trim();
 
         caseLoaderService.process();
 

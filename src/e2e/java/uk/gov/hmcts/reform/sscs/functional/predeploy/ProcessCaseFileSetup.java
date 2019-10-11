@@ -5,6 +5,8 @@ import com.jcraft.jsch.SftpException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -69,6 +71,10 @@ public class ProcessCaseFileSetup {
 
         ccdCaseId = String.valueOf(caseDetails.getId());
         log.info("Created test ccd case with id {}", ccdCaseId);
+
+        String tmpFileName = System.getProperty("java.io.tmpdir") + "/ccdCaseId.tmp";
+
+        Files.write(Paths.get(tmpFileName), ccdCaseId.getBytes());
 
         String path = Objects.requireNonNull(getClass().getClassLoader()
             .getResource("SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml")).getFile();
