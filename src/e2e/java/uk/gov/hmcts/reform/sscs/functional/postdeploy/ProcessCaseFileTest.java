@@ -33,11 +33,8 @@ public class ProcessCaseFileTest {
     private SftpChannelAdapter sftpChannelAdapter;
     @Autowired
     private CcdService ccdService;
-    @Autowired
-    private CaseLoaderService caseLoaderService;
 
     private String ccdCaseId;
-    private IdamTokens idamTokens;
 
     @SuppressWarnings("unchecked")
     @Test
@@ -47,8 +44,6 @@ public class ProcessCaseFileTest {
         String s = new Scanner(new File(tmpFileName)).useDelimiter("\\Z").next();
 
         ccdCaseId = s.trim();
-
-        caseLoaderService.process();
 
         SscsCaseDetails updatedCcdCase = ccdService.getByCaseId(Long.parseLong(ccdCaseId), idamTokens);
         assertNotNull(updatedCcdCase);
