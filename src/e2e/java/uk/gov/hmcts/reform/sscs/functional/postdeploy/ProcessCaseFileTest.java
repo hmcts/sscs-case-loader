@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
@@ -30,15 +31,26 @@ import java.util.Scanner;
 public class ProcessCaseFileTest {
 
     @Autowired
-    private SftpChannelAdapter sftpChannelAdapter;
-    @Autowired
     private CcdService ccdService;
+    @Autowired
+    private IdamService idamService;
 
     private String ccdCaseId;
+    private IdamTokens idamTokens;
 
     @SuppressWarnings("unchecked")
     @Test
     public void processCaseFileAndVerifyCcd() throws FileNotFoundException {
+
+        log.info("Getting oAuth2 token...");
+        String oauth2Token = idamService.getIdamOauth2Token();
+
+        log.info("Building IDAM tokens...");
+        idamTokens = IdamTokens.builder()
+            .idamOauth2Token(oauth2Token)
+            .serviceAuthorization(idamService.generateServiceAuthorization())
+            .userId(idamService.getUserId(oauth2Token))
+            .build();
 
         String tmpFileName = System.getProperty("java.io.tmpdir") + "/ccdCaseId.tmp";
         String s = new Scanner(new File(tmpFileName)).useDelimiter("\\Z").next();
