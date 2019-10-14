@@ -49,12 +49,12 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   nonServiceApp()
 
-  before('aksdeploy') {
+  before('akschartsinstall') {
     echo "Setting up data for functional tests"
     sh './gradlew functionalPreDeploy'
   }
 
-  after('aksdeploy') {
+  after('akschartsinstall') {
     echo "Verifying that functional test data was processed correctly"
     sh './gradlew functionalPostDeploy'
   }
