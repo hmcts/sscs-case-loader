@@ -50,10 +50,12 @@ withPipeline(type, product, component) {
   nonServiceApp()
 
   before('aksdeploy') {
+    echo "Setting up data for functional tests"
     sh './gradlew functionalPreDeploy'
   }
 
   after('aksdeploy') {
+    echo "Verifying that functional test data was processed correctly"
     sh './gradlew functionalPostDeploy'
   }
 }
