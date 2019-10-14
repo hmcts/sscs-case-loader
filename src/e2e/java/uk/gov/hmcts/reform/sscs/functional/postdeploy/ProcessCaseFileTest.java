@@ -3,6 +3,10 @@ package uk.gov.hmcts.reform.sscs.functional.postdeploy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
@@ -16,13 +20,6 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
-import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
-import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.util.Scanner;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
