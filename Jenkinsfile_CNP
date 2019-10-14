@@ -51,11 +51,11 @@ withPipeline(type, product, component) {
 
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
-    sh './gradlew functionalPreDeploy'
+    gradle(functionalPreDeploy)
   }
 
   after('akschartsinstall') {
     echo "Verifying that functional test data was processed correctly"
-    sh './gradlew functionalPostDeploy'
+    gradle(functionalPostDeploy)
   }
 }
