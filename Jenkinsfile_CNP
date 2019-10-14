@@ -48,5 +48,13 @@ withPipeline(type, product, component) {
   enableSlackNotifications('#sscs-tech')
   enableAksStagingDeployment()
   nonServiceApp()
+
+  after('checkout') {
+    sh './gradlew functionalPreDeploy'
+  }
+
+  before('buildinfra:aat') {
+    sh './gradlew functionalPostDeploy'
+  }
 }
 
