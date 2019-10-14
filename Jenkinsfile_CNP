@@ -41,6 +41,8 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+GradleBuilder builder = new GradleBuilder(this, product)
+
 withPipeline(type, product, component) {
   enableDockerBuild()
   installCharts()
@@ -51,11 +53,11 @@ withPipeline(type, product, component) {
 
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
-    gradle(functionalPreDeploy)
+    builder.gradle('functionalPreDeploy')
   }
 
   after('akschartsinstall') {
     echo "Verifying that functional test data was processed correctly"
-    gradle(functionalPostDeploy)
+    builder.gradle('functionalPostDeploy')
   }
 }
