@@ -49,12 +49,11 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   nonServiceApp()
 
-  after('checkout') {
+  before('aksdeploy') {
     sh './gradlew functionalPreDeploy'
   }
 
-  before('buildinfra:aat') {
+  after('aksdeploy') {
     sh './gradlew functionalPostDeploy'
   }
 }
-
