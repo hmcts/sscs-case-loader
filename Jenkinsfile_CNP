@@ -54,14 +54,14 @@ withPipeline(type, product, component) {
   nonServiceApp()
 
   before('akschartsinstall') {
-    withDocker('openjdk:8-alpine') {
+    withDocker('openjdk:8-alpine', '') {
       echo "Setting up data for functional tests"
       builder.gradle('functionalPreDeploy')
     }
   }
 
   after('akschartsinstall') {
-    withDocker('openjdk:8-alpine') {
+    withDocker('openjdk:8-alpine', '') {
       echo "Verifying that functional test data was processed correctly"
       builder.gradle('functionalPostDeploy')
     }
