@@ -70,7 +70,7 @@ public class ProcessCaseFileSetup {
         ccdCaseId = String.valueOf(caseDetails.getId());
         log.info("Created test ccd case with id {}", ccdCaseId);
 
-        String tmpFileName = System.getProperty("java.io.tmpdir") + "/ccdCaseId.tmp";
+        String tmpFileName = "ccdCaseId.tmp";
 
         Files.write(Paths.get(tmpFileName), ccdCaseId.getBytes());
 
