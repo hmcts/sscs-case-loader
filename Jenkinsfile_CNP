@@ -4,7 +4,7 @@ properties([
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
-@Library("Infrastructure@change-nesting-of-docker")
+@Library("Infrastructure")
 
 import uk.gov.hmcts.contino.GradleBuilder
 
