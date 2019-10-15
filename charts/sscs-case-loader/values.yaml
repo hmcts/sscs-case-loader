@@ -5,7 +5,7 @@ job:
   ingressHost: sscs-case-loader-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
     sscs:
-        resourceGroup: sscs
+      resourceGroup: sscs
       secrets:
       - idam-api
       - idam-sscs-systemupdate-user
