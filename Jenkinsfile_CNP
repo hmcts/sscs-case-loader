@@ -51,8 +51,11 @@ withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
   enableAksStagingDeployment()
-  disableLegacyDeployment()
   nonServiceApp()
+
+  after('smoketest:aat') {
+    sh "rm -rf infrastructure/"
+  }
 
   before('akschartsinstall') {
     withDocker('openjdk:8-alpine', null) {
