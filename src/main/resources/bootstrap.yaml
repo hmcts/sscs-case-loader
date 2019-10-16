@@ -21,3 +21,4 @@ spring:
         sftp-host: GAPS2_SFTP_HOST
         sftp-port: GAPS2_SFTP_PORT
         gaps2-service-sftp-private-key: GAPS2_KEY_LOCATION
+        AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
