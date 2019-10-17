@@ -2,3 +2,24 @@ job:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   aadIdentityName:
+  keyVaults:
+    sscs:
+      resourceGroup: sscs
+      secrets:
+        - idam-api
+        - idam-sscs-systemupdate-user
+        - idam-sscs-systemupdate-password
+        - sscs-s2s-secret
+        - s2s-micro
+        - idam-s2s-api
+        - ccd-api
+        - idam-redirect
+        - idam-sscs-oauth2-client-secret
+        - idam-oauth-user
+        - ccd-jid
+        - ccd-tid
+        - sftp-dir
+        - sftp-user
+        - sftp-host
+        - sftp-port
+        - gaps2-service-sftp-private-key
