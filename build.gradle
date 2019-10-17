@@ -58,22 +58,22 @@ task integration(type: Test) {
   setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
-task smoke(type: Test) {
-  group = 'verification'
-  description = 'Executes non-destructive smoke tests against a running case loader'
+task functionalPreDeploy(type: Test) {
+  group = 'Functional Tests'
+  description = 'Place delta files on the sftp server ready to be consumed when AKS job is created'
   setTestClassesDirs(sourceSets.e2e.output.classesDirs)
   setClasspath(sourceSets.e2e.runtimeClasspath)
-  include "uk/gov/hmcts/reform/sscs/smoke/**"
-  exclude "uk/gov/hmcts/reform/sscs/functional/**"
+  include "uk/gov/hmcts/reform/sscs/functional/predeploy/**"
+  exclude "uk/gov/hmcts/reform/sscs/functional/postdeploy/**"
 }
 
-task functional(type: Test) {
+task functionalPostDeploy(type: Test) {
   group = 'Functional Tests'
-  description = 'Executes non-destructive functional tests in AAT against a running case loader'
+  description = 'Verifies that files from functionPreDeploy step were processed following job creation in AKS'
   setTestClassesDirs(sourceSets.e2e.output.classesDirs)
   setClasspath(sourceSets.e2e.runtimeClasspath)
-  include "uk/gov/hmcts/reform/sscs/functional/**"
-  exclude "uk/gov/hmcts/reform/sscs/smoke/**"
+  include "uk/gov/hmcts/reform/sscs/functional/postdeploy/**"
+  exclude "uk/gov/hmcts/reform/sscs/functional/predeploy/**"
 }
 
 checkstyle {
@@ -172,7 +172,6 @@ sonarqube {
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java"
-
   }
 }
 
@@ -227,22 +226,28 @@ dependencyManagement {
 }
 
 dependencies {
+
+  compile 'org.springframework.boot:spring-boot-starter-batch'
+  compile 'org.springframework.boot:spring-boot-starter-test'
+  compile 'org.springframework.batch:spring-batch-test'
+  compile 'com.h2database:h2'
+
+  compile 'org.unix4j:unix4j-command:0.5'
+
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   compile group: 'org.springframework', name: 'spring-context-support'
 
+  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.0.4'
+
   compile group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
   compile group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
-
-  compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
 
   compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.4.RELEASE'
-
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformLogging
@@ -280,6 +285,7 @@ dependencies {
   testCompile 'pl.pragmatists:JUnitParams:1.1.1'
 
   runtime "org.springframework.boot:spring-boot-properties-migrator"
+
 }
 
 bootJar {

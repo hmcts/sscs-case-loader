@@ -1,10 +1,12 @@
 #!groovy
-@Library("Infrastructure") _
-
 properties([
   [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/sscs-case-loader.git'],
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
+
+@Library("Infrastructure")
+
+import uk.gov.hmcts.contino.GradleBuilder
 
 def type = "java"
 def product = "sscs"
@@ -41,13 +43,31 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {
-  onPR {
-    log.info(env.CHANGE_TITLE)
-    env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
-    log.info(env.CHANGE_TITLE)
-  }
-  enableSlackNotifications('#sscs-tech')
+  enableDockerBuild()
+  installCharts()
   loadVaultSecrets(secrets)
+  enableSlackNotifications('#sscs-tech')
+  enableAksStagingDeployment()
+  nonServiceApp()
+
+  after('smoketest:aat') {
+    sh "rm -rf infrastructure/"
+  }
+
+  before('akschartsinstall') {
+    withDocker('openjdk:8-alpine', null) {
+      echo "Setting up data for functional tests"
+      builder.gradle('functionalPreDeploy')
+    }
+  }
+
+  after('akschartsinstall') {
+    withDocker('openjdk:8-alpine', null) {
+      echo "Verifying that functional test data was processed correctly"
+      builder.gradle('functionalPostDeploy')
+    }
+  }
 }

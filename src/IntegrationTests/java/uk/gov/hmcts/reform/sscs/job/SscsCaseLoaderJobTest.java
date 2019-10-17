@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.scheduler;
+package uk.gov.hmcts.reform.sscs.job;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,7 +20,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest
-public class SscsCaseLoaderSchedulerTest {
+public class SscsCaseLoaderJobTest {
 
     // Below rules are needed to use the junitParamsRunner together with SpringRunner
     @ClassRule
@@ -36,7 +36,7 @@ public class SscsCaseLoaderSchedulerTest {
     private CaseLoaderService caseLoaderService;
 
     @Autowired
-    private SscsCaseLoaderScheduler sscsCaseLoaderScheduler;
+    private SscsCaseLoaderJob sscsCaseLoaderJob;
 
     @Test
     @Parameters({
@@ -45,9 +45,9 @@ public class SscsCaseLoaderSchedulerTest {
         "dev , 0"
     })
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction(String host, int times) {
-        ReflectionTestUtils.setField(sscsCaseLoaderScheduler, "slotName",
+        ReflectionTestUtils.setField(sscsCaseLoaderJob, "slotName",
             host);
-        sscsCaseLoaderScheduler.run();
+        sscsCaseLoaderJob.run();
         verify(caseLoaderService, times(times)).process();
 
     }
