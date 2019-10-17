@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.sscs.scheduler;
+package uk.gov.hmcts.reform.sscs.job;
 
 import static java.sql.Timestamp.valueOf;
 import static org.junit.Assert.assertTrue;
