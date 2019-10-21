@@ -59,6 +59,7 @@ withPipeline(type, product, component) {
     withDocker('openjdk:8-alpine', null) {
       echo "Setting up data for functional tests"
       builder.gradle('functionalPreDeploy')
+      sh "cat ccdCaseId.tmp"
     }
   }
 
@@ -66,6 +67,7 @@ withPipeline(type, product, component) {
     sh "rm -rf infrastructure/"
     withDocker('openjdk:8-alpine', null) {
       echo "Verifying that functional test data was processed correctly"
+      sh "cat ccdCaseId.tmp"
       builder.gradle('functionalPostDeploy')
     }
   }
