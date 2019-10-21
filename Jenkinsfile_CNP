@@ -56,17 +56,17 @@ withPipeline(type, product, component) {
 
 
   before('akschartsinstall') {
-    withDocker('openjdk:8-alpine', null) {
-      echo "Setting up data for functional tests"
-      builder.gradle('functionalPreDeploy')
-    }
+    echo "Setting up data for functional tests"
+    builder.gradle('functionalPreDeploy')
   }
 
   after('akschartsinstall') {
     sh "rm -rf infrastructure/"
-    withDocker('openjdk:8-alpine', null) {
-      echo "Verifying that functional test data was processed correctly"
+    echo "Verifying that functional test data was processed correctly"
+    try {
       builder.gradle('functionalPostDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
     }
   }
 }
