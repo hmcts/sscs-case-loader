@@ -57,7 +57,11 @@ withPipeline(type, product, component) {
 
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
-    builder.gradle('functionalPreDeploy')
+    try {
+      builder.gradle('functionalPreDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
+    }
   }
 
   after('akschartsinstall') {
