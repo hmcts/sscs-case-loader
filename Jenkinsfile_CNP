@@ -56,19 +56,21 @@ withPipeline(type, product, component) {
 
 
   before('akschartsinstall') {
-    withDocker('openjdk:8-alpine', null) {
-      echo "Setting up data for functional tests"
+    echo "Setting up data for functional tests"
+    try {
       builder.gradle('functionalPreDeploy')
-      sh "cat ccdCaseId.tmp"
+    } finally {
+      junit '**/test-results/**/*.xml'
     }
   }
 
   after('akschartsinstall') {
     sh "rm -rf infrastructure/"
-    withDocker('openjdk:8-alpine', null) {
-      echo "Verifying that functional test data was processed correctly"
-      sh "cat ccdCaseId.tmp"
+    echo "Verifying that functional test data was processed correctly"
+    try {
       builder.gradle('functionalPostDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
     }
   }
 }
