@@ -40,7 +40,11 @@ public class CaseLoaderJobConfig {
     @Bean
     public Tasklet tasklet() {
 
+        log.info("About to run case loader job.");
+
         sscsCaseLoaderJob.run();
+
+        log.info("Case loader job complete.");
 
         return (contribution, chunkContext) -> RepeatStatus.FINISHED;
     }
