@@ -53,6 +53,7 @@ public class ProcessCaseFileTest {
         String s = new Scanner(new File(tmpFileName)).useDelimiter("\\Z").next();
 
         ccdCaseId = s.trim();
+        log.info("Test case ID is {}", ccdCaseId);
 
         SscsCaseDetails updatedCcdCase = ccdService.getByCaseId(Long.parseLong(ccdCaseId), idamTokens);
         assertNotNull(updatedCcdCase);
