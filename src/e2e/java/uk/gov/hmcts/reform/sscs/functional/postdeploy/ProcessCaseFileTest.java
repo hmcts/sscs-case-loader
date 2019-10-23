@@ -60,6 +60,8 @@ public class ProcessCaseFileTest {
 
         SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();
 
+        log.info("CCD CASE DATA is {}", updatedCcdCaseData.toString());
+
         assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
         assertEquals(3, updatedCcdCaseData.getEvents().size());
         assertEquals("appealCreated", updatedCcdCase.getState());
