@@ -165,7 +165,7 @@ class CaseDataBuilder {
                         .build();
 
                     String appealTime = hearing.getAppealTime();
-                    String activeInActive = "Yes".equalsIgnoreCase(venueDetails.getActive()) ? "active" : "inactive";
+                    String activeInActive = getActiveInActiveVenueInfo(venueDetails);
                     log.info("Hearing booked for case {} on {} at {} venue {}",
                             appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
                             venueDetails.getVenueId());
@@ -191,6 +191,10 @@ class CaseDataBuilder {
         }
 
         return hearingsList;
+    }
+
+    private String getActiveInActiveVenueInfo(VenueDetails venueDetails) {
+        return "Yes".equalsIgnoreCase(venueDetails.getActive()) ? "active" : "inactive";
     }
 
     Evidence buildEvidence(AppealCase appealCase) {
