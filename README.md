@@ -184,11 +184,13 @@ http://localhost:3451
 * Running  Functional test locally
 
 1. Make sure you bring up local SFTP and run sscs-docker dependencies
-2. Configure below
-    export TEST_URL=http://localhost:8082
-3. Run
+2. Run
 
-``` ./gradlew functional
+``` 
+ SPRING_PROFILES_ACTIVE=local ./gradlew functionalPreDeploy
+ SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
+ SPRING_PROFILES_ACTIVE=local ./gradlew functionalPostDeploy
+```
 
 ## Hystrix
 

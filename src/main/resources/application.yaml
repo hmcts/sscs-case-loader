@@ -1,4 +1,13 @@
-server.port: ${PORT:8082}
+server.port: ${PORT:8083}
+
+spring:
+  main:
+    web-application-type: none
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:localhost;DB_CLOSE_ON_EXIT=FALSE
+    username: admin
+    password:
 
 core_case_data:
   api:
@@ -79,3 +88,6 @@ number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TO
 
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
+
+
+
