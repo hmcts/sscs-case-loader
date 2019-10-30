@@ -53,11 +53,14 @@ public class ProcessCaseFileTest {
         String s = new Scanner(new File(tmpFileName)).useDelimiter("\\Z").next();
 
         ccdCaseId = s.trim();
+        log.info("Test case ID is {}", ccdCaseId);
 
         SscsCaseDetails updatedCcdCase = ccdService.getByCaseId(Long.parseLong(ccdCaseId), idamTokens);
         assertNotNull(updatedCcdCase);
 
         SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();
+
+        log.info("CCD CASE DATA is {}", updatedCcdCaseData.toString());
 
         assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
         assertEquals(3, updatedCcdCaseData.getEvents().size());
