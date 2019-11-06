@@ -36,7 +36,10 @@ public class XmlValidator {
             StreamSource schemaSource = new StreamSource(schemaAsStream);
             Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
+
+            XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(xmlAsInputStream);
             validator.validate(new StAXSource(xmlStreamReader));
             failure = false;
         } catch (IOException e) {
