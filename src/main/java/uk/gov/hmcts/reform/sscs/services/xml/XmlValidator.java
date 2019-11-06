@@ -40,7 +40,10 @@ public class XmlValidator {
             schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             Validator validator = schemaFactory.newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
+
+            XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(xmlAsInputStream);
             validator.validate(new StAXSource(xmlStreamReader));
             failure = false;
         } catch (IOException e) {
