@@ -36,8 +36,7 @@ public class XmlValidator {
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
             SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             Validator validator = schemaFactory.newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
             XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
