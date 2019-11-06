@@ -38,7 +38,7 @@ public class XmlValidator {
             Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
 
-            XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+            XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
             xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(xmlAsInputStream);
