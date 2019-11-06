@@ -5,7 +5,6 @@ import static javax.xml.validation.SchemaFactory.newInstance;
 
 import java.io.IOException;
 import java.io.InputStream;
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -39,8 +38,7 @@ public class XmlValidator {
             validator.setErrorHandler(new XmlErrorHandler());
 
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-            xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
             XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(xmlAsInputStream);
             validator.validate(new StAXSource(xmlStreamReader));
             failure = false;
