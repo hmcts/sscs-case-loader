@@ -35,13 +35,13 @@ public class XmlValidator {
             String schemaPath = xmlFile.isDelta() ? XmlSchemas.DELTA.getPath() : XmlSchemas.REF.getPath();
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
-            SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-            schemaFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            Validator validator = schemaFactory.newSchema(schemaSource).newValidator();
+            Validator validator = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
+
+            XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+            xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(xmlAsInputStream);
             validator.validate(new StAXSource(xmlStreamReader));
             failure = false;
         } catch (IOException e) {
