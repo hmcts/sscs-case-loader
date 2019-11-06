@@ -36,8 +36,8 @@ public class XmlValidator {
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
             SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-            schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             Validator validator = schemaFactory.newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
 
