@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -46,7 +46,7 @@ public class XmlValidatorTest {
 
     @After
     public void tearDown() {
-        verifyNoMoreInteractions(sftpSshService);
+        verify(sftpSshService, times(1)).getFiles();
     }
 
     @Test
