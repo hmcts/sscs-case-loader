@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -45,8 +44,6 @@ public class SscsCaseLoaderJobTest {
         "dev , 0"
     })
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction(String host, int times) {
-        ReflectionTestUtils.setField(sscsCaseLoaderJob, "slotName",
-            host);
         sscsCaseLoaderJob.run();
         verify(caseLoaderService, times(times)).process();
 
