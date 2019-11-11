@@ -41,6 +41,3 @@ feign:
         loggerLevel: full
       core-case-data-api:
         loggerLevel: full
-
-
-slot.name: ${SLOT:PRODUCTION}
