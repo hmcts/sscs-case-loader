@@ -1,12 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,11 +40,6 @@ public class XmlValidatorTest {
         deltaFile = new Gaps2File("SSCS_Extract_Delta_2017-05-24-16-14-19.xml", 10L);
         refFile = new Gaps2File("SSCS_Extract_Reference_2017-05-24-16-14-19.xml", 10L);
         invalidDelta = new Gaps2File("SSCS_ExtractInvalid_Delta_2017-06-30-09-25-56.xml", 10L);
-    }
-
-    @After
-    public void tearDown() {
-        verify(sftpSshService, times(1)).getFiles();
     }
 
     @Test
