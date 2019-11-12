@@ -46,6 +46,12 @@ public class CaseLoaderJobConfig {
 
         log.info("About to run case loader job.");
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         sscsCaseLoaderJob.run();
 
         log.info("Case loader job complete.");
