@@ -10,6 +10,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 
 @Configuration
@@ -39,6 +40,7 @@ public class CaseLoaderJobConfig {
             .build();
     }
 
+    @Lazy
     @Bean
     public Tasklet tasklet() {
 
