@@ -78,5 +78,13 @@ number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TO
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
 
+---
+#spring profile needed to run integration, smoke and functional tests to avoid the job schedule to kick in twice
+spring:
+  profiles: test
+
+scheduling.enabled: false
+
+
 
 

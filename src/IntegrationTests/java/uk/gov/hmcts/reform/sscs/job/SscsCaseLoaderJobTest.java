@@ -9,12 +9,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@ActiveProfiles("test")
 public class SscsCaseLoaderJobTest {
 
     @MockBean
@@ -30,7 +32,7 @@ public class SscsCaseLoaderJobTest {
     @Ignore
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction() {
         sscsCaseLoaderJob.run();
-        verify(caseLoaderService, times(2)).process();
+        verify(caseLoaderService, times(1)).process();
 
     }
 }
