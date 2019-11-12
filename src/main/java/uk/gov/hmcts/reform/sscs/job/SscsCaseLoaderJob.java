@@ -42,7 +42,8 @@ public class SscsCaseLoaderJob {
                 + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                 + " due to exception: ", e);
         } finally {
-            SpringApplication.exit(applicationContext, () -> 0);
+            int exitCode = SpringApplication.exit(applicationContext, () -> 0);
+            System.exit(exitCode);
         }
     }
 

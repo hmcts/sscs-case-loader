@@ -1,5 +1,9 @@
 server.port: ${PORT:8083}
 
+spring:
+  main:
+    web-application-type: none
+
 core_case_data:
   api:
     url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
