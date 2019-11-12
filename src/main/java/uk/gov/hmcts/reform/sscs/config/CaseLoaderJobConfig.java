@@ -10,9 +10,11 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 
 @Configuration
+@DependsOn(value = "authTokenGenerator")
 @Slf4j
 public class CaseLoaderJobConfig {
 
