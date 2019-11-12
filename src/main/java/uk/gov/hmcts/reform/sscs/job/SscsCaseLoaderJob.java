@@ -41,10 +41,9 @@ public class SscsCaseLoaderJob {
             log.error(logPrefix + " scheduler failed at "
                 + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                 + " due to exception: ", e);
-        } finally {
-            int exitCode = SpringApplication.exit(applicationContext, () -> 0);
-            System.exit(exitCode);
         }
+        int exitCode = SpringApplication.exit(applicationContext, () -> 0);
+        System.exit(exitCode);
     }
 
 }
