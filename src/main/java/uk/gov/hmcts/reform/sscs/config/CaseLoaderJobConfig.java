@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 
 @Configuration
 @Slf4j
+@Lazy
 public class CaseLoaderJobConfig {
 
     @Autowired
@@ -40,7 +41,6 @@ public class CaseLoaderJobConfig {
             .build();
     }
 
-    @Lazy
     @Bean
     public Tasklet tasklet() {
 
