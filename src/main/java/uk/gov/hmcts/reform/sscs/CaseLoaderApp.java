@@ -26,12 +26,16 @@ public class CaseLoaderApp {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(CaseLoaderApp.class, args);
+        waitSec(15);
+        SpringApplication.exit(context);
+    }
+
+    private static void waitSec(int timeout) {
         try {
-            TimeUnit.SECONDS.sleep(15);
+            TimeUnit.SECONDS.sleep(timeout);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        SpringApplication.exit(context);
     }
 
     @Bean

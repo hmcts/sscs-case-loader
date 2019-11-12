@@ -19,20 +19,21 @@ public class SscsCaseLoaderJob {
         this.caseLoaderService = caseLoaderService;
     }
 
+
     public void run() {
         String logPrefix = "CASELOADER " + UUID.randomUUID().toString();
 
         try {
             log.info(logPrefix + " scheduler started : {} ",
-                        LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
             caseLoaderService.setLogPrefix(logPrefix);
             caseLoaderService.process();
             log.info(logPrefix + " scheduler ended : {} ",
-                        LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         } catch (Exception e) {
             log.error(logPrefix + " scheduler failed at "
-                        + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-                        + " due to exception: ", e);
+                + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                + " due to exception: ", e);
         }
     }
 
