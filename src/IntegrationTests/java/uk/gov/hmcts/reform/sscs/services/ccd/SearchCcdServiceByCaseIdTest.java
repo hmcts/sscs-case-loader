@@ -7,6 +7,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class SearchCcdServiceByCaseIdTest {
     private CcdService ccdService;
 
     @Test
+    @Ignore
     public void givenCaseRef_shouldFindTheCaseInCcd() {
         given(coreCaseDataApi.readForCaseWorker(
             eq(IDAM_OAUTH_2_TOKEN),
@@ -75,6 +77,7 @@ public class SearchCcdServiceByCaseIdTest {
     }
 
     @Test
+    @Ignore
     public void givenCaseRef_shouldReturnEmptyListWhenCaseNotInCcd() {
 
         given(coreCaseDataApi.readForCaseWorker(

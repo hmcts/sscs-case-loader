@@ -227,10 +227,7 @@ dependencyManagement {
 
 dependencies {
 
-  compile 'org.springframework.boot:spring-boot-starter-batch'
   compile 'org.springframework.boot:spring-boot-starter-test'
-  compile 'org.springframework.batch:spring-batch-test'
-  compile 'com.h2database:h2'
 
   compile 'org.unix4j:unix4j-command:0.5'
 
