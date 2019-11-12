@@ -67,7 +67,7 @@ sftp:
 spring.application.name: CaseLoader Insights WebApp
 
 sscs.case.loader:
-  cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0/20 * * * * ?}
+  cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0/10 * * * * ?}
   ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:1017-07-01}
   url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
 

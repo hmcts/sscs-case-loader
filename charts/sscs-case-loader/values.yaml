@@ -38,6 +38,7 @@ job:
     LOG_LEVEL_SSCS: INFO
     RPC_VENUE_ID_ENABLED: true
     NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS: 100
+    SSCS_CASE_LOADER_CRON_SCHEDULE: 0/10 * * * * ?
 global:
   job:
     kind: CronJob
