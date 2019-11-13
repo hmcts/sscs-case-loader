@@ -21,7 +21,7 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('CcdDeid', 'CORE_CASE_DATA_EVENT_ID'),
   secret('IdamUrl', 'IDAM_URL'),
   secret('IdamS2sSecret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
-  secret('IdamS2sAuth', 'IDAM.S2S-AUTH'),
+  secret('IdamS2sAuth', 'IDAM_S2S_AUTH'),
   secret('IdamS2sAuthMicro', 'IDAM_S2S_AUTH_MICROSERVICE'),
   secret('IdamSscsUser', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
   secret('IdamSscsPass', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
