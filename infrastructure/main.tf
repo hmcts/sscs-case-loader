@@ -97,7 +97,7 @@ module "sscs-case-loader" {
     IDAM_URL = "${data.azurerm_key_vault_secret.idam-api.value}"
 
     IDAM_S2S_AUTH_TOTP_SECRET  = "${data.azurerm_key_vault_secret.sscs-s2s-secret.value}"
-    IDAM.S2S-AUTH              = "${local.s2sCnpUrl}"
+    IDAM_S2S_AUTH              = "${local.s2sCnpUrl}"
     IDAM_S2S_AUTH_MICROSERVICE = "${var.idam_s2s_auth_microservice}"
 
     IDAM_SSCS_SYSTEMUPDATE_USER     = "${data.azurerm_key_vault_secret.idam-sscs-systemupdate-user.value}"
