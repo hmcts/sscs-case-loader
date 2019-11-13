@@ -33,11 +33,10 @@ job:
     IDAM_S2S_AUTH: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     IGNORE_CASES_BEFORE_DATE: 1017-07-01
-    SSCS_CASE_LOADER_URL: http://localhost:8082
     LOG_LEVEL_SPRING_WEB: INFO
     LOG_LEVEL_SSCS: INFO
+    ROOT_LOGGING_LEVEL: INFO
     RPC_VENUE_ID_ENABLED: true
-    NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS: 100
 global:
   job:
     kind: CronJob
