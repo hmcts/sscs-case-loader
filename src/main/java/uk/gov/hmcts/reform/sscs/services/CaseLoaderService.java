@@ -137,13 +137,12 @@ public class CaseLoaderService {
         List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
         fileMetrics.setRecordCount(cases.size());
         log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
-        int counter = 0;
         IdamTokens idamTokens = idamService.getIdamTokens();
-        processCasesFromDelta(file, cases, counter, idamTokens);
+        processCasesFromDelta(file, cases, idamTokens);
         fileMetrics.setEndTime();
     }
 
-    private void processCasesFromDelta(Gaps2File file, List<SscsCaseData> cases, int counter, IdamTokens idamTokens) {
+    private void processCasesFromDelta(Gaps2File file, List<SscsCaseData> cases, IdamTokens idamTokens) {
         for (SscsCaseData caseData : cases) {
             if (caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 continue;
@@ -153,13 +152,12 @@ public class CaseLoaderService {
             } catch (Exception e) {
                 sftpSshService.move(file, false);
                 log.error(logPrefix + " Error while processing the file: {} "
-                        + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-                        + " due to exception: ", file.getName(), e);
+                    + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                    + " due to exception: ", file.getName(), e);
                 throw new CcdException(logPrefixWithFile + " Error processing the file: "
-                        + file.getName(), e);
+                    + file.getName(), e);
 
             }
-            counter++;
         }
     }
 
