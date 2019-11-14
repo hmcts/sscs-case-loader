@@ -23,9 +23,9 @@ def secrets = [
     secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
     secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
     secret('idam-api', 'IDAM_URL'),
-    secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
-    secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-    secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+    secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
+    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
     secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
     secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
     secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
@@ -51,24 +51,30 @@ withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   enableSlackNotifications('#sscs-tech')
   enableAksStagingDeployment()
-  disableLegacyDeploymentOnAAT()
+  disableLegacyDeployment()
   nonServiceApp()
 
 
   before('akschartsinstall') {
-    withDocker('openjdk:8-alpine', null) {
-      echo "Setting up data for functional tests"
+    echo "Setting up data for functional tests"
+    try {
       builder.gradle('functionalPreDeploy')
-      sh "cat ccdCaseId.tmp"
+    } finally {
+      junit '**/test-results/**/*.xml'
     }
   }
 
   after('akschartsinstall') {
     sh "rm -rf infrastructure/"
-    withDocker('openjdk:8-alpine', null) {
-      echo "Verifying that functional test data was processed correctly"
-      sh "cat ccdCaseId.tmp"
+    echo "Checking case number:"
+    sh "cat ccdCaseId.tmp"
+    echo "Just waiting a while to ensure that the pod has run the job"
+    sh "sleep 120s"
+    echo "Verifying that functional test data was processed correctly"
+    try {
       builder.gradle('functionalPostDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
     }
   }
 }

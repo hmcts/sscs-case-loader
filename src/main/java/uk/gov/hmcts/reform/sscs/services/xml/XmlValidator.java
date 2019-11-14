@@ -1,15 +1,16 @@
 package uk.gov.hmcts.reform.sscs.services.xml;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import static javax.xml.validation.SchemaFactory.newInstance;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,15 @@ public class XmlValidator {
             String schemaPath = xmlFile.isDelta() ? XmlSchemas.DELTA.getPath() : XmlSchemas.REF.getPath();
             InputStream schemaAsStream = getClass().getResourceAsStream(schemaPath);
             StreamSource schemaSource = new StreamSource(schemaAsStream);
-            Validator validator = newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(schemaSource).newValidator();
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            Validator validator = schemaFactory.newSchema(schemaSource).newValidator();
             validator.setErrorHandler(new XmlErrorHandler());
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newFactory().createXMLStreamReader(xmlAsInputStream);
+
+            XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+            xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(xmlAsInputStream);
             validator.validate(new StAXSource(xmlStreamReader));
             failure = false;
         } catch (IOException e) {
