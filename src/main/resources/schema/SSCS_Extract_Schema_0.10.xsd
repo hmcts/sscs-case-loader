@@ -35,10 +35,10 @@
                     <xs:element minOccurs="0" name="Title" type="xs:string" />
                     <xs:element minOccurs="0" name="INITIALS" type="xs:string" />
                     <xs:element minOccurs="0" name="Surname" type="xs:string" />
+                    <xs:element minOccurs="0" name="Address" type="xs:string" />
                     <xs:element minOccurs="0" name="Email" type="xs:string" />
                     <xs:element minOccurs="0" name="Phone_1" type="xs:string" />
                     <xs:element minOccurs="0" name="Phone_2" type="xs:string" />
-                    <xs:element minOccurs="0" name="Address" type="xs:string" />
                     <xs:element minOccurs="0" name="Postcode" type="xs:string" />
                     <xs:element minOccurs="0" name="Role_Id" type="xs:short" />
                     <xs:element minOccurs="0" name="Separate_Correspondence_id" type="xs:short" />
