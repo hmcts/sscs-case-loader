@@ -1,6 +1,6 @@
 job:
   image: 'https://hmctspublic.azurecr.io/sscs/case-loader:latest'
-  schedule: "* * 0/4 * * ?"
+  schedule: "0 0/4 * * *"
   aadIdentityName: sscs
   ingressHost: sscs-case-loader-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:
@@ -38,5 +38,4 @@ job:
     RPC_VENUE_ID_ENABLED: true
     NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS: 100
 global:
-  job:
-    kind: CronJob
+  jobKind: CronJob

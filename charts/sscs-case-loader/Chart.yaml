@@ -3,7 +3,7 @@ description: SSCS Case Loader
 home: https://github.com/hmcts/sscs-case-loader
 apiVersion: v1
 appVersion: "1.0"
-version: 0.0.2
+version: 0.0.4
 maintainers:
   - name: HMCTS SSCS Team
 
