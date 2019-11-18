@@ -202,7 +202,7 @@ def versions = [
 ext["rest-assured.version"] = '4.0.0'
 
 ext {
-  springCloudVersion = 'Greenwich.SR1'
+  springCloudVersion = 'Greenwich.SR3'
 }
 
 dependencyManagement {
