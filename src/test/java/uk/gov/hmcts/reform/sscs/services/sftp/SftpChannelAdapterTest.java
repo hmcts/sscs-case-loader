@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -90,7 +89,6 @@ public class SftpChannelAdapterTest {
         verify(channel).connect();
         verify(channel).cd("in");
 
-        verifyNoMoreInteractions(jsch, session, channel);
     }
 
     @Test

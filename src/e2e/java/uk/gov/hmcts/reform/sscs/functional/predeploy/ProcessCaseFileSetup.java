@@ -87,7 +87,7 @@ public class ProcessCaseFileSetup {
 
     private void cleanSftpFiles() throws SftpException {
 
-        ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
+        ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
         try {
             sftpChannel.rm("/incoming/SSCS_CcdCases_Delta_*.xml");
             sftpChannel.rm("/incoming/SSCS_CreateAppeals_Delta_*.xml");
@@ -107,13 +107,13 @@ public class ProcessCaseFileSetup {
     }
 
     private void writeXmlToSftp(String xml) throws SftpException {
-        ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
+        ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
         sftpChannel.put(new ByteArrayInputStream(xml.getBytes()),
             "/incoming/" + "SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml");
     }
 
     public void copy(String outputdir) {
-        ChannelSftp sftpChannel = sftpChannelAdapter.getSftpChannel();
+        ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
         try {
             File folder = new File(outputdir);
             File[] files = folder.listFiles();

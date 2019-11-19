@@ -7,9 +7,11 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
@@ -27,15 +29,32 @@ public class SftpChannelAdapter {
     private final JSch jsch;
     private final SftpSshProperties sftpSshProperties;
 
+    protected ThreadLocal<Session> threadSession;
+    protected ThreadLocal<Map<Integer, ChannelSftp>> threadChannels;
+
+    // Define reusable channels
+    private static final int CHANNEL_1 = 0;
+    private static final int CHANNEL_IN  = 2;
+
     @Autowired
     public SftpChannelAdapter(JSch jsch, SftpSshProperties sftpSshProperties) {
         this.jsch = jsch;
         this.sftpSshProperties = sftpSshProperties;
+        this.threadSession = new ThreadLocal<Session>();
+        this.threadChannels = new ThreadLocal<Map<Integer, ChannelSftp>>();
     }
 
-    @PostConstruct
+    private void initializeJch() {
+        try {
+            jsch.addIdentity("SSCS-SFTP", sftpSshProperties.getKeyLocation().getBytes(),
+                    null, null);
+        } catch (JSchException e) {
+            throw new SftpCustomException("AddIdentity error", e);
+        }
+    }
+
     public void init() {
-        ChannelSftp sftp = getSftpChannel();
+        ChannelSftp sftp = openConnectedChannel();
         for (String dirName : new String[]{PROCESSED_DIR, FAILED_DIR}) {
             try {
                 sftp.stat(dirName);
@@ -49,31 +68,46 @@ public class SftpChannelAdapter {
         }
     }
 
-    public ChannelSftp getSftpChannel() {
-        try {
-            jsch.addIdentity("SSCS-SFTP", sftpSshProperties.getKeyLocation().getBytes(),
-                null, null);
-        } catch (JSchException e) {
-            throw new SftpCustomException("AddIdentity error", e);
+    /**
+     * Open and connect a reusable SFTP channel.
+     *
+     * @param channelId is the ID of the reusable channel to open.
+     * @return a connected reusable channel.
+     */
+    protected ChannelSftp openConnectedChannel(int channelId) throws JSchException {
+
+        Session session = openSession();
+        Map<Integer, ChannelSftp> channels = threadChannels.get();
+        if (channels == null) {
+            channels = new HashMap<>();
         }
-        Session sesConnection;
-        try {
-            sesConnection = jsch.getSession(
-                sftpSshProperties.getUsername(),
-                sftpSshProperties.getHost(),
-                sftpSshProperties.getPort());
-            sesConnection.setConfig("StrictHostKeyChecking", "no");
-            sesConnection.connect(60000);
-        } catch (JSchException e) {
-            throw new SftpCustomException("Session connection error", e);
+        ChannelSftp channel = channels.get(channelId);
+        if (channel == null || channel.isClosed()) {
+            channel = (ChannelSftp) session.openChannel("sftp");
         }
+        if (!channel.isConnected()) {
+            channel.connect();
+        }
+        channels.put(channelId, channel);
+        threadChannels.set(channels);
+        return channel;
+    }
+
+    /**
+     * Open and Connect a new SFTP channel.
+     *
+     * @return a new channel.
+     */
+    public ChannelSftp openConnectedChannel() {
         ChannelSftp channel;
         try {
-            channel = (ChannelSftp) sesConnection.openChannel("sftp");
+            Session session = openSession();
+            channel = (ChannelSftp) session.openChannel("sftp");
             channel.connect();
         } catch (JSchException e) {
             throw new SftpCustomException("Connect to channel error", e);
         }
+
         try {
             channel.cd(sftpSshProperties.getInputDirectory());
         } catch (SftpException e) {
@@ -82,48 +116,121 @@ public class SftpChannelAdapter {
         return channel;
     }
 
+    protected Session openSession() {
+        Session session = threadSession.get();
+        if (session == null) {
+            session = statelessConnect();
+            threadSession.set(session);
+        }
+        return session;
+    }
+
+    protected Session statelessConnect() {
+        Session session = null;
+        try {
+            initializeJch();
+            session = jsch.getSession(
+                    sftpSshProperties.getUsername(),
+                    sftpSshProperties.getHost(),
+                    sftpSshProperties.getPort());
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect(60000);
+            return session;
+        } catch (JSchException e) {
+            throw new SftpCustomException("Session connection error", e);
+        }
+    }
+
     public List<Gaps2File> listIncoming() {
-        return list("");
+        return list(true,"");
     }
 
     public List<Gaps2File> listFailed() {
-        return list(FAILED_DIR);
+        return list(true, FAILED_DIR);
     }
 
     public List<Gaps2File> listProcessed() {
-        return list(PROCESSED_DIR);
+        return list(true, PROCESSED_DIR);
     }
 
     @SuppressWarnings("unchecked")
-    private List<Gaps2File> list(String path) {
-        ChannelSftp channel = getSftpChannel();
+    private List<Gaps2File> list(boolean closeSession, String path) {
+        ChannelSftp channel = null;
         List<ChannelSftp.LsEntry> ls;
         try {
+            channel = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_1);
             ls = channel.ls(String.format("%s*.xml", path));
-        } catch (SftpException e) {
+            return ls.stream().map(e -> new Gaps2File(e.getFilename(), e.getAttrs().getSize()))
+                    .sorted()
+                    .collect(Collectors.toList());
+        } catch (JSchException | SftpException e) {
             throw new SftpCustomException("Failed reading incoming directory", e);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (closeSession) {
+                close();
+            }
         }
-        return ls.stream().map(e -> new Gaps2File(e.getFilename(), e.getAttrs().getSize()))
-            .sorted()
-            .collect(Collectors.toList());
+
     }
 
     public InputStream getInputStream(String fileName) {
-        ChannelSftp channel = getSftpChannel();
+        return getInputStream(fileName, true);
+    }
+
+    private InputStream getInputStream(String fileName, boolean closeSession) {
+        Session session = null;
+        ChannelSftp sftp = null;
         try {
-            return channel.get(fileName);
-        } catch (SftpException e) {
+            session = openSession();
+            sftp = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_IN);
+            return new CloseableInputStream(sftp.get(fileName), session, sftp, closeSession);
+        } catch (JSchException | SftpException e) {
             throw new SftpCustomException("Failed reading file stream", fileName, e);
         }
     }
 
     public void move(boolean success, String fileName) {
-        ChannelSftp sftpChannel = getSftpChannel();
+        move(success, fileName, true);
+    }
+
+    private void move(boolean success, String fileName, boolean closeSession) {
+        ChannelSftp sftp = null;
         try {
-            sftpChannel.put(DUMMY, String.format("%s%s", success ? PROCESSED_DIR : FAILED_DIR, fileName));
-        } catch (SftpException e) {
+            sftp = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_1);
+            sftp.put(DUMMY, String.format("%s%s", success ? PROCESSED_DIR : FAILED_DIR, fileName));
+        } catch (JSchException | SftpException e) {
             throw new SftpCustomException("Failed moving file", fileName, e);
+        } finally {
+            if (closeSession) {
+                close();
+            }
         }
     }
 
+    public void close() {
+        close(true);
+    }
+
+    private void close(boolean success) {
+        Session session = threadSession.get();
+        if (session != null) {
+            session.disconnect();
+            threadSession.set(null);
+        }
+        Map<Integer, ChannelSftp> channels = threadChannels.get();
+        if (channels != null) {
+            Iterator<Map.Entry<Integer, ChannelSftp>> itr = channels.entrySet().iterator();
+            while (itr.hasNext()) {
+                Map.Entry<Integer, ChannelSftp> entry = itr.next();
+                ChannelSftp channel = entry.getValue();
+                if (channel != null) {
+                    channel.disconnect();
+                }
+            }
+            channels.clear();
+            threadChannels.set(null);
+        }
+    }
 }
