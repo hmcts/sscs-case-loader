@@ -217,7 +217,7 @@ public class SftpChannelAdapter {
         Session session = threadSession.get();
         if (session != null) {
             session.disconnect();
-            threadSession.set(null);
+            threadSession.remove();
         }
         Map<Integer, ChannelSftp> channels = threadChannels.get();
         if (channels != null) {
@@ -230,7 +230,7 @@ public class SftpChannelAdapter {
                 }
             }
             channels.clear();
-            threadChannels.set(null);
+            threadChannels.remove();
         }
     }
 }
