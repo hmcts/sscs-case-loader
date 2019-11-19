@@ -185,7 +185,6 @@ class CaseDataBuilder {
                             appealCase.getAppealCaseId(),
                             appealCase.getAppealCaseRefNum(),
                             hearing.getSessionDate());
-                    return Collections.emptyList();
                 }
             }
         }
