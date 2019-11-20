@@ -6,10 +6,10 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.gov.hmcts.reform.sscs.job.CaseLoaderTasklet;
 import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 
 @Configuration
@@ -27,7 +27,7 @@ public class CaseLoaderJobConfig {
 
     @Bean
     public Job caseLoaderJob(Step caseLoaderStep) {
-        return jobBuilders.get("caseLoaderJob").flow(caseLoaderStep).end()
+        return jobBuilders.get("caseLoaderJob").start(caseLoaderStep)
             .build();
     }
 
@@ -38,16 +38,10 @@ public class CaseLoaderJobConfig {
             .build();
     }
 
-    @Bean
     public Tasklet tasklet() {
 
-        log.info("About to run case loader job.");
+        return new CaseLoaderTasklet(sscsCaseLoaderJob);
 
-        sscsCaseLoaderJob.run();
-
-        log.info("Case loader job complete.");
-
-        return (contribution, chunkContext) -> RepeatStatus.FINISHED;
     }
 }
 
