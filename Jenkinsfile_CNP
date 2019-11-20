@@ -68,7 +68,6 @@ withPipeline(type, product, component) {
   }
 
   after('akschartsinstall') {
-    sh "rm -rf infrastructure/"
     echo "Checking case number:"
     sh "cat ccdCaseId.tmp"
     echo "Just waiting a while to ensure that the pod has run the job"
