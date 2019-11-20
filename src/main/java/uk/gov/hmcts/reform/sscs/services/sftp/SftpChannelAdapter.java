@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
@@ -40,8 +42,8 @@ public class SftpChannelAdapter {
     public SftpChannelAdapter(JSch jsch, SftpSshProperties sftpSshProperties) {
         this.jsch = jsch;
         this.sftpSshProperties = sftpSshProperties;
-        this.threadSession = new ThreadLocal<Session>();
-        this.threadChannels = new ThreadLocal<Map<Integer, ChannelSftp>>();
+        this.threadSession = new ThreadLocal<>();
+        this.threadChannels = new ThreadLocal<>();
     }
 
     private void initializeJch() {
@@ -166,7 +168,7 @@ public class SftpChannelAdapter {
         } catch (JSchException | SftpException e) {
             throw new SftpCustomException("Failed reading incoming directory", e);
         } catch (Exception e) {
-            return null;
+            return Lists.emptyList();
         } finally {
             if (closeSession) {
                 close();
@@ -207,11 +209,7 @@ public class SftpChannelAdapter {
         }
     }
 
-    public void close() {
-        close(true);
-    }
-
-    private void close(boolean success) {
+    private void close() {
         Session session = threadSession.get();
         if (session != null) {
             session.disconnect();
