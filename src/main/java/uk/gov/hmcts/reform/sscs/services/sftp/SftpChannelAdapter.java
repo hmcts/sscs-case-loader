@@ -180,12 +180,10 @@ public class SftpChannelAdapter {
     }
 
     private InputStream getInputStream(String fileName, boolean closeSession) {
-        Session session = null;
         ChannelSftp sftp = null;
         try {
-            session = openSession();
             sftp = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_IN);
-            return new CloseableInputStream(sftp.get(fileName), session, sftp, closeSession);
+            return sftp.get(fileName);
         } catch (JSchException | SftpException e) {
             throw new SftpCustomException("Failed reading file stream", fileName, e);
         }
