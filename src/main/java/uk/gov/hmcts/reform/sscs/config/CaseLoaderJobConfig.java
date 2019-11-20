@@ -33,8 +33,8 @@ public class CaseLoaderJobConfig {
 
     @Bean
     public Step caseLoaderStep() {
-        return stepBuilders.get("caseLoaderStep").
-            tasklet(tasklet())
+        return stepBuilders.get("caseLoaderStep")
+            .tasklet(tasklet())
             .build();
     }
 
