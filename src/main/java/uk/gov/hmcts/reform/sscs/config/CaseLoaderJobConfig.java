@@ -8,17 +8,11 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 
 @Configuration
-@AutoConfigureAfter(name = {
-    "com.microsoft.applicationinsights.autoconfigure.ApplicationInsightsTelemetryAutoConfiguration",
-    "io.micrometer.spring.autoconfigure.export.azuremonitor.AzureMonitorMetricsExportAutoConfiguration",
-    "com.microsoft.azure.spring.autoconfigure.metrics.AzureMonitorMetricsExportAutoConfiguration"
-})
 @Slf4j
 public class CaseLoaderJobConfig {
 
@@ -32,16 +26,15 @@ public class CaseLoaderJobConfig {
     private SscsCaseLoaderJob sscsCaseLoaderJob;
 
     @Bean
-    public Job caseLoaderJob() {
-        return jobBuilders.get("caseLoaderJob")
-            .start(taskletStep())
+    public Job caseLoaderJob(Step caseLoaderStep) {
+        return jobBuilders.get("caseLoaderJob").flow(caseLoaderStep).end()
             .build();
     }
 
     @Bean
-    public Step taskletStep() {
-        return stepBuilders.get("taskletStep")
-            .tasklet(tasklet())
+    public Step caseLoaderStep() {
+        return stepBuilders.get("caseLoaderStep").
+            tasklet(tasklet())
             .build();
     }
 
