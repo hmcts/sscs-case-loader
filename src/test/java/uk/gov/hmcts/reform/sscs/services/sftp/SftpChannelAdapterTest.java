@@ -3,8 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.sftp;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -130,6 +129,30 @@ public class SftpChannelAdapterTest {
 
     }
 
+    @Test(expected = SftpCustomException.class)
+    public void shouldThrowExceptionOnSessionConnect() throws JSchException {
+        doThrow(JSchException.class).when(session).connect(anyInt());
+
+        sftp.init();
+
+    }
+
+    @Test(expected = SftpCustomException.class)
+    public void shouldThrowExceptionOnChannelConnect() throws JSchException {
+        doThrow(JSchException.class).when(channel).connect();
+
+        sftp.init();
+
+    }
+
+    @Test(expected = SftpCustomException.class)
+    public void shouldThrowExceptionOnChannelCd() throws SftpException {
+        doThrow(SftpException.class).when(channel).cd(anyString());
+
+        sftp.init();
+
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void shouldReturnListOfFilesGivenPath() throws Exception {
@@ -194,6 +217,26 @@ public class SftpChannelAdapterTest {
         verifyConnection();
     }
 
+    @Test(expected = SftpCustomException.class)
+    public void shouldThrowSftpExceptionOnListFiles() throws Exception {
+
+        doThrow(SftpException.class).when(channel).ls("failed/*.xml");
+
+        sftp.listFailed();
+    }
+
+    @Test
+    public void shouldReturnEmptyListIfThrowExceptionOnListFiles() throws Exception {
+
+        doThrow(NullPointerException.class).when(channel).ls("failed/*.xml");
+
+        List<Gaps2File> list = sftp.listFailed();
+        assertTrue(list.isEmpty());
+        verify(channel).ls("failed/*.xml");
+
+        verifyConnection();
+    }
+
     @Test
     public void shouldReturnInputStreamGivenAFileName() throws Exception {
         InputStream is = sftp.getInputStream("xxx");
@@ -204,15 +247,10 @@ public class SftpChannelAdapterTest {
         verifyConnection();
     }
 
-    @Test
+    @Test(expected = SftpCustomException.class)
     public void shouldThrowExceptionGettingIsGivenGetFails() throws SftpException {
-        doThrow(new SftpCustomException("", null)).when(channel).get("xxx");
-        try {
-            sftp.getInputStream("xxx");
-            fail();
-        } catch (SftpCustomException e) {
-            verify(channel).get("xxx");
-        }
+        doThrow(SftpException.class).when(channel).get(anyString());
+        sftp.getInputStream("xxx");
     }
 
     @Test
@@ -224,8 +262,8 @@ public class SftpChannelAdapterTest {
     }
 
     @Test(expected = SftpCustomException.class)
-    public void shouldThrowExceptionGivenMoveFails() throws SftpException {
-        doThrow(new SftpCustomException("", null)).when(channel).cd("in");
+    public void shouldThrowExceptionGivenMoveFails() throws Exception {
+        doThrow(SftpException.class).when(channel).put(any(InputStream.class), any());
         sftp.move(true, "xxx");
     }
 }
