@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
+import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
@@ -28,6 +29,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     private SftpChannelAdapter channelAdapter;
     @Autowired
     private CaseDataBuilder caseDataBuilder;
+    @Autowired
+    private ReferenceDataService referenceDataService;
     private List<Event> events;
 
 
@@ -85,6 +88,31 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
 
         assertEquals(events.get(0).getValue().getType(), GapsEvent.HEARING_POSTPONED.getType());
 
+    }
+
+    @Test
+    public void givenThatMultipleHearingsThenIfVenueNotPresentThenItShouldCheckOtherHearingVenueIds() {
+        Hearing hearing1 = Hearing.builder().hearingId("1").venueId("123456").outcomeId("12")
+            .sessionDate("2017-05-27T00:00:00+01:00").build();
+        Hearing hearing2 = Hearing.builder().hearingId("2").venueId("30").outcomeId("12")
+            .sessionDate("2018-05-27T00:00:00+01:00").build();
+        Hearing hearing3 = Hearing.builder().hearingId("21").venueId("34567").outcomeId("12")
+            .sessionDate("2018-08-27T00:00:00+01:00").build();
+        Hearing hearing4 = Hearing.builder().hearingId("3").venueId("40").outcomeId("12")
+            .sessionDate("2019-05-27T00:00:00+01:00").build();
+        AppealCase appealCase = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
+            ))
+            .hearing(newArrayList(hearing1, hearing2, hearing3, hearing4))
+            .build();
+
+        List<uk.gov.hmcts.reform.sscs.ccd.domain.Hearing> hearingList = caseDataBuilder.buildHearings(appealCase);
+
+        assertEquals(2, hearingList.size());
+        assertEquals(hearing2.getHearingId(), hearingList.get(0).getValue().getHearingId());
+        assertEquals(hearing4.getHearingId(), hearingList.get(1).getValue().getHearingId());
     }
 
     private List<Hearing> getHearing() {
