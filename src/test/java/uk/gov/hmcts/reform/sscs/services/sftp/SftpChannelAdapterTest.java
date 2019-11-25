@@ -4,9 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -266,4 +264,31 @@ public class SftpChannelAdapterTest {
         doThrow(SftpException.class).when(channel).put(any(InputStream.class), any());
         sftp.move(true, "xxx");
     }
+
+    @Test
+    public void shouldCloseAllSessions() throws Exception {
+        sftp.init();
+
+        sftp.close();
+
+        verify(session).disconnect();
+        verifyConnection();
+
+    }
+
+    @Test
+    public void shouldReusableOpenConnectedChannel() throws Exception {
+        sftp.init();
+
+        sftp.openConnectedChannel(2);
+
+        verify(jsch).addIdentity("SSCS-SFTP", "key".getBytes(), null, null);
+        verify(jsch).getSession("user", "host", 123);
+        verify(session).setConfig("StrictHostKeyChecking", "no");
+        verify(session).connect(60000);
+        verify(session, times(2)).openChannel("sftp");
+        verify(channel, times(2)).connect();
+        verify(channel).cd("in");
+    }
+
 }

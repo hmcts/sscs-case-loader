@@ -76,7 +76,7 @@ public class SftpChannelAdapter {
      * @param channelId is the ID of the reusable channel to open.
      * @return a connected reusable channel.
      */
-    protected ChannelSftp openConnectedChannel(int channelId) throws JSchException {
+    public ChannelSftp openConnectedChannel(int channelId) throws JSchException {
 
         Session session = openSession();
         Map<Integer, ChannelSftp> channels = threadChannels.get();
@@ -209,7 +209,7 @@ public class SftpChannelAdapter {
         }
     }
 
-    private void close() {
+    public void close() {
         Session session = threadSession.get();
         if (session != null) {
             session.disconnect();
