@@ -2,8 +2,9 @@ package uk.gov.hmcts.reform.sscs.services.sftp;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,13 +16,11 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Vector;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,8 +78,7 @@ public class SftpChannelAdapterTest {
         sftp = new SftpChannelAdapter(jsch, props);
     }
 
-    @After
-    public void tearDown() throws JSchException, SftpException {
+    private void verifyConnection() throws JSchException, SftpException {
         verify(jsch).addIdentity("SSCS-SFTP", "key".getBytes(), null, null);
         verify(jsch).getSession("user", "host", 123);
         verify(session).setConfig("StrictHostKeyChecking", "no");
@@ -92,14 +90,16 @@ public class SftpChannelAdapterTest {
     }
 
     @Test
-    public void shouldCheckDirectoriesGivenInitialising() throws SftpException {
+    public void shouldCheckDirectoriesGivenInitialising() throws Exception {
         sftp.init();
         verify(channel).stat("processed/");
         verify(channel).stat("failed/");
+
+        verifyConnection();
     }
 
     @Test
-    public void shouldCreateDirectoriesGivenNoneSet() throws SftpException {
+    public void shouldCreateDirectoriesGivenNoneSet() throws Exception {
         doThrow(new SftpException(1, "")).when(channel).stat("processed/");
         doThrow(new SftpException(1, "")).when(channel).stat("failed/");
 
@@ -109,11 +109,30 @@ public class SftpChannelAdapterTest {
         verify(channel).stat("failed/");
         verify(channel).mkdir("processed/");
         verify(channel).mkdir("failed/");
+
+        verifyConnection();
+    }
+
+    @Test(expected = SftpCustomException.class)
+    public void shouldNotCreateDirectoriesGivenNoneSetAndThrowException() throws SftpException {
+        doThrow(SftpException.class).when(channel).stat(anyString());
+        doThrow(SftpException.class).when(channel).mkdir(anyString());
+
+        sftp.init();
+
+    }
+
+    @Test(expected = SftpCustomException.class)
+    public void shouldThrowExceptionOnInitializeJch() throws JSchException {
+        doThrow(JSchException.class).when(jsch).addIdentity(any(), any(), any(), any());
+
+        sftp.init();
+
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnListOfFilesGivenPath() throws SftpException {
+    public void shouldReturnListOfFilesGivenPath() throws Exception {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry, entry, entry, entry, entry);
 
         when(entry.getFilename())
@@ -136,11 +155,13 @@ public class SftpChannelAdapterTest {
         assertThat(list.get(5).getName(), is(dname3));
 
         verify(channel).ls("*.xml");
+
+        verifyConnection();
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnFilesGivenProcessedFilesExists() throws SftpException {
+    public void shouldReturnFilesGivenProcessedFilesExists() throws Exception {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry, entry);
 
         when(entry.getFilename()).thenReturn(dname1).thenReturn(dname2);
@@ -152,11 +173,13 @@ public class SftpChannelAdapterTest {
         assertThat(list.get(1).getName(), is(dname2));
 
         verify(channel).ls("processed/*.xml");
+
+        verifyConnection();
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldReturnFileGivenFailedFileExists() throws SftpException {
+    public void shouldReturnFileGivenFailedFileExists() throws Exception {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList(entry);
 
         when(entry.getFilename()).thenReturn(dname1);
@@ -167,14 +190,18 @@ public class SftpChannelAdapterTest {
         assertThat(list.get(0).getName(), is(dname1));
 
         verify(channel).ls("failed/*.xml");
+
+        verifyConnection();
     }
 
     @Test
-    public void shouldReturnInputStreamGivenAFileName() throws IOException, SftpException {
+    public void shouldReturnInputStreamGivenAFileName() throws Exception {
         InputStream is = sftp.getInputStream("xxx");
         assertThat(IOUtils.toString(is, Charset.defaultCharset()), is("abc"));
 
         verify(channel).get("xxx");
+
+        verifyConnection();
     }
 
     @Test
@@ -193,6 +220,7 @@ public class SftpChannelAdapterTest {
         sftp.move(true, "xxx");
         verify(channel).connect();
         verify(channel).put(SftpChannelAdapter.DUMMY, "processed/xxx");
+        verifyConnection();
     }
 
     @Test(expected = SftpCustomException.class)
