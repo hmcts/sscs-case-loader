@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.job;
 
+import com.microsoft.applicationinsights.TelemetryClient;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 public class SscsCaseLoaderJob {
 
     private final CaseLoaderService caseLoaderService;
+    private TelemetryClient telemetry = new TelemetryClient();
 
     @Autowired
     public SscsCaseLoaderJob(CaseLoaderService caseLoaderService) {
@@ -33,6 +35,10 @@ public class SscsCaseLoaderJob {
             log.error(logPrefix + " scheduler failed at "
                         + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                         + " due to exception: ", e);
+        } finally {
+            telemetry.flush();
+            //Allow some time for flushing before shutting down
+            Thread.sleep(5000);
         }
     }
 
