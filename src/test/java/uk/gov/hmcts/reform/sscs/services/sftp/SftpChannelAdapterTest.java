@@ -268,11 +268,12 @@ public class SftpChannelAdapterTest {
     @Test
     public void shouldCloseAllSessions() throws Exception {
         sftp.init();
+        sftp.openConnectedChannel(2);
 
         sftp.close();
 
         verify(session).disconnect();
-        verifyConnection();
+        verify(channel).disconnect();
 
     }
 
