@@ -8,7 +8,6 @@ import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,12 +30,8 @@ public class SftpChannelAdapter {
     private final JSch jsch;
     private final SftpSshProperties sftpSshProperties;
 
-    protected ThreadLocal<Session> threadSession;
-    protected ThreadLocal<Map<Integer, ChannelSftp>> threadChannels;
-
-    // Define reusable channels
-    private static final int CHANNEL_1 = 0;
-    private static final int CHANNEL_IN  = 2;
+    private ThreadLocal<Session> threadSession;
+    private ThreadLocal<Map<Integer, ChannelSftp>> threadChannels;
 
     @Autowired
     public SftpChannelAdapter(JSch jsch, SftpSshProperties sftpSshProperties) {
@@ -144,68 +139,56 @@ public class SftpChannelAdapter {
     }
 
     public List<Gaps2File> listIncoming() {
-        return list(true,"");
+        return list("");
     }
 
     public List<Gaps2File> listFailed() {
-        return list(true, FAILED_DIR);
+        return list(FAILED_DIR);
     }
 
     public List<Gaps2File> listProcessed() {
-        return list(true, PROCESSED_DIR);
+        return list(PROCESSED_DIR);
     }
 
     @SuppressWarnings("unchecked")
-    private List<Gaps2File> list(boolean closeSession, String path) {
+    private List<Gaps2File> list(String path) {
         ChannelSftp channel = null;
         List<ChannelSftp.LsEntry> ls;
         try {
-            channel = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_1);
+            channel = openConnectedChannel();
             ls = channel.ls(String.format("%s*.xml", path));
             return ls.stream().map(e -> new Gaps2File(e.getFilename(), e.getAttrs().getSize()))
                     .sorted()
                     .collect(Collectors.toList());
-        } catch (JSchException | SftpException e) {
+        } catch (SftpException e) {
             throw new SftpCustomException("Failed reading incoming directory", e);
         } catch (Exception e) {
             return Lists.emptyList();
         } finally {
-            if (closeSession) {
-                close();
-            }
+            close();
         }
 
     }
 
     public InputStream getInputStream(String fileName) {
-        return getInputStream(fileName, true);
-    }
-
-    private InputStream getInputStream(String fileName, boolean closeSession) {
         ChannelSftp sftp = null;
         try {
-            sftp = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_IN);
+            sftp = openConnectedChannel();
             return sftp.get(fileName);
-        } catch (JSchException | SftpException e) {
+        } catch (SftpException e) {
             throw new SftpCustomException("Failed reading file stream", fileName, e);
         }
     }
 
     public void move(boolean success, String fileName) {
-        move(success, fileName, true);
-    }
-
-    private void move(boolean success, String fileName, boolean closeSession) {
         ChannelSftp sftp = null;
         try {
-            sftp = (closeSession) ? openConnectedChannel() : openConnectedChannel(CHANNEL_1);
+            sftp = openConnectedChannel();
             sftp.put(DUMMY, String.format("%s%s", success ? PROCESSED_DIR : FAILED_DIR, fileName));
-        } catch (JSchException | SftpException e) {
+        } catch (SftpException e) {
             throw new SftpCustomException("Failed moving file", fileName, e);
         } finally {
-            if (closeSession) {
-                close();
-            }
+            close();
         }
     }
 
@@ -217,14 +200,12 @@ public class SftpChannelAdapter {
         }
         Map<Integer, ChannelSftp> channels = threadChannels.get();
         if (channels != null) {
-            Iterator<Map.Entry<Integer, ChannelSftp>> itr = channels.entrySet().iterator();
-            while (itr.hasNext()) {
-                Map.Entry<Integer, ChannelSftp> entry = itr.next();
+            channels.entrySet().forEach(entry -> {
                 ChannelSftp channel = entry.getValue();
                 if (channel != null) {
                     channel.disconnect();
                 }
-            }
+            });
             channels.clear();
             threadChannels.remove();
         }
