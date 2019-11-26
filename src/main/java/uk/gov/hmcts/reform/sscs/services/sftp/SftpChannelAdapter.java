@@ -113,7 +113,7 @@ public class SftpChannelAdapter {
         return channel;
     }
 
-    protected Session openSession() {
+    private Session openSession() {
         Session session = threadSession.get();
         if (session == null) {
             session = statelessConnect();
@@ -122,7 +122,7 @@ public class SftpChannelAdapter {
         return session;
     }
 
-    protected Session statelessConnect() {
+    private Session statelessConnect() {
         Session session = null;
         try {
             initializeJch();
