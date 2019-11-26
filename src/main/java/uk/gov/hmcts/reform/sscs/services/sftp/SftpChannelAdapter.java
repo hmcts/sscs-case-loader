@@ -200,8 +200,7 @@ public class SftpChannelAdapter {
         }
         Map<Integer, ChannelSftp> channels = threadChannels.get();
         if (channels != null) {
-            channels.entrySet().forEach(entry -> {
-                ChannelSftp channel = entry.getValue();
+            channels.forEach((key, channel) -> {
                 if (channel != null) {
                     channel.disconnect();
                 }
