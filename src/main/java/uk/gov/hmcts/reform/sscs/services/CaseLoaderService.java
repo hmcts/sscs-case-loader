@@ -138,8 +138,14 @@ public class CaseLoaderService {
 
     private void processDelta(Gaps2File file) {
         startFileMetrics(file);
-        List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-        fileMetrics.setRecordCount(cases.size());
+        List<SscsCaseData> cases;
+        try {
+            cases = transformService.transform(sftpSshService.readExtractFile(file));
+            fileMetrics.setRecordCount(cases.size());
+        } catch (Exception e) {
+            raiseException(file, e, " error while transforming the file: ");
+            return;
+        }
         log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
         int counter = 0;
         IdamTokens idamTokens = idamService.getIdamTokens();
@@ -161,16 +167,20 @@ public class CaseLoaderService {
             try {
                 processCase(idamTokens, caseData);
             } catch (Exception e) {
-                sftpSshService.move(file, false);
-                log.error(logPrefix + " Error while processing the file: {} "
-                        + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-                        + " due to exception: ", file.getName(), e);
-                throw new CcdException(logPrefixWithFile + " Error processing the file: "
-                        + file.getName(), e);
-
+                raiseException(file, e, " error while processing the file: ");
+                return;
             }
             counter++;
         }
+    }
+
+    private void raiseException(Gaps2File file, Exception e, String message) {
+        sftpSshService.move(file, false);
+        log.error(logPrefix + message + " {} "
+                + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                + " due to exception: ", file.getName(), e);
+        throw new CcdException(logPrefixWithFile + message
+                + file.getName(), e);
     }
 
     private void startFileMetrics(Gaps2File file) {
