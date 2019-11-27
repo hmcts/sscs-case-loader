@@ -1,8 +1,0 @@
-infrastructure_env = "preprod"
-gaps2_sftp_user = "sftp-aat"
-ignore_cases_before_date = "2088-01-01"
-idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
-gaps2_sftp_dir = "/incoming"
-root_logging_level = "INFO"
-log_level_spring_web = "INFO"
-log_level_sscs = "INFO"
