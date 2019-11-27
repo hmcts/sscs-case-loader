@@ -1,5 +1,0 @@
-infrastructure_env = "preprod"
-gaps2_sftp_user = "sftp-aat"
-ignore_cases_before_date = "1970-01-01"
-idam_redirect_url = "https://evidence-sharing-preprod.sscs.reform.hmcts.net"
-gaps2_sftp_dir = "/incoming"
