@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
@@ -18,7 +19,9 @@ import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 public class SscsCaseLoaderJob {
 
     private final CaseLoaderService caseLoaderService;
-    private static final int SHUTDOWN_DELAY_TIME = 7;
+
+    @Value("${sscs.case.loader.shutdown.delay.time}")
+    private int shutdownDelayTime;
 
     @Autowired
     public SscsCaseLoaderJob(CaseLoaderService caseLoaderService) {
@@ -43,7 +46,7 @@ public class SscsCaseLoaderJob {
 
         log.info("case loader Shutting down...");
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(new CaseLoaderTimerTask(), SHUTDOWN_DELAY_TIME, TimeUnit.MINUTES);
+        executorService.schedule(new CaseLoaderTimerTask(), shutdownDelayTime, TimeUnit.MINUTES);
         executorService.shutdown();
     }
 
