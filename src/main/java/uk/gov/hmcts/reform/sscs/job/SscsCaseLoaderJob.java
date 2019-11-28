@@ -3,16 +3,22 @@ package uk.gov.hmcts.reform.sscs.job;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
+import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
 @Component
 @Slf4j
 public class SscsCaseLoaderJob {
 
     private final CaseLoaderService caseLoaderService;
+    private static final int SHUTDOWN_DELAY_TIME = 7;
 
     @Autowired
     public SscsCaseLoaderJob(CaseLoaderService caseLoaderService) {
@@ -34,6 +40,11 @@ public class SscsCaseLoaderJob {
                         + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                         + " due to exception: ", e);
         }
+
+        log.info("case loader Shutting down...");
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.schedule(new CaseLoaderTimerTask(), SHUTDOWN_DELAY_TIME, TimeUnit.MINUTES);
+        executorService.shutdown();
     }
 
 }
