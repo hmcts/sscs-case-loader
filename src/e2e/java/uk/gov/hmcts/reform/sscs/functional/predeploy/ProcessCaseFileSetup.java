@@ -61,10 +61,10 @@ public class ProcessCaseFileSetup {
             .build();
 
         log.info("Building minimal case data...");
-        SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
+        SscsCaseData minimalCaseData = CaseDataUtils.buildMinimalCaseData();
 
         log.info("Creating CCD case...");
-        SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+        SscsCaseDetails caseDetails = ccdService.createCase(minimalCaseData, "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
 
         ccdCaseId = String.valueOf(caseDetails.getId());
