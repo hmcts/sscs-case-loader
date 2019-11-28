@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,11 @@ public class CaseLoaderApp {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(CaseLoaderApp.class, args);
+        try {
+            TimeUnit.MINUTES.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SpringApplication.exit(context);
     }
 
