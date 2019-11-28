@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
-import uk.gov.hmcts.reform.sscs.exceptions.CcdException;
+import uk.gov.hmcts.reform.sscs.exceptions.ProcessDeltaException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -138,16 +138,28 @@ public class CaseLoaderService {
 
     private void processDelta(Gaps2File file) {
         startFileMetrics(file);
-        List<SscsCaseData> cases = transformService.transform(sftpSshService.readExtractFile(file));
-        fileMetrics.setRecordCount(cases.size());
-        log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
-        int counter = 0;
-        IdamTokens idamTokens = idamService.getIdamTokens();
-        processCasesFromDelta(file, cases, counter, idamTokens);
-        fileMetrics.setEndTime();
+        List<SscsCaseData> cases;
+        try {
+            cases = transformService.transform(sftpSshService.readExtractFile(file));
+            fileMetrics.setRecordCount(cases.size());
+
+            log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
+            int counter = 0;
+            IdamTokens idamTokens = idamService.getIdamTokens();
+            processCasesFromDelta(cases, counter, idamTokens);
+            fileMetrics.setEndTime();
+        } catch (Exception e) {
+            sftpSshService.move(file, false);
+            log.error(logPrefix + " error while processing the file:  {} "
+                    + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                    + " due to exception: ", file.getName(), e);
+            throw new ProcessDeltaException(logPrefixWithFile + " error while processing the file: "
+                    + file.getName(), e);
+
+        }
     }
 
-    private void processCasesFromDelta(Gaps2File file, List<SscsCaseData> cases, int counter, IdamTokens idamTokens) {
+    private void processCasesFromDelta(List<SscsCaseData> cases, int counter, IdamTokens idamTokens) {
         for (SscsCaseData caseData : cases) {
             if (caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 continue;
@@ -158,17 +170,7 @@ public class CaseLoaderService {
                 log.info(logPrefixWithFile + " renew idam token successfully");
                 counter = 0;
             }
-            try {
-                processCase(idamTokens, caseData);
-            } catch (Exception e) {
-                sftpSshService.move(file, false);
-                log.error(logPrefix + " Error while processing the file: {} "
-                        + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-                        + " due to exception: ", file.getName(), e);
-                throw new CcdException(logPrefixWithFile + " Error processing the file: "
-                        + file.getName(), e);
-
-            }
+            processCase(idamTokens, caseData);
             counter++;
         }
     }
