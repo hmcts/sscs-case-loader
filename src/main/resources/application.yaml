@@ -75,6 +75,7 @@ sscs.case.loader:
   cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0/10 * * * * ?}
   ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:1017-07-01}
   url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
+  shutdown.delay.time: 7
 
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}

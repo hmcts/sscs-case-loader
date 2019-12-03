@@ -96,12 +96,14 @@ public class CaseLoaderService {
             refDataFactory.extract(sftpSshService.readExtractFile(file));
             return file;
         } catch (XMLStreamException e) {
+            sftpSshService.closeChannelAdapter();
             throw new TransformException(logPrefixWithFile + " Error processing reference file", e);
         }
     }
 
     private void throwExceptionIfRefFileIsNotLoaded(Gaps2File latestRef, Gaps2File file) {
         if (null == latestRef) {
+            sftpSshService.closeChannelAdapter();
             throw new TransformException(String.format(logPrefixWithFile
                     + " No reference data processed for this delta: %s",
                 file.getName()));
