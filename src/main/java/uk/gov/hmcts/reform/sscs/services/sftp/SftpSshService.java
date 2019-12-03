@@ -39,4 +39,8 @@ public class SftpSshService {
     public InputStream readExtractFile(Gaps2File file) {
         return channelAdapter.getInputStream(file.getName());
     }
+
+    public void closeChannelAdapter() {
+        channelAdapter.close();
+    }
 }

@@ -21,7 +21,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
-import uk.gov.hmcts.reform.sscs.exceptions.CcdException;
+import uk.gov.hmcts.reform.sscs.exceptions.ProcessDeltaException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -182,7 +182,7 @@ public class CaseLoaderServiceTest {
         caseLoaderService.process();
     }
 
-    @Test(expected = CcdException.class)
+    @Test(expected = ProcessDeltaException.class)
     public void shouldThrowExceptionWhileUpdatingCase() {
         final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
         caseData.setCaseReference(null);

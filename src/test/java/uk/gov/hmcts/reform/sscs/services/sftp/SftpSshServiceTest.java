@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.sftp;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,5 +77,11 @@ public class SftpSshServiceTest {
 
         InputStream result = service.readExtractFile(file);
         assertThat(result, is(is));
+    }
+
+    @Test
+    public void shouldCloseChannelAdapter() {
+        channelAdapter.close();
+        assertTrue(true);
     }
 }

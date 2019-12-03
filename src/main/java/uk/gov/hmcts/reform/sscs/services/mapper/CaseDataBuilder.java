@@ -165,6 +165,10 @@ class CaseDataBuilder {
                         .build();
 
                     String appealTime = hearing.getAppealTime();
+                    String activeInActive = getActiveInActiveVenueInfo(venueDetails);
+                    log.info("Hearing booked for case {} on {} at {} venue {}",
+                            appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
+                            venueDetails.getVenueId());
                     hearings = HearingDetails.builder()
                         .venue(venue)
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
@@ -181,12 +185,15 @@ class CaseDataBuilder {
                             appealCase.getAppealCaseId(),
                             appealCase.getAppealCaseRefNum(),
                             hearing.getSessionDate());
-                    return Collections.emptyList();
                 }
             }
         }
 
         return hearingsList;
+    }
+
+    private String getActiveInActiveVenueInfo(VenueDetails venueDetails) {
+        return "Yes".equalsIgnoreCase(venueDetails.getActive()) ? "active" : "inactive";
     }
 
     Evidence buildEvidence(AppealCase appealCase) {

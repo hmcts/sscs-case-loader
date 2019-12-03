@@ -1,10 +1,12 @@
 #!groovy
-@Library("Infrastructure") _
-
 properties([
   [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/sscs-case-loader.git'],
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
+
+@Library("Infrastructure")
+
+import uk.gov.hmcts.contino.GradleBuilder
 
 def type = "java"
 def product = "sscs"
@@ -21,9 +23,9 @@ def secrets = [
     secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
     secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
     secret('idam-api', 'IDAM_URL'),
-    secret('idam-s2s-api', 'IDAM.S2S-AUTH'),
-    secret('sscs-s2s-secret', 'IDAM.S2S-AUTH.TOTP_SECRET'),
-    secret('s2s-micro', 'IDAM.S2S-AUTH.MICROSERVICE'),
+    secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
+    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
     secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
     secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
     secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
@@ -41,13 +43,40 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {
-  onPR {
-    log.info(env.CHANGE_TITLE)
-    env.CHANGE_TITLE = '[PREVIEW] ' + env.CHANGE_TITLE
-    log.info(env.CHANGE_TITLE)
-  }
-  enableSlackNotifications('#sscs-tech')
+  enableDockerBuild()
+  installCharts()
   loadVaultSecrets(secrets)
+  enableSlackNotifications('#sscs-tech')
+  if ("demo"  != "${env.BRANCH_NAME}") {
+    enableAksStagingDeployment()
+    disableLegacyDeployment()
+  }
+  nonServiceApp()
+
+
+
+  before('akschartsinstall') {
+    echo "Setting up data for functional tests"
+    try {
+      builder.gradle('functionalPreDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
+    }
+  }
+
+  after('akschartsinstall') {
+    echo "Checking case number:"
+    sh "cat ccdCaseId.tmp"
+    echo "Just waiting a while to ensure that the pod has run the job"
+    sh "sleep 120s"
+    echo "Verifying that functional test data was processed correctly"
+    try {
+      builder.gradle('functionalPostDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
+    }
+  }
 }
