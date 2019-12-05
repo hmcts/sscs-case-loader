@@ -28,6 +28,8 @@ class CaseDataEventBuilder {
     private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
         postponedEventInferredFromDelta;
     private final PostponedEventService<Hearing> postponedEventInferredFromCcd;
+    private final List<String> alreadyExistsEventList = Arrays.asList(GapsEvent.RESPONSE_RECEIVED.getType(),
+            GapsEvent.APPEAL_RECEIVED.getType());
 
     @Autowired
     CaseDataEventBuilder(
@@ -178,11 +180,11 @@ class CaseDataEventBuilder {
                     .description(gapsEvent.getDescription())
                     .date(majorStatus.getDateSet().toLocalDateTime().toString())
                     .build();
-                boolean responseReceivedEventAlreadyPresent = events.stream()
-                    .anyMatch(e -> e.getValue().getType().equals(GapsEvent.RESPONSE_RECEIVED.getType()));
+                boolean eventAlreadyPresent = events.stream()
+                        .filter(e -> e.getValue().getType().equals(event.getType()))
+                        .anyMatch(e -> alreadyExistsEventList.contains(e.getValue().getType()));
 
-                if (!(event.getType().equals(GapsEvent.RESPONSE_RECEIVED.getType())
-                    && responseReceivedEventAlreadyPresent)) {
+                if (!(alreadyExistsEventList.contains(event.getType()) && eventAlreadyPresent)) {
                     events.add(Event.builder()
                         .value(event)
                         .build());
