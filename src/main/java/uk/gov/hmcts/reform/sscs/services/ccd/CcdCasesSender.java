@@ -91,8 +91,7 @@ public class CcdCasesSender {
     private void updateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
                             IdamTokens idamTokens, String eventType) {
         existingCcdCaseData.setCaseReference(caseData.getCaseReference());
-        updateCcdCaseService
-            .updateCase(existingCcdCaseData, existingCaseId, eventType,
+        updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
                 SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
     }
 

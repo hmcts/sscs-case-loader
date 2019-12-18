@@ -42,7 +42,7 @@ public class ReferenceDataServiceTest {
         VenueDetails venueDetails = VenueDetails.builder()
             .venueId("43")
             .threeDigitReference("SC043")
-            .regionalProcessingCentre("SSCS Birmingham")
+            .regionalProcessingCentre("SSCS Bradford")
             .venName("Milton Keynes Magistrates Court")
             .venAddressLine1("301 Silbury Boulevard")
             .venAddressLine2("Witan Gate East")
