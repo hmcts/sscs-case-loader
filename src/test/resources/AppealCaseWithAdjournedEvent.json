@@ -1,0 +1,63 @@
+{
+  "Appeal_Case_Date_of_Decision": "2018-02-25T00:00:00+00:00",
+  "Admin_Team_Id": 68,
+  "Originating_Office_Id": 1682,
+  "Additional_Ref": 1577982714284395,
+  "Appeal_Case_RefNum": "SC068/18/01217",
+  "Major_Status": [
+    {
+      "BF_Date": "2018-05-01T00:00:00+01:00",
+      "Status_Id": 24,
+      "Date_Set": "2018-03-08T07:33:56.07+00:00"
+    },
+    {
+      "BF_Date": "2018-05-01T00:00:00+01:00",
+      "Status_Id": 18,
+      "Date_Set": "2018-03-07T07:33:56.07+00:00"
+    },
+    {
+      "BF_Date": "2018-04-10T00:00:00+01:00",
+      "Status_Id": 3,
+      "Date_Set": "2018-03-06T08:33:56.07+00:00"
+    },
+    {
+      "BF_Date": "2018-03-06T00:00:00+01:00",
+      "Status_Id": 600,
+      "Date_Closed": "2018-03-06T07:34:00+00:00",
+      "Date_Set": "2018-03-06T07:33:36.007+00:00"
+    }
+  ],
+  "Extract_Time_UTC": "2018-03-06T20:26:05.1+00:00",
+  "Appeal_Case_BF_Date": "2018-04-10T00:00:00+01:00",
+  "Appeal_Case_Confidential": "N",
+  "Parties": [{
+    "INITIALS": "S",
+    "Interpreter_Signer_Id": 206,
+    "Email": "shuvla@hotmail.com",
+    "PTTP_ID": 5534639,
+    "DOB": "1982-12-10T00:00:00+00:00",
+    "Title": "Miss",
+    "Attending": "Y",
+    "Phone_1": "07704244054",
+    "Disability_Needs": "N",
+    "Surname": "Test",
+    "Postcode": "L24 4BG",
+    "Role_Id": 4
+  }],
+  "Hearing": [{
+    "Outcome_Id": 113,
+    "Venue_Id": 68,
+    "Date_Outcome_Decision_Notification": "2017-05-24T00:00:00+01:00",
+    "Date_Hearing_Notification": "2017-05-24T00:00:00+01:00",
+    "Session_Date": "2017-05-24T00:00:00+01:00",
+    "Appeal_Time": "2017-05-24T11:00:00+01:00",
+    "Hearing_Id": 289784
+  }],
+  "Tribunal_Type_Id": 2,
+  "Appeal_Case_NINO": "NW 23 34 45 A",
+  "Appeal_Case_Id": 3553607,
+  "Appeal_Case_Major_Id": 3,
+  "Appeal_Case_Case_Code_Id": 1707,
+  "Appeal_Case_Date_Appeal_Made": "2018-03-05T00:00:00+00:00",
+  "Appeal_Case_Date_Appeal_Received": "2018-03-05T00:00:00+00:00"
+}

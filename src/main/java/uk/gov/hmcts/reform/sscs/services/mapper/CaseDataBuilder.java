@@ -167,24 +167,24 @@ class CaseDataBuilder {
                     String appealTime = hearing.getAppealTime();
                     String activeInActive = getActiveInActiveVenueInfo(venueDetails);
                     log.info("Hearing booked for case {} on {} at {} venue {}",
-                            appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
-                            venueDetails.getVenueId());
+                        appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
+                        venueDetails.getVenueId());
                     hearings = HearingDetails.builder()
                         .venue(venue)
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
                         .time((appealTime == null) ? "00:00:00" : appealTime.substring(11, 19))
-                        .adjourned(isAdjourned(appealCase.getMajorStatus()) ? YES : NO)
+                        .adjourned(isAdjourned(appealCase.getMajorStatus(), appealCase.getHearing()) ? YES : NO)
                         .hearingId(hearing.getHearingId())
                         .build();
 
                     hearingsList.add(uk.gov.hmcts.reform.sscs.ccd.domain.Hearing.builder().value(hearings).build());
                 } else {
                     log.info("*** case-loader *** venue missing: {} for CCD ID {} / SC number {} "
-                                    + "and hearing session date {}",
-                            appealCase.getHearing().get(0).getVenueId(),
-                            appealCase.getAppealCaseId(),
-                            appealCase.getAppealCaseRefNum(),
-                            hearing.getSessionDate());
+                            + "and hearing session date {}",
+                        appealCase.getHearing().get(0).getVenueId(),
+                        appealCase.getAppealCaseId(),
+                        appealCase.getAppealCaseRefNum(),
+                        hearing.getSessionDate());
                 }
             }
         }
@@ -238,8 +238,27 @@ class CaseDataBuilder {
         return dwpTimeExtensionList;
     }
 
-    private boolean isAdjourned(List<MajorStatus> majorStatusList) {
-        return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()));
+    private boolean isAdjourned(List<MajorStatus> majorStatusList, List<Hearing> hearing) {
+        return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()))
+            || isAdjournedBasedOnOutcomeId(hearing);
+    }
+
+    private boolean isAdjournedBasedOnOutcomeId(List<Hearing> hearing) {
+        return hearing.stream()
+            .filter(h -> null != h.getOutcomeId())
+            .map(h -> getOutcomeIdAsNumber(h.getOutcomeId()))
+            .filter(outcomeId -> outcomeId >= 110)
+            .anyMatch(outcomeId -> outcomeId <= 126);
+    }
+
+    private int getOutcomeIdAsNumber(String outcomeId) {
+        try {
+            return Integer.parseInt(outcomeId);
+        } catch (NumberFormatException e) {
+            log.info("Wrong outcomeId({}) format was found. Expected is a number."
+            + "We set it to zero to be able to continue...", outcomeId);
+            return 0;
+        }
     }
 
     Subscriptions buildSubscriptions(final Optional<Parties> appellantParty,
