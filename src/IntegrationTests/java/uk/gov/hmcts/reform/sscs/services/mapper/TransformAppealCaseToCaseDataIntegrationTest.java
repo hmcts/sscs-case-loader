@@ -49,7 +49,8 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
 
     @Test
     @Parameters({"100, No", "110, Yes", "115, Yes", "126, Yes", "200, No", "0, No"})
-    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(String outcomeId, String expectedHearingAdjourned) {
+    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(String outcomeId,
+                                                                       String expectedHearingAdjourned) {
         setOutcomeIdValue(appealCase, outcomeId);
 
         final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
