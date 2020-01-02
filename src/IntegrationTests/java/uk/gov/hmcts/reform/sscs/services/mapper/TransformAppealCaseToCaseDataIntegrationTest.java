@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCase
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,17 +38,19 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
 
     @Autowired
     private TransformAppealCaseToCaseData transformAppealCaseToCaseData;
+    private AppealCase appealCase;
 
-    @Test
-    @Parameters({"100, No", "110, Yes", "115, Yes", "126, Yes", "200, No", "0, No", "wrongFormat, No"})
-    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(
-        String outcomeId, String expectedHearingAdjourned) throws Exception {
-
-        final AppealCase appealCase = getAppealCase("AppealCaseWithAdjournedEventCreatedByOutcomeId.json");
-        setOutcomeIdValue(appealCase, outcomeId);
-
+    @Before
+    public void setUp() throws Exception {
         when(referenceDataService.getBenefitType(anyString())).thenReturn("pip");
         when(referenceDataService.getVenueDetails(anyString())).thenReturn(VenueDetails.builder().build());
+        appealCase = getAppealCase("AppealCaseWithAdjournedEventCreatedByOutcomeId.json");
+    }
+
+    @Test
+    @Parameters({"100, No", "110, Yes", "115, Yes", "126, Yes", "200, No", "0, No"})
+    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(String outcomeId, String expectedHearingAdjourned) {
+        setOutcomeIdValue(appealCase, outcomeId);
 
         final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
 
@@ -59,4 +62,10 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
         appealCase.getHearing().set(0, appealCase.getHearing().get(0).toBuilder().outcomeId(outcomeId).build());
     }
 
+    @Test(expected = NumberFormatException.class)
+    public void givenHearingAdjournedEventWithWrongOutcomeIdFormat_shouldThrowException() {
+        setOutcomeIdValue(appealCase, "wrongFormat");
+
+        final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+    }
 }
