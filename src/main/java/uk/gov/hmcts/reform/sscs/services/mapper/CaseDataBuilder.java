@@ -255,8 +255,7 @@ class CaseDataBuilder {
         try {
             return Integer.parseInt(outcomeId);
         } catch (NumberFormatException e) {
-            String msg = String.format("Wrong outcomeId(%s) format was found. Expected format is a number. "
-                + "We set it to zero to be able to continue...", outcomeId);
+            String msg = String.format("Wrong outcomeId(%s) format was found. Expected format is a number.", outcomeId);
             throw new NumberFormatException(msg);
         }
     }
