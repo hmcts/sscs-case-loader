@@ -171,7 +171,8 @@ sonarqube {
     property "sonar.projectKey", "SSCSCL"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
-    property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java, **/sscs/services/xml/XmlValidator.java"
+    property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java," +
+      " **/sscs/services/xml/XmlValidator.java, **/sscs/services/mapper/CaseDataBuilder.java"
   }
 }
 
