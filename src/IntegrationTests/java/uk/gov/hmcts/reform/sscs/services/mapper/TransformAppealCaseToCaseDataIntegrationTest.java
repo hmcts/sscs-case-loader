@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCase
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import junitparams.converters.Nullable;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -57,8 +58,10 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
         "0, 90, 126, No, No, Yes",
         "120, 90, 126, Yes, No, Yes",
         "120, 117, 126, Yes, Yes, Yes",
+        ", 117, 126, No, Yes, Yes",
+        "null, 117, 126, No, Yes, Yes",
     })
-    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(String outcomeId0, String outcomeId1,
+    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(@Nullable String outcomeId0, String outcomeId1,
                                                                        String outcomeId2,
                                                                        String expectedHearingAdjourned0,
                                                                        String expectedHearingAdjourned1,
@@ -84,11 +87,15 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
     }
 
     @Test(expected = NumberFormatException.class)
-    public void givenHearingAdjournedEventWithWrongOutcomeIdFormat_shouldThrowException() {
-        setOutcomeIdValue("wrongFormat", "125", "117");
+    @Parameters({
+        "wrongFormat,125,117",
+        ",125,117",
+    })
+    public void givenHearingAdjournedEventWithWrongOutcomeIdFormat_shouldThrowException(@Nullable String outcomeId0,
+                                                                                        String outcomeId1,
+                                                                                        String outcomeId2) {
+        setOutcomeIdValue(outcomeId0, outcomeId1, outcomeId2);
         transformAppealCaseToCaseData.transform(appealCase);
     }
 
-    //hearing is null
-    //hearing outcomeId is null or empty
 }
