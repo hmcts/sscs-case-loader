@@ -48,25 +48,47 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
     }
 
     @Test
-    @Parameters({"100, No", "110, Yes", "115, Yes", "126, Yes", "200, No", "0, No"})
-    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(String outcomeId,
-                                                                       String expectedHearingAdjourned) {
-        setOutcomeIdValue(appealCase, outcomeId);
+    @Parameters({
+        "100, 91, 90, No, No, No",
+        "110, 91, 90, Yes, No, No",
+        "100, 115, 90, No, Yes, No",
+        "100, 90, 126, No, No, Yes",
+        "200, 90, 126, No, No, Yes",
+        "0, 90, 126, No, No, Yes",
+        "120, 90, 126, Yes, No, Yes",
+        "120, 117, 126, Yes, Yes, Yes",
+    })
+    public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(String outcomeId0, String outcomeId1,
+                                                                       String outcomeId2,
+                                                                       String expectedHearingAdjourned0,
+                                                                       String expectedHearingAdjourned1,
+                                                                       String expectedHearingAdjourned2) {
+        setOutcomeIdValue(outcomeId0, outcomeId1, outcomeId2);
 
         final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
 
-        assertThat(caseData.getHearings().size(), is(1));
-        assertThat(caseData.getHearings().get(0).getValue().getAdjourned(), is(expectedHearingAdjourned));
+        assertThat(caseData.getHearings().size(), is(3));
+        assertThat(caseData.getHearings().get(0).getValue().getAdjourned(), is(expectedHearingAdjourned0));
+        assertThat(caseData.getHearings().get(1).getValue().getAdjourned(), is(expectedHearingAdjourned1));
+        assertThat(caseData.getHearings().get(2).getValue().getAdjourned(), is(expectedHearingAdjourned2));
     }
 
-    private void setOutcomeIdValue(AppealCase appealCase, String outcomeId) {
-        appealCase.getHearing().set(0, appealCase.getHearing().get(0).toBuilder().outcomeId(outcomeId).build());
+    private void setOutcomeIdValue(String outcomeId0, String outcomeId1, String outcomeId2) {
+        setOutcomeIdValueForIndex(outcomeId0, 0);
+        setOutcomeIdValueForIndex(outcomeId1, 1);
+        setOutcomeIdValueForIndex(outcomeId2, 2);
+    }
+
+    private void setOutcomeIdValueForIndex(String outcomeId, int index) {
+        appealCase.getHearing().set(index, appealCase.getHearing().get(index).toBuilder().outcomeId(outcomeId).build());
     }
 
     @Test(expected = NumberFormatException.class)
     public void givenHearingAdjournedEventWithWrongOutcomeIdFormat_shouldThrowException() {
-        setOutcomeIdValue(appealCase, "wrongFormat");
-
-        final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+        setOutcomeIdValue("wrongFormat", "125", "117");
+        transformAppealCaseToCaseData.transform(appealCase);
     }
+
+    //hearing is null
+    //hearing outcomeId is null or empty
 }

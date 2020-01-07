@@ -30,29 +30,51 @@
   "Extract_Time_UTC": "2018-03-06T20:26:05.1+00:00",
   "Appeal_Case_BF_Date": "2018-04-10T00:00:00+01:00",
   "Appeal_Case_Confidential": "N",
-  "Parties": [{
-    "INITIALS": "S",
-    "Interpreter_Signer_Id": 206,
-    "Email": "shuvla@hotmail.com",
-    "PTTP_ID": 5534639,
-    "DOB": "1982-12-10T00:00:00+00:00",
-    "Title": "Miss",
-    "Attending": "Y",
-    "Phone_1": "07704244054",
-    "Disability_Needs": "N",
-    "Surname": "Test",
-    "Postcode": "L24 4BG",
-    "Role_Id": 4
-  }],
-  "Hearing": [{
-    "Outcome_Id": 113,
-    "Venue_Id": 68,
-    "Date_Outcome_Decision_Notification": "2017-05-24T00:00:00+01:00",
-    "Date_Hearing_Notification": "2017-05-24T00:00:00+01:00",
-    "Session_Date": "2017-05-24T00:00:00+01:00",
-    "Appeal_Time": "2017-05-24T11:00:00+01:00",
-    "Hearing_Id": 289784
-  }],
+  "Parties": [
+    {
+      "INITIALS": "S",
+      "Interpreter_Signer_Id": 206,
+      "Email": "shuvla@hotmail.com",
+      "PTTP_ID": 5534639,
+      "DOB": "1982-12-10T00:00:00+00:00",
+      "Title": "Miss",
+      "Attending": "Y",
+      "Phone_1": "07704244054",
+      "Disability_Needs": "N",
+      "Surname": "Test",
+      "Postcode": "L24 4BG",
+      "Role_Id": 4
+    }
+  ],
+  "Hearing": [
+    {
+      "Outcome_Id": 91,
+      "Venue_Id": 68,
+      "Date_Outcome_Decision_Notification": "2017-05-24T00:00:00+01:00",
+      "Date_Hearing_Notification": "2017-05-24T00:00:00+01:00",
+      "Session_Date": "2017-05-24T00:00:00+01:00",
+      "Appeal_Time": "2017-05-24T11:00:00+01:00",
+      "Hearing_Id": 289784
+    },
+    {
+      "Outcome_Id": 97,
+      "Venue_Id": 68,
+      "Date_Outcome_Decision_Notification": "2017-05-24T00:00:00+01:00",
+      "Date_Hearing_Notification": "2017-05-24T00:00:00+01:00",
+      "Session_Date": "2017-05-24T00:00:00+01:00",
+      "Appeal_Time": "2017-05-24T11:00:00+01:00",
+      "Hearing_Id": 289785
+    },
+    {
+      "Outcome_Id": 117,
+      "Venue_Id": 68,
+      "Date_Outcome_Decision_Notification": "2017-05-24T00:00:00+01:00",
+      "Date_Hearing_Notification": "2017-05-24T00:00:00+01:00",
+      "Session_Date": "2017-05-24T00:00:00+01:00",
+      "Appeal_Time": "2017-05-24T11:00:00+01:00",
+      "Hearing_Id": 289786
+    }
+  ],
   "Tribunal_Type_Id": 2,
   "Appeal_Case_NINO": "NW 23 34 45 A",
   "Appeal_Case_Id": 3553607,

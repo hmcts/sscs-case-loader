@@ -173,7 +173,7 @@ class CaseDataBuilder {
                         .venue(venue)
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
                         .time((appealTime == null) ? "00:00:00" : appealTime.substring(11, 19))
-                        .adjourned(isAdjourned(appealCase.getMajorStatus(), appealCase.getHearing()) ? YES : NO)
+                        .adjourned(isAdjourned(appealCase.getMajorStatus(), hearing) ? YES : NO)
                         .hearingId(hearing.getHearingId())
                         .build();
 
@@ -238,17 +238,17 @@ class CaseDataBuilder {
         return dwpTimeExtensionList;
     }
 
-    private boolean isAdjourned(List<MajorStatus> majorStatusList, List<Hearing> hearing) {
+    private boolean isAdjourned(List<MajorStatus> majorStatusList, Hearing hearing) {
         return majorStatusList.stream().anyMatch(majorStatus -> "92".equals(majorStatus.getStatusId()))
             || isAdjournedBasedOnOutcomeId(hearing);
     }
 
-    private boolean isAdjournedBasedOnOutcomeId(List<Hearing> hearing) {
-        return hearing.stream()
-            .filter(h -> null != h.getOutcomeId())
-            .map(h -> getOutcomeIdAsNumber(h.getOutcomeId()))
-            .filter(outcomeId -> outcomeId >= 110)
-            .anyMatch(outcomeId -> outcomeId <= 126);
+    private boolean isAdjournedBasedOnOutcomeId(Hearing hearing) {
+        if (null == hearing || StringUtils.isBlank(hearing.getOutcomeId())) {
+            return false;
+        }
+        int outcomeIdAsNumber = getOutcomeIdAsNumber(hearing.getOutcomeId());
+        return outcomeIdAsNumber >= 110 && outcomeIdAsNumber <= 126;
     }
 
     private int getOutcomeIdAsNumber(String outcomeId) {
