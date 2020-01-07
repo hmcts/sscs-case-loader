@@ -58,7 +58,6 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
         "0, 90, 126, No, No, Yes",
         "120, 90, 126, Yes, No, Yes",
         "120, 117, 126, Yes, Yes, Yes",
-        ", 117, 126, No, Yes, Yes",
         "null, 117, 126, No, Yes, Yes",
     })
     public void givenHearingAdjournedEvent_shouldSetAdjournedFlagToYes(@Nullable String outcomeId0, String outcomeId1,
