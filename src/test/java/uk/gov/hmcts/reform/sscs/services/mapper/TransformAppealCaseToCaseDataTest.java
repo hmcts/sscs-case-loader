@@ -281,7 +281,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertEquals("Contact should be equal", expectedContact, caseData.getAppeal().getRep().getContact());
     }
 
-    private AppealCase getAppealCase(String filename) throws Exception {
+    public static AppealCase getAppealCase(String filename) throws Exception {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder
             .json()
             .indentOutput(true)

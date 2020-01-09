@@ -3,7 +3,11 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 import com.google.common.collect.ImmutableMap;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
@@ -29,7 +33,7 @@ class CaseDataEventBuilder {
         postponedEventInferredFromDelta;
     private final PostponedEventService<Hearing> postponedEventInferredFromCcd;
     private final List<String> alreadyExistsEventList = Arrays.asList(GapsEvent.RESPONSE_RECEIVED.getType(),
-            GapsEvent.APPEAL_RECEIVED.getType());
+        GapsEvent.APPEAL_RECEIVED.getType());
 
     @Autowired
     CaseDataEventBuilder(
@@ -97,10 +101,8 @@ class CaseDataEventBuilder {
 
     private boolean isPostponementGranted(AppealCase appealCase) {
         if (appealCase.getPostponementRequests() != null) {
-            return !appealCase.getPostponementRequests().stream()
-                .filter(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()))
-                .collect(Collectors.toList())
-                .isEmpty();
+            return appealCase.getPostponementRequests().stream()
+                .anyMatch(postponementRequests -> "Y".equals(postponementRequests.getPostponementGranted()));
         }
         return false;
     }
@@ -134,7 +136,7 @@ class CaseDataEventBuilder {
 
         List<SscsCaseDetails> sscsCaseDetailsList =
             ccdService.findCaseBy(ImmutableMap.of("case.caseReference", appealCase.getAppealCaseRefNum()),
-            idamTokens);
+                idamTokens);
         if (sscsCaseDetailsList != null && !sscsCaseDetailsList.isEmpty()) {
             return sscsCaseDetailsList.get(0).getData().getHearings();
         }
@@ -149,7 +151,6 @@ class CaseDataEventBuilder {
     private boolean minorStatusIdIs27AndThereIsOnlyOnePostponementRequestGranted(String statusId,
                                                                                  AppealCase appealCase) {
         return "27".equals(statusId) && appealCase.getPostponementRequests() != null
-            && !appealCase.getPostponementRequests().isEmpty()
             && appealCase.getPostponementRequests().size() == 1
             && "Y".equals(appealCase.getPostponementRequests().get(0).getPostponementGranted());
     }
@@ -181,8 +182,8 @@ class CaseDataEventBuilder {
                     .date(majorStatus.getDateSet().toLocalDateTime().toString())
                     .build();
                 boolean eventAlreadyPresent = events.stream()
-                        .filter(e -> e.getValue().getType().equals(event.getType()))
-                        .anyMatch(e -> alreadyExistsEventList.contains(e.getValue().getType()));
+                    .filter(e -> e.getValue().getType().equals(event.getType()))
+                    .anyMatch(e -> alreadyExistsEventList.contains(e.getValue().getType()));
 
                 if (!(alreadyExistsEventList.contains(event.getType()) && eventAlreadyPresent)) {
                     events.add(Event.builder()
@@ -203,8 +204,8 @@ class CaseDataEventBuilder {
     }
 
     private List<Event> getEventsByHearingOutcomeId(AppealCase appealCase,
-                                                     int rangeStart, int rangeEnd,
-                                                     GapsEvent gapsEvent) {
+                                                    int rangeStart, int rangeEnd,
+                                                    GapsEvent gapsEvent) {
         List<Event> events = new ArrayList<>();
         appealCase.getHearing().stream()
             .filter(hearing -> null != hearing.getOutcomeId())
