@@ -28,8 +28,6 @@ sftp:
     jExsyE94Udj65VZ9Jky5WEnEmicFE7JPaZm8Mnb67rMur93siXQ3oyL+
     -----END RSA PRIVATE KEY-----
 
-
-
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:debug}
   uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:debug}

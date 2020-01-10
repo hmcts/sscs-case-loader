@@ -69,7 +69,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     public List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> getHearing() {
         uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing hearing =
-            new uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing("outcome",
+            new uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing("100",
                 "venue",
                 "outcomeDate",
                 "notificationDate",
