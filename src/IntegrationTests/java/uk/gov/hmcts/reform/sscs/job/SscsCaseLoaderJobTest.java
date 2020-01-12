@@ -28,7 +28,7 @@ public class SscsCaseLoaderJobTest {
     @Test
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction() {
         sscsCaseLoaderJob.run();
-        verify(caseLoaderService, times(1)).process();
+        verify(caseLoaderService, times(2)).process();
 
     }
 }
