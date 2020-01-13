@@ -12,6 +12,8 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "idam")
 @Getter
 @Setter
+//FIXME: this is no longer used and we should remove it together with its integraiton test
+// However we CANNOT do it because it is causing the sscsCaseLoaderJob.run() to be run when the Spring context is loaded
 public class IdamProperties {
 
     private Oauth2 oauth2;
