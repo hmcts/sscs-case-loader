@@ -23,9 +23,12 @@ public class SscsCaseLoaderJob {
     @Value("${sscs.case.loader.shutdown.delay.time}")
     private int shutdownDelayTime;
 
+    private final CaseLoaderTimerTask caseLoaderTimerTask;
+
     @Autowired
-    public SscsCaseLoaderJob(CaseLoaderService caseLoaderService) {
+    public SscsCaseLoaderJob(CaseLoaderService caseLoaderService, CaseLoaderTimerTask caseLoaderTimerTask) {
         this.caseLoaderService = caseLoaderService;
+        this.caseLoaderTimerTask = caseLoaderTimerTask;
     }
 
     public void run() {
@@ -46,7 +49,7 @@ public class SscsCaseLoaderJob {
 
         log.info("case loader Shutting down...");
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(new CaseLoaderTimerTask(), shutdownDelayTime, TimeUnit.MINUTES);
+        executorService.schedule(caseLoaderTimerTask, shutdownDelayTime, TimeUnit.MINUTES);
         executorService.shutdown();
     }
 
