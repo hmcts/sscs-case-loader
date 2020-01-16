@@ -167,13 +167,14 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenCreatedInGapsFromFieldSetToReadyToListAndResponseReceivedEvent_thenTriggerCaseUpdatedEvent()
+    @Parameters({"RESPONSE_RECEIVED", "APPEAL_RECEIVED"})
+    public void givenDigitalCaseAndPreGapsEvent_thenTriggerCaseUpdatedEvent(GapsEvent gapsEvent)
         throws IOException {
         when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
             .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
         sscsCaseDetails.getData().setCreatedInGapsFrom(READY_TO_LIST.getCcdType());
-        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        SscsCaseData caseData = buildCaseData(gapsEvent);
         ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
 
         verify(updateCcdCaseService, times(1))
@@ -182,17 +183,18 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenCreatedInGapsFromFieldSetToValidAppealAndResponseReceivedEvent_thenProcessResponseReceivedEvent()
+    @Parameters({"RESPONSE_RECEIVED, DWP_RESPOND", "APPEAL_RECEIVED, APPEAL_RECEIVED"})
+    public void givenNonDigitalCaseAndGapsEvent_thenProcessGapsEvent(GapsEvent gapsEvent, EventType eventType)
         throws IOException {
         when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
             .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
-        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        SscsCaseData caseData = buildCaseData(gapsEvent);
         caseData.setCreatedInGapsFrom(VALID_APPEAL.getCcdType());
         ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
 
         verify(updateCcdCaseService, times(1))
-            .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(DWP_RESPOND.getCcdType()),
+            .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(eventType.getCcdType()),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
