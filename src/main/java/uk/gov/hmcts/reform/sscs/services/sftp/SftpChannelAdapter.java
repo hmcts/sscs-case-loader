@@ -6,12 +6,14 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -174,9 +176,13 @@ public class SftpChannelAdapter {
         ChannelSftp sftp = null;
         try {
             sftp = openConnectedChannel();
-            return sftp.get(fileName);
-        } catch (SftpException e) {
+            InputStream in = sftp.get(fileName);
+            byte[] targetArray = IOUtils.toByteArray(in);
+            return new ByteArrayInputStream(targetArray);
+        } catch (SftpException | IOException e) {
             throw new SftpCustomException("Failed reading file stream", fileName, e);
+        } finally {
+            close();
         }
     }
 
