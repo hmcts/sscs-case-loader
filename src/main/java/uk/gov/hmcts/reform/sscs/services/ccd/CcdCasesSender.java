@@ -68,7 +68,7 @@ public class CcdCasesSender {
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             caseData, existingCcdCaseData);
-        if (isEventResponseReceivedAndCaseReadyToList(caseData, existingCcdCaseData)) {
+        if (isNotValidForDigitalCase(caseData, existingCcdCaseData)) {
             updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
         } else if (UpdateType.EVENT_UPDATE == updateType) {
             updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, caseData.getLatestEventType());
@@ -82,8 +82,9 @@ public class CcdCasesSender {
         }
     }
 
-    private boolean isEventResponseReceivedAndCaseReadyToList(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
-        return caseData.getLatestEventType().equals(DWP_RESPOND.getCcdType())
+    private boolean isNotValidForDigitalCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
+        return (caseData.getLatestEventType().equals(DWP_RESPOND.getCcdType())
+            || caseData.getLatestEventType().equals(APPEAL_RECEIVED.getCcdType()))
             && existingCcdCaseData.getCreatedInGapsFrom() != null
             && existingCcdCaseData.getCreatedInGapsFrom().equals(READY_TO_LIST.getCcdType());
     }
