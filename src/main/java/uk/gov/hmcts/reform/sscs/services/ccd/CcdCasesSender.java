@@ -83,7 +83,8 @@ public class CcdCasesSender {
     }
 
     private boolean isNotValidForDigitalCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
-        return (caseData.getLatestEventType().equals(DWP_RESPOND.getCcdType()) || caseData.getLatestEventType().equals(APPEAL_RECEIVED.getCcdType()))
+        return (caseData.getLatestEventType().equals(DWP_RESPOND.getCcdType())
+            || caseData.getLatestEventType().equals(APPEAL_RECEIVED.getCcdType()))
             && existingCcdCaseData.getCreatedInGapsFrom() != null
             && existingCcdCaseData.getCreatedInGapsFrom().equals(READY_TO_LIST.getCcdType());
     }
