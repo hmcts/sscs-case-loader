@@ -10,20 +10,18 @@ class UpdateCcdCaseData {
     private final UpdateCcdAppellantData updateCcdAppellantData;
     private final UpdateCcdHearingOptions updateCcdHearingOptions;
     private final UpdateCcdHearingType updateCcdHearingType;
-    private final UpdateGeneratedFields updateGeneratedFields;
     private final UpdateDwpTimeExtension updateDwpTimeExtension;
     private final UpdateEvents updateEvents;
     private final UpdateCcdRpc updateCcdRpc;
 
     @Autowired
     UpdateCcdCaseData(UpdateCcdAppellantData updateCcdAppellantData, UpdateCcdHearingOptions updateCcdHearingOptions,
-                      UpdateCcdHearingType updateCcdHearingType, UpdateGeneratedFields updateGeneratedFields,
+                      UpdateCcdHearingType updateCcdHearingType,
                       UpdateDwpTimeExtension updateDwpTimeExtension, UpdateEvents updateEvents,
                       UpdateCcdRpc updateCcdRpc) {
         this.updateCcdAppellantData = updateCcdAppellantData;
         this.updateCcdHearingOptions = updateCcdHearingOptions;
         this.updateCcdHearingType = updateCcdHearingType;
-        this.updateGeneratedFields = updateGeneratedFields;
         this.updateDwpTimeExtension = updateDwpTimeExtension;
         this.updateEvents = updateEvents;
         this.updateCcdRpc = updateCcdRpc;
@@ -33,7 +31,6 @@ class UpdateCcdCaseData {
                                                             SscsCaseData existingCcdCaseData) {
         boolean eventChange = updateEvents.update(gapsCaseData, existingCcdCaseData);
         boolean dataChange = updateCcdData(gapsCaseData, existingCcdCaseData);
-        updateGeneratedFields.updateGeneratedFields(existingCcdCaseData);
         return workOutUpdateType(eventChange, dataChange);
     }
 

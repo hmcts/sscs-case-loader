@@ -81,11 +81,6 @@ public class TransformAppealCaseToCaseData {
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(events)
-            .generatedNino(appeal.getAppellant() != null ? appeal.getAppellant().getIdentity().getNino() : null)
-            .generatedSurname(appeal.getAppellant() != null ? appeal.getAppellant().getName().getLastName() : null)
-            .generatedEmail(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getEmail() : null)
-            .generatedMobile(appeal.getAppellant() != null ? appeal.getAppellant().getContact().getMobile() : null)
-            .generatedDob(appeal.getAppellant() != null ? appeal.getAppellant().getIdentity().getDob() : null)
             .subscriptions(caseDataBuilder.buildSubscriptions(
                 appellantParty, representativeParty, appointeeParty, appealCase.getAppealCaseRefNum())
             )

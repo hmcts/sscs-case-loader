@@ -95,9 +95,6 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
         assertThat(caseData.getAppeal().getHearingType(), is("oral"));
-        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
-        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
-        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
         assertThat(
             caseData.getSubscriptions().getAppellantSubscription().getEmail(),
             is(caseData.getAppeal().getAppellant().getContact().getEmail())
@@ -106,12 +103,9 @@ public class TransformAppealCaseToCaseDataTest {
             caseData.getSubscriptions().getAppellantSubscription().getMobile(),
             is(caseData.getAppeal().getAppellant().getContact().getMobile())
         );
-        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
-        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
-
         String dob = DateHelper.getValidDateOrTime(appealCase.getParties().get(0).getDob(), true);
 
-        assertThat(caseData.getGeneratedDob(), is(dob));
+        assertThat(caseData.getAppeal().getAppellant().getIdentity().getDob(), is(dob));
     }
 
     @Test
@@ -128,13 +122,8 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
         assertThat(caseData.getAppeal().getHearingType(), is("oral"));
-        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
-        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
-        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
-        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
         assertThat(caseData.getSubscriptions().getAppellantSubscription().getEmail(), is(""));
         assertThat(caseData.getSubscriptions().getAppellantSubscription().getMobile(), is(""));
-        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
         assertThat(
             caseData.getSubscriptions().getAppointeeSubscription().getMobile(),
@@ -145,7 +134,7 @@ public class TransformAppealCaseToCaseDataTest {
             is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
         );
 
-        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
+        assertThat(caseData.getAppeal().getAppellant().getIdentity().getDob(), is("1998-01-01"));
     }
 
     @Test
@@ -162,11 +151,6 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
         assertThat(caseData.getAppeal().getHearingType(), is("oral"));
-        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
-        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
-        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
-        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
-        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
         assertThat(
             caseData.getSubscriptions().getAppointeeSubscription().getMobile(),
@@ -174,7 +158,7 @@ public class TransformAppealCaseToCaseDataTest {
         );
         assertThat(caseData.getSubscriptions().getAppointeeSubscription().getEmail(), is(""));
 
-        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
+        assertThat(caseData.getAppeal().getAppellant().getIdentity().getDob(), is("1998-01-01"));
     }
 
     @Test
@@ -191,11 +175,6 @@ public class TransformAppealCaseToCaseDataTest {
         assertThat(caseData.getRegionalProcessingCenter(), is(expectedRegionalProcessingCentre));
         assertThat(caseData.getRegion(), is(expectedRegionName));
         assertThat(caseData.getAppeal().getHearingType(), is("oral"));
-        assertThat(caseData.getGeneratedNino(), is(caseData.getAppeal().getAppellant().getIdentity().getNino()));
-        assertThat(caseData.getGeneratedDob(), is(caseData.getAppeal().getAppellant().getIdentity().getDob()));
-        assertThat(caseData.getGeneratedEmail(), is(caseData.getAppeal().getAppellant().getContact().getEmail()));
-        assertThat(caseData.getGeneratedMobile(), is(caseData.getAppeal().getAppellant().getContact().getMobile()));
-        assertThat(caseData.getGeneratedSurname(), is(caseData.getAppeal().getAppellant().getName().getLastName()));
         assertNotNull(caseData.getSubscriptions().getAppointeeSubscription());
         assertThat(caseData.getSubscriptions().getAppointeeSubscription().getMobile(), is(""));
         assertThat(
@@ -203,7 +182,7 @@ public class TransformAppealCaseToCaseDataTest {
             is(caseData.getAppeal().getAppellant().getAppointee().getContact().getEmail())
         );
 
-        assertThat(caseData.getGeneratedDob(), is("1998-01-01"));
+        assertThat(caseData.getAppeal().getAppellant().getIdentity().getDob(), is("1998-01-01"));
     }
 
     @Test

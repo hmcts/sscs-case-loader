@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -27,8 +25,6 @@ public class UpdateCcdCaseDataTest {
     private UpdateCcdHearingOptions updateCcdHearingOptions;
     @Mock
     private UpdateCcdHearingType updateCcdHearingType;
-    @Mock
-    private UpdateGeneratedFields updateGeneratedFields;
     @Mock
     private UpdateCcdRpc updateCcdRpc;
     @Mock
@@ -56,7 +52,7 @@ public class UpdateCcdCaseDataTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData, updateCcdHearingOptions,
-            updateCcdHearingType, updateGeneratedFields, updateDwpTimeExtension, updateEvents, updateCcdRpc);
+            updateCcdHearingType, updateDwpTimeExtension, updateEvents, updateCcdRpc);
     }
 
     @Test

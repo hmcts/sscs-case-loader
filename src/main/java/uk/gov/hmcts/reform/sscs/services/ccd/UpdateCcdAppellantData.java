@@ -85,12 +85,6 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppellantIdentity && StringUtils.isNotBlank(gapsAppellantIdentity.getNino())
-                && !gapsAppellantIdentity.getNino().equals(existingCcdCaseData.getGeneratedNino())) {
-            existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
-            return true;
-        }
-
         return false;
 
     }
