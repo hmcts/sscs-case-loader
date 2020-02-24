@@ -124,7 +124,7 @@ public class ProcessCaseTest {
             .thenReturn(new Authorize("", "", USER_AUTH));
 
         when(idamApiClient.getUserDetails(eq(USER_AUTH_WITH_TYPE)))
-                .thenReturn(new UserDetails("16", new ArrayList<>()));
+                .thenReturn(new UserDetails("16", "", new ArrayList<>()));
 
         when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
         when(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).thenReturn("code");
