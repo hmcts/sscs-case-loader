@@ -27,7 +27,7 @@ public class Gaps2FileLoader {
             .filter(f -> f.getDate().toLocalDate().isAfter(ignoreDate))
             .sorted()
             .findFirst();
-        return first.isPresent() ? first.get() : null;
+        return first.orElse(null);
     }
 
     public void processed(Gaps2File file) {
