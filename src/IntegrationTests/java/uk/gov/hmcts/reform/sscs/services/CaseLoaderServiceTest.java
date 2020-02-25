@@ -136,51 +136,6 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void givenOneDeltaWith201Cases_shouldRenewIdamTokenEvery100CasesAndRenewS2sTokenForEveryCase() {
-        given(transformService.transform(inputStream)).willReturn(buildCaseListWithGivenNumberOfElements(201));
-
-        IdamTokens idamTokens = IdamTokens.builder()
-            .idamOauth2Token("oAuth2Token")
-            .serviceAuthorization("s2sToken")
-            .userId("16")
-            .build();
-
-        given(idamService.getIdamTokens()).willReturn(idamTokens);
-        given(idamService.getIdamOauth2Token())
-            .willReturn("oAuth2TokenRenewedFirstTime")
-            .willReturn("oAuth2TokenRenewedSecondTime");
-
-        given(idamService.generateServiceAuthorization()).willReturn("s2sRenewed");
-
-        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(any(SscsCaseData.class), any(IdamTokens.class)))
-            .willReturn(null)
-            .willReturn(SscsCaseDetails.builder().build());
-
-        caseLoaderService.process();
-
-        then(idamService).should(times(1)).getIdamTokens();
-        then(idamService).should(times(2)).getIdamOauth2Token();
-
-        then(idamService).should(times(201)).generateServiceAuthorization();
-
-        then(searchCcdCaseService).should(times(201))
-            .findCaseByCaseRefOrCaseId(eq(caseData), any(IdamTokens.class));
-
-        then(xmlValidator).should(times(2)).validateXml(file);
-        then(sftpSshService).should(times(2)).move(file, true);
-    }
-
-    private List<SscsCaseData> buildCaseListWithGivenNumberOfElements(int elements) {
-        List<SscsCaseData> cases = new ArrayList<>(elements);
-        int counter = 0;
-        while (counter < elements) {
-            cases.add(caseData);
-            counter++;
-        }
-        return cases;
-    }
-
-    @Test
     public void givenNumberFormatExceptionIsThrown_shouldCarryOnProcessingNextCasesAndSendCaseToDwp() {
         Appeal appeal = Appeal.builder()
             .benefitType(BenefitType.builder()
