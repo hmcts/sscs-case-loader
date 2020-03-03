@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.predeploy;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;

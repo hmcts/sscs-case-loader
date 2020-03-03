@@ -50,10 +50,6 @@ variable "gaps2_sftp_dir"{
   default = "incoming"
 }
 
-variable "sscs_case_loader_cron_schedule" {
-  default = "0 0/5 * * * ?"
-}
-
 variable "ignore_cases_before_date" {
   default = "2018-07-01"
 }
@@ -98,10 +94,6 @@ variable "raw_product" {
 
 variable "sftp_key_name" {
   default = "gaps2-service-sftp-private-key"
-}
-
-variable "number_processed_cases_to_refresh_tokens" {
-  default = "4000"
 }
 
 variable "appinsights_instrumentation_key" {
