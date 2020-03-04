@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.models;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 

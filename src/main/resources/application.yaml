@@ -73,9 +73,7 @@ sftp:
 spring.application.name: CaseLoader Insights WebApp
 
 sscs.case.loader:
-  cron.schedule: ${SSCS_CASE_LOADER_CRON_SCHEDULE:0/10 * * * * ?}
   ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:1017-07-01}
-  url: ${SSCS_CASE_LOADER_URL:http://localhost:8082}
   shutdown.delay.time: 7
 
 logging.level:
@@ -83,8 +81,6 @@ logging.level:
   uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:true}
-
-number.processed.cases.to.refresh.tokens: ${NUMBER_PROCESSED_CASES_TO_REFRESH_TOKENS:100}
 
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true

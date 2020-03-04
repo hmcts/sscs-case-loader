@@ -78,7 +78,7 @@ task functionalPostDeploy(type: Test) {
 
 checkstyle {
   maxWarnings = 0
-  toolVersion = '8.18'
+  toolVersion = '8.29'
   // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
   configDir = new File(rootDir, 'config/checkstyle')
 }
@@ -212,7 +212,7 @@ dependencyManagement {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.30') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.31') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
