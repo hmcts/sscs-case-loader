@@ -178,7 +178,8 @@ public class ProcessCaseRetryAndRecoveryTest {
         when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
             .thenReturn(new Authorize("", "", USER_AUTH));
 
-        when(idamApiClient.getUserDetails(anyString())).thenReturn(new UserDetails("16", new ArrayList<>()));
+        when(idamApiClient.getUserDetails(anyString())).thenReturn(new UserDetails("16",
+            "m@test.com", new ArrayList<>()));
     }
 
 }
