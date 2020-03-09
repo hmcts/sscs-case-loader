@@ -26,58 +26,6 @@ variable "subscription" {
 
 variable "ilbIp"{}
 
-variable "core_case_data_jurisdiction_id"{
-  default = "SSCS"
-}
-
-variable "core_case_data_case_type_id"{
-  default = "Benefit"
-}
-
-variable "idam_s2s_auth_microservice"{
-  default = "sscs"
-}
-
-variable "idam_oauth2_client_id"{
-  default = "sscs"
-}
-
-variable "gaps2_sftp_user"{
-  default = "sscs-sftp-test"
-}
-
-variable "gaps2_sftp_dir"{
-  default = "incoming"
-}
-
-variable "ignore_cases_before_date" {
-  default = "2018-07-01"
-}
-
-variable "root_logging_level" {
-  default = "INFO"
-}
-
-variable "log_level_spring_web" {
-  default = "INFO"
-}
-
-variable "log_level_sscs" {
-  default = "INFO"
-}
-
-variable "max_capacity" {
-  default = "1"
-}
-
-variable "sftp_key_location" {
-  default = "gaps2_service_sftp_private_key"
-}
-
-variable "idam_redirect_url" {
-  default = "https://sscs-case-loader-sandbox.service.core-compute-sandbox.internal"
-}
-
 variable "tenant_id" {}
 
 variable "jenkins_AAD_objectId" {
@@ -88,19 +36,7 @@ variable "common_tags" {
   type = "map"
 }
 
-variable "raw_product" {
-  default = "sscs" // jenkins-library overrides product for PRs and adds e.g. pr-118-cmc
-}
-
-variable "sftp_key_name" {
-  default = "gaps2-service-sftp-private-key"
-}
-
 variable "appinsights_instrumentation_key" {
   description = "Instrumentation key of the App Insights instance this webapp should use. Module will create own App Insights resource if this is not provided"
   default     = ""
-}
-
-variable "enable_ase" {
-  default = false
 }
