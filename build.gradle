@@ -78,7 +78,7 @@ task functionalPostDeploy(type: Test) {
 
 checkstyle {
   maxWarnings = 0
-  toolVersion = '8.18'
+  toolVersion = '8.29'
   // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
   configDir = new File(rootDir, 'config/checkstyle')
 }
@@ -196,7 +196,7 @@ def versions = [
 ext["rest-assured.version"] = '4.0.0'
 
 ext {
-  springCloudVersion = 'Greenwich.SR1'
+  springCloudVersion = 'Hoxton.SR3'
 }
 
 dependencyManagement {
@@ -212,7 +212,7 @@ dependencyManagement {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.30') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.31') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
@@ -256,7 +256,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.2.2-RC3-SSCS-7147'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.2.6'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.62'
