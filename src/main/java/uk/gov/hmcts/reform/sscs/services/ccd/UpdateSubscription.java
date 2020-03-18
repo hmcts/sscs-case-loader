@@ -46,6 +46,7 @@ class UpdateSubscription {
             .subscribeEmail(exisitingSubscription != null && exisitingSubscription.isEmailSubscribed() ? YES : NO)
             .mobile(getValidMobileNumber(newSubscription, exisitingSubscription, caseReference))
             .tya(exisitingSubscription != null ? exisitingSubscription.getTya() : newSubscription.getTya())
+            .lastLoggedIntoMya(exisitingSubscription != null ? exisitingSubscription.getLastLoggedIntoMya() : null)
             .build();
     }
 
