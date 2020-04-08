@@ -9,7 +9,6 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -40,9 +39,6 @@ public class CaseLoaderService {
     private String logPrefixWithFile;
     private CaseLoaderMetrics metrics;
     private CaseLoaderMetrics fileMetrics;
-
-    @Value("${number.processed.cases.to.refresh.tokens}")
-    private int numberOfProcessedCasesToRefreshTokens;
 
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
@@ -146,9 +142,7 @@ public class CaseLoaderService {
             fileMetrics.setRecordCount(cases.size());
 
             log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
-            int counter = 0;
-            IdamTokens idamTokens = idamService.getIdamTokens();
-            processCasesFromDelta(cases, counter, idamTokens);
+            processCasesFromDelta(cases);
             fileMetrics.setEndTime();
         } catch (Exception e) {
             sftpSshService.move(file, false);
@@ -161,19 +155,12 @@ public class CaseLoaderService {
         }
     }
 
-    private void processCasesFromDelta(List<SscsCaseData> cases, int counter, IdamTokens idamTokens) {
+    private void processCasesFromDelta(List<SscsCaseData> cases) {
         for (SscsCaseData caseData : cases) {
             if (caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 continue;
             }
-            idamTokens.setServiceAuthorization(idamService.generateServiceAuthorization());
-            if (counter == numberOfProcessedCasesToRefreshTokens) {
-                idamTokens.setIdamOauth2Token(idamService.getIdamOauth2Token());
-                log.info(logPrefixWithFile + " renew idam token successfully");
-                counter = 0;
-            }
-            processCase(idamTokens, caseData);
-            counter++;
+            processCase(caseData);
         }
     }
 
@@ -184,7 +171,7 @@ public class CaseLoaderService {
         fileMetrics.setFileSize(file.getSize());
     }
 
-    private void processCase(IdamTokens idamTokens, SscsCaseData caseData) {
+    private void processCase(SscsCaseData caseData) {
         SscsCaseDetails sscsCaseDetails;
 
         if (hasAppellantIdentify(caseData)) {
@@ -192,7 +179,7 @@ public class CaseLoaderService {
                 normaliseNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
             );
         }
-
+        IdamTokens idamTokens = idamService.getIdamTokens();
         try {
             sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
         } catch (NumberFormatException e) {

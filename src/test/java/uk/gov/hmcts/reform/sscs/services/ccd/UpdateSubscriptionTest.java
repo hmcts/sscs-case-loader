@@ -32,7 +32,8 @@ public class UpdateSubscriptionTest {
             .build())
         .subscriptions(Subscriptions.builder()
             .representativeSubscription(Subscription.builder()
-                .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com").build())
+                .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com")
+                    .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").build())
             .appointeeSubscription(Subscription.builder()
                 .wantSmsNotifications("Yes")
                 .subscribeSms("Yes").mobile("0777").email("appointee.old@email.com").subscribeEmail("Yes").build())
@@ -42,7 +43,8 @@ public class UpdateSubscriptionTest {
     @Test
     public void givenAChangeInAppointee_shouldNotUnsubscribeAppointeeOrRep() {
         final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
-            .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+                .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").subscribeSms("Yes").mobile("0777")
+                .subscribeEmail("Yes").build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder().email("appointee.new@email.com")
             .wantSmsNotifications("Yes").subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();

@@ -271,7 +271,6 @@ services:
         - http_proxy=
         - https_proxy=
         - no_proxy=
-        - SSCS_CASE_LOADER_CRON_SCHEDULE=0 0/1 * * * ?
         - IGNORE_CASES_BEFORE_DATE=1901-01-01
         - CORE_CASE_DATA_API_URL=http://ccd-data-store-api:4452
         - CORE_CASE_DATA_USER_ID=16
