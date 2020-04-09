@@ -208,7 +208,7 @@ dependencyManagement {
     dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '27.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '28.2-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
