@@ -183,7 +183,7 @@ configurations {
   e2eCompile.extendsFrom(testCompile)
 }
 
-def springBootVersion = '2.2.6.RELEASE'
+def springBootVersion = '2.2.7.RELEASE'
 
 def versions = [
   logback         : '1.2.3',
