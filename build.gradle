@@ -261,7 +261,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.2.29'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
-  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.65'
+  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.65.01'
 
   compile group: 'org.json', name: 'json', version: '20200518'
 
