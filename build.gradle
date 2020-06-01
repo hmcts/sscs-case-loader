@@ -225,7 +225,7 @@ configurations.all {
   resolutionStrategy {
     eachDependency { DependencyResolveDetails details ->
       if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-        details.useVersion '2.10.0'
+        details.useVersion '2.11.0'
       }
     }
   }
@@ -261,11 +261,11 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.2.30-RC1'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
-  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.65'
+  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.65.01'
 
   compile group: 'org.json', name: 'json', version: '20200518'
 
-  compile group: 'commons-io', name: 'commons-io', version: '2.6'
+  compile group: 'commons-io', name: 'commons-io', version: '2.7'
 
   compileOnly 'org.projectlombok:lombok:1.18.12'
   annotationProcessor "org.projectlombok:lombok:1.18.12"
