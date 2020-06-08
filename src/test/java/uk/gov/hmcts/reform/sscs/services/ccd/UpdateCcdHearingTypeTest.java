@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.HearingType.*;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -29,9 +30,15 @@ public class UpdateCcdHearingTypeTest {
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
     private Object[] generateHearingTypeUpdateScenarios() {
-        SscsCaseData gapsCaseData = SscsCaseData.builder()
+        SscsCaseData gapsCaseDataOralHearingType = SscsCaseData.builder()
             .appeal(Appeal.builder()
-                .hearingType("oral")
+                .hearingType(ORAL.getValue())
+                .build())
+            .build();
+
+        SscsCaseData gapsCaseDataDomiciliaryHearingType = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingType(DOMICILIARY.getValue())
                 .build())
             .build();
 
@@ -48,13 +55,13 @@ public class UpdateCcdHearingTypeTest {
 
         SscsCaseData gapsCaseDataWithCorHearingType = SscsCaseData.builder()
             .appeal(Appeal.builder()
-                .hearingType("paper")
+                .hearingType(PAPER.getValue())
                 .build())
             .build();
 
         SscsCaseData existingCcdCase = SscsCaseData.builder()
             .appeal(Appeal.builder()
-                .hearingType("paper")
+                .hearingType(PAPER.getValue())
                 .build())
             .build();
 
@@ -71,18 +78,18 @@ public class UpdateCcdHearingTypeTest {
 
         SscsCaseData existingCcdCaseCorHearingType = SscsCaseData.builder()
             .appeal(Appeal.builder()
-                .hearingType("cor")
+                .hearingType(COR.getValue())
                 .build())
             .build();
-
-
 
         return new Object[]{
             new Object[]{gapsCaseDataWithNullHearingType, existingCcdCase, false, "paper"},
             new Object[]{gapsCaseDataWithMoreEmptyHearingType, existingCcdCase, false, "paper"},
-            new Object[]{gapsCaseData, existingCcdCase, true, "oral"},
-            new Object[]{gapsCaseData, existingCcdCaseWithNullHearingType, true, "oral"},
-            new Object[]{gapsCaseData, existingCcdCaseWithEmptyHearingType, true, "oral"},
+            // SSCS-7604 - Do not update hearing type to Domiciliary
+            new Object[]{gapsCaseDataDomiciliaryHearingType, existingCcdCase, false, "paper"},
+            new Object[]{gapsCaseDataOralHearingType, existingCcdCase, true, "oral"},
+            new Object[]{gapsCaseDataOralHearingType, existingCcdCaseWithNullHearingType, true, "oral"},
+            new Object[]{gapsCaseDataOralHearingType, existingCcdCaseWithEmptyHearingType, true, "oral"},
             new Object[]{gapsCaseDataWithCorHearingType, existingCcdCaseCorHearingType, false, "cor"}
         };
     }
