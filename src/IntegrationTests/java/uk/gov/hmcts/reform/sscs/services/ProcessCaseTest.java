@@ -17,10 +17,7 @@ import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,15 +30,13 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.idam.client.IdamClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.idam.Authorize;
-import uk.gov.hmcts.reform.sscs.idam.IdamApiClient;
-import uk.gov.hmcts.reform.sscs.idam.UserDetails;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -78,7 +73,7 @@ public class ProcessCaseTest {
     private CoreCaseDataApi coreCaseDataApi;
 
     @MockBean
-    private IdamApiClient idamApiClient;
+    private IdamClient idamClient;
 
     @MockBean
     private SftpChannelAdapter channelAdapter;
@@ -115,16 +110,13 @@ public class ProcessCaseTest {
         when(channelAdapter.getInputStream(deltaFilename)).thenAnswer(x ->
             getClass().getClassLoader().getResourceAsStream("process_case_test_delta.xml"));
 
-        when(idamApiClient.authorizeCodeType(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(new Authorize("url", "code", ""));
-
         given(authTokenGenerator.generate()).willReturn(SERVER_AUTH);
 
-        when(idamApiClient.authorizeToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(new Authorize("", "", USER_AUTH));
+        when(idamClient.getAccessToken(anyString(), anyString())).thenReturn("Bearer " + USER_AUTH);
 
-        when(idamApiClient.getUserDetails(eq(USER_AUTH_WITH_TYPE)))
-                .thenReturn(new UserDetails("16", "m@test.com", new ArrayList<>()));
+        when(idamClient.getUserDetails(anyString()))
+                .thenReturn(new uk.gov.hmcts.reform.idam.client.models.UserDetails("16", "m@test.com", "test", "test",
+                        new ArrayList<>()));
 
         when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
         when(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).thenReturn("code");
