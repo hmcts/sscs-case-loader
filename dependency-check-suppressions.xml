@@ -17,4 +17,12 @@
     <cve>CVE-2015-9251</cve>
     <cve>CVE-2019-11358</cve>
   </suppress>
+  <suppress until="2020-06-30">
+    <notes><![CDATA[
+   file name: spring-security-crypto-5.2.2.RELEASE.jar - This issue should go away after spring 2.3.0 upgrade
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
+    <cve>CVE-2020-5407</cve>
+    <cve>CVE-2020-5408</cve>
+  </suppress>
 </suppressions>
