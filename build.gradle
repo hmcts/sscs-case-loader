@@ -183,12 +183,10 @@ configurations {
   e2eCompile.extendsFrom(testCompile)
 }
 
-def springBootVersion = '2.2.6.RELEASE'
-
 def versions = [
   logback         : '1.2.3',
   reformLogging   : '5.1.1',
-  springBoot      : springBootVersion,
+  springBoot      : springBoot.class.package.implementationVersion,
   springHystrix   : '1.4.2.RELEASE',
   springfoxSwagger: '2.8.0'
 ]
@@ -202,7 +200,7 @@ ext {
 dependencyManagement {
   imports {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    mavenBom "org.springframework.boot:spring-boot-starter-parent:${versions.springBoot}"
   }
   dependencies {
     dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
