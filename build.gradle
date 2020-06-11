@@ -4,7 +4,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-  id 'org.springframework.boot' version '2.2.6.RELEASE'
+  id 'org.springframework.boot' version '2.3.0.RELEASE'
   id 'org.owasp.dependencycheck' version '5.3.2.1'
   id 'com.github.ben-manes.versions' version '0.28.0'
   id 'net.ltgt.apt' version '0.21'
@@ -183,12 +183,10 @@ configurations {
   e2eCompile.extendsFrom(testCompile)
 }
 
-def springBootVersion = '2.2.6.RELEASE'
-
 def versions = [
   logback         : '1.2.3',
   reformLogging   : '5.1.1',
-  springBoot      : springBootVersion,
+  springBoot      : springBoot.class.package.implementationVersion,
   springHystrix   : '1.4.2.RELEASE',
   springfoxSwagger: '2.8.0'
 ]
@@ -202,7 +200,7 @@ ext {
 dependencyManagement {
   imports {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+    mavenBom "org.springframework.boot:spring-boot-starter-parent:${versions.springBoot}"
   }
   dependencies {
     dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -242,6 +240,7 @@ dependencies {
 
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   compile group: 'org.springframework', name: 'spring-context-support'
 
