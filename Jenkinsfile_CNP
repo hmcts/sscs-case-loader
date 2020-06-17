@@ -16,7 +16,6 @@ def vaultOverrides = [
   'preview': 'aat'
 ]
 
-
 def secrets = [
   'sscs-${env}': [
     secret('sftp-host', 'GAPS2_SFTP_HOST'),
@@ -66,7 +65,6 @@ withPipeline(type, product, component) {
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
     env.IDAM_URL = 'https://idam-api.aat.platform.hmcts.net'
-    env.IDAM_OAUTH2_CLIENT_SECRET =
     try {
       builder.gradle('functionalPreDeploy')
     } finally {
