@@ -23,4 +23,4 @@ job:
         - sftp-port
         - gaps2-service-sftp-private-key
   environment:
-    IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+    IDAM_URL: https://idam-api.aat.platform.hmcts.net
