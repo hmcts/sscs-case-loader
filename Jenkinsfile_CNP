@@ -13,7 +13,7 @@ def product = "sscs"
 def component = "case-loader"
 
 def secrets = [
-  'sscs-${env}': [
+  'sscs-case-loader-${env}': [
     secret('sftp-host', 'GAPS2_SFTP_HOST'),
     secret('sftp-port', 'GAPS2_SFTP_PORT'),
     secret('gaps2-service-sftp-private-key', 'GAPS2_KEY_LOCATION'),
