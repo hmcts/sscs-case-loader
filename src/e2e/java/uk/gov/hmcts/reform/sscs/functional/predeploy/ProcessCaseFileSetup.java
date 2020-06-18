@@ -14,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -46,16 +45,8 @@ public class ProcessCaseFileSetup {
     private String ccdCaseId;
     private IdamTokens idamTokens;
 
-    @Value("${idam.client.id:}") String cliId;
-    @Value("${idam.client.secret:}") String cliSe;
-    @Value("${idam.client.redirect_uri:}") String cliRedir;
-
     @Test
     public void setup() throws ParserConfigurationException, TransformerException, IOException, SftpException {
-
-        log.error("READSD id = " + cliId);
-        log.error("READSD se = " + cliSe);
-        log.error("READSD redir = " + cliRedir);
 
         log.info("Getting oAuth2 token...");
         String oauth2Token = idamService.getIdamOauth2Token();
