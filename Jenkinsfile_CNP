@@ -12,6 +12,10 @@ def type = "java"
 def product = "sscs"
 def component = "case-loader"
 
+def vaultOverrides = [
+  'preview': 'aat'
+]
+
 def secrets = [
   'sscs-case-loader-${env}': [
     secret('sftp-host', 'GAPS2_SFTP_HOST'),
@@ -47,6 +51,7 @@ GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {
 
+  overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
 
   enableSlackNotifications('#sscs-tech')
