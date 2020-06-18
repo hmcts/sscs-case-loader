@@ -48,6 +48,14 @@ public class ProcessCaseFileSetup {
     @Test
     public void setup() throws ParserConfigurationException, TransformerException, IOException, SftpException {
 
+        String idamUri = System.getenv("IDAM_URL");
+        String idamId = System.getenv("IDAM_OAUTH2_CLIENT_ID");
+        String idamSec = System.getenv("IDAM_OAUTH2_CLIENT_SECRET");
+        
+        log.error("idam uri = " + idamUri);
+        log.error("idam id = " + idamId);
+        log.error("idam sec = " + idamSec);
+
         log.info("Getting oAuth2 token...");
         String oauth2Token = idamService.getIdamOauth2Token();
 

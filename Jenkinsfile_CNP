@@ -64,7 +64,6 @@ withPipeline(type, product, component) {
 
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
-    env.IDAM_URL = 'https://idam-api.aat.platform.hmcts.net'
     try {
       builder.gradle('functionalPreDeploy')
     } finally {

@@ -22,5 +22,3 @@ java:
         - sftp-host
         - sftp-port
         - gaps2-service-sftp-private-key
-  environment:
-    IDAM_URL: https://idam-api.aat.platform.hmcts.net
