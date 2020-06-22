@@ -1,7 +1,7 @@
 spring:
   cloud:
     propertiesvolume:
-      paths: /mnt/secrets/sscs-case-loader
+      paths: /mnt/secrets/sscs
       prefixed: false
       aliases:
         idam-api: IDAM_URL

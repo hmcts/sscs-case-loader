@@ -38,6 +38,5 @@ job:
     LOG_LEVEL_SSCS: INFO
     ROOT_LOGGING_LEVEL: INFO
     RPC_VENUE_ID_ENABLED: true
-    IDAM_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
 global:
   jobKind: CronJob
