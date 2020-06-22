@@ -12,6 +12,7 @@ def type = "java"
 def product = "sscs"
 def component = "case-loader"
 
+
 def secrets = [
   'sscs-${env}': [
     secret('sftp-host', 'GAPS2_SFTP_HOST'),
@@ -34,6 +35,7 @@ def secrets = [
   ]
 ]
 
+
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [$class     : 'AzureKeyVaultSecret',
    secretType : 'Secret',
@@ -46,7 +48,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {
+
   loadVaultSecrets(secrets)
+
   enableSlackNotifications('#sscs-tech')
   if ("demo"  != "${env.BRANCH_NAME}") {
     enableAksStagingDeployment()
@@ -54,10 +58,9 @@ withPipeline(type, product, component) {
   }
   nonServiceApp()
 
-
-
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
+
     try {
       builder.gradle('functionalPreDeploy')
     } finally {
