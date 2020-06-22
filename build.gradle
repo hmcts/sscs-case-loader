@@ -229,7 +229,7 @@ dependencies {
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   compile group: 'org.springframework', name: 'spring-context-support'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.0.4'
+  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
   compile group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
   compile group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
