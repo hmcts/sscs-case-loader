@@ -3,7 +3,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-  id 'org.springframework.boot' version '2.3.0.RELEASE'
+  id 'org.springframework.boot' version '2.3.1.RELEASE'
   id 'uk.gov.hmcts.java' version '0.9.0'
   id 'com.github.ben-manes.versions' version '0.28.0'
   id 'net.ltgt.apt' version '0.21'
@@ -179,7 +179,7 @@ def versions = [
 ext["rest-assured.version"] = '4.0.0'
 
 ext {
-  springCloudVersion = 'Hoxton.SR5'
+  springCloudVersion = 'Hoxton.SR6'
 }
 
 dependencyManagement {
@@ -259,7 +259,7 @@ dependencies {
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.18.1'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.17.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.18.1'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
