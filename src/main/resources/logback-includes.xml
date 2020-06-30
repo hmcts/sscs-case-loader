@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
-    <logger name="org.apache.http" level="${IDAM_LOG_LEVEL:-INFO}"/>
+    <logger name="org.apache.http" level="${APACHE_LOG_LEVEL:-INFO}"/>
 </included>
