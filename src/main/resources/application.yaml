@@ -86,6 +86,7 @@ sscs.case.loader:
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
   uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+  org.apache.http: ${APACHE_LOG_LEVEL:INFO}
 
 rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:true}
 
