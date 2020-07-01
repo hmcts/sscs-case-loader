@@ -13,7 +13,8 @@ class UpdateCcdHearingType {
         if (StringUtils.isNotBlank(gaps2HearingType)) {
             String ccdHearingType = existingCcdCaseData.getAppeal().getHearingType();
             if (StringUtils.isNotBlank(ccdHearingType)) {
-                if (!HearingType.COR.getValue().equalsIgnoreCase(ccdHearingType)) {
+                if (!HearingType.COR.getValue().equalsIgnoreCase(ccdHearingType)
+                    && !HearingType.DOMICILIARY.getValue().equalsIgnoreCase(gaps2HearingType)) {
                     if (!gaps2HearingType.equals(ccdHearingType)) {
                         existingCcdCaseData.getAppeal().setHearingType(gaps2HearingType);
                         return true;
