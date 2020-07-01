@@ -328,47 +328,6 @@ public class UpdateCcdAppellantDataTest {
     }
 
     @Test
-    public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdGeneratedNinoAndReturnUpdateTrue()
-            throws Exception {
-        Appellant appellant = Appellant.builder()
-                .name(Name.builder().build())
-                .contact(Contact.builder().build())
-                .identity(Identity.builder()
-                        .nino(normalisedNino)
-                        .build())
-                .build();
-        gapsCaseData = SscsCaseData.builder()
-                .appeal(Appeal.builder()
-                        .appellant(appellant)
-                        .build())
-                .build();
-
-        gapsCaseData.getAppeal().setAppellant(appellant);
-
-        existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
-        existingCaseDetails.getData().getAppeal().getAppellant().getName().setFirstName("");
-        existingCaseDetails.getData().getAppeal().getAppellant().getName().setLastName("");
-        existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail("");
-        existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(normalisedNino);
-        existingCaseDetails.getData().setGeneratedNino(deNormalisedNino);
-
-        boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
-
-        assertTrue(updateData);
-
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getFirstName(),
-                equalTo(""));
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getName().getLastName(),
-                equalTo(""));
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getContact().getEmail(),
-                equalTo(""));
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
-                equalTo(normalisedNino));
-
-
-    }
-
-    @Test
     public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdNinoAndReturnUpdateTrue() throws Exception {
         Appellant appellant = Appellant.builder()
                 .name(Name.builder().build())
@@ -404,8 +363,6 @@ public class UpdateCcdAppellantDataTest {
                 equalTo(""));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
                 equalTo(normalisedNino));
-
-
     }
 
     @Test
