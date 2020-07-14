@@ -1,15 +1,25 @@
 package uk.gov.hmcts.reform.sscs.services.refdata;
 
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.FUR_EVID_TYPE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.PTTP_ROLE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.TRIBUNAL_TYPE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.FET_DESC;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.PTR_DESC;
+import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.TBT_CODE;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
+import uk.gov.hmcts.reform.sscs.model.VenueDetails;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
-import uk.gov.hmcts.reform.sscs.refdata.VenueDataLoader;
+import uk.gov.hmcts.reform.sscs.service.VenueDataLoader;
 
 @Service
 @Slf4j
@@ -35,7 +45,7 @@ public class ReferenceDataService {
             benefitType = refDataRepo.find(BAT_CODE_MAP, batCode, BENEFIT_DESC);
         } catch (Exception e) {
             log.debug("Oops...Not found benefitType for caseCodeId '" + caseCodeId
-                + "', Benefit Type '" + benAssessType 
+                + "', Benefit Type '" + benAssessType
                 + "', BAT Code '" + batCode + "'", e);
             return "ERR";
         }
