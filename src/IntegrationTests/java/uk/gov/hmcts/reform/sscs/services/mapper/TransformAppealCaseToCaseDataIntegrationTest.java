@@ -20,9 +20,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.model.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
-import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
+import uk.gov.hmcts.reform.sscs.service.ReferenceDataService;
 
 @RunWith(JUnitParamsRunner.class)
 @SpringBootTest

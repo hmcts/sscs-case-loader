@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
-import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
+import uk.gov.hmcts.reform.sscs.service.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
