@@ -9,15 +9,19 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BEN_ASSESS_TYPE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
-import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
+import static uk.gov.hmcts.reform.sscs.model.RefKey.BAT_CODE_MAP;
+import static uk.gov.hmcts.reform.sscs.model.RefKey.BEN_ASSESS_TYPE;
+import static uk.gov.hmcts.reform.sscs.model.RefKey.CASE_CODE;
+import static uk.gov.hmcts.reform.sscs.model.RefKeyField.BAT_CODE;
+import static uk.gov.hmcts.reform.sscs.model.RefKeyField.BENEFIT_DESC;
+import static uk.gov.hmcts.reform.sscs.model.RefKeyField.BEN_ASSESS_TYPE_ID;
+
 
 import com.google.common.collect.ImmutableMap;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +41,9 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
+import uk.gov.hmcts.reform.sscs.repository.RefDataRepository;
+import uk.gov.hmcts.reform.sscs.service.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
-import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
