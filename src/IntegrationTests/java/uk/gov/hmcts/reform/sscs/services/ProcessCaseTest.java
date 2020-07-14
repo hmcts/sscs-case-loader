@@ -16,7 +16,6 @@ import static uk.gov.hmcts.reform.sscs.model.RefKeyField.BAT_CODE;
 import static uk.gov.hmcts.reform.sscs.model.RefKeyField.BENEFIT_DESC;
 import static uk.gov.hmcts.reform.sscs.model.RefKeyField.BEN_ASSESS_TYPE_ID;
 
-
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.HashMap;
