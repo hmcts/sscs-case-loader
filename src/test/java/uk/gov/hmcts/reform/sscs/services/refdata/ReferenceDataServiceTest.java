@@ -14,11 +14,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.hmcts.reform.sscs.models.refdata.VenueDetails;
+import uk.gov.hmcts.reform.sscs.model.VenueDetails;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
-import uk.gov.hmcts.reform.sscs.refdata.VenueDataLoader;
 import uk.gov.hmcts.reform.sscs.refdata.domain.RefKey;
 import uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField;
+import uk.gov.hmcts.reform.sscs.service.VenueDataLoader;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReferenceDataServiceTest {

@@ -4,7 +4,7 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
   id 'org.springframework.boot' version '2.3.1.RELEASE'
-  id 'uk.gov.hmcts.java' version '0.10.0'
+  id 'uk.gov.hmcts.java' version '0.9.0'
   id 'com.github.ben-manes.versions' version '0.28.0'
   id 'net.ltgt.apt' version '0.21'
   id 'org.sonarqube' version '3.0'
@@ -242,7 +242,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.20'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.3.21'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.66'
