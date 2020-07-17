@@ -62,6 +62,6 @@ public class ProcessCaseFileTest {
 
         assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
         assertEquals(3, updatedCcdCaseData.getEvents().size());
-        assertEquals("hearing", updatedCcdCase.getState());
+        assertEquals("hearing, omg this is so wrong!", updatedCcdCase.getState());
     }
 }
