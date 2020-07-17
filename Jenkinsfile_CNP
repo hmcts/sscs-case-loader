@@ -56,7 +56,6 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
   }
-  nonServiceApp()
 
   before('akschartsinstall') {
     echo "Setting up data for functional tests"
