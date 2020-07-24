@@ -1,2 +1,18 @@
 {
+  "100000_A Client Error response code was returned by the server_http://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docs_OPTIONS" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docs_TRACE" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://sscs-case-loader-aat.service.core-compute-aat.internal_TRACE" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://sscs-case-loader-aat.service.core-compute-aat.internal/v2_OPTIONS" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://sscs-case-loader-aat.service.core-compute-aat.internal_OPTIONS" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://sscs-case-loader-aat.service.core-compute-aat.internal/v2_TRACE" : "ignore",
+  "100001_Unexpected Content-Type was returned_http://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docs_OPTIONS" : "ignore",
+  "100001_Unexpected Content-Type was returned_http://sscs-case-loader-aat.service.core-compute-aat.internal/v2_TRACE" : "ignore",
+  "100001_Unexpected Content-Type was returned_http://sscs-case-loader-aat.service.core-compute-aat.internal/v2_OPTIONS" : "ignore"
+  
+  
+  
+  
+  
+  
+  
 }
