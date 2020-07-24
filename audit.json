@@ -60,7 +60,6 @@
 "100000_A Client Error response code was returned by the server_https://sscs-case-loader-aat.service.core-compute-aat.internal/RMR6Y_TRACK" : "ignore",
 "100000_A Client Error response code was returned by the server_https://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docsS3ZLD_TRACK" : "ignore",
 "100000_A Client Error response code was returned by the server_https://sscs-case-loader-aat.service.core-compute-aat.internal/crossdomain.xml_GET" : "ignore",
-"10036_Server Leaks Version Information via "Server" HTTP Response Header Field_https://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docs_GET" : "ignore",
 "10038_Content Security Policy (CSP) Header Not Set_https://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docs_GET" : "ignore",
 "10035_Strict-Transport-Security Header Not Set_https://sscs-case-loader-aat.service.core-compute-aat.internal//v2/api-docs_GET" : "ignore"
 
