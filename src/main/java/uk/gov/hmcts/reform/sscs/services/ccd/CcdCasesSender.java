@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
@@ -47,11 +48,16 @@ public class CcdCasesSender {
     }
 
     public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
+
         String latestEventType = caseData.getLatestEventType();
+
         if (latestEventType != null) {
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
+
             addMissingInfo(caseData, existingCcdCaseData);
+
             checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
+
             ifThereIsChangesThenUpdateCase(caseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
     }
@@ -68,6 +74,7 @@ public class CcdCasesSender {
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             caseData, existingCcdCaseData);
+
         if (isNotValidForDigitalCase(caseData, existingCcdCaseData)) {
             updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
         } else if (UpdateType.EVENT_UPDATE == updateType) {
@@ -91,7 +98,9 @@ public class CcdCasesSender {
 
     private void updateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
                             IdamTokens idamTokens, String eventType) {
+
         existingCcdCaseData.setCaseReference(caseData.getCaseReference());
+
         updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
                 SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
     }
@@ -170,9 +179,26 @@ public class CcdCasesSender {
     private void addRegionalProcessingCenter(SscsCaseData caseData) {
         RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService
             .getByScReferenceCode(caseData.getCaseReference());
+
+        String isScotCase = isScottishCase(regionalProcessingCenter, caseData);
+        caseData.setIsScottishCase(isScotCase);
+
         if (null != regionalProcessingCenter) {
             caseData.setRegion(regionalProcessingCenter.getName());
             caseData.setRegionalProcessingCenter(regionalProcessingCenter);
+        }
+    }
+
+    public static String isScottishCase(RegionalProcessingCenter rpc, SscsCaseData caseData) {
+
+        if (isNull(rpc) || isNull(rpc.getName())) {
+            log.info("Setting isScottishCase field to No for empty RPC for case " + caseData.getCcdCaseId());
+            return "No";
+        } else {
+            String isScotCase = rpc.getName().equalsIgnoreCase("GLASGOW") ? "Yes" : "No";
+            log.info("Setting isScottishCase field to " + isScotCase + " for RPC " + rpc.getName() + " for case "
+                + caseData.getCcdCaseId());
+            return isScotCase;
         }
     }
 

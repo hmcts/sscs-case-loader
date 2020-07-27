@@ -221,7 +221,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCcdCase, idamTokens);
 
         verify(updateCcdCaseService, times(1))
-            .updateCase(eq(SscsCaseData.builder().build()), anyLong(), eq("caseUpdated"),
+            .updateCase(eq(SscsCaseData.builder().isScottishCase("No").build()), anyLong(), eq("caseUpdated"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
@@ -516,7 +516,9 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldAddRegionalProcessingCenterForAnExistingCaseIfItsNotAlreadyPresentInCcd() throws Exception {
+
         RegionalProcessingCenter regionalProcessingCenter = getRegionalProcessingCenter();
+
         ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
 
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
@@ -530,6 +532,7 @@ public class CcdCasesSenderTest {
         verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
             eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
             eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
         assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(regionalProcessingCenter));
         assertThat(caseDataArgumentCaptor.getValue().getRegion(), equalTo(regionalProcessingCenter.getName()));
     }
@@ -575,6 +578,33 @@ public class CcdCasesSenderTest {
 
         assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(null));
 
+    }
+
+    @Test
+    @Parameters({"Bristol,No", "Glasgow,Yes"})
+    public void shouldSetIsScottishCaseFlagWhenAmendingRpc(String rpcName, String expectedIsScottish) throws Exception {
+
+        RegionalProcessingCenter regionalProcessingCenter =
+            getRegionalProcessingCenter().toBuilder().name(rpcName).build();
+
+        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
+
+        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+
+        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
+            .thenReturn(regionalProcessingCenter);
+
+        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
+            eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
+        assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(regionalProcessingCenter));
+        assertThat(caseDataArgumentCaptor.getValue().getRegion(), equalTo(rpcName));
+        assertThat(caseDataArgumentCaptor.getValue().getIsScottishCase(), equalTo(expectedIsScottish));
 
     }
 
