@@ -18,15 +18,27 @@ class UpdateCcdRpc {
 
         RegionalProcessingCenter gapsRpc = gapsCaseData.getRegionalProcessingCenter();
         RegionalProcessingCenter existingRpc = existingCcdCaseData.getRegionalProcessingCenter();
+
         if (hasRpcChanged(gapsRpc, existingRpc)) {
+
+            log.info("RPC has changed from {} to {} for case {}", toName(existingRpc), toName(existingRpc),
+                existingCcdCaseData.getCcdCaseId());
+
             existingCcdCaseData.setRegionalProcessingCenter(gapsRpc);
             existingCcdCaseData.setRegion(gapsRpc.getName());
             rpcUpdated = true;
+        } else {
+            log.info("RPC has not changed for case {} . RPC =  {}", existingCcdCaseData.getCcdCaseId(),
+                toName(existingRpc));
         }
 
         return rpcUpdated;
     }
 
+    private String toName(RegionalProcessingCenter regionalProcessingCenter) {
+        return regionalProcessingCenter == null || regionalProcessingCenter.getName() == null ? "None" :
+            regionalProcessingCenter.getName();
+    }
 
     private static boolean hasRpcChanged(RegionalProcessingCenter gapsRpc, RegionalProcessingCenter existingRpc) {
         return existingRpc == null

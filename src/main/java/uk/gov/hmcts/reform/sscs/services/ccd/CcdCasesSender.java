@@ -47,18 +47,18 @@ public class CcdCasesSender {
         this.logPrefix = logPrefix;
     }
 
-    public void sendUpdateCcdCases(SscsCaseData caseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
+    public void sendUpdateCcdCases(SscsCaseData gapsCaseData, SscsCaseDetails existingCcdCase, IdamTokens idamTokens) {
 
-        String latestEventType = caseData.getLatestEventType();
+        String latestEventType = gapsCaseData.getLatestEventType();
 
         if (latestEventType != null) {
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
 
-            addMissingInfo(caseData, existingCcdCaseData);
+            addMissingInfo(gapsCaseData, existingCcdCaseData);
 
-            checkNewEvidenceReceived(caseData, existingCcdCase, idamTokens);
+            checkNewEvidenceReceived(gapsCaseData, existingCcdCase, idamTokens);
 
-            ifThereIsChangesThenUpdateCase(caseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
+            ifThereIsChangesThenUpdateCase(gapsCaseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
     }
 
@@ -69,23 +69,26 @@ public class CcdCasesSender {
         addMissingExistingHearings(caseData, existingCcdCaseData);
     }
 
-    private void ifThereIsChangesThenUpdateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData,
+    private void ifThereIsChangesThenUpdateCase(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData,
                                                 Long existingCaseId, IdamTokens idamTokens) {
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
-            caseData, existingCcdCaseData);
+            gapsCaseData, existingCcdCaseData);
 
-        if (isNotValidForDigitalCase(caseData, existingCcdCaseData)) {
-            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
+        log.info("Case Update Type {} for case id {}", updateType.toString(), existingCaseId);
+
+        if (isNotValidForDigitalCase(gapsCaseData, existingCcdCaseData)) {
+            updateCase(gapsCaseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
         } else if (UpdateType.EVENT_UPDATE == updateType) {
-            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, caseData.getLatestEventType());
-        } else if (hasCaseRefBeenAdded(caseData, existingCcdCaseData)) {
+            updateCase(gapsCaseData, existingCcdCaseData, existingCaseId, idamTokens,
+                gapsCaseData.getLatestEventType());
+        } else if (hasCaseRefBeenAdded(gapsCaseData, existingCcdCaseData)) {
             //Override event to appealReceived if new case ref has been added
-            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, APPEAL_RECEIVED.getCcdType());
+            updateCase(gapsCaseData, existingCcdCaseData, existingCaseId, idamTokens, APPEAL_RECEIVED.getCcdType());
         } else if (UpdateType.DATA_UPDATE == updateType) {
-            updateCase(caseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
+            updateCase(gapsCaseData, existingCcdCaseData, existingCaseId, idamTokens, CASE_UPDATED.getCcdType());
         } else {
-            log.debug(logPrefix + " No case update needed for case reference: {}", caseData.getCaseReference());
+            log.debug(logPrefix + " No case update needed for case reference: {}", gapsCaseData.getCaseReference());
         }
     }
 
@@ -184,6 +187,8 @@ public class CcdCasesSender {
         caseData.setIsScottishCase(isScotCase);
 
         if (null != regionalProcessingCenter) {
+            log.info("Setting RPC field to " + regionalProcessingCenter.getName() + " for case "
+                + caseData.getCcdCaseId());
             caseData.setRegion(regionalProcessingCenter.getName());
             caseData.setRegionalProcessingCenter(regionalProcessingCenter);
         }
