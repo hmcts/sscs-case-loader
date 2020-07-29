@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
+@Slf4j
 @Service
 class UpdateCcdCaseData {
     private final UpdateCcdAppellantData updateCcdAppellantData;
@@ -58,8 +60,14 @@ class UpdateCcdCaseData {
             updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
             updateRpc = updateCcdRpc.updateCcdRpc(gapsCaseData, existingCcdCaseData);
         }
-        return dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType || updateRepresentative
-            || updateRpc;
+
+        boolean ccdDataChanged =  dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType
+            || updateRepresentative || updateRpc;
+
+        log.info("updatedCCdData is {} for case {}", ccdDataChanged,
+            existingCcdCaseData == null ? "null" : existingCcdCaseData.getCcdCaseId());
+
+        return ccdDataChanged;
     }
 
 }
