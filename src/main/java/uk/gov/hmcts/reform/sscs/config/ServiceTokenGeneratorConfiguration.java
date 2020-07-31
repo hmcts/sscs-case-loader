@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGeneratorFactory;
+import uk.gov.hmcts.reform.idam.client.IdamApi;
 
 @Configuration
-@EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
+@EnableFeignClients(basePackageClasses = {ServiceAuthorisationApi.class, IdamApi.class})
 public class ServiceTokenGeneratorConfiguration {
 
     @Bean
