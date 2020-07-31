@@ -31,6 +31,7 @@ class UpdateCcdCaseData {
 
     UpdateType updateCcdRecordForChangesAndReturnUpdateType(SscsCaseData gapsCaseData,
                                                             SscsCaseData existingCcdCaseData) {
+
         boolean eventChange = updateEvents.update(gapsCaseData, existingCcdCaseData);
         boolean dataChange = updateCcdData(gapsCaseData, existingCcdCaseData);
         return workOutUpdateType(eventChange, dataChange);
@@ -46,6 +47,8 @@ class UpdateCcdCaseData {
     }
 
     private boolean updateCcdData(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
+        log.info("Checking for CCD vs Gap Case Data changes");
+
         boolean dwpTimeExtension = updateDwpTimeExtension.updateDwpTimeExtension(gapsCaseData, existingCcdCaseData);
         boolean updateParties = false;
         boolean updateHearingOptions = false;

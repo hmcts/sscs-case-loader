@@ -4,11 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
+@RunWith(JUnitParamsRunner.class)
 public class UpdateCcdRpcTest {
     UpdateCcdRpc classUnderTest = null;
 
@@ -101,11 +105,12 @@ public class UpdateCcdRpcTest {
     }
 
     @Test
-    public void returnTrueWhenCcdDataHasDifferentRpcName() {
+    @Parameters({"Bristol,No", "Glasgow,Yes"})
+    public void returnTrueWhenCcdDataHasDifferentRpcName(String rpcName, String expectedIsScottish) throws Exception {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
                 .regionalProcessingCenter(
                         RegionalProcessingCenter.builder()
-                                .name("Another name")
+                                .name(rpcName)
                                 .address1("1 Some Street")
                                 .build())
                 .build();
@@ -121,6 +126,7 @@ public class UpdateCcdRpcTest {
         assertTrue(classUnderTest.updateCcdRpc(gapsCaseData, existingCcdCaseData));
         assertEquals(gapsCaseData.getRegionalProcessingCenter(), existingCcdCaseData.getRegionalProcessingCenter());
         assertEquals(existingCcdCaseData.getRegionalProcessingCenter().getName(), existingCcdCaseData.getRegion());
+        assertEquals(existingCcdCaseData.getIsScottishCase(), expectedIsScottish);
     }
 
     @Test
