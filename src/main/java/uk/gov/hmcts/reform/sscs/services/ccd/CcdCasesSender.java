@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
@@ -52,6 +51,10 @@ public class CcdCasesSender {
         String latestEventType = gapsCaseData.getLatestEventType();
 
         if (latestEventType != null) {
+
+            log.info("Found latest event type {} in gaps case for case id {}",
+                latestEventType, existingCcdCase.getId());
+
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
 
             addMissingInfo(gapsCaseData, existingCcdCaseData);
@@ -64,7 +67,10 @@ public class CcdCasesSender {
 
     private void addMissingInfo(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
         if (!lookupRpcByVenueId) {
+            log.info("Lookup RPC By Venue Id  = {}. Adding RPC", lookupRpcByVenueId);
             addRegionalProcessingCenter(existingCcdCaseData);
+        } else {
+            log.info("Lookup RPC By Venue Id  = {}. Not Adding RPC", lookupRpcByVenueId);
         }
         addMissingExistingHearings(caseData, existingCcdCaseData);
     }
@@ -183,27 +189,11 @@ public class CcdCasesSender {
         RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService
             .getByScReferenceCode(caseData.getCaseReference());
 
-        String isScotCase = isScottishCase(regionalProcessingCenter, caseData);
-        caseData.setIsScottishCase(isScotCase);
-
         if (null != regionalProcessingCenter) {
             log.info("Setting RPC field to " + regionalProcessingCenter.getName() + " for case "
                 + caseData.getCcdCaseId());
             caseData.setRegion(regionalProcessingCenter.getName());
             caseData.setRegionalProcessingCenter(regionalProcessingCenter);
-        }
-    }
-
-    public static String isScottishCase(RegionalProcessingCenter rpc, SscsCaseData caseData) {
-
-        if (isNull(rpc) || isNull(rpc.getName())) {
-            log.info("Setting isScottishCase field to No for empty RPC for case " + caseData.getCcdCaseId());
-            return "No";
-        } else {
-            String isScotCase = rpc.getName().equalsIgnoreCase("GLASGOW") ? "Yes" : "No";
-            log.info("Setting isScottishCase field to " + isScotCase + " for RPC " + rpc.getName() + " for case "
-                + caseData.getCcdCaseId());
-            return isScotCase;
         }
     }
 
