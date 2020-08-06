@@ -120,11 +120,15 @@ public class TransformAppealCaseToCaseData {
     private Appellant appellant(final Parties appellantParty,
                                 final Optional<Parties> appointeeParty,
                                 final AppealCase appealCase) {
+        Appointee appointee = appointeeParty.map((Parties party) -> appointee(party, appealCase)).orElse(null);
         return Appellant.builder()
             .name(caseDataBuilder.buildName(appellantParty))
             .contact(caseDataBuilder.buildContact(appellantParty))
+            .isAppointee(appointee != null
+                && appointee.getName() != null
+                && appointee.getName().getLastName() != null ? "Yes" : "No")
             .identity(caseDataBuilder.buildIdentity(appellantParty, appealCase))
-            .appointee(appointeeParty.map((Parties party) -> appointee(party, appealCase)).orElse(null))
+            .appointee(appointee)
             .build();
     }
 

@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +68,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertNotNull(caseData.getAppeal().getAppellant());
         assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Elderberry"));
         assertNull(caseData.getAppeal().getAppellant().getAppointee());
+        assertThat(caseData.getAppeal().getAppellant().getIsAppointee(), is("No"));
     }
 
     @Test
@@ -80,6 +81,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertNotNull(caseData.getAppeal().getAppellant().getAppointee());
         assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Appellant"));
         assertThat(caseData.getAppeal().getAppellant().getAppointee().getName().getLastName(), is("Appointee"));
+        assertThat(caseData.getAppeal().getAppellant().getIsAppointee(), is("Yes"));
     }
 
     @Test
