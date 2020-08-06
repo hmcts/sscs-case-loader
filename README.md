@@ -153,7 +153,7 @@ SSCS_Extract_Reference_2017-06-30-09-01-31.xml
 ```
 ## Running e2e locally
 
-* Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project. 
+* Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project.
 Please follow the instructions given in the README document.
 
 * Run the application using the "local" profile:
@@ -186,7 +186,7 @@ http://localhost:3451
 1. Make sure you bring up local SFTP and run sscs-docker dependencies
 2. Run
 
-``` 
+```
  SPRING_PROFILES_ACTIVE=local ./gradlew functionalPreDeploy
  SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
  SPRING_PROFILES_ACTIVE=local ./gradlew functionalPostDeploy
@@ -243,5 +243,7 @@ Plugin setup for other IDE's are available on [https://projectlombok.org/setup/o
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+Dummy commit
 
 
