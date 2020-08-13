@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
 import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields;
@@ -31,17 +31,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAndCcdDataUpdateScenario;
 import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAppellantData;
 
@@ -56,7 +46,6 @@ public class UpdateCcdAppellantDataTest {
     private final Name name = Name.builder().lastName("Potter").build();
     private final Name newName = Name.builder().lastName("Superman").build();
     private final String normalisedNino = "AB554466B";
-    private final String deNormalisedNino = "AB 55 44 66 B";
 
     @Test
     public void givenAChangeInAppointee_shouldNotUnsubscribeAppointeeOrRep() {
@@ -328,6 +317,38 @@ public class UpdateCcdAppellantDataTest {
     }
 
     @Test
+    public void shouldUpdateAppointeeWhenThereIsNoExistingAppointee() throws Exception {
+        Appellant appellant = Appellant.builder()
+            .name(Name.builder().build())
+            .contact(Contact.builder().build())
+            .identity(Identity.builder()
+                .nino(normalisedNino)
+                .build())
+            .isAppointee("Yes")
+            .appointee(Appointee.builder()
+                .name(Name.builder().firstName("F").lastName("L").build())
+                .contact(Contact.builder().build())
+                .identity(Identity.builder().build())
+                .address(Address.builder().build())
+                .build())
+            .build();
+        gapsCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .appellant(appellant)
+                .build())
+            .build();
+
+        gapsCaseData.getAppeal().setAppellant(appellant);
+        existingCaseDetails = getSscsCaseDetails(CcdCasesSenderTest.CASE_DETAILS_JSON);
+        boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
+
+        assertTrue(updateData);
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIsAppointee(), equalTo("Yes"));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee(),
+            equalTo(appellant.getAppointee()));
+    }
+
+    @Test
     public void givenAppellantNinoUpdatesInGapsData_shouldCompareExistingCcdNinoAndReturnUpdateTrue() throws Exception {
         Appellant appellant = Appellant.builder()
                 .name(Name.builder().build())
@@ -348,6 +369,7 @@ public class UpdateCcdAppellantDataTest {
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setFirstName("");
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setLastName("");
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail("");
+        String deNormalisedNino = "AB 55 44 66 B";
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(deNormalisedNino);
         existingCaseDetails.getData().setGeneratedNino(deNormalisedNino);
 

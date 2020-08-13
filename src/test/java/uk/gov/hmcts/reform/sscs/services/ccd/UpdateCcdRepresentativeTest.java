@@ -33,6 +33,7 @@ public class UpdateCcdRepresentativeTest {
                     .name(Name.builder()
                         .lastName("Potter")
                         .build())
+                    .hasRepresentative(YES)
                     .build()
                 ).build())
             .build();
@@ -52,19 +53,22 @@ public class UpdateCcdRepresentativeTest {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(
-                    Representative.builder().name(Name.builder().lastName("Potter").build()).build()
+                    Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .hasRepresentative(YES).build()
                 ).build())
             .build();
 
         SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
             .rep(
-                Representative.builder().name(Name.builder().lastName("Superman").build()).build()
+                Representative.builder().name(Name.builder().lastName("Superman").build())
+                    .hasRepresentative(YES).build()
             ).build())
             .build();
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
         assertTrue("rep name has changed", hasDataChanged);
+        assertEquals(YES, existingCaseData.getAppeal().getRep().getHasRepresentative());
         assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
         assertNotNull(existingCaseData.getSubscriptions().getRepresentativeSubscription());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isEmailSubscribed());
@@ -76,7 +80,8 @@ public class UpdateCcdRepresentativeTest {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(
-                    Representative.builder().name(Name.builder().lastName("Potter").build()).build()
+                    Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .hasRepresentative(YES).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
                     Subscription.builder().tya(ABCDEFGH_1).email("harry@potter.com").subscribeEmail(NO)
@@ -92,6 +97,7 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
         assertTrue("rep name has changed", hasDataChanged);
+        assertEquals("Yes", existingCaseData.getAppeal().getRep().getHasRepresentative());
         assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
         assertNotNull(existingCaseData.getSubscriptions().getRepresentativeSubscription());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isEmailSubscribed());
@@ -104,6 +110,7 @@ public class UpdateCcdRepresentativeTest {
             .appeal(Appeal.builder()
                 .rep(
                     Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .hasRepresentative(YES)
                         .contact(Contact.builder().email("harry@potter.com").build()).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
@@ -115,6 +122,7 @@ public class UpdateCcdRepresentativeTest {
             .appeal(Appeal.builder()
                 .rep(
                     Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .hasRepresentative(YES)
                         .contact(Contact.builder().email("harry.potter@wizards.com").build()).build()
                 ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(
@@ -168,6 +176,7 @@ public class UpdateCcdRepresentativeTest {
             .appeal(Appeal.builder()
                 .rep(
                     Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .hasRepresentative(YES)
                         .contact(Contact.builder().email("harry@potter.com").mobile("INVALID")
                             .build()).build()
                 ).build())
@@ -179,6 +188,7 @@ public class UpdateCcdRepresentativeTest {
         SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
             .rep(
                 Representative.builder().name(Name.builder().lastName("Potter").build())
+                    .hasRepresentative(YES)
                     .contact(Contact.builder().mobile("07123456789").build()).build()
             ).build())
             .build();
@@ -200,6 +210,7 @@ public class UpdateCcdRepresentativeTest {
             .appeal(Appeal.builder()
                 .rep(
                     Representative.builder().name(Name.builder().lastName("Potter").build())
+                        .hasRepresentative(YES)
                         .contact(Contact.builder().email("harry@potter.com").mobile("07111111111")
                             .build()).build()
                 ).build())
@@ -212,6 +223,7 @@ public class UpdateCcdRepresentativeTest {
         SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
             .rep(
                 Representative.builder().name(Name.builder().lastName("Potter").build())
+                    .hasRepresentative(YES)
                     .contact(Contact.builder().mobile("07123456789").build()).build()
             ).build())
             .build();
@@ -251,7 +263,7 @@ public class UpdateCcdRepresentativeTest {
 
         SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
             .rep(
-                Representative.builder().name(Name.builder().lastName("Potter").build()).build()
+                Representative.builder().name(Name.builder().lastName("Potter").build()).hasRepresentative(YES).build()
             ).build())
             .build();
         SscsCaseData originalExistingCaseData = existingCaseData.toBuilder().build();
@@ -275,10 +287,10 @@ public class UpdateCcdRepresentativeTest {
                 Subscriptions.builder()
                     .representativeSubscription(
                         Subscription.builder()
-                            .wantSmsNotifications("Yes")
-                            .subscribeEmail("Yes")
+                            .wantSmsNotifications(YES)
+                            .subscribeEmail(YES)
                             .email("test@test.com")
-                            .subscribeSms("Yes")
+                            .subscribeSms(YES)
                             .mobile("07811111111")
                             .build()
                     )
@@ -290,10 +302,10 @@ public class UpdateCcdRepresentativeTest {
                 Subscriptions.builder()
                     .representativeSubscription(
                         Subscription.builder()
-                            .wantSmsNotifications("No")
-                            .subscribeEmail("No")
+                            .wantSmsNotifications(NO)
+                            .subscribeEmail(NO)
                             .email("")
-                            .subscribeSms("No")
+                            .subscribeSms(NO)
                             .mobile("")
                             .build()
                     )
