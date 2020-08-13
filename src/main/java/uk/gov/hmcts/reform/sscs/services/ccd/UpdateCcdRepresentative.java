@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.util.UkMobile;
@@ -34,6 +37,15 @@ final class UpdateCcdRepresentative {
                     getClearedRepSubscriptionUpdate(existingCcdCaseData)
                 );
                 repUpdated = true;
+            }
+            if (repUpdated && nonNull(existingCcdCaseData.getAppeal().getRep())) {
+                boolean hasRep = ((nonNull(existingCcdCaseData.getAppeal().getRep().getName())
+                    && nonNull(existingCcdCaseData.getAppeal().getRep().getName().getLastName()))
+                    || nonNull(existingCcdCaseData.getAppeal().getRep().getOrganisation()));
+                String hasRepYesOrNo = hasRep ? "Yes" : "No";
+                if (!equalsIgnoreCase(existingCcdCaseData.getAppeal().getRep().getHasRepresentative(), hasRepYesOrNo)) {
+                    existingCcdCaseData.getAppeal().getRep().setHasRepresentative(hasRepYesOrNo);
+                }
             }
         }
         return repUpdated;
