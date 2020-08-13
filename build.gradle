@@ -2,7 +2,7 @@ plugins {
   id 'application'
   id 'pmd'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.10.RELEASE'
   id 'org.springframework.boot' version '2.3.2.RELEASE'
   id 'uk.gov.hmcts.java' version '0.11.0'
   id 'com.github.ben-manes.versions' version '0.29.0'
