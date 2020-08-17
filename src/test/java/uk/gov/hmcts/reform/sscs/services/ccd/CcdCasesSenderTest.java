@@ -516,7 +516,9 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldAddRegionalProcessingCenterForAnExistingCaseIfItsNotAlreadyPresentInCcd() throws Exception {
+
         RegionalProcessingCenter regionalProcessingCenter = getRegionalProcessingCenter();
+
         ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
 
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
@@ -530,6 +532,7 @@ public class CcdCasesSenderTest {
         verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
             eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
             eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
         assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(regionalProcessingCenter));
         assertThat(caseDataArgumentCaptor.getValue().getRegion(), equalTo(regionalProcessingCenter.getName()));
     }
@@ -574,7 +577,6 @@ public class CcdCasesSenderTest {
             eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
 
         assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(null));
-
 
     }
 

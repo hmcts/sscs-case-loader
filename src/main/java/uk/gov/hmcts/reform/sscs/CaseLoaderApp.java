@@ -18,7 +18,9 @@ import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 @EnableCircuitBreaker
 @EnableHystrixDashboard
 @SuppressWarnings("HideUtilityClassConstructor")
-@EnableFeignClients
+@EnableFeignClients(basePackages = {
+    "uk.gov.hmcts.reform.idam.client"
+})
 @Slf4j
 @EnableRetry
 public class CaseLoaderApp {
