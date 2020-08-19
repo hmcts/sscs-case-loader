@@ -4,7 +4,7 @@ properties([
   // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
   pipelineTriggers([cron('H 22 * * *')]),
   parameters([
-                string(name: 'URL_TO_TEST', defaultValue: 'https://sscs-case-loader-aat.service.core-compute-aat.internal/', description: 'The URL you want to run these tests against'),
+                string(name: 'URL_TO_TEST', defaultValue: 'http://sscs-case-loader-aat.service.core-compute-aat.internal', description: 'The URL you want to run these tests against'),
                 string(name: 'SecurityRules',
                         defaultValue: 'https://raw.githubusercontent.com/hmcts/security-test-rules/master/conf/security-rules.conf',
                         description: 'The URL you want to run these tests against'),
@@ -13,14 +13,80 @@ properties([
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.GradleBuilder
+
 def type = "java"
 def product = "sscs"
 def component = "case-loader"
+
+def secrets = [
+  'sscs-${env}': [
+    secret('sftp-host', 'GAPS2_SFTP_HOST'),
+    secret('sftp-port', 'GAPS2_SFTP_PORT'),
+    secret('gaps2-service-sftp-private-key', 'GAPS2_KEY_LOCATION'),
+    secret('sftp-user', 'GAPS2_SFTP_USER'),
+    secret('sftp-dir', 'GAPS2_SFTP_DIR'),
+    secret('ccd-api', 'CORE_CASE_DATA_API_URL'),
+    secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
+    secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
+    secret('idam-api', 'IDAM_URL'),
+    secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
+    secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
+    secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
+    secret('idam-sscs-systemupdate-user', 'IDAM_SSCS_SYSTEMUPDATE_USER'),
+    secret('idam-sscs-systemupdate-password', 'IDAM_SSCS_SYSTEMUPDATE_PASSWORD'),
+    secret('idam-sscs-oauth2-client-secret', 'IDAM_OAUTH2_CLIENT_SECRET'),
+    secret('idam-oauth-user', 'IDAM_OAUTH2_CLIENT_ID'),
+    secret('idam-redirect', 'IDAM_OAUTH2_REDIRECT_URL'),
+  ]
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [$class     : 'AzureKeyVaultSecret',
+   secretType : 'Secret',
+   name       : secretName,
+   version    : '',
+   envVariable: envVar
+  ]
+}
+
+GradleBuilder builder = new GradleBuilder(this, product)
 
 withNightlyPipeline(type, product, component) {
   env.TEST_URL = params.URL_TO_TEST
 
   env.Rules = params.SecurityRules
   enableSecurityScan()
- 
+  enableFullFunctionalTest()
+
+  loadVaultSecrets(secrets)
+
+  enableAksStagingDeployment()
+  disableLegacyDeployment()
+  nonServiceApp()
+
+  before('akschartsinstall') {
+    echo "Setting up data for functional tests"
+
+    try {
+      builder.gradle('functionalPreDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
+    }
+  }
+
+  after('akschartsinstall') {
+    echo "Checking case number:"
+    sh "cat ccdCaseId.tmp"
+    echo "Just waiting a while to ensure that the pod has run the job"
+    sh "sleep 120s"
+    echo "Verifying that functional test data was processed correctly"
+    try {
+      builder.gradle('functionalPostDeploy')
+    } finally {
+      junit '**/test-results/**/*.xml'
+    }
+  }
+
+  enableSlackNotifications('#sscs-tech')
 }
