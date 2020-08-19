@@ -130,6 +130,14 @@ class CaseDataBuilder {
 
     RegionalProcessingCenter buildRegionalProcessingCentre(AppealCase appealCase, Parties appellantParty) {
         List<Hearing> hearings = appealCase.getHearing() != null ? appealCase.getHearing() : Collections.emptyList();
+
+        if (hearings.size() > 0) {
+            log.info("Building RPC for Gaps case data based on last hearing venue for case id {}",
+                appealCase.getAppealCaseId());
+        } else {
+            log.info("Building RPC for Gaps case data based on postcode for case id {}", appealCase.getAppealCaseId());
+        }
+
         return hearings.stream()
             .reduce(getLast())
             .map(hearing -> regionalProcessingCenterService.getByVenueId(hearing.getVenueId()))

@@ -114,9 +114,9 @@ public class ProcessCaseTest {
 
         when(idamClient.getAccessToken(anyString(), anyString())).thenReturn("Bearer " + USER_AUTH);
 
-        when(idamClient.getUserDetails(anyString()))
-                .thenReturn(new uk.gov.hmcts.reform.idam.client.models.UserDetails("16", "m@test.com", "test", "test",
-                        new ArrayList<>()));
+        when(idamClient.getUserInfo(anyString()))
+            .thenReturn(new uk.gov.hmcts.reform.idam.client.models.UserInfo("sub", "16", "m@test.com", "test", "test",
+                new ArrayList<>()));
 
         when(refDataRepository.find(CASE_CODE, "1001", BEN_ASSESS_TYPE_ID)).thenReturn("bat");
         when(refDataRepository.find(BEN_ASSESS_TYPE, "bat", BAT_CODE)).thenReturn("code");

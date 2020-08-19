@@ -70,14 +70,19 @@ public class TransformAppealCaseToCaseData {
         List<DwpTimeExtension> dwpTimeExtensionList = caseDataBuilder.buildDwpTimeExtensions(appealCase);
 
         List<Event> events = caseDataBuilder.buildEvent(appealCase);
+
         RegionalProcessingCenter regionalProcessingCenter = appellantParty.map((Parties party) ->
             regionalProcessingCenter(party, appealCase)).orElse(null);
+
+        log.info("Setting RPC to {} while building case data from Gaps Appeal Data for case Id {}",
+            rpcName(regionalProcessingCenter), appealCase.getAppealCaseId());
+
         return SscsCaseData.builder()
             .caseReference(appealCase.getAppealCaseRefNum())
             .appeal(appeal)
             .hearings(hearingsList)
             .regionalProcessingCenter(regionalProcessingCenter)
-            .region((regionalProcessingCenter != null) ? regionalProcessingCenter.getName() : null)
+            .region(rpcName(regionalProcessingCenter))
             .evidence(evidence)
             .dwpTimeExtension(dwpTimeExtensionList)
             .events(events)
@@ -86,6 +91,10 @@ public class TransformAppealCaseToCaseData {
             )
             .ccdCaseId(appealCase.getAdditionalRef())
             .build();
+    }
+
+    private String rpcName(RegionalProcessingCenter regionalProcessingCenter) {
+        return regionalProcessingCenter != null ? regionalProcessingCenter.getName() : null;
     }
 
     private boolean getPartiesGivenRoleId(Parties p, int roleId) {
@@ -113,6 +122,8 @@ public class TransformAppealCaseToCaseData {
         RegionalProcessingCenter regionalProcessingCenter = null;
         if (lookupRpcByVenueId) {
             regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase, appellantParty);
+        } else {
+            log.info("Not building RPC for GAPs case data as lookupRpcByVenueId is false");
         }
         return regionalProcessingCenter;
     }
@@ -120,11 +131,15 @@ public class TransformAppealCaseToCaseData {
     private Appellant appellant(final Parties appellantParty,
                                 final Optional<Parties> appointeeParty,
                                 final AppealCase appealCase) {
+        Appointee appointee = appointeeParty.map((Parties party) -> appointee(party, appealCase)).orElse(null);
         return Appellant.builder()
             .name(caseDataBuilder.buildName(appellantParty))
             .contact(caseDataBuilder.buildContact(appellantParty))
+            .isAppointee(appointee != null
+                && appointee.getName() != null
+                && appointee.getName().getLastName() != null ? "Yes" : "No")
             .identity(caseDataBuilder.buildIdentity(appellantParty, appealCase))
-            .appointee(appointeeParty.map((Parties party) -> appointee(party, appealCase)).orElse(null))
+            .appointee(appointee)
             .build();
     }
 
