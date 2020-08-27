@@ -65,7 +65,7 @@ withNightlyPipeline(type, product, component) {
   disableLegacyDeployment()
   nonServiceApp()
 
-  before('akschartsinstall') {
+  before('fullFunctionalTest') {
     echo "Setting up data for functional tests"
 
     try {
@@ -75,7 +75,7 @@ withNightlyPipeline(type, product, component) {
     }
   }
 
-  after('akschartsinstall') {
+  after('fullFunctionalTest') {
     echo "Checking case number:"
     sh "cat ccdCaseId.tmp"
     echo "Just waiting a while to ensure that the pod has run the job"
