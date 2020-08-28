@@ -57,7 +57,6 @@ withNightlyPipeline(type, product, component) {
 
   env.Rules = params.SecurityRules
   enableSecurityScan()
-  enableFullFunctionalTest()
 
   loadVaultSecrets(secrets)
 
@@ -65,7 +64,7 @@ withNightlyPipeline(type, product, component) {
   disableLegacyDeployment()
   nonServiceApp()
 
-  before('fullFunctionalTest') {
+  before('securityScan') {
     echo "Setting up data for functional tests"
 
     try {
@@ -75,7 +74,7 @@ withNightlyPipeline(type, product, component) {
     }
   }
 
-  after('fullFunctionalTest') {
+  after('securityScan') {
     echo "Checking case number:"
     sh "cat ccdCaseId.tmp"
     echo "Just waiting a while to ensure that the pod has run the job"
