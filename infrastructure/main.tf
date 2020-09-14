@@ -5,7 +5,7 @@ provider "azurerm" {
 # Make sure the resource group exists
 resource "azurerm_resource_group" "rg" {
   name     = "${var.product}-${var.component}-${var.env}"
-  location = "${var.location}"
+  location = var.location
 
   tags = "${merge(var.common_tags,
     map("lastUpdated", "${timestamp()}")
