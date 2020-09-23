@@ -91,5 +91,4 @@ rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:true}
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
 
-
-
+feature.universal-credit.enabled: ${UC_ENABLED:false}
