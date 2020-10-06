@@ -248,7 +248,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.0'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.6'
 
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
