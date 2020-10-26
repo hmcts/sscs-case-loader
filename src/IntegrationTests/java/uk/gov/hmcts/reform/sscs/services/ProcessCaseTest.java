@@ -16,8 +16,8 @@ import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BAT_CODE;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BEN_ASSESS_TYPE_ID;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.*;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
@@ -37,6 +38,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsQueryBuilder;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -132,9 +134,14 @@ public class ProcessCaseTest {
                 .data(caseDataMap)
                 .build();
 
-        when(coreCaseDataApi.searchForCaseworker(anyString(), anyString(), anyString(), anyString(), anyString(),
-            eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))))
-            .thenReturn(new ArrayList<>());
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("case.caseReference", "SC068/01/00001");
+
+        when(coreCaseDataApi.searchCases(
+            anyString(),
+            anyString(),
+            anyString(),
+            eq(query.toString())
+        )).thenReturn(SearchResult.builder().cases(new ArrayList<>()).build());
 
         when(coreCaseDataApi.startForCaseworker(
             anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
@@ -176,13 +183,13 @@ public class ProcessCaseTest {
 
         // SC reference case
 
-        verify(coreCaseDataApi, times(1)).searchForCaseworker(
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("case.caseReference", "SC068/01/00001");
+
+        verify(coreCaseDataApi, times(1)).searchCases(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
-            eq(USER_ID),
             anyString(),
-            anyString(),
-            eq(ImmutableMap.of("case.caseReference", "SC068/01/00001"))
+            eq(query.toString())
         );
 
         // CCD ID case

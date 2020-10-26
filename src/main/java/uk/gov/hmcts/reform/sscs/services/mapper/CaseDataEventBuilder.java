@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
-import com.google.common.collect.ImmutableMap;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -135,8 +134,7 @@ class CaseDataEventBuilder {
             .build();
 
         List<SscsCaseDetails> sscsCaseDetailsList =
-            ccdService.findCaseBy(ImmutableMap.of("case.caseReference", appealCase.getAppealCaseRefNum()),
-                idamTokens);
+            ccdService.findCaseBy("case.caseReference", appealCase.getAppealCaseRefNum(), idamTokens);
         if (sscsCaseDetailsList != null && !sscsCaseDetailsList.isEmpty()) {
             return sscsCaseDetailsList.get(0).getData().getHearings();
         }

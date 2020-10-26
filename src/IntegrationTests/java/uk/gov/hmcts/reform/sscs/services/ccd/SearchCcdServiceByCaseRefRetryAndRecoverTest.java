@@ -1,14 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
@@ -20,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -52,27 +51,22 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
 
     @Test
     public void givenFindCaseByRefFails_shouldRetryAndRecover() {
-        when(coreCaseDataApi.searchForCaseworker(
+        when(coreCaseDataApi.searchCases(
             eq(AUTHORIZATION),
             eq(SERVICE_AUTHORIZATION),
-            eq(USER_ID),
             anyString(),
-            anyString(),
-            any()))
+            anyString()))
             .thenThrow(new RuntimeException())
             .thenThrow(new RuntimeException())
             .thenThrow(new RuntimeException());
 
-        when(coreCaseDataApi.searchForCaseworker(
+        when(coreCaseDataApi.searchCases(
             eq(AUTHORIZATION_2),
             eq(SERVICE_AUTHORIZATION_2),
-            eq(USER_ID),
             anyString(),
-            anyString(),
-            any()))
-            .thenReturn(Collections.singletonList(
-                CaseDetails.builder().id(10L).build()
-            ));
+            anyString()))
+            .thenReturn(SearchResult.builder().cases(Collections.singletonList(
+                CaseDetails.builder().id(10L).build())).build());
 
         when(idamService.getIdamTokens())
             .thenReturn(IdamTokens.builder()
@@ -89,25 +83,21 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
 
 
         List<SscsCaseDetails> result = ccdService.findCaseBy(
-            ImmutableMap.of("case.caseReference", CASE_REF), idamTokens);
+            "case.caseReference", CASE_REF, idamTokens);
 
         verify(coreCaseDataApi, times(3))
-            .searchForCaseworker(
+            .searchCases(
                 eq(AUTHORIZATION),
                 eq(SERVICE_AUTHORIZATION),
-                eq(USER_ID),
                 anyString(),
-                anyString(),
-                any());
+                anyString());
 
         verify(coreCaseDataApi, times(1))
-            .searchForCaseworker(
+            .searchCases(
                 eq(AUTHORIZATION_2),
                 eq(SERVICE_AUTHORIZATION_2),
-                eq(USER_ID),
                 anyString(),
-                anyString(),
-                any());
+                anyString());
 
         assertTrue(result.get(0).getId() == 10L);
     }

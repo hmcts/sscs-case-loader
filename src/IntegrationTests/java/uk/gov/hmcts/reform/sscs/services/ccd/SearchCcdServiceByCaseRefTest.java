@@ -1,14 +1,14 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.List;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsQueryBuilder;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -39,15 +41,14 @@ public class SearchCcdServiceByCaseRefTest {
 
     @Test
     public void givenCaseRef_shouldFindTheCaseInCcd() {
-        given(coreCaseDataApi.searchForCaseworker(
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("case.caseReference", CASE_REF);
+
+        given(coreCaseDataApi.searchCases(
             eq("idamOauth2Token"),
             eq("serviceAuthorization"),
-            eq("1234"),
             anyString(),
-            anyString(),
-            eq(ImmutableMap.of("case.caseReference", CASE_REF))
-            )
-        ).willReturn(Collections.singletonList(CaseDetails.builder().build()));
+            eq(query.toString())
+        )).willReturn(SearchResult.builder().cases(Collections.singletonList(CaseDetails.builder().build())).build());
 
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("idamOauth2Token")
@@ -56,15 +57,13 @@ public class SearchCcdServiceByCaseRefTest {
             .build();
 
         List<SscsCaseDetails> cases = ccdService
-            .findCaseBy(ImmutableMap.of("case.caseReference", CASE_REF), idamTokens);
+            .findCaseBy("case.caseReference", CASE_REF, idamTokens);
 
-        verify(coreCaseDataApi).searchForCaseworker(
+        verify(coreCaseDataApi).searchCases(
             eq("idamOauth2Token"),
             eq("serviceAuthorization"),
-            eq("1234"),
             anyString(),
-            anyString(),
-            eq(ImmutableMap.of("case.caseReference", CASE_REF))
+            eq(query.toString())
         );
 
         assertEquals("expected one case only", 1, cases.size());
