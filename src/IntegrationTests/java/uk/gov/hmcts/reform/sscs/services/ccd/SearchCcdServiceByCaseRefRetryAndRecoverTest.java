@@ -83,7 +83,7 @@ public class SearchCcdServiceByCaseRefRetryAndRecoverTest {
 
 
         List<SscsCaseDetails> result = ccdService.findCaseBy(
-            "case.caseReference", CASE_REF, idamTokens);
+            "data.caseReference", CASE_REF, idamTokens);
 
         verify(coreCaseDataApi, times(3))
             .searchCases(
