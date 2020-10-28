@@ -134,7 +134,7 @@ class CaseDataEventBuilder {
             .build();
 
         List<SscsCaseDetails> sscsCaseDetailsList =
-            ccdService.findCaseBy("case.caseReference", appealCase.getAppealCaseRefNum(), idamTokens);
+            ccdService.findCaseBy("data.caseReference", appealCase.getAppealCaseRefNum(), idamTokens);
         if (sscsCaseDetailsList != null && !sscsCaseDetailsList.isEmpty()) {
             return sscsCaseDetailsList.get(0).getData().getHearings();
         }

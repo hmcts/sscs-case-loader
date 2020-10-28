@@ -64,7 +64,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
         given(idamService.getUserId("oauth2Token")).willReturn("16");
 
-        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("case.caseReference", "SC068/17/00011");
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("data.caseReference", "SC068/17/00011");
 
         given(coreCaseDataApi.searchCases(
             "oauth2Token",

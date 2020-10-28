@@ -41,7 +41,7 @@ public class SearchCcdServiceByCaseRefTest {
 
     @Test
     public void givenCaseRef_shouldFindTheCaseInCcd() {
-        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("case.caseReference", CASE_REF);
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("data.caseReference", CASE_REF);
 
         given(coreCaseDataApi.searchCases(
             eq("idamOauth2Token"),
@@ -57,7 +57,7 @@ public class SearchCcdServiceByCaseRefTest {
             .build();
 
         List<SscsCaseDetails> cases = ccdService
-            .findCaseBy("case.caseReference", CASE_REF, idamTokens);
+            .findCaseBy("data.caseReference", CASE_REF, idamTokens);
 
         verify(coreCaseDataApi).searchCases(
             eq("idamOauth2Token"),
