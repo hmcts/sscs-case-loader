@@ -250,7 +250,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
 
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '3.5.19'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.0.1'
 
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
