@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -102,12 +101,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
         EventDetails event = events.get(0).getValue();
 
-        assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
-        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+        assertEquals(GapsEvent.HEARING_ADJOURNED.getType(), event.getType());
+        assertEquals(GapsEvent.HEARING_ADJOURNED.getDescription(), event.getDescription());
+        assertEquals(LOCAL_SESSION_DATETIME, event.getDate());
     }
 
     @Test
@@ -119,12 +118,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
         EventDetails event = events.get(0).getValue();
 
-        assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
-        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+        assertEquals(GapsEvent.HEARING_ADJOURNED.getType(), event.getType());
+        assertEquals(GapsEvent.HEARING_ADJOURNED.getDescription(), event.getDescription());
+        assertEquals(LOCAL_SESSION_DATETIME, event.getDate());
     }
 
     @Test
@@ -138,12 +137,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
         EventDetails event = events.get(0).getValue();
 
-        assertThat(event.getType(), equalTo(GapsEvent.HEARING_ADJOURNED.getType()));
-        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_ADJOURNED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+        assertEquals(GapsEvent.HEARING_ADJOURNED.getType(), event.getType());
+        assertEquals(GapsEvent.HEARING_ADJOURNED.getDescription(), event.getDescription());
+        assertEquals(LOCAL_SESSION_DATETIME, event.getDate());
     }
 
     @Test
@@ -156,7 +155,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
-        assertThat(events.size(), equalTo(0));
+        assertEquals(0, events.size());
     }
 
     @Test
@@ -165,7 +164,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
-        assertThat(events, equalTo(Collections.EMPTY_LIST));
+        assertEquals(Collections.EMPTY_LIST, events);
     }
 
     @Test
@@ -179,7 +178,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildAdjournedEvents(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
     }
 
     @Test
@@ -257,7 +256,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
             eq(appeal.getHearing()))).thenReturn(false);
 
-        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+        when(ccdService.findCaseBy(anyString(), anyString(), any(IdamTokens.class)))
             .thenReturn(Collections
                 .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
@@ -269,7 +268,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(ccdService, times(1)).findCaseBy(any(),
+        verify(ccdService, times(1)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
@@ -316,7 +315,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(ccdService, times(0)).findCaseBy(any(),
+        verify(ccdService, times(0)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(0))
@@ -365,7 +364,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
             eq(appeal.getHearing()))).thenReturn(false);
 
-        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+        when(ccdService.findCaseBy(anyString(), anyString(), any(IdamTokens.class)))
             .thenReturn(Collections
                 .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
@@ -377,7 +376,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(ccdService, times(1)).findCaseBy(any(),
+        verify(ccdService, times(1)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
@@ -407,12 +406,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
         EventDetails event = events.get(0).getValue();
 
-        assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
-        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+        assertEquals(GapsEvent.HEARING_POSTPONED.getType(), event.getType());
+        assertEquals(GapsEvent.HEARING_POSTPONED.getDescription(), event.getDescription());
+        assertEquals(LOCAL_SESSION_DATETIME, event.getDate());
 
     }
 
@@ -431,12 +430,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
         EventDetails event = events.get(0).getValue();
 
-        assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
-        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+        assertEquals(GapsEvent.HEARING_POSTPONED.getType(), event.getType());
+        assertEquals(GapsEvent.HEARING_POSTPONED.getDescription(), event.getDescription());
+        assertEquals(LOCAL_SESSION_DATETIME, event.getDate());
 
     }
 
@@ -456,12 +455,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
-        assertThat(events.size(), equalTo(1));
+        assertEquals(1, events.size());
         EventDetails event = events.get(0).getValue();
 
-        assertThat(event.getType(), equalTo(GapsEvent.HEARING_POSTPONED.getType()));
-        assertThat(event.getDescription(), equalTo(GapsEvent.HEARING_POSTPONED.getDescription()));
-        assertThat(event.getDate(), equalTo(LOCAL_SESSION_DATETIME));
+        assertEquals(GapsEvent.HEARING_POSTPONED.getType(), event.getType());
+        assertEquals(GapsEvent.HEARING_POSTPONED.getDescription(), event.getDescription());
+        assertEquals(LOCAL_SESSION_DATETIME, event.getDate());
     }
 
 
@@ -481,7 +480,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
 
-        assertThat(events.size(), equalTo(0));
+        assertEquals(0, events.size());
     }
 
     /*
@@ -509,7 +508,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+        when(ccdService.findCaseBy(anyString(), anyString(), any(IdamTokens.class)))
             .thenReturn(Collections
                 .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
 
@@ -519,7 +518,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        verify(ccdService, times(1)).findCaseBy(any(),
+        verify(ccdService, times(1)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(1))
@@ -559,7 +558,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             ))
             .build();
 
-        when(ccdService.findCaseBy(any(), any(IdamTokens.class)))
+        when(ccdService.findCaseBy(anyString(), anyString(), any(IdamTokens.class)))
             .thenReturn(Collections
                 .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)))
             .thenReturn(Collections
@@ -572,7 +571,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        verify(ccdService, times(2)).findCaseBy(any(),
+        verify(ccdService, times(2)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
         verify(postponedEventInferredFromCcd, times(2))
@@ -618,13 +617,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
 
-        assertThat(events.size(), equalTo(3));
-        assertThat(events.get(0).getValue().getDate(),
-            equalTo(appealReceivedEventDateTime.toLocalDateTime().toString()));
-        assertThat(events.get(1).getValue().getDate(),
-            equalTo(responseReceivedEventDateTime.toLocalDateTime().toString()));
-        assertThat(events.get(2).getValue().getDate(),
-            equalTo(hearingBookedEventDateTime.toLocalDateTime().toString()));
+        assertEquals(3, events.size());
+        assertEquals(appealReceivedEventDateTime.toLocalDateTime().toString(), events.get(0).getValue().getDate());
+        assertEquals(responseReceivedEventDateTime.toLocalDateTime().toString(), events.get(1).getValue().getDate());
+        assertEquals(hearingBookedEventDateTime.toLocalDateTime().toString(), events.get(2).getValue().getDate());
 
     }
 
@@ -653,13 +649,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         List<Event> events = caseDataEventBuilder.buildMajorStatusEvents(appealCase);
 
-        assertThat(events.size(), equalTo(3));
-        assertThat(events.get(0).getValue().getDate(),
-                equalTo(appealReceivedEventDateTime.toLocalDateTime().toString()));
-        assertThat(events.get(1).getValue().getDate(),
-                equalTo(responseReceivedEventDateTime.toLocalDateTime().toString()));
-        assertThat(events.get(2).getValue().getDate(),
-                equalTo(hearingBookedEventDateTime.toLocalDateTime().toString()));
+        assertEquals(3, events.size());
+        assertEquals(appealReceivedEventDateTime.toLocalDateTime().toString(), events.get(0).getValue().getDate());
+        assertEquals(responseReceivedEventDateTime.toLocalDateTime().toString(), events.get(1).getValue().getDate());
+        assertEquals(hearingBookedEventDateTime.toLocalDateTime().toString(), events.get(2).getValue().getDate());
 
     }
 

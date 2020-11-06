@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +25,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsQueryBuilder;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
@@ -62,14 +64,14 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
         given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
         given(idamService.getUserId("oauth2Token")).willReturn("16");
 
-        given(coreCaseDataApi.searchForCaseworker(
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("data.caseReference", "SC068/17/00011");
+
+        given(coreCaseDataApi.searchCases(
             "oauth2Token",
             "serviceToken",
-            "16",
-            ccdRequestDetails.getJurisdictionId(),
             ccdRequestDetails.getCaseTypeId(),
-            ImmutableMap.of("case.caseReference", "SC068/17/00011")
-        )).willReturn(Collections.singletonList(getCaseDetails()));
+            query.toString()
+        )).willReturn(SearchResult.builder().cases(Collections.singletonList(getCaseDetails())).build());
     }
 
     /*
