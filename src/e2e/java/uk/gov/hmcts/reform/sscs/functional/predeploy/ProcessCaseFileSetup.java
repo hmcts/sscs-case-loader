@@ -61,6 +61,9 @@ public class ProcessCaseFileSetup {
             .userId(idamService.getUserId(oauth2Token))
             .build();
 
+        // Case 1 is created to cater the scenarios of elastic search issue which was returning multiple cases
+        // on case reference search for more details https://tools.hmcts.net/jira/browse/SSCS-8383
+        // Also to make sure the case 1 should don't overwritten with case 2 and case 2 updated successfully
         log.info("Building minimal case1 data...");
         SscsCaseData caseDataCase1 = CaseDataUtils.buildMinimalCaseData();
         caseDataCase1.getAppeal().getAppellant().setIdentity(Identity.builder()
