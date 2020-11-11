@@ -193,7 +193,8 @@ public class CaseLoaderService {
                 caseData.getCaseReference(), caseData.getCcdCaseId());
         } else {
             log.info(logPrefixWithFile + " case with SC {} and ccdID {} exists, it will be updated...",
-                (sscsCaseDetails.getData() != null) ? sscsCaseDetails.getData().getCaseReference() : caseData.getCaseReference(), sscsCaseDetails.getId());
+                (sscsCaseDetails.getData() != null) ? sscsCaseDetails.getData().getCaseReference()
+                    : caseData.getCaseReference(), sscsCaseDetails.getId());
             ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
         }
     }
