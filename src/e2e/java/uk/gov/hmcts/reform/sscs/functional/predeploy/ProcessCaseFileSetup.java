@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -34,6 +35,8 @@ import uk.gov.hmcts.reform.tools.GenerateXml;
 public class ProcessCaseFileSetup {
 
     private static final String outputdir = "src/test/resources/updates";
+    private static final String CASE_REF_TEST_1 = "SC001/19/00365";
+    private static final String CASE_REF_TEST_2 = "SC001/20/00365";
 
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
@@ -58,11 +61,21 @@ public class ProcessCaseFileSetup {
             .userId(idamService.getUserId(oauth2Token))
             .build();
 
-        log.info("Building minimal case data...");
+        log.info("Building minimal case1 data...");
         SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
+        caseData.getAppeal().getAppellant().setIdentity(Identity.builder().nino("AB 77 88 88 B").dob("1904-03-10").build());
+        caseData.setCaseReference(CASE_REF_TEST_1);
 
-        log.info("Creating CCD case...");
+        log.info("Creating CCD case1...");
         SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+            "caseloader test description", idamTokens);
+
+        log.info("Building minimal case2 data...");
+        caseData = CaseDataUtils.buildMinimalCaseData();
+        caseData.setCaseReference(CASE_REF_TEST_2);
+
+        log.info("Creating CCD case1...");
+        caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
 
         ccdCaseId = String.valueOf(caseDetails.getId());
@@ -76,6 +89,7 @@ public class ProcessCaseFileSetup {
             .getResource("SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml")).getFile();
         String ccdCasesXml = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         ccdCasesXml = ccdCasesXml.replace("1_CCD_ID_REPLACED_BY_TEST", ccdCaseId);
+        ccdCasesXml = ccdCasesXml.replace("1_CCD_REF_REPLACED_BY_TEST", CASE_REF_TEST_2);
 
         cleanSftpFiles();
         writeXmlToSftp(ccdCasesXml);
