@@ -62,23 +62,25 @@ public class ProcessCaseFileSetup {
             .build();
 
         log.info("Building minimal case1 data...");
-        SscsCaseData caseData = CaseDataUtils.buildMinimalCaseData();
-        caseData.getAppeal().getAppellant().setIdentity(Identity.builder().nino("AB 77 88 88 B").dob("1904-03-10").build());
-        caseData.setCaseReference(CASE_REF_TEST_1);
+        SscsCaseData caseDataCase1 = CaseDataUtils.buildMinimalCaseData();
+        caseDataCase1.getAppeal().getAppellant().setIdentity(Identity.builder()
+            .nino("AB 77 88 88 B").dob("1904-03-10").build());
+        caseDataCase1.setCaseReference(CASE_REF_TEST_1);
 
         log.info("Creating CCD case1...");
-        SscsCaseDetails caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+        ccdService.createCase(caseDataCase1, "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
 
         log.info("Building minimal case2 data...");
-        caseData = CaseDataUtils.buildMinimalCaseData();
-        caseData.setCaseReference(CASE_REF_TEST_2);
+        SscsCaseData caseDataCase2 = CaseDataUtils.buildMinimalCaseData();
+        caseDataCase2.setCaseReference(CASE_REF_TEST_2);
 
-        log.info("Creating CCD case1...");
-        caseDetails = ccdService.createCase(caseData, "appealCreated", "caseloader test summary",
+        log.info("Creating CCD case2...");
+        SscsCaseDetails caseDetailsCase2 = ccdService.createCase(caseDataCase2,
+            "appealCreated", "caseloader test summary",
             "caseloader test description", idamTokens);
 
-        ccdCaseId = String.valueOf(caseDetails.getId());
+        ccdCaseId = String.valueOf(caseDetailsCase2.getId());
         log.info("Created test ccd case with id {}", ccdCaseId);
 
         String tmpFileName = "ccdCaseId.tmp";
