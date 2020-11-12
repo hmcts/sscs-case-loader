@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.exceptions.MultipleCaseFoundException;
 import uk.gov.hmcts.reform.sscs.exceptions.ProcessDeltaException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -157,7 +158,7 @@ public class CaseLoaderService {
         }
     }
 
-    private void processCasesFromDelta(List<SscsCaseData> cases) throws Exception {
+    private void processCasesFromDelta(List<SscsCaseData> cases) throws MultipleCaseFoundException {
         for (SscsCaseData caseData : cases) {
             if (caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 continue;
@@ -173,7 +174,7 @@ public class CaseLoaderService {
         fileMetrics.setFileSize(file.getSize());
     }
 
-    private void processCase(SscsCaseData caseData) throws Exception {
+    private void processCase(SscsCaseData caseData) throws MultipleCaseFoundException {
         SscsCaseDetails sscsCaseDetails;
 
         if (hasAppellantIdentify(caseData)) {
@@ -190,7 +191,8 @@ public class CaseLoaderService {
                 log.info(logPrefixWithFile + " found multiple cases {} with SC {} ",
                     sscsCaseDetailsList.stream().map(s -> String.valueOf(s.getId()))
                         .collect(Collectors.joining(",")), caseData.getCaseReference());
-                throw new Exception("Multiple cases found for case reference " + caseData.getCaseReference());
+                throw new MultipleCaseFoundException("Multiple cases found for case reference "
+                    + caseData.getCaseReference());
             }
 
             sscsCaseDetails = !CollectionUtils.isEmpty(sscsCaseDetailsList) ? sscsCaseDetailsList.get(0) : null;
