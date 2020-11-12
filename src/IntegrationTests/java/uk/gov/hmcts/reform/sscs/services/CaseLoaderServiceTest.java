@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,7 +130,7 @@ public class CaseLoaderServiceTest {
 
         ArgumentCaptor<IdamTokens> idamTokensArgumentCaptor = ArgumentCaptor.forClass(IdamTokens.class);
         then(searchCcdCaseService).should(times(2))
-            .findCaseByCaseRefOrCaseId(eq(caseData), idamTokensArgumentCaptor.capture());
+            .findListOfCasesByCaseRefOrCaseId(eq(caseData), idamTokensArgumentCaptor.capture());
 
         List<IdamTokens> values = idamTokensArgumentCaptor.getAllValues();
         assertThat(values.get(0).getIdamOauth2Token(), is(equalTo("oAuth2Token")));
@@ -161,11 +163,11 @@ public class CaseLoaderServiceTest {
 
         given(idamService.getIdamTokens()).willReturn(IdamTokens.builder().build());
 
-        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseDataWithInvalidScNumber), any(IdamTokens.class)))
-            .willThrow(NumberFormatException.class);
+        given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseDataWithInvalidScNumber),
+            any(IdamTokens.class))).willThrow(NumberFormatException.class);
 
-        given(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
-            .willReturn(SscsCaseDetails.builder().data(caseData).id(123L).build());
+        given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
+            .willReturn(singletonList(SscsCaseDetails.builder().data(caseData).id(123L).build()));
 
         caseLoaderService.process();
 
@@ -174,4 +176,41 @@ public class CaseLoaderServiceTest {
         verifyNoMoreInteractions(ccdService);
     }
 
+    @Test(expected = Exception.class)
+    public void givenCaseReference_shouldStopProcessingIfListOfCasesIsMoreThanOne() {
+        final SscsCaseDetails caseDetails1 = SscsCaseDetails.builder().data(caseData).id(123L).build();
+        final SscsCaseDetails caseDetails2 = SscsCaseDetails.builder().data(caseData).id(234L).build();
+        Appeal appeal = Appeal.builder()
+            .benefitType(BenefitType.builder()
+                .code("PIP")
+                .build())
+            .build();
+        SscsCaseData caseDataScNumber = SscsCaseData.builder()
+            .caseReference("SC001/19/00365123")
+            .appeal(appeal)
+            .build();
+
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().type(SENT_TO_DWP.getCcdType()).build()).build());
+
+        SscsCaseData updatedCaseData = SscsCaseData.builder()
+            .events(events)
+            .caseReference("caseRef")
+            .appeal(appeal)
+            .build();
+
+        List<SscsCaseData> cases = Arrays.asList(caseDataScNumber, updatedCaseData);
+        given(transformService.transform(inputStream)).willReturn(cases);
+
+        given(idamService.getIdamTokens()).willReturn(IdamTokens.builder().build());
+
+        given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
+            .willReturn(Lists.list(caseDetails1, caseDetails2));
+
+        caseLoaderService.process();
+
+        verify(updateCcdCaseService).updateCase(eq(updatedCaseData), any(), eq(SENT_TO_DWP.getCcdType()), any(), any(),
+            any(IdamTokens.class));
+        verifyNoMoreInteractions(ccdService);
+    }
 }

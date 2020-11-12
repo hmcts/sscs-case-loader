@@ -6,10 +6,12 @@ import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.normali
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
@@ -155,7 +157,7 @@ public class CaseLoaderService {
         }
     }
 
-    private void processCasesFromDelta(List<SscsCaseData> cases) {
+    private void processCasesFromDelta(List<SscsCaseData> cases) throws Exception {
         for (SscsCaseData caseData : cases) {
             if (caseData.getAppeal().getBenefitType().getCode().equals("ERR")) {
                 continue;
@@ -171,7 +173,7 @@ public class CaseLoaderService {
         fileMetrics.setFileSize(file.getSize());
     }
 
-    private void processCase(SscsCaseData caseData) {
+    private void processCase(SscsCaseData caseData) throws Exception {
         SscsCaseDetails sscsCaseDetails;
 
         if (hasAppellantIdentify(caseData)) {
@@ -180,8 +182,19 @@ public class CaseLoaderService {
             );
         }
         IdamTokens idamTokens = idamService.getIdamTokens();
+
         try {
-            sscsCaseDetails = searchCcdCaseService.findCaseByCaseRefOrCaseId(caseData, idamTokens);
+            List<SscsCaseDetails> sscsCaseDetailsList = searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData,
+                idamTokens);
+            if (!CollectionUtils.isEmpty(sscsCaseDetailsList) && (sscsCaseDetailsList.size() > 1)) {
+                log.info(logPrefixWithFile + " found multiple cases {} with SC {} ",
+                    sscsCaseDetailsList.stream().map(s -> String.valueOf(s.getId()))
+                        .collect(Collectors.joining(",")), caseData.getCaseReference());
+                throw new Exception("Multiple cases found for case reference " + caseData.getCaseReference());
+            }
+
+            sscsCaseDetails = !CollectionUtils.isEmpty(sscsCaseDetailsList) ? sscsCaseDetailsList.get(0) : null;
+
         } catch (NumberFormatException e) {
             log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
                     + " skipping case...",

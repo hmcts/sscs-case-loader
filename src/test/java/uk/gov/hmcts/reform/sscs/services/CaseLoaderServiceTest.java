@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,8 +107,8 @@ public class CaseLoaderServiceTest {
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
-        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
-            .thenReturn(sscsCaseDetails);
+        when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenReturn(singletonList(sscsCaseDetails));
 
         caseLoaderService.process();
 
@@ -120,9 +122,9 @@ public class CaseLoaderServiceTest {
 
         final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
 
-        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+        when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenThrow(new NumberFormatException())
-            .thenReturn(sscsCaseDetails);
+            .thenReturn(singletonList(sscsCaseDetails));
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
@@ -131,7 +133,7 @@ public class CaseLoaderServiceTest {
         verify(xmlValidator, times(2)).validateXml(file);
         verify(sftpSshService, times(2)).move(file, true);
         verify(searchCcdCaseService, times(1))
-            .findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+            .findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
         verify(sftpSshService, times(2)).move(file, true);
     }
 
@@ -142,8 +144,8 @@ public class CaseLoaderServiceTest {
         caseData.setCaseReference(null);
         caseData.setCcdCaseId("1234567890");
 
-        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
-            .thenReturn(sscsCaseDetails);
+        when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenReturn(singletonList(sscsCaseDetails));
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
@@ -190,10 +192,27 @@ public class CaseLoaderServiceTest {
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
-        when(searchCcdCaseService.findCaseByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
-                .thenReturn(sscsCaseDetails);
+        when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+                .thenReturn(singletonList(sscsCaseDetails));
 
         doThrow(RuntimeException.class).when(ccdCasesSender).sendUpdateCcdCases(any(), any(), any());
+
+        caseLoaderService.process();
+
+    }
+
+    @Test(expected = ProcessDeltaException.class)
+    public void shouldThrowExceptionWhileSearchingCaseIfResultedMultipleCases() {
+        final SscsCaseDetails sscsCaseDetails1 = SscsCaseDetails.builder().build();
+        final SscsCaseDetails sscsCaseDetails2 = SscsCaseDetails.builder().build();
+
+        caseData.setCaseReference("SC001//00365123");
+        caseData.setCcdCaseId("1234567890");
+
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
+
+        when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenReturn(Lists.list(sscsCaseDetails1, sscsCaseDetails2));
 
         caseLoaderService.process();
 
