@@ -176,8 +176,8 @@ public class CaseLoaderServiceTest {
         verifyNoMoreInteractions(ccdService);
     }
 
-    @Test(expected = Exception.class)
-    public void givenCaseReference_shouldStopProcessingIfListOfCasesIsMoreThanOne() {
+    @Test
+    public void givenCaseReferenceIfFoundMoreThanOne_shouldCarryOnProcessingNextCases() {
         final SscsCaseDetails caseDetails1 = SscsCaseDetails.builder().data(caseData).id(123L).build();
         final SscsCaseDetails caseDetails2 = SscsCaseDetails.builder().data(caseData).id(234L).build();
         Appeal appeal = Appeal.builder()
@@ -206,6 +206,9 @@ public class CaseLoaderServiceTest {
 
         given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
             .willReturn(Lists.list(caseDetails1, caseDetails2));
+
+        given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
+            .willReturn(singletonList(SscsCaseDetails.builder().data(caseData).id(123L).build()));
 
         caseLoaderService.process();
 
