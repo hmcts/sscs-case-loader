@@ -201,8 +201,8 @@ public class CaseLoaderServiceTest {
 
     }
 
-    @Test(expected = ProcessDeltaException.class)
-    public void shouldThrowExceptionWhileSearchingCaseIfResultedMultipleCases() {
+    @Test
+    public void shouldSkipTheCaseWhileSearchingCaseIfResultedMultipleCases() {
         final SscsCaseDetails sscsCaseDetails1 = SscsCaseDetails.builder().build();
         final SscsCaseDetails sscsCaseDetails2 = SscsCaseDetails.builder().build();
 
