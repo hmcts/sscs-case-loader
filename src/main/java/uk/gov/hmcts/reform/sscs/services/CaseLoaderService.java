@@ -196,6 +196,11 @@ public class CaseLoaderService {
 
             sscsCaseDetails = !CollectionUtils.isEmpty(sscsCaseDetailsList) ? sscsCaseDetailsList.get(0) : null;
 
+        } catch (NumberFormatException e) {
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
+                    + " skipping case...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+            return;
         } catch (IllegalArgumentException e) {
             log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
                     + " skipping case...",
