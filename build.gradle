@@ -200,7 +200,7 @@ dependencyManagement {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.39') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.40') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
@@ -254,7 +254,7 @@ dependencies {
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.67'
 
-  compile group: 'org.json', name: 'json', version: '20200518'
+  compile group: 'org.json', name: 'json', version: '20201115'
 
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
   compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.0'
