@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -174,11 +173,6 @@ public class CaseLoaderService {
         fileMetrics.setFileSize(file.getSize());
     }
 
-    @Retryable
-    private IdamTokens getIdamTokens() {
-        return idamService.getIdamTokens();
-    }
-
     private void processCase(SscsCaseData caseData) {
         SscsCaseDetails sscsCaseDetails;
 
@@ -187,7 +181,7 @@ public class CaseLoaderService {
                 normaliseNino(caseData.getAppeal().getAppellant().getIdentity().getNino())
             );
         }
-        IdamTokens idamTokens = getIdamTokens();
+        IdamTokens idamTokens = idamService.getIdamTokens();
 
         try {
             List<SscsCaseDetails> sscsCaseDetailsList = searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData,
