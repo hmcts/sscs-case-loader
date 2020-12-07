@@ -30,6 +30,7 @@ import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
 import uk.gov.hmcts.reform.sscs.ccd.service.SscsQueryBuilder;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
@@ -60,9 +61,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        given(idamService.getIdamOauth2Token()).willReturn("oauth2Token");
-        given(idamService.generateServiceAuthorization()).willReturn("serviceToken");
-        given(idamService.getUserId("oauth2Token")).willReturn("16");
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("oauth2Token")
+            .serviceAuthorization("serviceToken")
+            .userId("16")
+            .build();
+        given(idamService.getIdamTokens()).willReturn(idamTokens);
 
         SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("data.caseReference", "SC068/17/00011");
 

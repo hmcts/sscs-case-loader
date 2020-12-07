@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -61,8 +62,12 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
     @Before
     public void setUp() {
         initMocks(this);
-        when(idamService.getIdamOauth2Token()).thenReturn("oauth2Token");
-        when(idamService.generateServiceAuthorization()).thenReturn("serviceAuthorizationToken");
+        IdamTokens idamTokens = IdamTokens.builder()
+            .idamOauth2Token("oauth2Token")
+            .serviceAuthorization("serviceAuthorizationToken")
+            .userId("16")
+            .build();
+        given(idamService.getIdamTokens()).willReturn(idamTokens);
 
         SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         caseDataEventBuilder = new CaseDataEventBuilder(ccdService, idamService, postponedEventInferredFromDelta,
