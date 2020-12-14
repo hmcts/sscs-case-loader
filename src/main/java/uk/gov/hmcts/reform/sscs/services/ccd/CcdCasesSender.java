@@ -10,14 +10,12 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
-import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 
 @Service
@@ -26,19 +24,14 @@ public class CcdCasesSender {
 
     private static final String SSCS_APPEAL_UPDATED_EVENT = "SSCS - appeal updated event";
     private static final String UPDATED_SSCS = "Updated SSCS";
-    @Value("${rpc.venue.id.enabled}")
-    private boolean lookupRpcByVenueId;
     private final UpdateCcdCaseService updateCcdCaseService;
-    private final RegionalProcessingCenterService regionalProcessingCenterService;
     private final UpdateCcdCaseData updateCcdCaseData;
     private String logPrefix = "";
 
     @Autowired
     CcdCasesSender(UpdateCcdCaseService updateCcdCaseService,
-                   RegionalProcessingCenterService regionalProcessingCenterService,
                    UpdateCcdCaseData updateCcdCaseData) {
         this.updateCcdCaseService = updateCcdCaseService;
-        this.regionalProcessingCenterService = regionalProcessingCenterService;
         this.updateCcdCaseData = updateCcdCaseData;
     }
 
@@ -57,22 +50,12 @@ public class CcdCasesSender {
 
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
 
-            addMissingInfo(gapsCaseData, existingCcdCaseData);
+            addMissingExistingHearings(gapsCaseData, existingCcdCaseData);
 
             checkNewEvidenceReceived(gapsCaseData, existingCcdCase, idamTokens);
 
             ifThereIsChangesThenUpdateCase(gapsCaseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
-    }
-
-    private void addMissingInfo(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
-        if (!lookupRpcByVenueId) {
-            log.info("Lookup RPC By Venue Id  = {}. Adding RPC", lookupRpcByVenueId);
-            addRegionalProcessingCenter(existingCcdCaseData);
-        } else {
-            log.info("Lookup RPC By Venue Id  = {}. Not Adding RPC", lookupRpcByVenueId);
-        }
-        addMissingExistingHearings(caseData, existingCcdCaseData);
     }
 
     private void ifThereIsChangesThenUpdateCase(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData,
@@ -183,18 +166,6 @@ public class CcdCasesSender {
             }
         }
         return updatedEvidence;
-    }
-
-    private void addRegionalProcessingCenter(SscsCaseData caseData) {
-        RegionalProcessingCenter regionalProcessingCenter = regionalProcessingCenterService
-            .getByScReferenceCode(caseData.getCaseReference());
-
-        if (null != regionalProcessingCenter) {
-            log.info("Setting RPC field to " + regionalProcessingCenter.getName() + " for case "
-                + caseData.getCcdCaseId());
-            caseData.setRegion(regionalProcessingCenter.getName());
-            caseData.setRegionalProcessingCenter(regionalProcessingCenter);
-        }
     }
 
 }

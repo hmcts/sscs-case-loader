@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -53,7 +52,6 @@ public class TransformAppealCaseToCaseDataTest {
             new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService);
 
         transformAppealCaseToCaseData = new TransformAppealCaseToCaseData(caseDataBuilder);
-        ReflectionTestUtils.setField(transformAppealCaseToCaseData, "lookupRpcByVenueId", true);
 
         when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcessingCentre);
         when(referenceDataService.getTbtCode("2")).thenReturn("O");
