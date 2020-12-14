@@ -22,13 +22,11 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
-import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 
 @RunWith(JUnitParamsRunner.class)
 public class CcdCasesSenderTest {
@@ -49,8 +47,6 @@ public class CcdCasesSenderTest {
     @Mock
     private UpdateCcdCaseService updateCcdCaseService;
     @Mock
-    private RegionalProcessingCenterService regionalProcessingCenterService;
-    @Mock
     private UpdateCcdCaseData updateCcdCaseData;
 
     private CcdCasesSender ccdCasesSender;
@@ -59,7 +55,7 @@ public class CcdCasesSenderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        ccdCasesSender = new CcdCasesSender(updateCcdCaseService, regionalProcessingCenterService,
+        ccdCasesSender = new CcdCasesSender(updateCcdCaseService,
             updateCcdCaseData);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
@@ -118,8 +114,6 @@ public class CcdCasesSenderTest {
 
     @Test
     public void shouldOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAdded() throws Exception {
-        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
-            .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
         sscsCaseDetails.getData().setCaseReference(null);
         given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
@@ -136,8 +130,6 @@ public class CcdCasesSenderTest {
     @Test
     public void shouldNotOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedAndNewEvent()
         throws Exception {
-        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
-            .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
         sscsCaseDetails.getData().setCaseReference(null);
         given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
@@ -155,8 +147,6 @@ public class CcdCasesSenderTest {
     @Parameters({"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED", "APPEAL_LAPSED",
         "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
     public void shouldUpdateCcdGivenThereIsAnEventChange(GapsEvent gapsEvent) throws Exception {
-        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
-            .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
         ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent),
             sscsCaseDetails, idamTokens);
@@ -170,8 +160,6 @@ public class CcdCasesSenderTest {
     @Parameters({"RESPONSE_RECEIVED", "APPEAL_RECEIVED"})
     public void givenDigitalCaseAndPreGapsEvent_thenTriggerCaseUpdatedEvent(GapsEvent gapsEvent)
         throws IOException {
-        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
-            .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
         sscsCaseDetails.getData().setCreatedInGapsFrom(READY_TO_LIST.getCcdType());
         SscsCaseData caseData = buildCaseData(gapsEvent);
@@ -186,8 +174,6 @@ public class CcdCasesSenderTest {
     @Parameters({"RESPONSE_RECEIVED, DWP_RESPOND", "APPEAL_RECEIVED, APPEAL_RECEIVED"})
     public void givenNonDigitalCaseAndGapsEvent_thenProcessGapsEvent(GapsEvent gapsEvent, EventType eventType)
         throws IOException {
-        when(regionalProcessingCenterService.getByScReferenceCode(anyString()))
-            .thenReturn(getRegionalProcessingCenter());
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
         SscsCaseData caseData = buildCaseData(gapsEvent);
         caseData.setCreatedInGapsFrom(VALID_APPEAL.getCcdType());
@@ -443,9 +429,6 @@ public class CcdCasesSenderTest {
     @Test
     public void shouldAddExistingHearingDetailsToTheCaseIfItsMissingInComingGaps2Xml() throws Exception {
 
-        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
-            .thenReturn(getRegionalProcessingCenter());
-
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
         caseData.setHearings(buildHearings());
         ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
@@ -493,9 +476,6 @@ public class CcdCasesSenderTest {
     @Test
     public void shouldAddExistingNewHearingDetailsFromCcdToCaseWhenNoHearingDetailsinGaps2Xml() throws Exception {
 
-        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
-            .thenReturn(getRegionalProcessingCenter());
-
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
         ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
 
@@ -512,86 +492,6 @@ public class CcdCasesSenderTest {
         assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(2));
         assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime(),
             equalTo("2017-05-2410:00"));
-    }
-
-    @Test
-    public void shouldAddRegionalProcessingCenterForAnExistingCaseIfItsNotAlreadyPresentInCcd() throws Exception {
-
-        RegionalProcessingCenter regionalProcessingCenter = getRegionalProcessingCenter();
-
-        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-
-        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
-        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
-            .thenReturn(regionalProcessingCenter);
-
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
-            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
-            eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(regionalProcessingCenter));
-        assertThat(caseDataArgumentCaptor.getValue().getRegion(), equalTo(regionalProcessingCenter.getName()));
-    }
-
-    @Test
-    public void shouldNotAddRegionalProcessingCenterForAnExistingCaseIfItsNotAlreadyPresentInCcdIfDisabled()
-        throws Exception {
-        ReflectionTestUtils.setField(ccdCasesSender, "lookupRpcByVenueId", true);
-
-        RegionalProcessingCenter regionalProcessingCenter = getRegionalProcessingCenter();
-        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-
-        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
-        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
-            .thenReturn(regionalProcessingCenter);
-
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
-            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
-            eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verifyZeroInteractions(regionalProcessingCenterService);
-    }
-
-    @Test
-    public void shouldAddRegionalProcessingCenterOnlyIfItsPresent() throws Exception {
-        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-
-        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
-        when(regionalProcessingCenterService.getByScReferenceCode("SC068/17/00011"))
-            .thenReturn(null);
-
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
-            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
-            eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        assertThat(caseDataArgumentCaptor.getValue().getRegionalProcessingCenter(), equalTo(null));
-
-    }
-
-    private RegionalProcessingCenter getRegionalProcessingCenter() {
-        return RegionalProcessingCenter.builder()
-            .name("CARDIFF")
-            .address1("HM Courts & Tribunals Service")
-            .address2("Social Security & Child Support Appeals")
-            .address3("Eastgate House")
-            .address4("Newport Road")
-            .city("CARDIFF")
-            .postcode("CF24 0AB")
-            .phoneNumber("0300 123 1142")
-            .faxNumber("0870 739 4438")
-            .build();
     }
 
     private List<Hearing> buildHearings() {
