@@ -118,12 +118,32 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void shouldUpdateValidCasesWhenMixedWithInvalidCases() {
+    public void shouldUpdateValidCasesWhenMixedWithInvalidCasesWithNumberFormatException() {
 
         final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
 
         when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
             .thenThrow(new NumberFormatException())
+            .thenReturn(singletonList(sscsCaseDetails));
+
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
+
+        caseLoaderService.process();
+
+        verify(xmlValidator, times(2)).validateXml(file);
+        verify(sftpSshService, times(2)).move(file, true);
+        verify(searchCcdCaseService, times(1))
+            .findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+        verify(sftpSshService, times(2)).move(file, true);
+    }
+
+    @Test
+    public void shouldUpdateValidCasesWhenMixedWithInvalidCasesWithIllegalArgumentException() {
+
+        final SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().build();
+
+        when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
+            .thenThrow(new IllegalArgumentException())
             .thenReturn(singletonList(sscsCaseDetails));
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
