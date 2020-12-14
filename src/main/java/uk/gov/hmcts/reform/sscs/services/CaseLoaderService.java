@@ -102,9 +102,8 @@ public class CaseLoaderService {
     private void throwExceptionIfRefFileIsNotLoaded(Gaps2File latestRef, Gaps2File file) {
         if (null == latestRef) {
             sftpSshService.closeChannelAdapter();
-            throw new TransformException(String.format(logPrefixWithFile
-                    + " No reference data processed for this delta: %s",
-                file.getName()));
+            throw new TransformException(logPrefixWithFile + " No reference data processed for this delta: "
+                + file.getName());
         }
     }
 
@@ -197,13 +196,13 @@ public class CaseLoaderService {
             sscsCaseDetails = !CollectionUtils.isEmpty(sscsCaseDetailsList) ? sscsCaseDetailsList.get(0) : null;
 
         } catch (NumberFormatException e) {
-            log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
-                    + " skipping case...",
+            log.info(logPrefixWithFile + "NumberFormatException for case with SC {} and ccdID {} "
+                    + "could not be searched for, skipping case...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             return;
         } catch (IllegalArgumentException e) {
-            log.info(logPrefixWithFile + " case with SC {} and ccdID {} could not be searched for,"
-                    + " skipping case...",
+            log.info(logPrefixWithFile + "IllegalArgumentException for case with SC {} and ccdID {} "
+                    + "could not be searched for, skipping case...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
             return;
         }
