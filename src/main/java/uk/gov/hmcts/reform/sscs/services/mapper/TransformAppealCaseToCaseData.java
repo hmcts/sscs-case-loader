@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
@@ -28,9 +27,6 @@ public class TransformAppealCaseToCaseData {
     public static final int APPELLANT_ROLE_ID = 4;
     public static final int REP_ROLE_ID = 3;
     public static final int APPOINTEE_ROLE_ID = 24;
-
-    @Value("${rpc.venue.id.enabled}")
-    private boolean lookupRpcByVenueId;
 
     private final CaseDataBuilder caseDataBuilder;
 
@@ -119,13 +115,7 @@ public class TransformAppealCaseToCaseData {
 
     private RegionalProcessingCenter regionalProcessingCenter(final Parties appellantParty,
                                                               final AppealCase appealCase) {
-        RegionalProcessingCenter regionalProcessingCenter = null;
-        if (lookupRpcByVenueId) {
-            regionalProcessingCenter = caseDataBuilder.buildRegionalProcessingCentre(appealCase, appellantParty);
-        } else {
-            log.info("Not building RPC for GAPs case data as lookupRpcByVenueId is false");
-        }
-        return regionalProcessingCenter;
+        return caseDataBuilder.buildRegionalProcessingCentre(appealCase, appellantParty);
     }
 
     private Appellant appellant(final Parties appellantParty,
