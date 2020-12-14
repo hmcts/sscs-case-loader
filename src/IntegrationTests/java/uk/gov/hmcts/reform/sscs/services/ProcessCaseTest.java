@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,6 +22,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,12 +34,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.SscsQueryBuilder;
 import uk.gov.hmcts.reform.sscs.refdata.RefDataRepository;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
@@ -203,6 +200,8 @@ public class ProcessCaseTest {
             eq("1234567890")
         );
 
+        ArgumentCaptor<CaseDataContent> capture = ArgumentCaptor.forClass(CaseDataContent.class);
+
         verify(coreCaseDataApi, times(1)).submitEventForCaseWorker(
             eq(USER_AUTH_WITH_TYPE),
             eq(SERVER_AUTH),
@@ -211,8 +210,10 @@ public class ProcessCaseTest {
             eq("Benefit"),
             eq("456"),
             eq(true),
-            any(CaseDataContent.class)
+            capture.capture()
         );
+
+        assertEquals("Liverpool", ((SscsCaseData) capture.getValue().getData()).getProcessingVenue());
     }
 
     private Appeal buildAppeal() {
