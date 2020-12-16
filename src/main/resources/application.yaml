@@ -86,7 +86,5 @@ logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
   uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
 
-rpc.venue.id.enabled: ${RPC_VENUE_ID_ENABLED:true}
-
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true

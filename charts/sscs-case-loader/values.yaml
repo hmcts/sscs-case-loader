@@ -37,6 +37,5 @@ job:
     LOG_LEVEL_SPRING_WEB: INFO
     LOG_LEVEL_SSCS: INFO
     ROOT_LOGGING_LEVEL: INFO
-    RPC_VENUE_ID_ENABLED: true
 global:
   jobKind: CronJob

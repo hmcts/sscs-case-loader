@@ -128,17 +128,18 @@ dependencyCheck {
 }
 
 repositories {
+  mavenLocal()
+
   maven {
     url "https://dl.bintray.com/hmcts/hmcts-maven"
   }
 
+  mavenCentral()
+  jcenter()
+
   maven {
     url 'https://repo.spring.io/libs-milestone'
   }
-
-  jcenter()
-  mavenCentral()
-  mavenLocal()
 
   // jitpack should be last resort
   // see: https://github.com/jitpack/jitpack.io/issues/1939
@@ -196,7 +197,7 @@ dependencyManagement {
     dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '30.0-jre') {
+    dependencySet(group: 'com.google.guava', version: '30.1-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
@@ -248,7 +249,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.1.22'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.1.25'
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.67'
 
