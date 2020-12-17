@@ -70,6 +70,9 @@ public class TransformAppealCaseToCaseData {
         RegionalProcessingCenter regionalProcessingCenter = appellantParty.map((Parties party) ->
             regionalProcessingCenter(party, appealCase)).orElse(null);
 
+        String processingVenue = caseDataBuilder.findProcessingVenue(appealCase.getAppealCaseId(), benefitType,
+            appellantParty, appointeeParty);
+
         log.info("Setting RPC to {} while building case data from Gaps Appeal Data for case Id {}",
             rpcName(regionalProcessingCenter), appealCase.getAppealCaseId());
 
@@ -85,6 +88,7 @@ public class TransformAppealCaseToCaseData {
             .subscriptions(caseDataBuilder.buildSubscriptions(
                 appellantParty, representativeParty, appointeeParty, appealCase.getAppealCaseRefNum())
             )
+            .processingVenue(processingVenue)
             .ccdCaseId(appealCase.getAdditionalRef())
             .build();
     }

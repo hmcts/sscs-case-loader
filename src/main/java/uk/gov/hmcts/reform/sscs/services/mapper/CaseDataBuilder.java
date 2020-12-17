@@ -36,6 +36,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
+import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -53,15 +54,18 @@ class CaseDataBuilder {
     private final ReferenceDataService referenceDataService;
     private final CaseDataEventBuilder caseDataEventBuilder;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
+    private final AirLookupService airLookupService;
 
     @Autowired
     CaseDataBuilder(ReferenceDataService referenceDataService,
                     CaseDataEventBuilder caseDataEventBuilder,
-                    RegionalProcessingCenterService regionalProcessingCenterService
+                    RegionalProcessingCenterService regionalProcessingCenterService,
+                    AirLookupService airLookupService
     ) {
         this.referenceDataService = referenceDataService;
         this.caseDataEventBuilder = caseDataEventBuilder;
         this.regionalProcessingCenterService = regionalProcessingCenterService;
+        this.airLookupService = airLookupService;
     }
 
     List<Event> buildEvent(AppealCase appealCase) {
@@ -142,6 +146,17 @@ class CaseDataBuilder {
             .reduce(getLast())
             .map(hearing -> regionalProcessingCenterService.getByVenueId(hearing.getVenueId()))
             .orElse(regionalProcessingCenterService.getByPostcode(appellantParty.getPostCode()));
+    }
+
+    String findProcessingVenue(String caseId, BenefitType benefitType, final Optional<Parties> appellantParty,
+                               final Optional<Parties> appointeeParty) {
+        log.info("Finding processing venue for Gaps case data based on postcode for case id {}", caseId);
+
+        String postcode = appointeeParty.map(Parties::getPostCode)
+            .orElse(appellantParty.map(Parties::getPostCode).orElse(null));
+
+        return airLookupService.lookupAirVenueNameByPostCode(postcode, benefitType);
+
     }
 
     private <T> BinaryOperator<T> getLast() {

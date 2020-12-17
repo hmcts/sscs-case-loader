@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
+import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -33,6 +35,9 @@ public class TransformAppealCaseToCaseDataTest {
 
     @Mock
     private ReferenceDataService referenceDataService;
+
+    @Mock
+    private AirLookupService airLookupService;
 
     @Mock
     private CaseDataEventBuilder caseDataEventBuilder;
@@ -49,12 +54,14 @@ public class TransformAppealCaseToCaseDataTest {
     @Before
     public void setUp() {
         final CaseDataBuilder caseDataBuilder =
-            new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService);
+            new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService,
+                airLookupService);
 
         transformAppealCaseToCaseData = new TransformAppealCaseToCaseData(caseDataBuilder);
 
         when(regionalProcessingCenterService.getByVenueId("68")).thenReturn(expectedRegionalProcessingCentre);
         when(referenceDataService.getTbtCode("2")).thenReturn("O");
+        when(airLookupService.lookupAirVenueNameByPostCode(any(), any())).thenReturn("Venue1");
     }
 
     @Test
@@ -258,6 +265,16 @@ public class TransformAppealCaseToCaseDataTest {
             expectedRepresentativeSubscription, caseData.getSubscriptions().getRepresentativeSubscription());
         assertNotNull("Representative must not be null", caseData.getAppeal().getRep());
         assertEquals("Contact should be equal", expectedContact, caseData.getAppeal().getRep().getContact());
+    }
+
+    @Test
+    public void givenACaseWithAppellantPostcode_shouldTransformToCaseDataWithProcessingVenue()
+        throws Exception {
+        final AppealCase appealCase = getAppealCase("AppealCase.json");
+
+        final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        assertEquals("Venue1", caseData.getProcessingVenue());
     }
 
     public static AppealCase getAppealCase(String filename) throws Exception {

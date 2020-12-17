@@ -15,18 +15,21 @@ class UpdateCcdCaseData {
     private final UpdateDwpTimeExtension updateDwpTimeExtension;
     private final UpdateEvents updateEvents;
     private final UpdateCcdRpc updateCcdRpc;
+    private final UpdateCcdProcessingVenue updateCcdProcessingVenue;
 
     @Autowired
     UpdateCcdCaseData(UpdateCcdAppellantData updateCcdAppellantData, UpdateCcdHearingOptions updateCcdHearingOptions,
                       UpdateCcdHearingType updateCcdHearingType,
                       UpdateDwpTimeExtension updateDwpTimeExtension, UpdateEvents updateEvents,
-                      UpdateCcdRpc updateCcdRpc) {
+                      UpdateCcdRpc updateCcdRpc,
+                      UpdateCcdProcessingVenue updateCcdProcessingVenue) {
         this.updateCcdAppellantData = updateCcdAppellantData;
         this.updateCcdHearingOptions = updateCcdHearingOptions;
         this.updateCcdHearingType = updateCcdHearingType;
         this.updateDwpTimeExtension = updateDwpTimeExtension;
         this.updateEvents = updateEvents;
         this.updateCcdRpc = updateCcdRpc;
+        this.updateCcdProcessingVenue = updateCcdProcessingVenue;
     }
 
     UpdateType updateCcdRecordForChangesAndReturnUpdateType(SscsCaseData gapsCaseData,
@@ -55,6 +58,7 @@ class UpdateCcdCaseData {
         boolean updateHearingType = false;
         boolean updateRepresentative = false;
         boolean updateRpc = false;
+        boolean updateProcessingVenue = false;
 
         if (null != gapsCaseData && null != gapsCaseData.getAppeal()) {
             updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
@@ -62,10 +66,11 @@ class UpdateCcdCaseData {
             updateHearingType = updateCcdHearingType.updateHearingType(gapsCaseData, existingCcdCaseData);
             updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
             updateRpc = updateCcdRpc.updateCcdRpc(gapsCaseData, existingCcdCaseData);
+            updateProcessingVenue = updateCcdProcessingVenue.updateVenue(gapsCaseData, existingCcdCaseData);
         }
 
         boolean ccdDataChanged =  dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType
-            || updateRepresentative || updateRpc;
+            || updateRepresentative || updateRpc || updateProcessingVenue;
 
         log.info("updatedCCdData is {} for case {}", ccdDataChanged,
             existingCcdCaseData == null ? "null" : existingCcdCaseData.getCcdCaseId());

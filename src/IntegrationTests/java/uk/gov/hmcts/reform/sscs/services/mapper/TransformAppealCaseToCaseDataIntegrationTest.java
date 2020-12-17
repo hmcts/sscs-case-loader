@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseDataTest.getAppealCase;
@@ -69,10 +68,11 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
 
         final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
 
-        assertThat(caseData.getHearings().size(), is(3));
-        assertThat(caseData.getHearings().get(0).getValue().getAdjourned(), is(expectedHearingAdjourned0));
-        assertThat(caseData.getHearings().get(1).getValue().getAdjourned(), is(expectedHearingAdjourned1));
-        assertThat(caseData.getHearings().get(2).getValue().getAdjourned(), is(expectedHearingAdjourned2));
+        assertEquals(3, caseData.getHearings().size());
+        assertEquals(expectedHearingAdjourned0, caseData.getHearings().get(0).getValue().getAdjourned());
+        assertEquals(expectedHearingAdjourned1, caseData.getHearings().get(1).getValue().getAdjourned());
+        assertEquals(expectedHearingAdjourned2, caseData.getHearings().get(2).getValue().getAdjourned());
+        assertEquals("Liverpool", caseData.getProcessingVenue());
     }
 
     private void setOutcomeIdValue(String outcomeId0, String outcomeId1, String outcomeId2) {
