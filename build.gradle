@@ -251,7 +251,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.1.26'
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
-  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.67'
+  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
 
   compile group: 'org.json', name: 'json', version: '20201115'
 
