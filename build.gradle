@@ -265,7 +265,7 @@ dependencies {
   e2eCompile 'org.projectlombok:lombok:1.18.8'
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.22.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.22.1'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.22.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
 
