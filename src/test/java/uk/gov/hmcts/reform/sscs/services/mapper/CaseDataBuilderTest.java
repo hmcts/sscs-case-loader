@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.sscs.model.VenueDetails;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
+import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
@@ -42,6 +43,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     private CaseDataEventBuilder caseDataEventBuilder;
     @Mock
     private RegionalProcessingCenterService regionalProcessingCentreService;
+    @Mock
+    private AirLookupService airLookupService;
     private CaseDataBuilder caseDataBuilder;
     private AppealCase appeal;
     private Parties applicantParty;
@@ -64,7 +67,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("26", HEARING_POSTPONED_DATE)))
             .build();
-        caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder, regionalProcessingCentreService);
+        caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder, regionalProcessingCentreService,
+            airLookupService);
     }
 
     public List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> getHearing() {
@@ -380,6 +384,47 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
         assertThat(hearingOptions.getWantsToAttend(), equalTo(NO));
 
+    }
+
+    @Test
+    public void shouldFindProcessingVenueFromAppellantPostcode() {
+        createAppealCase(Collections.emptyList());
+
+        when(airLookupService.lookupAirVenueNameByPostCode("AB1 1AB",
+            BenefitType.builder().code("PIP").build())).thenReturn("venue1");
+
+        String result = caseDataBuilder.findProcessingVenue(appeal.getAppealCaseId(),
+            BenefitType.builder().code("PIP").build(), Optional.of(applicantParty), Optional.empty());
+
+        assertEquals("venue1", result);
+    }
+
+    @Test
+    public void shouldFindProcessingVenueFromAppointeePostcode() {
+        Parties appointeeParty = Parties.builder().postCode("ZZ1 1BC").build();
+
+        createAppealCase(Collections.emptyList());
+
+        when(airLookupService.lookupAirVenueNameByPostCode("ZZ1 1BC",
+            BenefitType.builder().code("PIP").build())).thenReturn("venue1");
+
+        String result = caseDataBuilder.findProcessingVenue(appeal.getAppealCaseId(),
+            BenefitType.builder().code("PIP").build(), Optional.of(applicantParty), Optional.of(appointeeParty));
+
+        assertEquals("venue1", result);
+    }
+
+    @Test
+    public void shouldFindProcessingVenueFromAppellentPostcodeWhenAppointeePostcodeIsNull() {
+        createAppealCase(Collections.emptyList());
+
+        when(airLookupService.lookupAirVenueNameByPostCode("AB1 1AB",
+            BenefitType.builder().code("PIP").build())).thenReturn("venue1");
+
+        String result = caseDataBuilder.findProcessingVenue(appeal.getAppealCaseId(),
+            BenefitType.builder().code("PIP").build(), Optional.of(applicantParty), Optional.empty());
+
+        assertEquals("venue1", result);
     }
 
 }

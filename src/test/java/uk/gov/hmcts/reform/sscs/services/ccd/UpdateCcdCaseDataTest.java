@@ -28,6 +28,8 @@ public class UpdateCcdCaseDataTest {
     @Mock
     private UpdateCcdRpc updateCcdRpc;
     @Mock
+    private UpdateCcdProcessingVenue updateCcdProcessingVenue;
+    @Mock
     private UpdateDwpTimeExtension updateDwpTimeExtension;
     @Mock
     private UpdateEvents updateEvents;
@@ -52,7 +54,7 @@ public class UpdateCcdCaseDataTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData, updateCcdHearingOptions,
-            updateCcdHearingType, updateDwpTimeExtension, updateEvents, updateCcdRpc);
+            updateCcdHearingType, updateDwpTimeExtension, updateEvents, updateCcdRpc, updateCcdProcessingVenue);
     }
 
     @Test
@@ -129,6 +131,7 @@ public class UpdateCcdCaseDataTest {
         given(updateCcdHearingOptions.updateHearingOptions(any(), any(SscsCaseData.class))).willReturn(false);
         given(updateCcdHearingType.updateHearingType(any(), any())).willReturn(false);
         given(updateCcdRpc.updateCcdRpc(any(), any())).willReturn(false);
+        given(updateCcdProcessingVenue.updateVenue(any(), any())).willReturn(false);
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             gapsCaseData, null);
