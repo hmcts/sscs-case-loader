@@ -258,11 +258,11 @@ dependencies {
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
   compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.2'
 
-  compileOnly 'org.projectlombok:lombok:1.18.16'
+  compileOnly 'org.projectlombok:lombok:1.18.18'
   annotationProcessor "org.projectlombok:lombok:1.18.16"
-  testCompileOnly 'org.projectlombok:lombok:1.18.14'
+  testCompileOnly 'org.projectlombok:lombok:1.18.18'
   testAnnotationProcessor "org.projectlombok:lombok:1.18.16"
-  e2eCompile 'org.projectlombok:lombok:1.18.8'
+  e2eCompile 'org.projectlombok:lombok:1.18.18'
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.23.0'
