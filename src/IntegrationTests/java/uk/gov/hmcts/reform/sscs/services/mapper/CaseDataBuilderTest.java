@@ -32,12 +32,13 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
     @Autowired
     private ReferenceDataService referenceDataService;
     private List<Event> events;
-
+    private static final String APPEAL_CASE_REF_NUM = "SC002/000001/001";
 
     @Test
     public void whenBuildEventMethodIsCalledThenItReturnsAnEventListSortedByDateInDescOrder() {
         AppealCase appealCaseWithMinorStatusId27AndPostponedRequestAndMajorStatuses = AppealCase.builder()
             .appealCaseCaseCodeId("1")
+            .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Collections.singletonList(
                 buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))

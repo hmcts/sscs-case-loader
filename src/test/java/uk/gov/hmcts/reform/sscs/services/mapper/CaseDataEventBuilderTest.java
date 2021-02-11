@@ -273,10 +273,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(ccdService, times(1)).findCaseBy(anyString(), anyString(),
+        verify(ccdService, times(2)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
-        verify(postponedEventInferredFromCcd, times(1))
+        verify(postponedEventInferredFromCcd, times(2))
             .matchToHearingId(anyList(),
                 anyList());
 
@@ -323,7 +323,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(ccdService, times(0)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
-        verify(postponedEventInferredFromCcd, times(0))
+        verify(postponedEventInferredFromCcd, times(1))
             .matchToHearingId(anyList(),
                 anyList());
 
@@ -381,18 +381,18 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(ccdService, times(1)).findCaseBy(anyString(), anyString(),
+        verify(ccdService, times(2)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
-        verify(postponedEventInferredFromCcd, times(1))
+        verify(postponedEventInferredFromCcd, times(2))
             .matchToHearingId(anyList(),
                 anyList());
 
-        assertEquals("One postponed event expected here", 1, events.size());
-        assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
+        assertEquals("Two postponed events expected here", 2, events.size());
+        assertEquals("types expected are postponed", GapsEvent.HEARING_POSTPONED.getType(),
             events.get(0).getValue().getType());
         LocalDateTime actualPostponedDate = LocalDateTime.parse(events.get(0).getValue().getDate());
-        LocalDateTime expectedDate = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE).toLocalDateTime();
+        LocalDateTime expectedDate = ZonedDateTime.parse(APPEAL_RECEIVED_DATE).toLocalDateTime();
         assertEquals(expectedDate, actualPostponedDate);
     }
 

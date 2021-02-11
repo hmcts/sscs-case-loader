@@ -87,7 +87,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
            Then NO postponed element is created
         */
     @Test
-    public void givenScenario1ThenNoPostponedEventIsNotCreated() throws Exception {
+    public void givenScenario1ThenNoPostponedEventIsNotCreated() {
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum("SC068/17/00011")
@@ -119,12 +119,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
        And multiple hearing objects
        And two postponed request elements with the granted field to 'Y'
        And one of them matching the hearing id field to the hearing in the Delta
-       Then one postponed element is created
+       Then two postponed elements are created
     */
     @Test
     public void givenScenario2ThenPostponedIsCreated() {
         appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
+            .appealCaseRefNum("SC068/17/00011")
             .majorStatus(Collections.singletonList(
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
@@ -145,7 +146,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        assertEquals("One postponed event expected here", 1, events.size());
+        assertEquals("Two postponed events expected here", 1, events.size());
         assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
             events.get(0).getValue().getType());
         LocalDateTime actualPostponedDate = LocalDateTime.parse(events.get(0).getValue().getDate());
@@ -159,7 +160,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
       And multiple hearing objects
       And two postponed request elements with the granted field to 'Y'
       And one of them matching the hearing id field to the hearing in the existing Case in CDD
-      Then one postponed element is created
+      Then two postponed elements are created
    */
     @Test
     public void givenScenario3ThenPostponedIsCreated() throws Exception {
@@ -181,12 +182,18 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBaseTest {
 
         events = caseDataEventBuilder.buildPostponedEvent(appeal);
 
-        assertEquals("One postponed event expected here", 1, events.size());
+        assertEquals("Two postponed event expected here", 2, events.size());
         assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
             events.get(0).getValue().getType());
+        assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
+            events.get(1).getValue().getType());
+
         LocalDateTime actualPostponedDate = LocalDateTime.parse(events.get(0).getValue().getDate());
-        LocalDateTime expectedDate = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE).toLocalDateTime();
+        LocalDateTime expectedDate = ZonedDateTime.parse(APPEAL_RECEIVED_DATE).toLocalDateTime();
         assertEquals(expectedDate, actualPostponedDate);
+        LocalDateTime actualPostponedDate2 = LocalDateTime.parse(events.get(1).getValue().getDate());
+        LocalDateTime expectedDate2 = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE).toLocalDateTime();
+        assertEquals(actualPostponedDate2, expectedDate2);
     }
 
     private static CaseDetails getCaseDetails() throws IOException {

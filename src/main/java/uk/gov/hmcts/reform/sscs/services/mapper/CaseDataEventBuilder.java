@@ -76,7 +76,7 @@ class CaseDataEventBuilder {
 
     private List<Event> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
         MajorStatus latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
-        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, latestMajorStatus)) {
+        if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase)) {
             return Collections.singletonList(buildNewPostponedEvent(latestMajorStatus.getDateSet()));
         }
         return Collections.emptyList();
@@ -86,16 +86,11 @@ class CaseDataEventBuilder {
         return Collections.max(majorStatus, Comparator.comparing(MajorStatus::getDateSet));
     }
 
-    private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase,
-                                                                     MajorStatus latestMajorStatus) {
+    private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase) {
 
-        return isResponseReceivedTheAppealCurrentStatus(latestMajorStatus) && isPostponementGranted(appealCase)
+        return isPostponementGranted(appealCase)
             && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
             retrieveHearingsFromCaseInCcd(appealCase));
-    }
-
-    private boolean isResponseReceivedTheAppealCurrentStatus(MajorStatus latestMajorStatus) {
-        return "18".equals(latestMajorStatus.getStatusId());
     }
 
     private boolean isPostponementGranted(AppealCase appealCase) {
