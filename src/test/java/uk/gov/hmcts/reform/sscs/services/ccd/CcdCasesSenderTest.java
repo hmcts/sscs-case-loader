@@ -255,7 +255,7 @@ public class CcdCasesSenderTest {
     public void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceivedAndExisingEvidenceIsNull() throws Exception {
         SscsCaseData caseData = SscsCaseData.builder()
                 .evidence(Evidence.builder()
-                        .documents(Collections.EMPTY_LIST)
+                        .documents(Collections.emptyList())
                         .build())
                 .events(Collections.singletonList(Event.builder()
                         .value(EventDetails.builder()

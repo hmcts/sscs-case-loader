@@ -58,6 +58,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
     private CaseDataEventBuilder caseDataEventBuilder;
     private List<Event> events;
+    private String ignoreHearingPostponedBeforeDateProperty = "2020-12-07";
 
     @Before
     public void setUp() {
@@ -71,7 +72,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         caseDataEventBuilder = new CaseDataEventBuilder(ccdService, idamService, postponedEventInferredFromDelta,
-            postponedEventInferredFromCcd);
+            postponedEventInferredFromCcd, ignoreHearingPostponedBeforeDateProperty);
     }
 
     @Test
@@ -234,6 +235,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         And multiple hearing objects
         And two postponed request elements with the granted field to 'Y'
         And none of them matching the hearing id field neither in Delta or in CCD
+        And major status date is greater than ignoreHearingPostponedBeforeDateProperty
         Then NO postponed element is created
      */
     @Test
@@ -242,7 +244,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Collections.singletonList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE_GREATER_THAN_IGNORE_DATE)
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
@@ -296,7 +299,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         AppealCase appeal = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .majorStatus(Collections.singletonList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE_GREATER_THAN_IGNORE_DATE)
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
@@ -340,7 +344,61 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         Given minor status with id 27
         And multiple hearing objects
         And two postponed request elements with the granted field to 'Y'
+        And one of them matching the hearing id field to the hearing in the Delta
+        And major status date is less than ignoreHearingPostponedBeforeDateProperty
+        Then one postponed element is created
+     */
+    @Test
+    public void givenScenario3ThenPostponedIsNotCreated() {
+        AppealCase appeal = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .majorStatus(Collections.singletonList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
+            ))
+            .minorStatus(Collections.singletonList(
+                super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
+            .hearing(Arrays.asList(
+                Hearing.builder().hearingId("1").build(),
+                Hearing.builder().hearingId("2").build()
+            ))
+            .postponementRequests(Arrays.asList(
+                new PostponementRequests(
+                    "Y", "1", null, null),
+                new PostponementRequests(
+                    "Y", "", null, null)
+            ))
+            .build();
+
+        when(postponedEventInferredFromDelta.matchToHearingId(eq(appeal.getPostponementRequests()),
+            eq(appeal.getHearing()))).thenReturn(true);
+
+        events = caseDataEventBuilder.buildPostponedEvent(appeal);
+
+        verify(postponedEventInferredFromDelta, times(1))
+            .matchToHearingId(anyList(), anyList());
+
+        verify(ccdService, times(0)).findCaseBy(anyString(), anyString(),
+            any(IdamTokens.class));
+
+        verify(postponedEventInferredFromCcd, times(1))
+            .matchToHearingId(anyList(),
+                anyList());
+
+        assertEquals("One postponed event expected here", 1, events.size());
+        assertEquals("type expected is postponed", GapsEvent.HEARING_POSTPONED.getType(),
+            events.get(0).getValue().getType());
+        LocalDateTime actualPostponedDate = LocalDateTime.parse(events.get(0).getValue().getDate());
+        LocalDateTime expectedDate = ZonedDateTime.parse(MINOR_STATUS_ID_27_DATE).toLocalDateTime();
+        assertEquals(expectedDate, actualPostponedDate);
+    }
+
+    /*
+        scenario3:
+        Given minor status with id 27
+        And multiple hearing objects
+        And two postponed request elements with the granted field to 'Y'
         And one of them matching the hearing id field to the hearing in the existing Case in CDD
+        And major status date is greater than ignoreHearingPostponedBeforeDateProperty
         Then one postponed element is created
      */
     @Test
@@ -350,7 +408,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Collections.singletonList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    APPEAL_RECEIVED_DATE_GREATER_THAN_IGNORE_DATE)
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
