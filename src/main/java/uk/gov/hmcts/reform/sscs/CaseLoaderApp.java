@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 @EnableHystrixDashboard
 @SuppressWarnings("HideUtilityClassConstructor")
 @EnableFeignClients(basePackages = {
-    "uk.gov.hmcts.reform.idam.client"
+    "uk.gov.hmcts.reform.idam"
 })
 @Slf4j
 @EnableRetry

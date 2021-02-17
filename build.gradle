@@ -249,7 +249,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.12'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.13-RC-SSCS-8684-IdamOnly'
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
 
@@ -259,11 +259,11 @@ dependencies {
   compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.2'
 
   compileOnly 'org.projectlombok:lombok:1.18.18'
-  annotationProcessor "org.projectlombok:lombok:1.18.16"
+  annotationProcessor "org.projectlombok:lombok:1.18.18"
   testCompileOnly 'org.projectlombok:lombok:1.18.18'
-  testAnnotationProcessor "org.projectlombok:lombok:1.18.16"
+  testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
   e2eCompile 'org.projectlombok:lombok:1.18.18'
-  e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
+  e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.24.0'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.24.0'
