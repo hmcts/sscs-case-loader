@@ -96,7 +96,7 @@ class CaseDataEventBuilder {
     private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase,
                                                                      MajorStatus latestMajorStatus) {
 
-        if (ignoreHearingPostponedBeforeDateProperty.isAfter(latestMajorStatus.getDateSet().toLocalDate())) {
+        if (ignoreHearingPostponedBeforeDateProperty.isBefore(latestMajorStatus.getDateSet().toLocalDate())) {
             return isPostponementGranted(appealCase)
                 && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
                 retrieveHearingsFromCaseInCcd(appealCase));

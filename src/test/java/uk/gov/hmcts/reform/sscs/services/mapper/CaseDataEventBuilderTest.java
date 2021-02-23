@@ -276,10 +276,10 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(postponedEventInferredFromDelta, times(1))
             .matchToHearingId(anyList(), anyList());
 
-        verify(ccdService, times(1)).findCaseBy(anyString(), anyString(),
+        verify(ccdService, times(2)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
-        verify(postponedEventInferredFromCcd, times(1))
+        verify(postponedEventInferredFromCcd, times(2))
             .matchToHearingId(anyList(),
                 anyList());
 
@@ -327,7 +327,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(ccdService, times(0)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
-        verify(postponedEventInferredFromCcd, times(0))
+        verify(postponedEventInferredFromCcd, times(1))
             .matchToHearingId(anyList(),
                 anyList());
 
@@ -346,7 +346,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         And two postponed request elements with the granted field to 'Y'
         And one of them matching the hearing id field to the hearing in the Delta
         And major status date is less than ignoreHearingPostponedBeforeDateProperty
-        Then one postponed element is created
+        Then no postponed element is created
      */
     @Test
     public void givenScenario3ThenPostponedIsNotCreated() {
@@ -380,7 +380,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         verify(ccdService, times(0)).findCaseBy(anyString(), anyString(),
             any(IdamTokens.class));
 
-        verify(postponedEventInferredFromCcd, times(1))
+        verify(postponedEventInferredFromCcd, times(0))
             .matchToHearingId(anyList(),
                 anyList());
 
@@ -408,8 +408,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum(APPEAL_CASE_REF_NUM)
             .majorStatus(Collections.singletonList(
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
-                    APPEAL_RECEIVED_DATE_GREATER_THAN_IGNORE_DATE)
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(), APPEAL_RECEIVED_DATE)
             ))
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("27", MINOR_STATUS_ID_27_DATE)))
