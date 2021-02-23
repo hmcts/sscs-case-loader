@@ -3,9 +3,8 @@ package uk.gov.hmcts.reform.sscs.functional.postdeploy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.IOException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.functional.postdeploy.data.ProcessCaseFileTestData;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
@@ -26,34 +23,12 @@ import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 public class ProcessCaseFileTest {
 
     @Autowired
-    private CcdService ccdService;
-    @Autowired
-    private IdamService idamService;
-
-    private String ccdCaseId;
-    private IdamTokens idamTokens;
+    private ProcessCaseFileTestData processCaseFileTestData;
 
     @SuppressWarnings("unchecked")
     @Test
-    public void processCaseFileAndVerifyCcd() throws FileNotFoundException {
-
-        log.info("Getting oAuth2 token...");
-        String oauth2Token = idamService.getIdamOauth2Token();
-
-        log.info("Building IDAM tokens...");
-        idamTokens = IdamTokens.builder()
-            .idamOauth2Token(oauth2Token)
-            .serviceAuthorization(idamService.generateServiceAuthorization())
-            .userId(idamService.getUserId(oauth2Token))
-            .build();
-
-        String tmpFileName = "ccdCaseId.tmp";
-        String s = new Scanner(new File(tmpFileName)).useDelimiter("\\Z").next();
-
-        ccdCaseId = s.trim();
-        log.info("Test case ID is {}", ccdCaseId);
-
-        SscsCaseDetails updatedCcdCase = ccdService.getByCaseId(Long.parseLong(ccdCaseId), idamTokens);
+    public void processCaseFileAndVerifyCcd() throws IOException, ClassNotFoundException {
+        SscsCaseDetails updatedCcdCase = processCaseFileTestData.getTestCase();
         assertNotNull(updatedCcdCase);
 
         SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();

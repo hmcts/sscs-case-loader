@@ -3,30 +3,22 @@ package uk.gov.hmcts.reform.sscs.functional.predeploy;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Objects;
+import java.util.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
-import uk.gov.hmcts.reform.sscs.ccd.util.CaseDataUtils;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
-import uk.gov.hmcts.reform.sscs.idam.IdamService;
-import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 import uk.gov.hmcts.reform.tools.GenerateXml;
+import uk.gov.hmcts.reform.tools.utils.CaseIdMapUtils;
+
+import static uk.gov.hmcts.reform.sscs.functional.predeploy.PreDeployableTestData.TEST_DATA_XML_PREFIX;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
@@ -40,78 +32,38 @@ public class ProcessCaseFileSetup {
 
     @Autowired
     private SftpChannelAdapter sftpChannelAdapter;
-    @Autowired
-    private CcdService ccdService;
-    @Autowired
-    private IdamService idamService;
 
-    private String ccdCaseId;
-    private IdamTokens idamTokens;
+    @Autowired
+    private List<PreDeployableTestData> preDeployable;
 
     @Test
     public void setup() throws ParserConfigurationException, TransformerException, IOException, SftpException {
-
-        log.info("Getting oAuth2 token...");
-        String oauth2Token = idamService.getIdamOauth2Token();
-
-        log.info("Building IDAM tokens...");
-        idamTokens = IdamTokens.builder()
-            .idamOauth2Token(oauth2Token)
-            .serviceAuthorization(idamService.generateServiceAuthorization())
-            .userId(idamService.getUserId(oauth2Token))
-            .build();
-
-        int randomNumber = (int) (Math.random() * 1000000);
-        // Case 1 is created to cater for the scenarios of elastic search issue which was returning multiple cases
-        // on case reference search. For more details see https://tools.hmcts.net/jira/browse/SSCS-8383
-        // Also, make sure case 1 does not overwrite case 2 and case 2 updates successfully
-        log.info("Building minimal case1 data...");
-        SscsCaseData caseDataCase1 = CaseDataUtils.buildMinimalCaseData();
-        caseDataCase1.getAppeal().getAppellant().setIdentity(Identity.builder()
-            .nino("AB 77 88 88 B").dob("1904-03-10").build());
-        caseDataCase1.setCaseReference(CASE_REF_TEST_1 + randomNumber);
-
-        log.info("Creating CCD case1...");
-        ccdService.createCase(caseDataCase1, "appealCreated", "caseloader test summary",
-            "caseloader test description", idamTokens);
-
-        log.info("Building minimal case2 data...");
-        SscsCaseData caseDataCase2 = CaseDataUtils.buildMinimalCaseData();
-        caseDataCase2.setCaseReference(CASE_REF_TEST_2 + randomNumber);
-
-        log.info("Creating CCD case2...");
-        SscsCaseDetails caseDetailsCase2 = ccdService.createCase(caseDataCase2,
-            "appealCreated", "caseloader test summary",
-            "caseloader test description", idamTokens);
-
-        ccdCaseId = String.valueOf(caseDetailsCase2.getId());
-        log.info("Created test ccd case with id {}", ccdCaseId);
-
-        String tmpFileName = "ccdCaseId.tmp";
-
-        Files.write(Paths.get(tmpFileName), ccdCaseId.getBytes());
-
-        String path = Objects.requireNonNull(getClass().getClassLoader()
-            .getResource("SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml")).getFile();
-        String ccdCasesXml = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
-        ccdCasesXml = ccdCasesXml.replace("1_CCD_ID_REPLACED_BY_TEST", ccdCaseId);
-        ccdCasesXml = ccdCasesXml.replace("1_CCD_REF_REPLACED_BY_TEST", CASE_REF_TEST_2 + randomNumber);
-
         cleanSftpFiles();
-        writeXmlToSftp(ccdCasesXml);
+        writeXmlToSftp();
         GenerateXml.generateXmlForAppeals();
         copy(outputdir);
+    }
+
+    private void writeXmlToSftp() throws IOException, SftpException {
+        HashMap<String, String> dataKeys = new HashMap<>();
+        for (PreDeployableTestData test: preDeployable) {
+            String caseId = test.createTestData();
+            dataKeys.put(test.getTestCaseKey(), caseId);
+        }
+
+        CaseIdMapUtils.write(dataKeys);
     }
 
     private void cleanSftpFiles() throws SftpException {
 
         ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
         try {
-            sftpChannel.rm("/incoming/SSCS_CcdCases_Delta_*.xml");
+            sftpChannel.rm("/incoming/"+TEST_DATA_XML_PREFIX+"*.xml");
+            sftpChannel.rm("/incoming/failed/"+TEST_DATA_XML_PREFIX+"*.xml");
+            sftpChannel.rm("/incoming/processed/"+TEST_DATA_XML_PREFIX+"*.xml");
+
             sftpChannel.rm("/incoming/SSCS_CreateAppeals_Delta_*.xml");
-            sftpChannel.rm("/incoming/failed/SSCS_CcdCases_Delta_*.xml");
             sftpChannel.rm("/incoming/failed/SSCS_CreateAppeals_Delta_*.xml");
-            sftpChannel.rm("/incoming/processed/SSCS_CcdCases_Delta_*.xml");
             sftpChannel.rm("/incoming/processed/SSCS_CreateAppeals_Delta_*.xml");
             sftpChannel.rm("/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml");
             sftpChannel.rm("/incoming/processed/SSCS_Extract_Delta_2018-05-24-16-14-19.xml");
@@ -122,12 +74,6 @@ public class ProcessCaseFileSetup {
                 throw e;
             }
         }
-    }
-
-    private void writeXmlToSftp(String xml) throws SftpException {
-        ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
-        sftpChannel.put(new ByteArrayInputStream(xml.getBytes()),
-            "/incoming/" + "SSCS_CcdCases_Delta_2018-07-09-12-34-56.xml");
     }
 
     public void copy(String outputdir) {
