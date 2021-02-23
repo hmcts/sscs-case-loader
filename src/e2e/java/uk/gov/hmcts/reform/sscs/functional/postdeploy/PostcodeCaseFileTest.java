@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.sscs.functional.postdeploy;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.functional.postdeploy.data.PostcodeCaseFileTestData;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")

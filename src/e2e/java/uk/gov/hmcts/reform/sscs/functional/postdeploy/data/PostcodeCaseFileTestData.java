@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.sscs.functional.postdeploy.data;
 
 import com.jcraft.jsch.SftpException;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 
-import java.io.IOException;
 @Component
 @Slf4j
 public class PostcodeCaseFileTestData extends AbstractCaseFileTestData {
