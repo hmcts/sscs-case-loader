@@ -4,7 +4,7 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.3.5.RELEASE'
-  id 'uk.gov.hmcts.java' version '0.12.4'
+  id 'uk.gov.hmcts.java' version '0.12.5'
   id 'com.github.ben-manes.versions' version '0.36.0'
   id 'net.ltgt.apt' version '0.21'
   id 'org.sonarqube' version '3.1.1'
@@ -249,7 +249,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.12'
+  compile group: 'uk.gov.hmcts.reform', name: 'sscs-common', version: '4.2.15'
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
 
@@ -259,11 +259,11 @@ dependencies {
   compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.2'
 
   compileOnly 'org.projectlombok:lombok:1.18.18'
-  annotationProcessor "org.projectlombok:lombok:1.18.16"
+  annotationProcessor "org.projectlombok:lombok:1.18.18"
   testCompileOnly 'org.projectlombok:lombok:1.18.18'
-  testAnnotationProcessor "org.projectlombok:lombok:1.18.16"
+  testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
   e2eCompile 'org.projectlombok:lombok:1.18.18'
-  e2eAnnotationProcessor "org.projectlombok:lombok:1.18.8"
+  e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.24.0'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.24.0'
