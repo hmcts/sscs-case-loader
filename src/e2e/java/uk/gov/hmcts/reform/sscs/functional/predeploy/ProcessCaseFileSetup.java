@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.functional.predeploy;
 
+import static uk.gov.hmcts.reform.sscs.functional.predeploy.PreDeployableTestData.TEST_DATA_XML_PREFIX;
+
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import java.io.*;
@@ -17,8 +19,6 @@ import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 import uk.gov.hmcts.reform.tools.GenerateXml;
 import uk.gov.hmcts.reform.tools.utils.CaseIdMapUtils;
-
-import static uk.gov.hmcts.reform.sscs.functional.predeploy.PreDeployableTestData.TEST_DATA_XML_PREFIX;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
@@ -44,7 +44,7 @@ public class ProcessCaseFileSetup {
         copy(outputdir);
     }
 
-    private void writeXmlToSftp() throws IOException, SftpException {
+    private void writeXmlToSftp() throws SftpException, IOException {
         HashMap<String, String> dataKeys = new HashMap<>();
         for (PreDeployableTestData test: preDeployable) {
             String caseId = test.createTestData();
@@ -55,13 +55,11 @@ public class ProcessCaseFileSetup {
     }
 
     private void cleanSftpFiles() throws SftpException {
-
         ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
         try {
-            sftpChannel.rm("/incoming/"+TEST_DATA_XML_PREFIX+"*.xml");
-            sftpChannel.rm("/incoming/failed/"+TEST_DATA_XML_PREFIX+"*.xml");
-            sftpChannel.rm("/incoming/processed/"+TEST_DATA_XML_PREFIX+"*.xml");
-
+            sftpChannel.rm("/incoming/" + TEST_DATA_XML_PREFIX + "*.xml");
+            sftpChannel.rm("/incoming/failed/" + TEST_DATA_XML_PREFIX + "*.xml");
+            sftpChannel.rm("/incoming/processed/" + TEST_DATA_XML_PREFIX + "*.xml");
             sftpChannel.rm("/incoming/SSCS_CreateAppeals_Delta_*.xml");
             sftpChannel.rm("/incoming/failed/SSCS_CreateAppeals_Delta_*.xml");
             sftpChannel.rm("/incoming/processed/SSCS_CreateAppeals_Delta_*.xml");

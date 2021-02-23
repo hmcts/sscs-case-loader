@@ -9,6 +9,9 @@ public class CaseIdMapUtils {
 
     private static final String ID_FILE_NAME = "ccdCaseId.tmp";
 
+    private CaseIdMapUtils() {
+    }
+
     public static void write(HashMap<String,String> map) throws IOException {
         try {
             File fileOne = new File(ID_FILE_NAME);
@@ -27,16 +30,16 @@ public class CaseIdMapUtils {
 
     public static HashMap<String,String> read() throws IOException, ClassNotFoundException {
         try {
-            File toRead=new File(ID_FILE_NAME);
-            FileInputStream fis=new FileInputStream(toRead);
-            ObjectInputStream ois=new ObjectInputStream(fis);
+            File toRead = new File(ID_FILE_NAME);
+            FileInputStream fis = new FileInputStream(toRead);
+            ObjectInputStream ois = new ObjectInputStream(fis);
 
-            HashMap<String,String> mapInFile=(HashMap<String,String>)ois.readObject();
+            HashMap<String,String> mapInFile = (HashMap<String,String>)ois.readObject();
 
             ois.close();
             fis.close();
             return mapInFile;
-        } catch(IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             log.error("Failed read case id : " + e.getMessage());
             throw e;
         }

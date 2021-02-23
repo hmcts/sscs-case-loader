@@ -49,7 +49,7 @@ public abstract class AbstractCaseFileTestData implements PreDeployableTestData 
         sftpChannel.put(new ByteArrayInputStream(ccdCasesXml.getBytes()),"/incoming/" + fileName);
     }
 
-    protected String createCcdCase(){
+    protected String createCcdCase() {
         int randomNumber = (int) (Math.random() * 1000000);
         // Case 1 is created to cater for the scenarios of elastic search issue which was returning multiple cases
         // on case reference search. For more details see https://tools.hmcts.net/jira/browse/SSCS-8383
@@ -85,7 +85,7 @@ public abstract class AbstractCaseFileTestData implements PreDeployableTestData 
         return ccdService.getByCaseId(Long.parseLong(ccdCaseId), getIdamTocken());
     }
 
-    private IdamTokens getIdamTocken(){
+    private IdamTokens getIdamTocken() {
         log.info("Getting oAuth2 token...");
         String oauth2Token = idamService.getIdamOauth2Token();
 
