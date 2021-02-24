@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.sscs.functional.postdeploy.data;
 
 import com.jcraft.jsch.SftpException;
 import java.io.IOException;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
