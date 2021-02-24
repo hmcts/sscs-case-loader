@@ -34,7 +34,7 @@ public class ProcessCaseFileTest {
 
         log.info("CCD CASE DATA is {}", updatedCcdCaseData.toString());
 
-        assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
+        assertEquals("User", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
         assertEquals(3, updatedCcdCaseData.getEvents().size());
         assertEquals("hearing", updatedCcdCase.getState());
     }
