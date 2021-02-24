@@ -38,19 +38,17 @@ public abstract class AbstractCaseFileTestData implements PreDeployableTestData 
 
     public abstract SscsCaseDetails getTestCase() throws IOException, ClassNotFoundException;
 
-
-
-    protected void writeXmlToSftp(String ccdCaseId, String fileName) throws SftpException, IOException {
+    protected void writeXmlToSftp(String ccdCaseId, String ref, String fileName) throws SftpException, IOException {
         String path = Objects.requireNonNull(getClass().getClassLoader().getResource(fileName)).getFile();
         String ccdCasesXml = FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8.name());
         ccdCasesXml = ccdCasesXml.replace("1_CCD_ID_REPLACED_BY_TEST", ccdCaseId);
+        ccdCasesXml = ccdCasesXml.replace("1_CCD_REF_REPLACED_BY_TEST", CASE_REF_TEST_2 + ref);
 
         ChannelSftp sftpChannel = sftpChannelAdapter.openConnectedChannel();
         sftpChannel.put(new ByteArrayInputStream(ccdCasesXml.getBytes()),"/incoming/" + fileName);
     }
 
-    protected String createCcdCase() {
-        int randomNumber = (int) (Math.random() * 1000000);
+    protected String createCcdCase(String caseRef) {
         // Case 1 is created to cater for the scenarios of elastic search issue which was returning multiple cases
         // on case reference search. For more details see https://tools.hmcts.net/jira/browse/SSCS-8383
         // Also, make sure case 1 does not overwrite case 2 and case 2 updates successfully
@@ -58,7 +56,7 @@ public abstract class AbstractCaseFileTestData implements PreDeployableTestData 
         SscsCaseData caseDataCase1 = CaseDataUtils.buildMinimalCaseData();
         caseDataCase1.getAppeal().getAppellant().setIdentity(Identity.builder()
             .nino("AB 77 88 88 B").dob("1904-03-10").build());
-        caseDataCase1.setCaseReference(CASE_REF_TEST_1 + randomNumber);
+        caseDataCase1.setCaseReference(CASE_REF_TEST_1 + caseRef);
 
         log.info("Creating CCD case1...");
         ccdService.createCase(caseDataCase1, "appealCreated", "caseloader test summary",
@@ -66,7 +64,7 @@ public abstract class AbstractCaseFileTestData implements PreDeployableTestData 
 
         log.info("Building minimal case2 data...");
         SscsCaseData caseDataCase2 = CaseDataUtils.buildMinimalCaseData();
-        caseDataCase2.setCaseReference(CASE_REF_TEST_2 + randomNumber);
+        caseDataCase2.setCaseReference(CASE_REF_TEST_2 + caseRef);
 
         log.info("Creating CCD case2...");
         SscsCaseDetails caseDetailsCase2 = ccdService.createCase(caseDataCase2,

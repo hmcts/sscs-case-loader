@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.functional.postdeploy.data;
 
 import com.jcraft.jsch.SftpException;
 import java.io.IOException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -13,8 +14,9 @@ public class ProcessCaseFileTestData extends AbstractCaseFileTestData {
 
     @Override
     public String createTestData() throws IOException, SftpException {
-        String ccdCaseId = createCcdCase();
-        writeXmlToSftp(ccdCaseId, TEST_DATA_XML_PREFIX + "2018-07-09-12-34-56.xml");
+        String caseRef = Integer.toString((int) (Math.random() * 1000000));
+        String ccdCaseId = createCcdCase(caseRef);
+        writeXmlToSftp(ccdCaseId, caseRef, TEST_DATA_XML_PREFIX + "2018-07-09-12-34-56.xml");
         return ccdCaseId;
     }
 
