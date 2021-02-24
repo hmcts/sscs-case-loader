@@ -19,10 +19,15 @@ import uk.gov.hmcts.reform.sscs.functional.postdeploy.data.PostcodeCaseFileTestD
 @SpringBootTest
 @Slf4j
 public class PostcodeCaseFileTest {
+    /**
+     * This is an example test case. Please follow the steps to add any new test scenario
+     */
 
+    //Add this bean to provide data for the test scenario. See more details in PostcodeCaseFileTestData class
     @Autowired
     private PostcodeCaseFileTestData postcodeCaseFileTestData;
 
+    //Get the SscsCaseDetails from the data provider and verify expected results
     @Test
     public void processCaseFileAndVerifyCcd() throws IOException, ClassNotFoundException {
         SscsCaseDetails updatedCcdCase = postcodeCaseFileTestData.getTestCase();
