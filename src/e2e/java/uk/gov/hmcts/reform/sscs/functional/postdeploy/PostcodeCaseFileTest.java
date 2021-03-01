@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.functional.postdeploy;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -11,31 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
-import uk.gov.hmcts.reform.sscs.functional.postdeploy.data.ProcessCaseFileTestData;
+import uk.gov.hmcts.reform.sscs.functional.postdeploy.data.PostcodeCaseFileTestData;
+
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:config/application_e2e.yaml")
 @SpringBootTest
 @Slf4j
-public class ProcessCaseFileTest {
+public class PostcodeCaseFileTest {
+    /**
+     * This is an example test case. Please follow the steps to add any new test scenario
+     */
 
+    //Add this bean to provide data for the test scenario. See more details in PostcodeCaseFileTestData class
     @Autowired
-    private ProcessCaseFileTestData processCaseFileTestData;
+    private PostcodeCaseFileTestData postcodeCaseFileTestData;
 
-    @SuppressWarnings("unchecked")
+    //Get the SscsCaseDetails from the data provider and verify expected results
     @Test
     public void processCaseFileAndVerifyCcd() throws IOException, ClassNotFoundException {
-        SscsCaseDetails updatedCcdCase = processCaseFileTestData.getTestCase();
+        SscsCaseDetails updatedCcdCase = postcodeCaseFileTestData.getTestCase();
         assertNotNull(updatedCcdCase);
-
-        SscsCaseData updatedCcdCaseData = updatedCcdCase.getData();
-
-        log.info("CCD CASE DATA is {}", updatedCcdCaseData.toString());
-
-        assertEquals("XYZ", updatedCcdCaseData.getAppeal().getAppellant().getName().getFirstName());
-        assertEquals(3, updatedCcdCaseData.getEvents().size());
-        assertEquals("hearing", updatedCcdCase.getState());
     }
 }
