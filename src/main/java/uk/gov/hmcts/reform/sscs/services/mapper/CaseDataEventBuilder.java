@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
@@ -24,8 +27,10 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
 @Service
+@Configuration
 class CaseDataEventBuilder {
 
+    private final LocalDate ignoreHearingPostponedBeforeDateProperty;
     private final CcdService ccdService;
     private final IdamService idamService;
     private final PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
@@ -39,11 +44,13 @@ class CaseDataEventBuilder {
         CcdService ccdService, IdamService idamService,
         PostponedEventService<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing>
             postponedEventInferredFromDelta,
-        PostponedEventService<Hearing> postponedEventInferredFromCcd) {
+        PostponedEventService<Hearing> postponedEventInferredFromCcd,
+        @Value("${sscs.case.loader.ignoreHearingPostponedBeforeDate}") String ignoreDate) {
         this.ccdService = ccdService;
         this.idamService = idamService;
         this.postponedEventInferredFromDelta = postponedEventInferredFromDelta;
         this.postponedEventInferredFromCcd = postponedEventInferredFromCcd;
+        this.ignoreHearingPostponedBeforeDateProperty = LocalDate.parse(ignoreDate);
     }
 
     List<Event> buildPostponedEvent(AppealCase appealCase) {
@@ -89,9 +96,15 @@ class CaseDataEventBuilder {
     private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase,
                                                                      MajorStatus latestMajorStatus) {
 
-        return isResponseReceivedTheAppealCurrentStatus(latestMajorStatus) && isPostponementGranted(appealCase)
-            && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
-            retrieveHearingsFromCaseInCcd(appealCase));
+        if (ignoreHearingPostponedBeforeDateProperty.isBefore(latestMajorStatus.getDateSet().toLocalDate())) {
+            return isPostponementGranted(appealCase)
+                && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
+                retrieveHearingsFromCaseInCcd(appealCase));
+        } else {
+            return isResponseReceivedTheAppealCurrentStatus(latestMajorStatus) && isPostponementGranted(appealCase)
+                && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
+                retrieveHearingsFromCaseInCcd(appealCase));
+        }
     }
 
     private boolean isResponseReceivedTheAppealCurrentStatus(MajorStatus latestMajorStatus) {

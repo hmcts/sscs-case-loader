@@ -256,7 +256,7 @@ dependencies {
   compile group: 'org.json', name: 'json', version: '20201115'
 
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
-  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.10.2'
+  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.11.1'
 
   compileOnly 'org.projectlombok:lombok:1.18.18'
   annotationProcessor "org.projectlombok:lombok:1.18.18"

@@ -3,8 +3,7 @@ package uk.gov.hmcts.reform.sscs.services;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import java.util.List;
@@ -67,7 +66,7 @@ public class TransformationServiceTest {
         caseDataList = transformationService.transform(is);
 
         assertThat(caseDataList.size(), is(0));
-        verifyZeroInteractions(transformAppealCaseToCaseData);
+        verifyNoMoreInteractions(transformAppealCaseToCaseData);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class TransformationServiceTest {
         caseDataList = transformationService.transform(is);
 
         assertThat(caseDataList.size(), is(0));
-        verifyZeroInteractions(transformAppealCaseToCaseData);
+        verifyNoMoreInteractions(transformAppealCaseToCaseData);
     }
 
     @Test
@@ -85,6 +84,6 @@ public class TransformationServiceTest {
         caseDataList = transformationService.transform(is);
 
         assertThat(caseDataList.size(), is(0));
-        verifyZeroInteractions(transformAppealCaseToCaseData);
+        verifyNoMoreInteractions(transformAppealCaseToCaseData);
     }
 }
