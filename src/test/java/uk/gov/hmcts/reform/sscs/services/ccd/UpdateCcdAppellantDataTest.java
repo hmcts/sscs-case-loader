@@ -104,7 +104,7 @@ public class UpdateCcdAppellantDataTest {
             .build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder()
-            .email("appointee.new@email.com")
+            .email("appointee.old@email.com")
             .subscribeSms("Yes")
             .wantSmsNotifications("Yes")
             .mobile("0777")
@@ -172,7 +172,7 @@ public class UpdateCcdAppellantDataTest {
             .build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder()
-            .email("appellant.new@email.com")
+            .email("appellant.old@email.com")
             .subscribeSms("Yes")
             .wantSmsNotifications("Yes")
             .mobile("0777")

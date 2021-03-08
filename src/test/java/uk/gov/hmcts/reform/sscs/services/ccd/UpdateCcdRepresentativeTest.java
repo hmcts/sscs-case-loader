@@ -134,7 +134,7 @@ public class UpdateCcdRepresentativeTest {
         assertTrue("rep contact has changed", hasDataChanged);
         assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
         assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
-        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
+        assertEquals("harry.potter@wizards.com",
                 existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
     }
 
@@ -164,10 +164,9 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
         assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
-        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
+        assertEquals("harry.potter@wizards.com",
                 existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
-        assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription().getEmail(),
-                existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
+
     }
 
     @Test
@@ -372,7 +371,7 @@ public class UpdateCcdRepresentativeTest {
         Subscription updatedRepSubscription = existingCaseData.getSubscriptions().getRepresentativeSubscription();
         assertEquals(subscribed, updatedRepSubscription.getSubscribeEmail());
         assertEquals(subscribed, updatedRepSubscription.getSubscribeSms());
-        assertEquals("update@email.com", updatedRepSubscription.getEmail());
+        assertEquals("rep@mail.com", updatedRepSubscription.getEmail());
         assertEquals("07123456700", updatedRepSubscription.getMobile());
     }
 
