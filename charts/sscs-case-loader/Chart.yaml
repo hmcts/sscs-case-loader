@@ -8,7 +8,7 @@ maintainers:
   - name: HMCTS SSCS Team
 dependencies:
   - name: java
-    version: 3.4.4
+    version: 3.4.5
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
   - name: job
     version: ~0.5.1
