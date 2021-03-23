@@ -3,7 +3,7 @@ description: SSCS Case Loader
 home: https://github.com/hmcts/sscs-case-loader
 apiVersion: v2
 appVersion: "1.0"
-version: 0.0.18
+version: 0.0.19
 maintainers:
   - name: HMCTS SSCS Team
 dependencies:
@@ -11,5 +11,5 @@ dependencies:
     version: 3.4.5
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
   - name: job
-    version: ~0.7.0
+    version: ~0.7.1
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
