@@ -106,7 +106,7 @@ public class UpdateCcdCaseDataTest {
             .email("appellant@email.com").subscribeEmail("Yes").build();
 
         final Subscription expectedRepSubscription = Subscription.builder()
-            .email("harry.potter@mail.com").subscribeSms("No").subscribeEmail("Yes").build();
+            .email("superman@mail.com").subscribeSms("No").subscribeEmail("Yes").build();
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             gapsCaseData, existingCase);
