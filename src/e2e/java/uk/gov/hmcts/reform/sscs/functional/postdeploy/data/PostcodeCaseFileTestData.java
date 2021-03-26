@@ -25,7 +25,7 @@ public class PostcodeCaseFileTestData extends AbstractCaseFileTestData {
     public String createTestData() throws IOException, SftpException {
         String caseRef = Integer.toString((int) (Math.random() * 1000000));
         String ccdCaseId = createCcdCase(caseRef);
-        writeXmlToSftp(ccdCaseId, caseRef, TEST_DATA_XML_PREFIX + "2021-02-23-12-00-00.xml");
+        writeXmlToSftp(ccdCaseId, caseRef, TEST_DATA_XML_PREFIX + "2021-03-26-13-17-00.xml");
         return ccdCaseId;
     }
 
