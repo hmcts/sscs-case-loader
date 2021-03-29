@@ -1,7 +1,6 @@
 job:
   image: 'https://hmctspublic.azurecr.io/sscs/case-loader:latest'
   schedule: "0 0/4 * * *"
-  readinessPath: '/health/readiness'
   aadIdentityName: sscs
   ingressHost: sscs-case-loader-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   keyVaults:

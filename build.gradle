@@ -4,7 +4,7 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'org.springframework.boot' version '2.3.5.RELEASE'
-  id 'uk.gov.hmcts.java' version '0.12.5'
+  id 'uk.gov.hmcts.java' version '0.12.6'
   id 'com.github.ben-manes.versions' version '0.38.0'
   id 'net.ltgt.apt' version '0.21'
   id 'org.sonarqube' version '3.1.1'
@@ -193,11 +193,11 @@ dependencyManagement {
   }
   dependencies {
     dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-    dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
-    dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.0'
+    dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
+    dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.1'
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '30.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '30.1.1-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
@@ -208,6 +208,11 @@ dependencyManagement {
     //CVE-2021-22112
     dependencySet(group: 'org.springframework.security', version: '5.4.5') {
       entry 'spring-security-crypto'
+    }
+
+    //CVE-2021-27807
+    dependencySet(group: 'org.apache.pdfbox', version: '2.0.23') {
+      entry 'pdfbox'
     }
 
      dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
@@ -264,7 +269,7 @@ dependencies {
   compile group: 'org.json', name: 'json', version: '20210307'
 
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
-  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.11.1'
+  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.12.0'
 
   compileOnly 'org.projectlombok:lombok:1.18.18'
   annotationProcessor "org.projectlombok:lombok:1.18.18"
@@ -273,7 +278,7 @@ dependencies {
   e2eCompile 'org.projectlombok:lombok:1.18.18'
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.24.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.25.0'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.24.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
 
