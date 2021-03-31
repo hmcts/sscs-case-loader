@@ -17,46 +17,10 @@
     <cve>CVE-2015-9251</cve>
     <cve>CVE-2019-11358</cve>
   </suppress>
-  <suppress until="2020-06-30">
-    <notes><![CDATA[
-   file name: spring-security-crypto-5.2.2.RELEASE.jar - This issue should go away after spring 2.3.0 upgrade
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
-    <cve>CVE-2020-5407</cve>
-    <cve>CVE-2020-5408</cve>
-  </suppress>
   <suppress>
     <notes><![CDATA[No fix available]]></notes>
     <gav regex="true">^org\.apache\.sling:org\.apache\.sling\.javax\.activation:0\.1\.0$</gav>
     <cve>CVE-2016-5394</cve>
     <cve>CVE-2016-6798</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-   file name: jettison-1.2.jar
-   CVE is a json vulnerability that applies only to Ruby or Node projects
-   ]]></notes>
-    <cve>CVE-2020-10663</cve>
-  </suppress>
-  <suppress until="2020-11-30">
-    <notes><![CDATA[
-    file name: tomcat-embed-core-9.0.39.jar/tomcat-embed-websocket-9.0.39.jar
-    Awaiting patch for Tomcat
-    ]]></notes>
-    <cve>CVE-2020-13943</cve>
-  </suppress>
-  <suppress until="2020-11-30">
-    <notes><![CDATA[
-    file name: javascript/jquery@3.4.1
-    ]]></notes>
-    <cve>CVE-2020-11022</cve>
-    <cve>CVE-2020-11023</cve>
-  </suppress>
-  <suppress until="2020-11-30">
-    <notes><![CDATA[
-         file name: junit-4.13.1.jar
-         Awaiting patch for Junit
-        ]]></notes>
-    <cve>CVE-2020-15250</cve>
   </suppress>
 </suppressions>
