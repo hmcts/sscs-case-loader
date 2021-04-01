@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.refdata;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.*;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.*;
@@ -74,6 +74,7 @@ public class RefDataFactoryTest {
         assertThat(repo.find(BAT_CODE_MAP, "002", BENEFIT_DESC), is("PIP"));
         assertThat(repo.find(BAT_CODE_MAP, "051", BENEFIT_DESC), is("ESA"));
         assertThat(repo.find(BAT_CODE_MAP, "037", BENEFIT_DESC), is("DLA"));
+        assertThat(repo.find(BAT_CODE_MAP, "070", BENEFIT_DESC), is("carersAllowance"));
 
     }
 }
