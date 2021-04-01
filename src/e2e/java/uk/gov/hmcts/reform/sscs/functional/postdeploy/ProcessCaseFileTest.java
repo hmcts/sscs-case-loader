@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class ProcessCaseFileTest {
     private ProcessCaseFileTestData processCaseFileTestData;
 
     @SuppressWarnings("unchecked")
+    @Ignore
     @Test
     public void processCaseFileAndVerifyCcd() throws IOException, ClassNotFoundException {
         SscsCaseDetails updatedCcdCase = processCaseFileTestData.getTestCase();
