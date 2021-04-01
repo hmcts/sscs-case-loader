@@ -82,7 +82,6 @@ public class RefDataFactory {
         repo.add(BAT_CODE_MAP, "003", BENEFIT_DESC, "PIP");
         repo.add(BAT_CODE_MAP, "037", BENEFIT_DESC, "DLA");
         repo.add(BAT_CODE_MAP, "051", BENEFIT_DESC, "ESA");
-        repo.add(BAT_CODE_MAP, "070", BENEFIT_DESC, "carersAllowance");
         repo.add(BAT_CODE_MAP, "073", BENEFIT_DESC, "JSA");
     }
 }
