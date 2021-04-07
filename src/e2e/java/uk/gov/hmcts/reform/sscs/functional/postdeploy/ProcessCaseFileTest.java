@@ -26,7 +26,6 @@ public class ProcessCaseFileTest {
     private ProcessCaseFileTestData processCaseFileTestData;
 
     @SuppressWarnings("unchecked")
-    @Ignore
     @Test
     public void processCaseFileAndVerifyCcd() throws IOException, ClassNotFoundException {
         SscsCaseDetails updatedCcdCase = processCaseFileTestData.getTestCase();
