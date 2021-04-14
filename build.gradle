@@ -242,7 +242,7 @@ dependencies {
   compile 'org.springframework.batch:spring-batch-test'
   compile 'com.h2database:h2'
 
-  compile 'org.unix4j:unix4j-command:0.5'
+  compile 'org.unix4j:unix4j-command:0.6'
 
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -262,7 +262,8 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-  compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.2.45-RC-SSCS-9031'
+  compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.0'
+
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
 
