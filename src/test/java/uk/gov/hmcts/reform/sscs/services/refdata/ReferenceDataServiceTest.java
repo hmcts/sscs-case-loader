@@ -2,8 +2,7 @@ package uk.gov.hmcts.reform.sscs.services.refdata;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -50,7 +49,7 @@ public class ReferenceDataServiceTest {
         when(refDataRepo.find(eq(RefKey.BAT_CODE_MAP), anyString(), eq(RefKeyField.BENEFIT_DESC)))
             .thenThrow(new RuntimeException());
         referenceDataService.setRefDataRepo(refDataRepo);
-        assertTrue("ERR".equals(referenceDataService.getBenefitType("1")));
+        assertThat(referenceDataService.getBenefitType("1"), is("ERR"));
     }
 
     @Test
