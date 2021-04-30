@@ -262,7 +262,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-  compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.5'
+  compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.3.6'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68'
