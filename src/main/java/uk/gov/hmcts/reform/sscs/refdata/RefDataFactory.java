@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.sscs.refdata;
 
+import static java.util.Arrays.stream;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.BAT_CODE_MAP;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.BENEFIT_DESC;
 
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -12,6 +16,7 @@ import javax.xml.stream.XMLStreamReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Benefit;
 import uk.gov.hmcts.reform.sscs.refdata.domain.RefKey;
 import uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
@@ -77,11 +82,21 @@ public class RefDataFactory {
     }
 
     private void addBenefitType(RefDataRepository repo) {
-        repo.add(BAT_CODE_MAP, "001", BENEFIT_DESC, "UC");
-        repo.add(BAT_CODE_MAP, "002", BENEFIT_DESC, "PIP");
-        repo.add(BAT_CODE_MAP, "003", BENEFIT_DESC, "PIP");
-        repo.add(BAT_CODE_MAP, "037", BENEFIT_DESC, "DLA");
-        repo.add(BAT_CODE_MAP, "051", BENEFIT_DESC, "ESA");
-        repo.add(BAT_CODE_MAP, "073", BENEFIT_DESC, "JSA");
+        BiConsumer<Benefit, String> refDataRepoBiConsumer = getRefDataRepoBiConsumer(repo);
+
+        stream(Benefit.values())
+            .filter(benefit -> isNotEmpty(benefit.getCaseLoaderKeyId()))
+            .forEach(addEachBenefitCaseLoaderKeyIdToRefDataRepository(refDataRepoBiConsumer));
+    }
+
+    private BiConsumer<Benefit, String> getRefDataRepoBiConsumer(RefDataRepository repo) {
+        return (Benefit benefit, String caseloaderKeyId) ->
+            repo.add(BAT_CODE_MAP, caseloaderKeyId, BENEFIT_DESC, benefit.getShortName());
+    }
+
+    private Consumer<Benefit> addEachBenefitCaseLoaderKeyIdToRefDataRepository(
+        BiConsumer<Benefit, String> refDataRepoBiConsumer) {
+        return benefit -> benefit.getCaseLoaderKeyId()
+                            .forEach(caseLoaderKeyId -> refDataRepoBiConsumer.accept(benefit, caseLoaderKeyId));
     }
 }

@@ -72,8 +72,11 @@ public class RefDataFactoryTest {
         assertThat(repo.find(TRIBUNAL_TYPE, "1", TBT_CODE), is("P"));
         assertThat(repo.find(BAT_CODE_MAP, "001", BENEFIT_DESC), is("UC"));
         assertThat(repo.find(BAT_CODE_MAP, "002", BENEFIT_DESC), is("PIP"));
+        assertThat(repo.find(BAT_CODE_MAP, "003", BENEFIT_DESC), is("PIP"));
         assertThat(repo.find(BAT_CODE_MAP, "051", BENEFIT_DESC), is("ESA"));
         assertThat(repo.find(BAT_CODE_MAP, "037", BENEFIT_DESC), is("DLA"));
+        assertThat(repo.find(BAT_CODE_MAP, "070", BENEFIT_DESC), is("carersAllowance"));
+        assertThat(repo.find(BAT_CODE_MAP, "013", BENEFIT_DESC), is("attendanceAllowance"));
 
     }
 }
