@@ -56,4 +56,122 @@
       <BF_Date>2088-03-06T00:00:00+01:00</BF_Date>
     </Major_Status>
   </Appeal_Case>
+  <Appeal_Case>
+    <Extract_Time_UTC>2021-03-26T13:35:07+01:00</Extract_Time_UTC>
+    <Appeal_Case_Id>1599653534892253</Appeal_Case_Id>
+    <Appeal_Case_RefNum>SC068/17/00012</Appeal_Case_RefNum>
+    <Appeal_Case_Case_Code_Id>1127</Appeal_Case_Case_Code_Id> <!-- housing benefit code, case should get ignored-->
+    <Tribunal_Type_Id>2</Tribunal_Type_Id>
+    <Appeal_Case_Date_Appeal_Received>2088-07-04T13:35:07+01:00</Appeal_Case_Date_Appeal_Received>
+    <Appeal_Case_Date_of_Decision>2088-07-09T13:35:07+01:00</Appeal_Case_Date_of_Decision>
+    <Appeal_Case_Date_Appeal_Made>2088-07-03T13:35:07+01:00</Appeal_Case_Date_Appeal_Made>
+    <Appeal_Case_NINO>JA 00 00 00 A</Appeal_Case_NINO>
+    <Appeal_Case_Major_Id>600</Appeal_Case_Major_Id>
+    <Appeal_Case_BF_Date>2088-07-09T13:35:07+01:00</Appeal_Case_BF_Date>
+    <Originating_Office_Id>943</Originating_Office_Id>
+    <Admin_Team_Id>998</Admin_Team_Id>
+    <Additional_Ref>1599653534892253</Additional_Ref>
+    <Parties>
+      <PTTP_ID>4</PTTP_ID>
+      <Title>Mr</Title>
+      <INITIALS>XYZ</INITIALS>
+      <Surname>July_394044</Surname>
+      <Postcode>HA5 1ND</Postcode>
+      <Role_Id>4</Role_Id>
+      <Attending>Y</Attending>
+      <Disability_Needs>N</Disability_Needs>
+    </Parties>
+    <Hearing>
+      <Hearing_Id>123456</Hearing_Id>
+      <Date_Hearing_Notification>2017-05-24T00:00:00+01:00</Date_Hearing_Notification>
+      <Date_Outcome_Decision_Notification>2017-05-24T00:00:00+01:00</Date_Outcome_Decision_Notification>
+      <Session_Date>2017-05-24T00:00:00+01:00</Session_Date>
+      <Appeal_Time>2017-05-24T11:00:00+01:00</Appeal_Time>
+      <Venue_Id>68</Venue_Id>
+      <Outcome_Id>9</Outcome_Id>
+    </Hearing>
+    <Major_Status>
+      <Status_Id>24</Status_Id> <!-- LISTED FOR HEARING -->
+      <Date_Set>2088-03-08T07:33:56.07+00:00</Date_Set>
+      <BF_Date>2088-05-01T00:00:00+01:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>18</Status_Id> <!-- READY TO LIST -->
+      <Date_Set>2088-03-07T07:33:56.07+00:00</Date_Set>
+      <BF_Date>2088-05-01T00:00:00+01:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>3</Status_Id> <!-- AWAIT RESPONSE -->
+      <Date_Set>2088-03-06T08:33:56.07+00:00</Date_Set>
+      <BF_Date>2088-04-10T00:00:00+01:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>600</Status_Id> <!-- NEW DIRECT LODGEMENT REGISTRATION (COMPLIANT) -->
+      <Date_Set>2088-03-06T07:33:36.007+00:00</Date_Set>
+      <Date_Closed>2088-03-06T07:34:00+00:00</Date_Closed>
+      <BF_Date>2088-03-06T00:00:00+01:00</BF_Date>
+    </Major_Status>
+  </Appeal_Case>
+  <Appeal_Case>
+    <Extract_Time_UTC>2088-07-09T13:35:07+01:00</Extract_Time_UTC>
+    <Appeal_Case_Id>1599653534892253</Appeal_Case_Id>
+    <Appeal_Case_RefNum>SC1000/100/99999</Appeal_Case_RefNum> <!-- if case not found then ignore it -->
+    <Appeal_Case_Case_Code_Id>1707</Appeal_Case_Case_Code_Id>
+    <Tribunal_Type_Id>2</Tribunal_Type_Id>
+    <Appeal_Case_Date_Appeal_Received>2088-07-04T13:35:07+01:00</Appeal_Case_Date_Appeal_Received>
+    <Appeal_Case_Date_of_Decision>2088-07-09T13:35:07+01:00</Appeal_Case_Date_of_Decision>
+    <Appeal_Case_Date_Appeal_Made>2088-07-03T13:35:07+01:00</Appeal_Case_Date_Appeal_Made>
+    <Appeal_Case_NINO>JA 00 00 00 A</Appeal_Case_NINO>
+    <Appeal_Case_Major_Id>600</Appeal_Case_Major_Id>
+    <Appeal_Case_BF_Date>2088-07-09T13:35:07+01:00</Appeal_Case_BF_Date>
+    <Originating_Office_Id>943</Originating_Office_Id>
+    <Admin_Team_Id>998</Admin_Team_Id>
+    <Additional_Ref>1599653534892253</Additional_Ref>
+    <Parties>
+      <PTTP_ID>4</PTTP_ID>
+      <Title>Mr</Title>
+      <INITIALS>XYZ</INITIALS>
+      <Surname>July_394044</Surname>
+      <Postcode>HA5 1ND</Postcode>
+      <Role_Id>4</Role_Id>
+      <Attending>Y</Attending>
+      <Disability_Needs>N</Disability_Needs>
+    </Parties>
+    <Hearing>
+      <Hearing_Id>123456</Hearing_Id>
+      <Date_Hearing_Notification>2017-05-24T00:00:00+01:00</Date_Hearing_Notification>
+      <Date_Outcome_Decision_Notification>2017-05-24T00:00:00+01:00</Date_Outcome_Decision_Notification>
+      <Session_Date>2017-05-24T00:00:00+01:00</Session_Date>
+      <Appeal_Time>2017-05-24T11:00:00+01:00</Appeal_Time>
+      <Venue_Id>68</Venue_Id>
+      <Outcome_Id>9</Outcome_Id>
+    </Hearing>
+    <Major_Status>
+      <Status_Id>24</Status_Id> <!-- LISTED FOR HEARING -->
+      <Date_Set>2088-03-08T07:33:56.07+00:00</Date_Set>
+      <BF_Date>2088-05-01T00:00:00+01:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>18</Status_Id> <!-- READY TO LIST -->
+      <Date_Set>2088-03-07T07:33:56.07+00:00</Date_Set>
+      <BF_Date>2088-05-01T00:00:00+01:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>3</Status_Id> <!-- AWAIT RESPONSE -->
+      <Date_Set>2088-03-06T08:33:56.07+00:00</Date_Set>
+      <BF_Date>2088-04-10T00:00:00+01:00</BF_Date>
+    </Major_Status>
+    <Major_Status>
+      <Status_Id>600</Status_Id> <!-- NEW DIRECT LODGEMENT REGISTRATION (COMPLIANT) -->
+      <Date_Set>2088-03-06T07:33:36.007+00:00</Date_Set>
+      <Date_Closed>2088-03-06T07:34:00+00:00</Date_Closed>
+      <BF_Date>2088-03-06T00:00:00+01:00</BF_Date>
+    </Major_Status>
+  </Appeal_Case>
+  <Num_Records>
+    <NumberOfCases>2</NumberOfCases>
+  </Num_Records>
+  <Schema_Version>
+    <Version xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0.8</Version>
+  </Schema_Version>
 </Appeal_Cases>
