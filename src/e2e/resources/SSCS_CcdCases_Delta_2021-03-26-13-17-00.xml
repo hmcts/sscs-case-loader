@@ -75,7 +75,7 @@
       <PTTP_ID>4</PTTP_ID>
       <Title>Mr</Title>
       <INITIALS>XYZ</INITIALS>
-      <Surname>July_394044</Surname>
+      <Surname>April_10042021</Surname>
       <Postcode>HA5 1ND</Postcode>
       <Role_Id>4</Role_Id>
       <Attending>Y</Attending>
@@ -131,26 +131,12 @@
       <PTTP_ID>4</PTTP_ID>
       <Title>Mr</Title>
       <INITIALS>XYZ</INITIALS>
-      <Surname>July_394044</Surname>
+      <Surname>May_13052021</Surname>
       <Postcode>HA5 1ND</Postcode>
       <Role_Id>4</Role_Id>
       <Attending>Y</Attending>
       <Disability_Needs>N</Disability_Needs>
     </Parties>
-    <Hearing>
-      <Hearing_Id>123456</Hearing_Id>
-      <Date_Hearing_Notification>2017-05-24T00:00:00+01:00</Date_Hearing_Notification>
-      <Date_Outcome_Decision_Notification>2017-05-24T00:00:00+01:00</Date_Outcome_Decision_Notification>
-      <Session_Date>2017-05-24T00:00:00+01:00</Session_Date>
-      <Appeal_Time>2017-05-24T11:00:00+01:00</Appeal_Time>
-      <Venue_Id>68</Venue_Id>
-      <Outcome_Id>9</Outcome_Id>
-    </Hearing>
-    <Major_Status>
-      <Status_Id>24</Status_Id> <!-- LISTED FOR HEARING -->
-      <Date_Set>2088-03-08T07:33:56.07+00:00</Date_Set>
-      <BF_Date>2088-05-01T00:00:00+01:00</BF_Date>
-    </Major_Status>
     <Major_Status>
       <Status_Id>18</Status_Id> <!-- READY TO LIST -->
       <Date_Set>2088-03-07T07:33:56.07+00:00</Date_Set>
@@ -169,7 +155,7 @@
     </Major_Status>
   </Appeal_Case>
   <Num_Records>
-    <NumberOfCases>2</NumberOfCases>
+    <NumberOfCases>3</NumberOfCases>
   </Num_Records>
   <Schema_Version>
     <Version xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">0.8</Version>
