@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <suppress>
-    <notes><![CDATA[
-   file name: spring-security-crypto-5.1.3.RELEASE.jar
-   ]]></notes>
-    <gav regex="true">^org\.springframework\.security:spring-.*:.*$</gav>
-    <cve>CVE-2018-1258</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[
-            file name: jruby-stdlib-9.2.7.0.jar: jquery.js
-            JRuby ships a pretty old version of jquery in some dependency for Rdoc.
-            We don't generate any rdoc, so we should be fine.
-        ]]>
-    </notes>
-    <cve>CVE-2015-9251</cve>
-    <cve>CVE-2019-11358</cve>
-  </suppress>
-  <suppress>
-    <notes><![CDATA[No fix available]]></notes>
-    <gav regex="true">^org\.apache\.sling:org\.apache\.sling\.javax\.activation:0\.1\.0$</gav>
-    <cve>CVE-2016-5394</cve>
-    <cve>CVE-2016-6798</cve>
-  </suppress>
-  <suppress until="2021-06-01">
+  <suppress until="2021-07-01">
     <notes><![CDATA[
    file name: batik-i18n-1.14.jar : CVE-2020-7791 is false positive, it's actually a C# CVE.
    ]]></notes>
