@@ -206,6 +206,26 @@ dependencyManagement {
       entry 'spring-security-crypto'
     }
 
+    //CVE-2021-22118
+    dependencySet(group: 'org.springframework', version: '5.2.15.RELEASE') {
+      entry 'spring-aop'
+      entry 'spring-aspects'
+      entry 'spring-beans'
+      entry 'spring-context'
+      entry 'spring-context-support'
+      entry 'spring-core'
+      entry 'spring-expression'
+      entry 'spring-jcl'
+      entry 'spring-jdbc'
+      entry 'spring-jms'
+      entry 'spring-messaging'
+      entry 'spring-orm'
+      entry 'spring-test'
+      entry 'spring-tx'
+      entry 'spring-web'
+      entry 'spring-webmvc'
+    }
+
     //CVE-2021-27807
     dependencySet(group: 'org.apache.pdfbox', version: '2.0.23') {
       entry 'pdfbox'
