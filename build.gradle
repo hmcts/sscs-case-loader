@@ -8,7 +8,7 @@ plugins {
   id 'com.github.ben-manes.versions' version '0.39.0'
   id 'net.ltgt.apt' version '0.21'
   id 'org.sonarqube' version '3.2.0'
-  id 'org.owasp.dependencycheck' version '6.1.6'
+  id 'org.owasp.dependencycheck' version '6.2.1'
   id "com.gorylenko.gradle-git-properties" version "2.3.1"
 }
 
@@ -204,6 +204,32 @@ dependencyManagement {
     //CVE-2021-22112
     dependencySet(group: 'org.springframework.security', version: '5.5.0') {
       entry 'spring-security-crypto'
+    }
+
+    //CVE-2021-22118
+    dependencySet(group: 'org.springframework', version: '5.2.15.RELEASE') {
+      entry 'spring-aop'
+      entry 'spring-aspects'
+      entry 'spring-beans'
+      entry 'spring-context'
+      entry 'spring-context-support'
+      entry 'spring-core'
+      entry 'spring-expression'
+      entry 'spring-jcl'
+      entry 'spring-jdbc'
+      entry 'spring-jms'
+      entry 'spring-messaging'
+      entry 'spring-orm'
+      entry 'spring-test'
+      entry 'spring-tx'
+      entry 'spring-web'
+      entry 'spring-webmvc'
+    }
+
+    //CVE-2021-27568
+    dependencySet(group: 'net.minidev', version: '2.4.7') {
+      entry 'json-smart'
+      entry 'accessors-smart'
     }
 
     //CVE-2021-27807
