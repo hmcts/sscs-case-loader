@@ -226,6 +226,12 @@ dependencyManagement {
       entry 'spring-webmvc'
     }
 
+    //CVE-2021-27568
+    dependencySet(group: 'net.minidev', version: '2.4.7') {
+      entry 'json-smart'
+      entry 'accessors-smart'
+    }
+
     //CVE-2021-27807
     dependencySet(group: 'org.apache.pdfbox', version: '2.0.23') {
       entry 'pdfbox'
