@@ -72,7 +72,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         caseDataEventBuilder = new CaseDataEventBuilder(ccdService, idamService, postponedEventInferredFromDelta,
-            postponedEventInferredFromCcd, ignoreHearingPostponedBeforeDateProperty);
+            postponedEventInferredFromCcd, ignoreHearingPostponedBeforeDateProperty, true);
     }
 
     @Test
