@@ -738,7 +738,8 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
                     responseReceivedEventDateTime.toString()),
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
                     hearingBookedEventDateTime.toString()),
-                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(), hearingPostponedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    hearingPostponedEventDateTime.toString()),
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
             hearingBookedEventDateTime2.toString())
             ))
