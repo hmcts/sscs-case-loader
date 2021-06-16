@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -88,7 +87,8 @@ class CaseDataEventBuilder {
     }
 
     private List<Event> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
-        List<MajorStatus> majorStatus18 = appealCase.getMajorStatus().stream().filter(m -> "18".equals(m.getStatusId())).collect(Collectors.toList());
+        List<MajorStatus> majorStatus18 = appealCase.getMajorStatus().stream()
+            .filter(m -> "18".equals(m.getStatusId())).collect(Collectors.toList());
         MajorStatus latestMajorStatus;
         if (majorStatus18 == null || majorStatus18.isEmpty()) {
             latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
