@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toSet;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -53,37 +52,10 @@ public class CcdCasesSender {
 
             addMissingExistingHearings(gapsCaseData, existingCcdCaseData);
 
-            addMissingExistingPostponements(gapsCaseData, existingCcdCaseData);
-
             checkNewEvidenceReceived(gapsCaseData, existingCcdCase, idamTokens);
 
             ifThereIsChangesThenUpdateCase(gapsCaseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
-    }
-
-    private void addMissingExistingPostponements(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
-        if (existingCcdCaseData.getEvents() != null) {
-            List<Event> ccdEvents = existingCcdCaseData.getEvents();
-            List<Event> gapsEvents = gapsCaseData.getEvents();
-
-            List<Event> updatedGapsEvents = new ArrayList<>();
-
-            //insert any missing postponement events into gaps events and sort
-            for (Event ccdEvent : ccdEvents) {
-                if (ccdEvent.getValue().getEventType().equals(POSTPONED)) {
-                    for (Event gapsEvent : gapsEvents) {
-                        if (gapsEvent.getValue().getEventType().equals(POSTPONED) &&
-                            !gapsEvent.getValue().getDate().equals(ccdEvent.getValue().getDate())) {
-                            updatedGapsEvents.add(ccdEvent);
-                        }
-                    }
-                }
-            }
-            updatedGapsEvents.addAll(gapsEvents);
-            Collections.reverse(updatedGapsEvents);
-            gapsCaseData.setEvents(updatedGapsEvents);
-        }
-
     }
 
     private void ifThereIsChangesThenUpdateCase(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData,
