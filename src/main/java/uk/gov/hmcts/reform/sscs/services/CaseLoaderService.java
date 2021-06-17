@@ -148,7 +148,7 @@ public class CaseLoaderService {
             log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
             processCasesFromDelta(cases);
             fileMetrics.setEndTime();
-        } catch(Exception e) {
+        } catch (Exception e) {
             sftpSshService.move(file, false);
             log.error(logPrefix + " error while processing the file:  {} "
                 + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
