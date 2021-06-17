@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
+
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -87,7 +89,7 @@ class CaseDataEventBuilder {
     }
 
     private List<Event> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
-        List<MajorStatus> majorStatus18 = appealCase.getMajorStatus().stream()
+        List<MajorStatus> majorStatus18 = emptyIfNull(appealCase.getMajorStatus()).stream()
             .filter(m -> "18".equals(m.getStatusId())).collect(Collectors.toList());
         MajorStatus latestMajorStatus;
         if (majorStatus18 == null || majorStatus18.isEmpty()) {
