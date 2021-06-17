@@ -94,7 +94,7 @@ public class CaseLoaderService {
     }
 
     private Gaps2File loadRefFileInMem(Gaps2File file) {
-        try(InputStream inputStream = sftpSshService.readExtractFile(file)) {
+        try (InputStream inputStream = sftpSshService.readExtractFile(file)) {
             refDataFactory.extract(inputStream);
         } catch (IOException | XMLStreamException e) {
             sftpSshService.closeChannelAdapter();
