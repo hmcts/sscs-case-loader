@@ -371,7 +371,6 @@ public class UpdateCcdAppellantDataTest {
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail("");
         String deNormalisedNino = "AB 55 44 66 B";
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(deNormalisedNino);
-        existingCaseDetails.getData().setGeneratedNino(deNormalisedNino);
 
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
@@ -410,7 +409,6 @@ public class UpdateCcdAppellantDataTest {
         existingCaseDetails.getData().getAppeal().getAppellant().getName().setLastName("");
         existingCaseDetails.getData().getAppeal().getAppellant().getContact().setEmail("");
         existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().setNino(normalisedNino);
-        existingCaseDetails.getData().setGeneratedNino(normalisedNino);
 
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
