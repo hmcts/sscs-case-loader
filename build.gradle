@@ -202,7 +202,7 @@ dependencyManagement {
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
-    dependencySet(group: 'org.springframework.security', version: '5.5.0') {
+    dependencySet(group: 'org.springframework.security', version: '5.5.1') {
       entry 'spring-security-crypto'
     }
 
@@ -300,7 +300,7 @@ dependencies {
   e2eCompile 'org.projectlombok:lombok:1.18.18'
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.26.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.27.0'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.26.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
 
