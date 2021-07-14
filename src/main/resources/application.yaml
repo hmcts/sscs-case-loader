@@ -83,6 +83,7 @@ sscs.case.loader:
   ignoreHearingPostponedBeforeDate: ${IGNORE_HEARING_POSTPONED_BEFORE_DATE:2020-12-07}
   shutdown.delay.time: 7
   processMinorEvents: ${PROCESS_MINOR_EVENTS:true}
+  useExistingDate: ${USE_EXISTING_DATE:true}
 
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}

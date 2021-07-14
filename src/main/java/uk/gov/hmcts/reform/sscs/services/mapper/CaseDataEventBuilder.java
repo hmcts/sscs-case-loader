@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MinorStatus;
 
+@Slf4j
 @Service
 @Configuration
 class CaseDataEventBuilder {
@@ -41,6 +43,7 @@ class CaseDataEventBuilder {
     private final List<String> alreadyExistsEventList = Arrays.asList(GapsEvent.RESPONSE_RECEIVED.getType(),
         GapsEvent.APPEAL_RECEIVED.getType());
     private final boolean processMinorEvents;
+    private final boolean useExistingDate;
 
     @Autowired
     CaseDataEventBuilder(
@@ -49,18 +52,21 @@ class CaseDataEventBuilder {
             postponedEventInferredFromDelta,
         PostponedEventService<Hearing> postponedEventInferredFromCcd,
         @Value("${sscs.case.loader.ignoreHearingPostponedBeforeDate}") String ignoreDate,
-        @Value("${sscs.case.loader.processMinorEvents}") boolean processMinorEvents) {
+        @Value("${sscs.case.loader.processMinorEvents}") boolean processMinorEvents,
+        @Value("${sscs.case.loader.useExistingDate}") boolean useExistingDate) {
         this.ccdService = ccdService;
         this.idamService = idamService;
         this.postponedEventInferredFromDelta = postponedEventInferredFromDelta;
         this.postponedEventInferredFromCcd = postponedEventInferredFromCcd;
         this.ignoreHearingPostponedBeforeDateProperty = LocalDate.parse(ignoreDate);
         this.processMinorEvents = processMinorEvents;
+        this.useExistingDate = useExistingDate;
     }
 
     List<Event> buildPostponedEvent(AppealCase appealCase) {
         List<Event> events = new ArrayList<>();
         events.addAll(buildPostponedEventsFromMajorStatus(appealCase));
+
         if (processMinorEvents) {
             events.addAll(buildPostponedEventsFromMinorStatus(appealCase));
         }
@@ -89,10 +95,10 @@ class CaseDataEventBuilder {
     }
 
     private List<Event> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
-        List<MajorStatus> majorStatus18 = emptyIfNull(appealCase.getMajorStatus()).stream()
+        List<MajorStatus> majorStatus18 = emptyIfNull(appealCase.getMajorStatus()).stream().sorted(Comparator.comparing(MajorStatus::getDateSet))
             .filter(m -> "18".equals(m.getStatusId())).collect(Collectors.toList());
         MajorStatus latestMajorStatus;
-        if (majorStatus18 == null || majorStatus18.isEmpty()) {
+        if (!useExistingDate || majorStatus18 == null || majorStatus18.isEmpty()) {
             latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
         } else {
             latestMajorStatus = getLatestMajorStatusFromAppealCase(majorStatus18);
