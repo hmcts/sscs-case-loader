@@ -95,7 +95,8 @@ class CaseDataEventBuilder {
     }
 
     private List<Event> buildPostponedEventsFromMajorStatus(AppealCase appealCase) {
-        List<MajorStatus> majorStatus18 = emptyIfNull(appealCase.getMajorStatus()).stream().sorted(Comparator.comparing(MajorStatus::getDateSet))
+        List<MajorStatus> majorStatus18 =
+            emptyIfNull(appealCase.getMajorStatus()).stream().sorted(Comparator.comparing(MajorStatus::getDateSet))
             .filter(m -> "18".equals(m.getStatusId())).collect(Collectors.toList());
         MajorStatus latestMajorStatus;
         if (!useExistingDate || majorStatus18 == null || majorStatus18.isEmpty()) {
