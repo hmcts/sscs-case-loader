@@ -101,7 +101,8 @@ class CaseDataEventBuilder {
             List<MajorStatus> validMajorStatus18 =  majorStatus18.stream()
                 .filter(m -> areConditionsFromMajorStatusToCreatePostponedMet(appealCase, m))
                 .collect(Collectors.toList());
-            return validMajorStatus18.stream().map(m -> buildNewPostponedEvent(m.getDateSet())).collect(Collectors.toList());
+            return validMajorStatus18.stream()
+                .map(m -> buildNewPostponedEvent(m.getDateSet())).collect(Collectors.toList());
         }
 
         if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, latestMajorStatus)) {
@@ -128,10 +129,11 @@ class CaseDataEventBuilder {
         }
     }
 
-    protected boolean isAfterFirstHearingDate(AppealCase appealCase, LocalDate majorStatusDate){
+    protected boolean isAfterFirstHearingDate(AppealCase appealCase, LocalDate majorStatusDate) {
         List<MajorStatus> majorStatusList = appealCase.getMajorStatus();
 
-        Optional<MajorStatus> earliestHearing = majorStatusList.stream().filter(m -> m.getStatusId().equals("24")).sorted().findFirst();
+        Optional<MajorStatus> earliestHearing = majorStatusList.stream()
+            .filter(m -> m.getStatusId().equals("24")).sorted().findFirst();
         if (earliestHearing.isPresent()) {
             return majorStatusDate.isAfter(earliestHearing.get().getDateSet().toLocalDate());
         } else {
