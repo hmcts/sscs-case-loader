@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.sscs.services;
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.hasAppellantIdentify;
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.normaliseNino;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -82,7 +84,9 @@ public class CaseLoaderService {
                 logFileMetrics();
                 metrics.merge(fileMetrics);
                 sftpSshService.move(file, true);
-                sftpSshService.move(latestRef, true);
+                if (latestRef != null) {
+                    sftpSshService.move(latestRef, true);
+                }
             } else {
                 latestRef = loadRefFileInMem(file);
             }
@@ -90,13 +94,13 @@ public class CaseLoaderService {
     }
 
     private Gaps2File loadRefFileInMem(Gaps2File file) {
-        try {
-            refDataFactory.extract(sftpSshService.readExtractFile(file));
-            return file;
-        } catch (XMLStreamException e) {
+        try (InputStream inputStream = sftpSshService.readExtractFile(file)) {
+            refDataFactory.extract(inputStream);
+        } catch (IOException | XMLStreamException e) {
             sftpSshService.closeChannelAdapter();
             throw new TransformException(logPrefixWithFile + " Error processing reference file", e);
         }
+        return file;
     }
 
     private void throwExceptionIfRefFileIsNotLoaded(Gaps2File latestRef, Gaps2File file) {
@@ -137,9 +141,8 @@ public class CaseLoaderService {
 
     private void processDelta(Gaps2File file) {
         startFileMetrics(file);
-        List<SscsCaseData> cases;
-        try {
-            cases = transformService.transform(sftpSshService.readExtractFile(file));
+        try (InputStream inputStream = sftpSshService.readExtractFile(file)) {
+            List<SscsCaseData> cases = transformService.transform(inputStream);
             fileMetrics.setRecordCount(cases.size());
 
             log.info(logPrefixWithFile + " file transformed to {} Cases successfully", cases.size());
@@ -148,11 +151,10 @@ public class CaseLoaderService {
         } catch (Exception e) {
             sftpSshService.move(file, false);
             log.error(logPrefix + " error while processing the file:  {} "
-                    + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-                    + " due to exception: ", file.getName(), e);
+                + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                + " due to exception: ", file.getName(), e);
             throw new ProcessDeltaException(logPrefixWithFile + " error while processing the file: "
-                    + file.getName(), e);
-
+                + file.getName(), e);
         }
     }
 
