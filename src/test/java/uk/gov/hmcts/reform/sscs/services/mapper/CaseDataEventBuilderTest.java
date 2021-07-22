@@ -719,15 +719,21 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
     }
 
-
+    /*
+    New way of returning multiple postponements, we get them from 18 status events which is ready to list
+    But ignore any ready to list before the earliest hearing event as they couldn't have been postponements
+     */
     @Test
-    public void shouldBuildPostponedEventWithLatestDateFromAn18() throws IOException {
+    public void shouldBuildMultiplePostponedEventButIgnoreFirst18() throws IOException {
+        caseDataEventBuilder.useExistingDate = false;
         ZonedDateTime appealReceivedEventDateTime = getEventDateTime(10);
-        ZonedDateTime appealReceivedEventDateTime2 = getEventDateTime(9);
         ZonedDateTime responseReceivedEventDateTime = getEventDateTime(8);
         ZonedDateTime hearingBookedEventDateTime = getEventDateTime(7);
         ZonedDateTime hearingPostponedEventDateTime = getEventDateTime(6);
         ZonedDateTime hearingBookedEventDateTime2 = getEventDateTime(5);
+        ZonedDateTime hearingPostponedEventDateTime2 = getEventDateTime(4);
+        ZonedDateTime hearingBookedEventDateTime3 = getEventDateTime(3);
+        ZonedDateTime hearingPostponedEventDateTime3 = getEventDateTime(2);
         AppealCase appealCase = AppealCase.builder()
             .appealCaseCaseCodeId("1")
             .appealCaseRefNum(APPEAL_CASE_REF_NUM)
@@ -741,7 +747,13 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
                     hearingPostponedEventDateTime.toString()),
                 super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
-            hearingBookedEventDateTime2.toString())
+                    hearingBookedEventDateTime2.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    hearingPostponedEventDateTime2.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
+                    hearingBookedEventDateTime3.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    hearingPostponedEventDateTime3.toString())
             ))
             .postponementRequests(Collections.singletonList(
                 new PostponementRequests(
@@ -756,7 +768,9 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
             anyList())).thenReturn(true);
 
         List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        assertTrue(events.size() == 3);
         assertEquals(hearingPostponedEventDateTime.toLocalDateTime().toString(), events.get(0).getValue().getDate());
+        assertEquals(hearingPostponedEventDateTime2.toLocalDateTime().toString(), events.get(1).getValue().getDate());
     }
 
     private ZonedDateTime getEventDateTime(int diffDays) {

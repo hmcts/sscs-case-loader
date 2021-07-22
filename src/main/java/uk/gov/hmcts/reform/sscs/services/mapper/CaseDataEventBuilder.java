@@ -5,11 +5,7 @@ import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +39,7 @@ class CaseDataEventBuilder {
     private final List<String> alreadyExistsEventList = Arrays.asList(GapsEvent.RESPONSE_RECEIVED.getType(),
         GapsEvent.APPEAL_RECEIVED.getType());
     private final boolean processMinorEvents;
-    private final boolean useExistingDate;
+    protected boolean useExistingDate;
 
     @Autowired
     CaseDataEventBuilder(
@@ -99,10 +95,13 @@ class CaseDataEventBuilder {
             emptyIfNull(appealCase.getMajorStatus()).stream().sorted(Comparator.comparing(MajorStatus::getDateSet))
             .filter(m -> "18".equals(m.getStatusId())).collect(Collectors.toList());
         MajorStatus latestMajorStatus;
-        if (!useExistingDate || majorStatus18 == null || majorStatus18.isEmpty()) {
+        if (useExistingDate || majorStatus18 == null || majorStatus18.isEmpty()) {
             latestMajorStatus = getLatestMajorStatusFromAppealCase(appealCase.getMajorStatus());
         } else {
-            latestMajorStatus = getLatestMajorStatusFromAppealCase(majorStatus18);
+            List<MajorStatus> validMajorStatus18 =  majorStatus18.stream()
+                .filter(m -> areConditionsFromMajorStatusToCreatePostponedMet(appealCase, m))
+                .collect(Collectors.toList());
+            return validMajorStatus18.stream().map(m -> buildNewPostponedEvent(m.getDateSet())).collect(Collectors.toList());
         }
 
         if (areConditionsFromMajorStatusToCreatePostponedMet(appealCase, latestMajorStatus)) {
@@ -117,15 +116,26 @@ class CaseDataEventBuilder {
 
     private boolean areConditionsFromMajorStatusToCreatePostponedMet(AppealCase appealCase,
                                                                      MajorStatus latestMajorStatus) {
-
         if (ignoreHearingPostponedBeforeDateProperty.isBefore(latestMajorStatus.getDateSet().toLocalDate())) {
             return isPostponementGranted(appealCase)
                 && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
-                retrieveHearingsFromCaseInCcd(appealCase));
+                retrieveHearingsFromCaseInCcd(appealCase))
+                && isAfterFirstHearingDate(appealCase, latestMajorStatus.getDateSet().toLocalDate());
         } else {
             return isResponseReceivedTheAppealCurrentStatus(latestMajorStatus) && isPostponementGranted(appealCase)
                 && postponedEventInferredFromCcd.matchToHearingId(appealCase.getPostponementRequests(),
                 retrieveHearingsFromCaseInCcd(appealCase));
+        }
+    }
+
+    protected boolean isAfterFirstHearingDate(AppealCase appealCase, LocalDate majorStatusDate){
+        List<MajorStatus> majorStatusList = appealCase.getMajorStatus();
+
+        Optional<MajorStatus> earliestHearing = majorStatusList.stream().filter(m -> m.getStatusId().equals("24")).sorted().findFirst();
+        if (earliestHearing.isPresent()) {
+            return majorStatusDate.isAfter(earliestHearing.get().getDateSet().toLocalDate());
+        } else {
+            return false;
         }
     }
 
