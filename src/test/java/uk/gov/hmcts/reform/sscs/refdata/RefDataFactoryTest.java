@@ -79,6 +79,9 @@ public class RefDataFactoryTest {
         assertThat(repo.find(BAT_CODE_MAP, "013", BENEFIT_DESC), is("attendanceAllowance"));
         assertThat(repo.find(BAT_CODE_MAP, "094", BENEFIT_DESC), is("bereavementBenefit"));
         assertThat(repo.find(BAT_CODE_MAP, "067", BENEFIT_DESC), is("industrialInjuriesDisablement"));
+        assertThat(repo.find(BAT_CODE_MAP, "061", BENEFIT_DESC), is("incomeSupport"));
+        assertThat(repo.find(BAT_CODE_MAP, "088", BENEFIT_DESC), is("socialFund"));
+        assertThat(repo.find(BAT_CODE_MAP, "089", BENEFIT_DESC), is("socialFund"));
 
     }
 }
