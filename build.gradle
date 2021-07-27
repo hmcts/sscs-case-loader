@@ -240,6 +240,10 @@ dependencyManagement {
      dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
       entry 'batik-all'
     }
+
+    dependencySet(group: 'org.apache.commons', version: '1.21') {
+      entry 'commons-compress'
+    }
   }
 }
 
