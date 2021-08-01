@@ -76,6 +76,12 @@ task functionalPostDeploy(type: Test) {
   exclude "uk/gov/hmcts/reform/sscs/functional/predeploy/**"
 }
 
+task fortifyScan(type: JavaExec)  {
+  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+  classpath += sourceSets.test.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}
+
 pmd {
   toolVersion = "6.5.0"
   ignoreFailures = true
@@ -307,6 +313,7 @@ dependencies {
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.27.0'
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.27.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
+  testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 

@@ -88,6 +88,7 @@ sscs.case.loader:
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
   uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+  uk.gov.hmcts.fortifyclient: INFO
 
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
