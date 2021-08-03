@@ -72,7 +72,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
         SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         caseDataEventBuilder = new CaseDataEventBuilder(ccdService, idamService, postponedEventInferredFromDelta,
-            postponedEventInferredFromCcd, ignoreHearingPostponedBeforeDateProperty);
+            postponedEventInferredFromCcd, ignoreHearingPostponedBeforeDateProperty, true, true);
     }
 
     @Test
@@ -717,6 +717,60 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
         assertEquals(responseReceivedEventDateTime.toLocalDateTime().toString(), events.get(1).getValue().getDate());
         assertEquals(hearingBookedEventDateTime.toLocalDateTime().toString(), events.get(2).getValue().getDate());
 
+    }
+
+    /*
+    New way of returning multiple postponements, we get them from 18 status events which is ready to list
+    But ignore any ready to list before the earliest hearing event as they couldn't have been postponements
+     */
+    @Test
+    public void shouldBuildMultiplePostponedEventButIgnoreFirst18() throws IOException {
+        caseDataEventBuilder.useExistingDate = false;
+        ZonedDateTime appealReceivedEventDateTime = getEventDateTime(10);
+        ZonedDateTime responseReceivedEventDateTime = getEventDateTime(8);
+        ZonedDateTime hearingBookedEventDateTime = getEventDateTime(7);
+        ZonedDateTime hearingPostponedEventDateTime = getEventDateTime(6);
+        ZonedDateTime hearingBookedEventDateTime2 = getEventDateTime(5);
+        ZonedDateTime hearingPostponedEventDateTime2 = getEventDateTime(4);
+        ZonedDateTime hearingBookedEventDateTime3 = getEventDateTime(3);
+        ZonedDateTime hearingPostponedEventDateTime3 = getEventDateTime(2);
+        AppealCase appealCase = AppealCase.builder()
+            .appealCaseCaseCodeId("1")
+            .appealCaseRefNum(APPEAL_CASE_REF_NUM)
+            .majorStatus(Arrays.asList(
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.APPEAL_RECEIVED.getStatus(),
+                    appealReceivedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    responseReceivedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
+                    hearingBookedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    hearingPostponedEventDateTime.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
+                    hearingBookedEventDateTime2.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    hearingPostponedEventDateTime2.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.HEARING_BOOKED.getStatus(),
+                    hearingBookedEventDateTime3.toString()),
+                super.buildMajorStatusGivenStatusAndDate(GapsEvent.RESPONSE_RECEIVED.getStatus(),
+                    hearingPostponedEventDateTime3.toString())
+            ))
+            .postponementRequests(Collections.singletonList(
+                new PostponementRequests(
+                    "Y", null, null, null)
+            ))
+            .build();
+
+        when(ccdService.findCaseBy(anyString(), anyString(), any(IdamTokens.class)))
+            .thenReturn(Collections
+                .singletonList(CaseDetailsUtils.getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON)));
+        when(postponedEventInferredFromCcd.matchToHearingId(eq(appealCase.getPostponementRequests()),
+            anyList())).thenReturn(true);
+
+        List<Event> events = caseDataEventBuilder.buildPostponedEvent(appealCase);
+        assertTrue(events.size() == 3);
+        assertEquals(hearingPostponedEventDateTime.toLocalDateTime().toString(), events.get(0).getValue().getDate());
+        assertEquals(hearingPostponedEventDateTime2.toLocalDateTime().toString(), events.get(1).getValue().getDate());
     }
 
     private ZonedDateTime getEventDateTime(int diffDays) {

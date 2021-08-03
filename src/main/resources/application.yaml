@@ -82,10 +82,13 @@ sscs.case.loader:
   ignoreCasesBeforeDate: ${IGNORE_CASES_BEFORE_DATE:1017-07-01}
   ignoreHearingPostponedBeforeDate: ${IGNORE_HEARING_POSTPONED_BEFORE_DATE:2020-12-07}
   shutdown.delay.time: 7
+  processMinorEvents: ${PROCESS_MINOR_EVENTS:true}
+  useExistingDate: ${USE_EXISTING_DATE:true}
 
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
   uk.gov.hmcts.reform.sscs: ${LOG_LEVEL_SSCS:INFO}
+  uk.gov.hmcts.fortifyclient: INFO
 
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
