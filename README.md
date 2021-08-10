@@ -123,7 +123,7 @@ docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docke
 
 * To login into a container which is currently running on your system and view transferred files
 
-Place file to be transferred under `docker/sftp/data/incoming` then:
+Place file to be transferred under `docker/sftp/data/incoming` and make sure `docker/sftp/data/incoming/processed` folder should contain atleast one file then:
 
 ```
 To connect into sftp container from sscs-case-loader container use:
@@ -153,7 +153,7 @@ SSCS_Extract_Reference_2017-06-30-09-01-31.xml
 ```
 ## Running e2e locally
 
-* Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project. 
+* Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project.
 Please follow the instructions given in the README document.
 
 * Run the application using the "local" profile:
@@ -186,7 +186,7 @@ http://localhost:3451
 1. Make sure you bring up local SFTP and run sscs-docker dependencies
 2. Run
 
-``` 
+```
  SPRING_PROFILES_ACTIVE=local ./gradlew functionalPreDeploy
  SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
  SPRING_PROFILES_ACTIVE=local ./gradlew functionalPostDeploy
