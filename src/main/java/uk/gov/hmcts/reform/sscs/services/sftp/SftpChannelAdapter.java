@@ -12,14 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.config.properties.SftpSshProperties;
 import uk.gov.hmcts.reform.sscs.exceptions.SftpCustomException;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
 
+@Slf4j
 @Component
 public class SftpChannelAdapter {
 
@@ -158,13 +159,18 @@ public class SftpChannelAdapter {
         try {
             channel = openConnectedChannel();
             ls = channel.ls(String.format("%s*.xml", path));
-            return ls.stream().map(e -> new Gaps2File(e.getFilename(), e.getAttrs().getSize()))
-                    .sorted()
-                    .collect(Collectors.toList());
+            List<Gaps2File> files = ls.stream().map(e -> new Gaps2File(e.getFilename(), e.getAttrs().getSize()))
+                .sorted()
+                .collect(Collectors.toList());
+            log.info("No of files {} in directory {}", files.size(), path);
+            if (PROCESSED_DIR.equals(path) && files.isEmpty()) {
+                throw new SftpCustomException(path + " directory should not be empty");
+            }
+            return files;
         } catch (SftpException e) {
             throw new SftpCustomException("Failed reading incoming directory", e);
         } catch (Exception e) {
-            return Lists.emptyList();
+            throw new SftpCustomException(String.format("Exception on %s directory", path), e);
         } finally {
             close();
         }
