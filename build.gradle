@@ -250,6 +250,9 @@ dependencyManagement {
     dependencySet(group: 'org.apache.commons', version: '1.21') {
       entry 'commons-compress'
     }
+
+    //CVE-2021-28170
+    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
   }
 }
 
