@@ -216,4 +216,42 @@ public class CaseLoaderServiceTest {
             any(IdamTokens.class));
         verifyNoMoreInteractions(ccdService);
     }
+
+    @Test
+    public void givenCaseReferenceFoundVoidState_shouldNotProcess() {
+        final SscsCaseDetails caseDetails1 = SscsCaseDetails.builder().data(caseData).id(123L).build();
+        Appeal appeal = Appeal.builder()
+            .benefitType(BenefitType.builder()
+                .code("PIP")
+                .build())
+            .build();
+        SscsCaseData caseDataScNumber = SscsCaseData.builder()
+            .caseReference("SC001/19/00365123")
+            .appeal(appeal)
+            .build();
+
+        List<Event> events = new ArrayList<>();
+        events.add(Event.builder().value(EventDetails.builder().type(SENT_TO_DWP.getCcdType()).build()).build());
+
+        SscsCaseData updatedCaseData = SscsCaseData.builder()
+            .events(events)
+            .caseReference("caseRef")
+            .appeal(appeal)
+            .build();
+
+        List<SscsCaseData> cases = Arrays.asList(caseDataScNumber, updatedCaseData);
+        given(transformService.transform(inputStream)).willReturn(cases);
+
+        given(idamService.getIdamTokens()).willReturn(IdamTokens.builder().build());
+
+        given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
+            .willReturn(Lists.list(caseDetails1));
+
+        given(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(updatedCaseData), any(IdamTokens.class)))
+            .willReturn(singletonList(SscsCaseDetails.builder().data(caseData).id(123L).state("voidState").build()));
+
+        caseLoaderService.process();
+
+        verifyNoMoreInteractions(updateCcdCaseService);
+    }
 }
