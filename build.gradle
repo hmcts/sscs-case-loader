@@ -313,7 +313,7 @@ dependencies {
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
   testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.27.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
   testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
