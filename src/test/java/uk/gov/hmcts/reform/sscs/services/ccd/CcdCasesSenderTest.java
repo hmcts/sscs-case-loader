@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -296,108 +295,6 @@ public class CcdCasesSenderTest {
                     .build())
                 .build()))
             .build();
-    }
-
-    @Test
-    public void shouldUpdateCcdTwiceGivenFileWithFurtherEvidence() throws Exception {
-        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-        SscsCaseData caseData = SscsCaseData.builder()
-            .evidence(buildEvidence("2017-05-24"))
-            .events(Collections.singletonList(Event.builder()
-                .value(EventDetails.builder()
-                    .type(APPEAL_RECEIVED.getType())
-                    .date("2017-05-23T13:18:15.073")
-                    .description("Appeal received")
-                    .build())
-                .build()))
-            .appeal(buildAppeal())
-            .build();
-
-        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_ONE_EVIDENCE_AND_ONE_EVENT_JSON);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("evidenceReceived"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        Evidence evidence = caseDataArgumentCaptor.getValue().getEvidence();
-
-        assertThat(evidence, not(equalTo(null)));
-        assertThat(evidence.getDocuments().size(), equalTo(2));
-
-    }
-
-    @Test
-    public void shouldUpdateEvidenceWhenThereIsNoExistingEvidence() throws Exception {
-        final ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-        final SscsCaseData caseData = SscsCaseData.builder()
-            .evidence(buildEvidence("2017-05-24"))
-            .events(Collections.singletonList(Event.builder()
-                .value(EventDetails.builder()
-                    .type(APPEAL_RECEIVED.getType())
-                    .date("2017-05-23T13:18:15.073")
-                    .description("Appeal received")
-                    .build())
-                .build()))
-            .appeal(buildAppeal())
-            .build();
-
-        final SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
-        existingCaseDetails.getData().setEvidence(null);
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("evidenceReceived"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verify(updateCcdCaseService, times(1))
-            .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
-                eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verifyNoMoreInteractions(updateCcdCaseService);
-        final Evidence evidence = caseDataArgumentCaptor.getValue().getEvidence();
-        assertThat(evidence, not(equalTo(null)));
-        assertThat(evidence.getDocuments().size(), equalTo(caseData.getEvidence().getDocuments().size()));
-    }
-
-    @Test
-    public void shouldUpdateEvidenceWhenThereIsDifferentExistingEvidence() throws Exception {
-        final ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
-        final SscsCaseData caseData = SscsCaseData.builder()
-                .evidence(buildEvidence("2017-05-24"))
-                .events(Collections.singletonList(Event.builder()
-                        .value(EventDetails.builder()
-                                .type(APPEAL_RECEIVED.getType())
-                                .date("2017-05-23T13:18:15.073")
-                                .description("Appeal received")
-                                .build())
-                        .build()))
-                .appeal(buildAppeal())
-                .build();
-
-        final SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
-        existingCaseDetails.getData().setEvidence(buildEvidence("2017-05-10"));
-
-        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
-
-        verify(updateCcdCaseService, times(1))
-                .updateCase(caseDataArgumentCaptor.capture(), eq(existingCaseDetails.getId()), eq("evidenceReceived"),
-                        eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verify(updateCcdCaseService, times(1))
-                .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
-                        eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
-
-        verifyNoMoreInteractions(updateCcdCaseService);
-        final Evidence evidence = caseDataArgumentCaptor.getValue().getEvidence();
-        assertThat(evidence, not(equalTo(null)));
-        assertThat(evidence.getDocuments().size(), equalTo(caseData.getEvidence().getDocuments().size() + 1));
     }
 
     @Test
