@@ -203,12 +203,12 @@ dependencyManagement {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '10.0.8') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '10.0.10') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
-    dependencySet(group: 'org.springframework.security', version: '5.5.1') {
+    dependencySet(group: 'org.springframework.security', version: '5.5.2') {
       entry 'spring-security-crypto'
     }
 
@@ -250,6 +250,9 @@ dependencyManagement {
     dependencySet(group: 'org.apache.commons', version: '1.21') {
       entry 'commons-compress'
     }
+
+    //CVE-2021-28170
+    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
   }
 }
 
@@ -309,8 +312,8 @@ dependencies {
   e2eCompile 'org.projectlombok:lombok:1.18.18'
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.27.0'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.27.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
+  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
   testCompile group: 'io.rest-assured', name: 'rest-assured'
   testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
