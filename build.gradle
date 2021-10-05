@@ -199,11 +199,11 @@ dependencyManagement {
     dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.14.1'
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '30.1.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '10.0.10') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '10.0.12') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
@@ -252,7 +252,11 @@ dependencyManagement {
     }
 
     //CVE-2021-28170
-    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
+
+    //CVE-2021-40690
+    dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.3'
+
   }
 }
 
@@ -304,7 +308,7 @@ dependencies {
   compile group: 'org.json', name: 'json', version: '20210307'
 
   compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.14.0'
+  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.15.0'
 
   compileOnly 'org.projectlombok:lombok:1.18.20'
   annotationProcessor "org.projectlombok:lombok:1.18.18"
