@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -51,8 +50,6 @@ public class CcdCasesSender {
             SscsCaseData existingCcdCaseData = existingCcdCase.getData();
 
             addMissingExistingHearings(gapsCaseData, existingCcdCaseData);
-
-            checkNewEvidenceReceived(gapsCaseData, existingCcdCase, idamTokens);
 
             ifThereIsChangesThenUpdateCase(gapsCaseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
         }
@@ -136,36 +133,4 @@ public class CcdCasesSender {
     private String getMissingHearingDateTime(HearingDetails details) {
         return details.getHearingDate() + details.getTime();
     }
-
-    private void checkNewEvidenceReceived(SscsCaseData caseData, SscsCaseDetails existingCase, IdamTokens idamTokens) {
-        Evidence newEvidence = caseData.getEvidence();
-        SscsCaseData existingCaseData = existingCase.getData();
-        Evidence existingEvidence = existingCaseData.getEvidence();
-        if (newEvidence != null && !CollectionUtils.isEmpty(newEvidence.getDocuments())) {
-            Evidence updatedEvidence = addNewEvidenceIfFound(newEvidence, existingEvidence);
-            if (updatedEvidence != null) {
-                existingCaseData.setEvidence(updatedEvidence);
-                updateCcdCaseService.updateCase(existingCaseData, existingCase.getId(), "evidenceReceived",
-                        SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
-            }
-        }
-    }
-
-    private Evidence addNewEvidenceIfFound(Evidence newEvidence, Evidence existingEvidence) {
-        Evidence updatedEvidence = null;
-
-        if (existingEvidence == null || CollectionUtils.isEmpty(existingEvidence.getDocuments())) {
-            updatedEvidence = newEvidence;
-        } else {
-            List<Document> newToAddDocuments = newEvidence.getDocuments().stream()
-                    .filter(nd -> !existingEvidence.getDocuments().contains(nd)).collect(toList());
-
-            if (!CollectionUtils.isEmpty(newToAddDocuments)) {
-                existingEvidence.getDocuments().addAll(newToAddDocuments);
-                updatedEvidence = existingEvidence;
-            }
-        }
-        return updatedEvidence;
-    }
-
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
 import uk.gov.hmcts.reform.sscs.exceptions.ProcessDeltaException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
@@ -210,6 +211,9 @@ public class CaseLoaderService {
         }
         if (null == sscsCaseDetails) {
             log.info(logPrefixWithFile + " case with SC {} and ccdID {} does not exist, skipping case creation...",
+                caseData.getCaseReference(), caseData.getCcdCaseId());
+        } else if (sscsCaseDetails.getState() != null && sscsCaseDetails.getState().equals(State.VOID_STATE.getId())) {
+            log.info(logPrefixWithFile + " case with SC {} and ccdID {} is in a void state, skipping case creation...",
                 caseData.getCaseReference(), caseData.getCcdCaseId());
         } else {
             log.info(logPrefixWithFile + " case with SC {} and ccdID {} exists, it will be updated...",
