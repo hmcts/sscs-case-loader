@@ -223,14 +223,24 @@ public class SftpChannelAdapterTest {
         sftp.listFailed();
     }
 
-    @Test
-    public void shouldReturnEmptyListIfThrowExceptionOnListFiles() throws Exception {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionIfThrowExceptionOnListFiles() throws Exception {
 
         doThrow(NullPointerException.class).when(channel).ls("failed/*.xml");
 
         List<Gaps2File> list = sftp.listFailed();
-        assertTrue(list.isEmpty());
         verify(channel).ls("failed/*.xml");
+
+        verifyConnection();
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionIfProcessedFolderIsEmpty() throws Exception {
+        List<ChannelSftp.LsEntry> lsEntries = newArrayList();
+        when(channel.ls("processed/*.xml")).thenReturn(new Vector(lsEntries));
+
+        List<Gaps2File> list = sftp.listProcessed();
+        verify(channel).ls("processed/*.xml");
 
         verifyConnection();
     }
