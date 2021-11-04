@@ -255,7 +255,7 @@ dependencyManagement {
     dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
 
     //CVE-2021-40690
-    dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.3'
+    dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.3.0'
 
   }
 }
