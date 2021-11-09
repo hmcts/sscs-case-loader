@@ -52,6 +52,7 @@ public class ReferenceDataServiceTest {
             .districtId("201")
             .url("https://goo.gl/maps/kcmv9MvxoVE2")
             .active("Yes")
+            .gapsVenName("Milton Keynes")
             .comments("")
             .build();
 
