@@ -258,7 +258,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
-    public void givenHearingInDeltaWhenBuildingHearingThenHearingIdIsBuilt() {
+    public void givenHearingInDeltaWhenBuildingHearingThenHearingIdAndVenueIdIsBuilt() {
         when(refDataService.getVenueDetails("venue")).thenReturn(VenueDetails.builder()
             .venName("name")
             .build());
@@ -266,6 +266,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
         List<Hearing> hearingList = caseDataBuilder.buildHearings(appeal);
 
         assertEquals("id", hearingList.get(0).getValue().getHearingId());
+        assertEquals("venue", hearingList.get(0).getValue().getVenueId());
     }
 
     @Test
