@@ -112,7 +112,9 @@ public class CaseDataBuilderTest extends CaseDataBuilderBaseTest {
 
         assertEquals(2, hearingList.size());
         assertEquals(hearing2.getHearingId(), hearingList.get(0).getValue().getHearingId());
+        assertEquals(hearing2.getVenueId(), hearingList.get(0).getValue().getVenueId());
         assertEquals(hearing4.getHearingId(), hearingList.get(1).getValue().getHearingId());
+        assertEquals(hearing4.getVenueId(), hearingList.get(1).getValue().getVenueId());
     }
 
     private List<Hearing> getHearing() {

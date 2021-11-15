@@ -198,6 +198,7 @@ class CaseDataBuilder {
                         .time((appealTime == null) ? "00:00:00" : appealTime.substring(11, 19))
                         .adjourned(isAdjourned(appealCase.getMajorStatus(), hearing) ? YES : NO)
                         .hearingId(hearing.getHearingId())
+                        .venueId(hearing.getVenueId())
                         .build();
 
                     hearingsList.add(uk.gov.hmcts.reform.sscs.ccd.domain.Hearing.builder().value(hearings).build());
