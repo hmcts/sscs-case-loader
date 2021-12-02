@@ -18,11 +18,23 @@ class UpdateCcdAppellantData {
         Appellant gapsAppellant = gapsCaseData.getAppeal().getAppellant();
 
         if (null == existingCcdAppellant) {
-            existingCcdCaseData.getAppeal().setAppellant(gapsAppellant);
+            existingCcdCaseData.getAppeal().setAppellant(Appellant.builder()
+                .address(gapsAppellant.getAddress())
+                .contact(gapsAppellant.getContact())
+                .identity(gapsAppellant.getIdentity())
+                .appointee(gapsAppellant.getAppointee() == null ? null : Appointee.builder()
+                    .contact(gapsAppellant.getAppointee().getContact())
+                    .identity(gapsAppellant.getAppointee().getIdentity())
+                    .address(gapsAppellant.getAppointee().getAddress())
+                    .build())
+                .confidentialityRequired(gapsAppellant.getConfidentialityRequired())
+                .isAddressSameAsAppointee(gapsAppellant.getIsAddressSameAsAppointee())
+                .isAppointee(gapsAppellant.getIsAppointee())
+                .role(gapsAppellant.getRole())
+                .build());
             return true;
         }
 
-        final boolean appellantNameChanged = updateCcdAppellantName(gapsAppellant, existingCcdAppellant);
         final boolean appellantContactChanged = updateCcdAppellantContact(gapsAppellant, existingCcdAppellant);
         final boolean appellantIdentityChanged = updateCcdAppellantIdentity(gapsCaseData, existingCcdCaseData);
 
@@ -39,7 +51,7 @@ class UpdateCcdAppellantData {
             }
         }
 
-        if (!hasAppointee && (appellantNameChanged || appellantContactChanged)) {
+        if (!hasAppointee && appellantContactChanged) {
             final UpdateSubscription.SubscriptionUpdate appellantSubscriptionUpdate =
                 new UpdateSubscription.SubscriptionUpdate() {
                 @Override
@@ -73,7 +85,7 @@ class UpdateCcdAppellantData {
             UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, appointeeSubscriptionUpdate);
         }
 
-        return appellantNameChanged || appellantContactChanged || appellantIdentityChanged || appointeeChanged;
+        return appellantContactChanged || appellantIdentityChanged || appointeeChanged;
     }
 
     private boolean updateCcdAppellantIdentity(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData) {
@@ -128,44 +140,20 @@ class UpdateCcdAppellantData {
         return false;
     }
 
-    private boolean updateCcdAppellantName(Appellant gapsAppellant, Appellant existingCcdAppellant) {
-        Name gapsAppellantName = gapsAppellant.getName();
-        Name existingCcdAppellantName = existingCcdAppellant.getName();
-
-        if (null == existingCcdAppellantName) {
-            existingCcdAppellant.setName(gapsAppellantName);
-            return true;
-        }
-        boolean dataChanged = false;
-        if (null != gapsAppellantName) {
-            if (StringUtils.isNotBlank(gapsAppellantName.getFirstName())
-                && !gapsAppellantName.getFirstName().equals(existingCcdAppellantName.getFirstName())) {
-                existingCcdAppellantName.setFirstName(gapsAppellantName.getFirstName());
-                dataChanged = true;
-            }
-            if (StringUtils.isNotBlank(gapsAppellantName.getLastName())
-                && !gapsAppellantName.getLastName().equals(existingCcdAppellantName.getLastName())) {
-                existingCcdAppellantName.setLastName(gapsAppellantName.getLastName());
-                dataChanged = true;
-            }
-        }
-        return dataChanged;
-    }
-
     private boolean updateCcdAppointee(Appellant gapsAppellant, Appellant existingCcdAppellant) {
         if (null == gapsAppellant.getAppointee()) {
             return false;
         }
 
         if (null == existingCcdAppellant.getAppointee()) {
-            existingCcdAppellant.setAppointee(gapsAppellant.getAppointee());
+            existingCcdAppellant.setAppointee(Appointee.builder()
+                .contact(gapsAppellant.getAppointee().getContact())
+                .identity(gapsAppellant.getAppointee().getIdentity())
+                .address(gapsAppellant.getAppointee().getAddress())
+                .build());
             return true;
         }
 
-        boolean appointeeNameChanged = updateCcdAppointeeName(
-            gapsAppellant.getAppointee(),
-            existingCcdAppellant.getAppointee()
-        );
         boolean appointeeContactChanged = updateCcdAppointeeContact(
             gapsAppellant.getAppointee(),
             existingCcdAppellant.getAppointee()
@@ -175,7 +163,7 @@ class UpdateCcdAppellantData {
             existingCcdAppellant.getAppointee()
         );
 
-        return appointeeNameChanged || appointeeContactChanged || appointeeIdentityChanged;
+        return appointeeContactChanged || appointeeIdentityChanged;
     }
 
     private boolean updateCcdAppointeeIdentity(Appointee gapsAppointee, Appointee existingCcdAppointee) {
@@ -235,35 +223,5 @@ class UpdateCcdAppellantData {
         }
 
         return false;
-    }
-
-    private boolean updateCcdAppointeeName(Appointee gapsAppointee, Appointee existingCcdAppointee) {
-        Name gapsAppellantName = gapsAppointee == null || gapsAppointee.getName() == null
-            ? null : gapsAppointee.getName();
-        Name existingCcdAppellantName = existingCcdAppointee == null || existingCcdAppointee.getName() == null
-            ? null : existingCcdAppointee.getName();
-
-        if (null == existingCcdAppellantName) {
-            if (null == existingCcdAppointee) {
-                existingCcdAppointee = Appointee.builder().build();
-            }
-            existingCcdAppointee.setName(gapsAppellantName);
-            return true;
-        }
-        boolean dataChanged = false;
-        if (null != gapsAppellantName) {
-            if (StringUtils.isNotBlank(gapsAppellantName.getFirstName())
-                && !gapsAppellantName.getFirstName().equals(existingCcdAppellantName.getFirstName())) {
-                existingCcdAppellantName.setFirstName(gapsAppellantName.getFirstName());
-                dataChanged = true;
-            }
-            if (StringUtils.isNotBlank(gapsAppellantName.getLastName())
-                && !gapsAppellantName.getLastName().equals(existingCcdAppellantName.getLastName())) {
-                existingCcdAppellantName.setLastName(gapsAppellantName.getLastName());
-                dataChanged = true;
-            }
-        }
-
-        return dataChanged;
     }
 }

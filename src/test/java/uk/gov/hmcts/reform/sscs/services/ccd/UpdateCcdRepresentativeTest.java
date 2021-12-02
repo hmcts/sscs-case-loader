@@ -2,7 +2,9 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import junitparams.JUnitParamsRunner;
@@ -42,34 +44,40 @@ public class UpdateCcdRepresentativeTest {
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("data has changed from a null rep", hasDataChanged);
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        assertNull(existingCaseData.getAppeal().getRep().getName());
+        assertNotEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
         assertNotNull(existingCaseData.getSubscriptions().getRepresentativeSubscription());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isEmailSubscribed());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isSmsSubscribed());
     }
 
     @Test
-    public void givenARepNameChange_willChangeDataAndReturnTrue() {
+    @Parameters({
+        "Potter,Superman",
+        "Potter,",
+        ",Superman"
+    })
+    public void givenARepNameChange_willNotChangeDataAndReturnTrue(String gapsSurname, String existingSurname) {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(
-                    Representative.builder().name(Name.builder().lastName("Potter").build())
+                    Representative.builder().name(Name.builder().lastName(gapsSurname).build())
                         .hasRepresentative(YES).build()
                 ).build())
             .build();
 
         SscsCaseData existingCaseData = SscsCaseData.builder().appeal(Appeal.builder()
             .rep(
-                Representative.builder().name(Name.builder().lastName("Superman").build())
+                Representative.builder().name(Name.builder().lastName(existingSurname).build())
                     .hasRepresentative(YES).build()
             ).build())
             .build();
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
-        assertTrue("rep name has changed", hasDataChanged);
+        assertTrue("rep name has not changed", hasDataChanged);
         assertEquals(YES, existingCaseData.getAppeal().getRep().getHasRepresentative());
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        assertEquals(existingSurname, existingCaseData.getAppeal().getRep().getName().getLastName());
         assertNotNull(existingCaseData.getSubscriptions().getRepresentativeSubscription());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isEmailSubscribed());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isSmsSubscribed());
@@ -96,9 +104,9 @@ public class UpdateCcdRepresentativeTest {
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
-        assertTrue("rep name has changed", hasDataChanged);
-        assertEquals("Yes", existingCaseData.getAppeal().getRep().getHasRepresentative());
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        assertTrue("rep name has not changed", hasDataChanged);
+        assertEquals("No", existingCaseData.getAppeal().getRep().getHasRepresentative());
+        assertNull(existingCaseData.getAppeal().getRep().getName());
         assertNotNull(existingCaseData.getSubscriptions().getRepresentativeSubscription());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isEmailSubscribed());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isSmsSubscribed());
