@@ -7,9 +7,9 @@
     <packageUrl regex="true">^pkg:maven/org\.apache\.xmlgraphics/batik\-i18n@.*$</packageUrl>
     <cve>CVE-2020-7791</cve>
   </suppress>
-  <suppress until="2021-12-01">
+  <suppress until="2022-07-01">
     <notes><![CDATA[
-   file name: spring-core-5.3.9.jar
+   file name: spring-core-5.2.15.RELEASE.jar
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
     <cve>CVE-2021-22096</cve>
