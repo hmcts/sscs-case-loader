@@ -61,9 +61,7 @@ final class UpdateCcdRepresentative {
 
     private static boolean hasRepChanged(Representative rep, Representative existingRepresentative) {
         return existingRepresentative == null
-            || existingRepresentative.getName() == null
             || existingRepresentative.getContact() == null
-            || !existingRepresentative.getName().equals(rep.getName())
             || !existingRepresentative.getContact().equals(rep.getContact());
     }
 
@@ -111,9 +109,6 @@ final class UpdateCcdRepresentative {
         }
         if (rep.getContact() != null) {
             updateContact(gapsCaseData.getCaseReference(), existingCcdCaseData, rep);
-        }
-        if (rep.getName() != null) {
-            existingCcdCaseData.getAppeal().getRep().setName(rep.getName());
         }
         if (rep.getAddress() != null) {
             existingCcdCaseData.getAppeal().getRep().setAddress(rep.getAddress());

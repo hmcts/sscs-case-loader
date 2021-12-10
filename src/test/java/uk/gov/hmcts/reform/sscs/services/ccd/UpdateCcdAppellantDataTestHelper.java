@@ -12,7 +12,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S");
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S");
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
@@ -57,7 +57,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S");
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("", "",
                 "email@email.com", "AB46575S");
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
@@ -71,11 +71,11 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S");
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName(null, null,
                 "email@email.com", "AB46575S");
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
-            "null", "null", "null", "null");
+            null, null, null, null);
         return new GapsAndCcdDataUpdateScenario(
             gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
     }
@@ -88,12 +88,19 @@ final class UpdateCcdAppellantDataTestHelper {
             .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
             .build();
 
+        Appointee appointeeNewExistingData = Appointee.builder()
+            .name(null)
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
         GapsAppellantData gapsAppellantData = new GapsAppellantData(
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
-                "email@email.com", "AB46575S", appointeeNewData);
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
+                "email@email.com", "AB46575S", appointeeNewExistingData);
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
             "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
@@ -114,7 +121,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S", appointeeNewData);
 
         Appointee appointeeExistingData = Appointee.builder()
@@ -130,9 +137,15 @@ final class UpdateCcdAppellantDataTestHelper {
             gapsAppellantData, expectedExistingCcdAppellantName, existingCcdAppellantData);
     }
 
-    static GapsAndCcdDataUpdateScenario updateCcdDataWhenThereAreGapsDataWithNewAppointeeNameHappyPaths() {
+    static GapsAndCcdDataUpdateScenario updateCcdDataNoWhenThereAreGapsDataWithNewAppointeeNameHappyPaths() {
         Appointee appointeeNewData = Appointee.builder()
             .name(Name.builder().firstName("Ap").lastName("Pointee").build())
+            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
+            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
+            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
+            .build();
+
+        Appointee appointeeExistingData = Appointee.builder()
             .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
             .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
             .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
@@ -142,14 +155,8 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
-                "email@email.com", "AB46575S", appointeeNewData);
-
-        Appointee appointeeExistingData = Appointee.builder()
-            .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
-            .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
-            .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
-            .build();
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
+                "email@email.com", "AB46575S", appointeeExistingData);
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
             "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
@@ -170,7 +177,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S", appointeeNewData);
 
         Appointee appointeeExistingData = Appointee.builder()
@@ -230,7 +237,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S", appointeeNewData);
 
         Appointee appointeeExistingData = Appointee.builder()
@@ -259,7 +266,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S", appointeeNewData);
 
         Appointee appointeeExistingData = Appointee.builder()
@@ -288,7 +295,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S", appointeeNewData);
 
         Appointee appointeeExistingData = Appointee.builder()
@@ -317,7 +324,7 @@ final class UpdateCcdAppellantDataTestHelper {
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
         ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
                 "email@email.com", "AB46575S", appointeeNewData);
 
         Appointee appointeeExistingData = Appointee.builder()
@@ -345,16 +352,16 @@ final class UpdateCcdAppellantDataTestHelper {
         GapsAppellantData gapsAppellantData = new GapsAppellantData(
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
-        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
-                "email@email.com", "AB46575S", appointeeNewData);
-
         Appointee appointeeExistingData = Appointee.builder()
             .name(Name.builder().firstName("Zz").lastName("Pointee").build())
             .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
             .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
             .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
             .build();
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
+                "email@email.com", "AB46575S", appointeeExistingData);
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
             "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
@@ -374,16 +381,16 @@ final class UpdateCcdAppellantDataTestHelper {
         GapsAppellantData gapsAppellantData = new GapsAppellantData(
             "first-name", "last-name", "email@email.com", "AB46575S", appointeeNewData);
 
-        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
-            new ExpectedExistingCcdAppellantName("first-name", "last-name",
-                "email@email.com", "AB46575S", appointeeNewData);
-
         Appointee appointeeExistingData = Appointee.builder()
             .name(Name.builder().firstName("Ap").lastName("Zzzzzzz").build())
             .address(Address.builder().line1("1 Appointee St").postcode("TS1 1ST").build())
             .contact(Contact.builder().email("appointee@test.com").mobile("07000000001").phone("01000000001").build())
             .identity(Identity.builder().dob("01/01/1998").nino("AB999999C").build())
             .build();
+
+        ExpectedExistingCcdAppellantName expectedExistingCcdAppellantName =
+            new ExpectedExistingCcdAppellantName("existingFirstName", "existingLastName",
+                "email@email.com", "AB46575S", appointeeExistingData);
 
         ExistingCcdAppellantData existingCcdAppellantData = new ExistingCcdAppellantData(
             "existingFirstName", "existingLastName", "existingCaseEmail@email.com",
