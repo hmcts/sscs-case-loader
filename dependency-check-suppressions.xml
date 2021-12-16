@@ -14,4 +14,8 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
     <cve>CVE-2021-22096</cve>
   </suppress>
+  <suppress until="2022-01-30">
+    <packageUrl regex="true">^pkg:maven/com.h2database/h2@1.4.200</packageUrl>
+    <cve>CVE-2021-23463</cve>
+  </suppress>
 </suppressions>
