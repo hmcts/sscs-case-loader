@@ -63,7 +63,7 @@ public class ProcessCaseFileSetup {
             sftpChannel.rm("/incoming/SSCS_CreateAppeals_Delta_*.xml");
             sftpChannel.rm("/incoming/failed/SSCS_CreateAppeals_Delta_*.xml");
             sftpChannel.rm("/incoming/processed/SSCS_CreateAppeals_Delta_*.xml");
-            sftpChannel.rm("/incoming/processed/SSCS_Extract_Reference_2018-02-13-20-09-33.xml");
+            sftpChannel.rm("/incoming/processed/SSCS_Extract_Reference_2022-01-13-03-12-52.xml");
             sftpChannel.rm("/incoming/processed/SSCS_Extract_Delta_2018-05-24-16-14-19.xml");
             sftpChannel.rm("/incoming/processed/SSCS_Extract_Delta_SmokeTest_2018-03-15-16-14-19.xml");
             sftpChannel.rm("/incoming/processed/SSCS_Extract_Delta_No_Parties_2018-11-30-23-34-59.xml");
