@@ -29,6 +29,6 @@ public class VenueDataLoaderTest {
         Map<String, VenueDetails> venueDetailsMap = venueDataLoader.getVenueDetailsMap();
 
         assertNotNull(venueDetailsMap);
-        assertEquals(265, venueDetailsMap.size());
+        assertEquals(266, venueDetailsMap.size());
     }
 }
