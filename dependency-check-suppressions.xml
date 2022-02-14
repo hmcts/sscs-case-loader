@@ -36,4 +36,18 @@
    ]]></notes>
     <cve>CVE-2022-23181</cve>
   </suppress>
+  <suppress until="2022-03-15">
+    <notes><![CDATA[
+   file name: h2-1.4.200.jar
+   ]]></notes>
+    <cve>CVE-2021-23463</cve>
+    <cve>CVE-2021-42392</cve>
+    <cve>CVE-2022-23221</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+     file name: h2-1.4.200.jar
+    ]]></notes>
+    <vulnerabilityName>CWE-94: Improper Control of Generation of Code ('Code Injection')</vulnerabilityName>
+  </suppress>
 </suppressions>
