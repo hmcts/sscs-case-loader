@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import java.util.Collections;
 import junitparams.JUnitParamsRunner;
@@ -36,7 +37,7 @@ public class UpdateDwpTimeExtensionTest {
         SscsCaseData gapsCaseDataWithDwpTimeExtension = SscsCaseData.builder()
             .dwpTimeExtension(Collections.singletonList(DwpTimeExtension.builder()
                 .value(DwpTimeExtensionDetails.builder()
-                    .granted("yes")
+                    .granted(YES)
                     .build())
                 .build()))
             .build();

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class ReferenceDataServiceTest {
             .venAddressTelNo("")
             .districtId("201")
             .url("https://goo.gl/maps/5nWYgZvnWGY2R3dV8")
-            .active("Yes")
+            .active(YES)
             .gapsVenName("Milton Keynes")
             .comments("")
             .epimsId("815997")

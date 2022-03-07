@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static java.util.Objects.nonNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYes;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -40,18 +42,15 @@ class UpdateCcdAppellantData {
 
         boolean appointeeChanged = updateCcdAppointee(gapsAppellant, existingCcdAppellant);
 
-        boolean hasAppointee = gapsAppellant.getAppointee() != null
-            && gapsAppellant.getAppointee().getName() != null
-            && gapsAppellant.getAppointee().getName().getLastName() != null;
+        YesNo hasAppointee = isYesOrNo(nonNull(gapsAppellant.getAppointee())
+            && nonNull(gapsAppellant.getAppointee().getName())
+            && nonNull(gapsAppellant.getAppointee().getName().getLastName()));
 
-        if (appointeeChanged) {
-            final String hasAppointeeYesOrNo = hasAppointee ? "Yes" : "No";
-            if (!equalsIgnoreCase(existingCcdAppellant.getIsAppointee(), hasAppointeeYesOrNo)) {
-                existingCcdAppellant.setIsAppointee(hasAppointeeYesOrNo);
-            }
+        if (appointeeChanged && !hasAppointee.equals(existingCcdAppellant.getIsAppointee())) {
+            existingCcdAppellant.setIsAppointee(hasAppointee);
         }
 
-        if (!hasAppointee && appellantContactChanged) {
+        if (!isYes(hasAppointee) && appellantContactChanged) {
             final UpdateSubscription.SubscriptionUpdate appellantSubscriptionUpdate =
                 new UpdateSubscription.SubscriptionUpdate() {
                 @Override

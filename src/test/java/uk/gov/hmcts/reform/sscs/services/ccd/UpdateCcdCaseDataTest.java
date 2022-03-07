@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -81,9 +83,9 @@ public class UpdateCcdCaseDataTest {
                 .name(Name.builder().lastName("Potter").build()).build()).build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeEmail("No").email("harry.potter@mail.com").build())
+                    .subscribeEmail(NO).email("harry.potter@mail.com").build())
                 .appellantSubscription(Subscription.builder()
-                    .email("appellant@email.com").subscribeEmail("No").build())
+                    .email("appellant@email.com").subscribeEmail(NO).build())
                 .build())
             .build();
 
@@ -95,18 +97,18 @@ public class UpdateCcdCaseDataTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .appellantSubscription(Subscription.builder()
-                    .email("appellant@email.com").subscribeEmail("Yes").build())
+                    .email("appellant@email.com").subscribeEmail(YES).build())
                 .representativeSubscription(Subscription.builder()
-                    .subscribeEmail("Yes").email("superman@mail.com").build())
+                    .subscribeEmail(YES).email("superman@mail.com").build())
                 .build()
             )
             .build();
 
         final Subscription expectedAppellantSubscription = Subscription.builder()
-            .email("appellant@email.com").subscribeEmail("Yes").build();
+            .email("appellant@email.com").subscribeEmail(YES).build();
 
         final Subscription expectedRepSubscription = Subscription.builder()
-            .email("superman@mail.com").subscribeSms("No").subscribeEmail("Yes").build();
+            .email("superman@mail.com").subscribeSms(NO).subscribeEmail(YES).build();
 
         UpdateType updateType = updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(
             gapsCaseData, existingCase);

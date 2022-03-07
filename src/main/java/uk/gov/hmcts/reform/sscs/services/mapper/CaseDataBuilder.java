@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.*;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,30 +14,10 @@ import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtensionDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Venue;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.model.VenueDetails;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.FurtherEvidence;
+import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.*;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.MajorStatus;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
-import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
@@ -46,8 +28,6 @@ import uk.gov.hmcts.reform.sscs.util.UkMobile;
 @Slf4j
 class CaseDataBuilder {
 
-    private static final String YES = "Yes";
-    static final String NO = "No";
     private static final String DISABILITY_NEEDS = "Y";
     private static final String POSTPONEMENT_GRANTED = "Y";
 
@@ -108,7 +88,7 @@ class CaseDataBuilder {
 
     HearingOptions buildHearingOptions(Parties party, String tribunalsTypeId) {
 
-        String wantsToAttend = null;
+        YesNo wantsToAttend = null;
 
         if (null != tribunalsTypeId
             && (tribunalsTypeId.equals("1")
@@ -117,14 +97,16 @@ class CaseDataBuilder {
             wantsToAttend = getWantsToAttend(tribunalsTypeId);
         }
 
+        String hearingOptionsOther = isYesOrNo(
+            DISABILITY_NEEDS.equalsIgnoreCase(party.getDisabilityNeeds())).getValue();
         return HearingOptions.builder()
-            .other(DISABILITY_NEEDS.equals(party.getDisabilityNeeds()) ? YES : NO)
+            .other(hearingOptionsOther)
             .wantsToAttend(wantsToAttend)
             .build();
 
     }
 
-    private String getWantsToAttend(String tribunalsTypeId) {
+    private YesNo getWantsToAttend(String tribunalsTypeId) {
         String tbtCode = referenceDataService.getTbtCode(tribunalsTypeId);
         if ("O".equals(tbtCode)) {
             return YES;
@@ -217,7 +199,7 @@ class CaseDataBuilder {
     }
 
     private String getActiveInActiveVenueInfo(VenueDetails venueDetails) {
-        return "Yes".equalsIgnoreCase(venueDetails.getActive()) ? "active" : "inactive";
+        return isYes(venueDetails.getActive()) ? "active" : "inactive";
     }
 
     Evidence buildEvidence(AppealCase appealCase) {

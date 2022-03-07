@@ -1,7 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -39,12 +40,11 @@ final class UpdateCcdRepresentative {
                 repUpdated = true;
             }
             if (repUpdated && nonNull(existingCcdCaseData.getAppeal().getRep())) {
-                boolean hasRep = ((nonNull(existingCcdCaseData.getAppeal().getRep().getName())
+                YesNo hasRep = isYesOrNo((nonNull(existingCcdCaseData.getAppeal().getRep().getName())
                     && nonNull(existingCcdCaseData.getAppeal().getRep().getName().getLastName()))
                     || nonNull(existingCcdCaseData.getAppeal().getRep().getOrganisation()));
-                String hasRepYesOrNo = hasRep ? "Yes" : "No";
-                if (!equalsIgnoreCase(existingCcdCaseData.getAppeal().getRep().getHasRepresentative(), hasRepYesOrNo)) {
-                    existingCcdCaseData.getAppeal().getRep().setHasRepresentative(hasRepYesOrNo);
+                if (!hasRep.equals(existingCcdCaseData.getAppeal().getRep().getHasRepresentative())) {
+                    existingCcdCaseData.getAppeal().getRep().setHasRepresentative(hasRep);
                 }
             }
         }
@@ -75,11 +75,11 @@ final class UpdateCcdRepresentative {
             @Override
             public Subscriptions updateExistingSubscriptions(Subscription subscription) {
                 Subscription clearedSubscription = subscription.toBuilder()
-                    .wantSmsNotifications("No")
+                    .wantSmsNotifications(NO)
                     .mobile("")
-                    .subscribeSms("No")
+                    .subscribeSms(NO)
                     .email("")
-                    .subscribeEmail("No")
+                    .subscribeEmail(NO)
                     .build();
 
                 return caseData.getSubscriptions().toBuilder()

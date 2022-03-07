@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseDataTest.getAppealCase;
 
 import junitparams.JUnitParamsRunner;
@@ -69,9 +70,9 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
         final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
 
         assertEquals(3, caseData.getHearings().size());
-        assertEquals(expectedHearingAdjourned0, caseData.getHearings().get(0).getValue().getAdjourned());
-        assertEquals(expectedHearingAdjourned1, caseData.getHearings().get(1).getValue().getAdjourned());
-        assertEquals(expectedHearingAdjourned2, caseData.getHearings().get(2).getValue().getAdjourned());
+        assertEquals(isYesOrNo(expectedHearingAdjourned0), caseData.getHearings().get(0).getValue().getAdjourned());
+        assertEquals(isYesOrNo(expectedHearingAdjourned1), caseData.getHearings().get(1).getValue().getAdjourned());
+        assertEquals(isYesOrNo(expectedHearingAdjourned2), caseData.getHearings().get(2).getValue().getAdjourned());
         assertEquals("Liverpool", caseData.getProcessingVenue());
     }
 

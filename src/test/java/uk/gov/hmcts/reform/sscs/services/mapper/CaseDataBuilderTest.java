@@ -4,14 +4,11 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.NO;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 import static uk.gov.hmcts.reform.sscs.services.mapper.CaseDataBuilder.buildSubscriptionWithDefaults;
-import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.APPELLANT_ROLE_ID;
-import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.APPOINTEE_ROLE_ID;
-import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.REP_ROLE_ID;
+import static uk.gov.hmcts.reform.sscs.services.mapper.TransformAppealCaseToCaseData.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +33,6 @@ import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 @RunWith(JUnitParamsRunner.class)
 public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
-    public static final String YES = "Yes";
     @Mock
     private ReferenceDataService refDataService;
     @Mock
@@ -126,9 +122,9 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             party.getEmail(), subscriptions.getRepresentativeSubscription().getEmail());
         assertEquals("mobile number is not " + party.getMobile(),
             party.getMobile(), subscriptions.getRepresentativeSubscription().getMobile());
-        assertEquals("email should be un-subscribed", "No",
+        assertEquals("email should be un-subscribed", NO,
             subscriptions.getRepresentativeSubscription().getSubscribeEmail());
-        assertEquals("sms should be un-subscribed", "No",
+        assertEquals("sms should be un-subscribed", NO,
             subscriptions.getRepresentativeSubscription().getSubscribeSms());
     }
 

@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -126,7 +127,7 @@ public class UpdateCcdRpcTest {
         assertTrue(classUnderTest.updateCcdRpc(gapsCaseData, existingCcdCaseData));
         assertEquals(gapsCaseData.getRegionalProcessingCenter(), existingCcdCaseData.getRegionalProcessingCenter());
         assertEquals(existingCcdCaseData.getRegionalProcessingCenter().getName(), existingCcdCaseData.getRegion());
-        assertEquals(existingCcdCaseData.getIsScottishCase(), expectedIsScottish);
+        assertEquals(existingCcdCaseData.getIsScottishCase(), isYesOrNo(expectedIsScottish));
     }
 
     @Test

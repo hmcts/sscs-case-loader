@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.*;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -11,6 +12,7 @@ import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 
 @RunWith(JUnitParamsRunner.class)
 public class UpdateCcdHearingOptionsTest {
@@ -19,7 +21,7 @@ public class UpdateCcdHearingOptionsTest {
     public void givenGapsWantsToAttendChange_shouldUpdateExistingCcdHearingOptions(SscsCaseData gapsCaseData,
                                                                                    SscsCaseData existingCcdCaseData,
                                                                                    boolean expectedUpdateData,
-                                                                                   String expectedWantsToAttend) {
+                                                                                   YesNo expectedWantsToAttend) {
         UpdateCcdHearingOptions updateCcdHearingOptions = new UpdateCcdHearingOptions();
 
         boolean updateData = updateCcdHearingOptions.updateHearingOptions(gapsCaseData, existingCcdCaseData);
@@ -34,7 +36,7 @@ public class UpdateCcdHearingOptionsTest {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .hearingOptions(HearingOptions.builder()
-                    .wantsToAttend("yes")
+                    .wantsToAttend(YES)
                     .build())
                 .build())
             .build();
@@ -42,7 +44,7 @@ public class UpdateCcdHearingOptionsTest {
         SscsCaseData existingCcdCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .hearingOptions(HearingOptions.builder()
-                    .wantsToAttend("no")
+                    .wantsToAttend(NO)
                     .build())
                 .build())
             .build();
@@ -74,7 +76,7 @@ public class UpdateCcdHearingOptionsTest {
         SscsCaseData sscsCaseDataWithEmptyWantsToAttend = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .hearingOptions(HearingOptions.builder()
-                    .wantsToAttend("")
+                    .wantsToAttend(isYesOrNo(""))
                     .build())
                 .build())
             .build();
@@ -98,7 +100,7 @@ public class UpdateCcdHearingOptionsTest {
         SscsCaseData existingCcdCaseDataWithEmptyWantsToAttend = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .hearingOptions(HearingOptions.builder()
-                    .wantsToAttend("")
+                    .wantsToAttend(isYesOrNo(""))
                     .build())
                 .build())
             .build();
@@ -112,17 +114,17 @@ public class UpdateCcdHearingOptionsTest {
             .build();
 
         return new Object[]{
-            new Object[]{sscsCaseDataWithNullHearingOptions, existingCcdCaseData, false, "no"},
-            new Object[]{sscsCaseDataWithAnotherNullHearingOptions, existingCcdCaseData, false, "no"},
-            new Object[]{sscsCaseDataWithNullWantsToAttend, existingCcdCaseData, false, "no"},
-            new Object[]{sscsCaseDataWithEmptyWantsToAttend, existingCcdCaseData, false, "no"},
-            new Object[]{sscsCaseDataWithEmptyHearingOptions, existingCcdCaseData, false, "no"},
-            new Object[]{gapsCaseData, existingCcdCaseData, true, "yes"},
-            new Object[]{gapsCaseData, existingCcdCaseDataWithNullHearingOptions, true, "yes"},
-            new Object[]{gapsCaseData, existingCcdCaseDataWithAnotherNullHearingOptions, true, "yes"},
-            new Object[]{gapsCaseData, existingCcdCaseDataWithEmptyHearingOptions, true, "yes"},
-            new Object[]{gapsCaseData, existingCcdCaseDataWithEmptyWantsToAttend, true, "yes"},
-            new Object[]{gapsCaseData, existingCcdCaseDataWithNullWantsToAttend, true, "yes"}
+            new Object[]{sscsCaseDataWithNullHearingOptions, existingCcdCaseData, false, NO},
+            new Object[]{sscsCaseDataWithAnotherNullHearingOptions, existingCcdCaseData, false, NO},
+            new Object[]{sscsCaseDataWithNullWantsToAttend, existingCcdCaseData, false, NO},
+            new Object[]{sscsCaseDataWithEmptyWantsToAttend, existingCcdCaseData, false, NO},
+            new Object[]{sscsCaseDataWithEmptyHearingOptions, existingCcdCaseData, false, NO},
+            new Object[]{gapsCaseData, existingCcdCaseData, true, YES},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithNullHearingOptions, true, YES},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithAnotherNullHearingOptions, true, YES},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithEmptyHearingOptions, true, YES},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithEmptyWantsToAttend, true, YES},
+            new Object[]{gapsCaseData, existingCcdCaseDataWithNullWantsToAttend, true, YES}
         };
     }
 }

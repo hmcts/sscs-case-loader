@@ -17,12 +17,34 @@
    ]]></notes>
     <cve>CVE-2016-1000027</cve>
   </suppress>
-  <suppress until="2022-10-30">
+  <suppress until="2022-11-01">
     <notes><![CDATA[
    Temporary suppression to get the build working for a while. PET ticket SSCS-10907 will be used to fix it permanently.
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.codehaus\.jettison/jettison@.*$</packageUrl>
     <cve>CVE-2022-40149</cve>
     <cve>CVE-2022-40150</cve>
+  </suppress>
+  <suppress until="2022-11-01">
+    <notes><![CDATA[
+   file name: tomcat-embed-websocket-10.1.0.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
+    <cve>CVE-2021-43980</cve>
+    <cve>CVE-2021-42340</cve>
+    <cve>CVE-2022-29885</cve>
+    <cve>CVE-2022-23181</cve>
+    <cve>CVE-2022-34305</cve>
+  </suppress>
+  <suppress until="2022-11-01">
+    <notes><![CDATA[
+   file name: tomcat-embed-core-10.1.0.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
+    <cve>CVE-2021-43980</cve>
+    <cve>CVE-2021-42340</cve>
+    <cve>CVE-2022-29885</cve>
+    <cve>CVE-2022-23181</cve>
+    <cve>CVE-2022-34305</cve>
   </suppress>
 </suppressions>

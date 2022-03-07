@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 
 @Slf4j
 @Service
@@ -30,7 +34,7 @@ class UpdateCcdRpc {
             existingCcdCaseData.setRegionalProcessingCenter(gapsRpc);
             existingCcdCaseData.setRegion(gapsRpc.getName());
 
-            String isScottishCase = isScottishCase(gapsRpc, existingCcdCaseData);
+            YesNo isScottishCase = isScottishCase(gapsRpc, existingCcdCaseData);
 
             existingCcdCaseData.setIsScottishCase(isScottishCase);
 
@@ -58,14 +62,14 @@ class UpdateCcdRpc {
             || !existingRpc.getAddress1().equals(gapsRpc.getAddress1());
     }
 
-    public static String isScottishCase(RegionalProcessingCenter rpc, SscsCaseData caseData) {
+    public static YesNo isScottishCase(RegionalProcessingCenter rpc, SscsCaseData caseData) {
 
         if (isNull(rpc) || isNull(rpc.getName())) {
-            log.info("Setting isScottishCase field to No for empty RPC for case " + caseData.getCcdCaseId());
-            return "No";
+            log.info("Calculated isScottishCase field to No for empty RPC for case " + caseData.getCcdCaseId());
+            return NO;
         } else {
-            String isScotCase = rpc.getName().equalsIgnoreCase("GLASGOW") ? "Yes" : "No";
-            log.info("Setting isScottishCase field to " + isScotCase + " for RPC " + rpc.getName() + " for case "
+            YesNo isScotCase = rpc.getName().equalsIgnoreCase("GLASGOW") ? YES : NO;
+            log.info("Calculated isScottishCase field to " + isScotCase + " for RPC " + rpc.getName() + " for case "
                 + caseData.getCcdCaseId());
             return isScotCase;
         }

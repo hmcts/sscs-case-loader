@@ -1,30 +1,17 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.*;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class UpdateCcdRepresentativeTest {
-    private static final String YES = "Yes";
-    private static final String NO = "No";
     private static final String ABCDEFGH_1 = "abcdefgh1";
     private static final String ABCDEFGH_2 = "ABCDEFGH2";
 
@@ -106,7 +93,7 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
         assertTrue("rep name has not changed", hasDataChanged);
-        assertEquals("No", existingCaseData.getAppeal().getRep().getHasRepresentative());
+        assertEquals(NO, existingCaseData.getAppeal().getRep().getHasRepresentative());
         assertNull(existingCaseData.getAppeal().getRep().getName());
         assertNotNull(existingCaseData.getSubscriptions().getRepresentativeSubscription());
         assertFalse(existingCaseData.getSubscriptions().getRepresentativeSubscription().isEmailSubscribed());
@@ -368,7 +355,8 @@ public class UpdateCcdRepresentativeTest {
     @Test
     @Parameters({"Yes", "No"})
     public void givenARepChange_willKeepExistingEmailAndSmsSubscriptions(String subscribed) {
-        String oppositeOfSubscribed = YES.equals(subscribed) ? NO : YES;
+        YesNo yesNoSubscribed = isYesOrNo(subscribed);
+        YesNo oppositeOfSubscribed = isYesOrNo(isNoOrNull(yesNoSubscribed));
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
                 .rep(
@@ -388,9 +376,9 @@ public class UpdateCcdRepresentativeTest {
                 Representative.builder().name(Name.builder().lastName("Superman").build()).build()
             ).build())
             .subscriptions(Subscriptions.builder().representativeSubscription(Subscription.builder()
-                .subscribeSms(subscribed)
-                .subscribeEmail(subscribed)
-                .wantSmsNotifications(subscribed)
+                .subscribeSms(yesNoSubscribed)
+                .subscribeEmail(yesNoSubscribed)
+                .wantSmsNotifications(yesNoSubscribed)
                 .mobile("07123456711")
                 .email("rep@mail.com")
                 .build()).build())
@@ -400,8 +388,8 @@ public class UpdateCcdRepresentativeTest {
 
         assertTrue("representative has changed", hasDataChanged);
         Subscription updatedRepSubscription = existingCaseData.getSubscriptions().getRepresentativeSubscription();
-        assertEquals(subscribed, updatedRepSubscription.getSubscribeEmail());
-        assertEquals(subscribed, updatedRepSubscription.getSubscribeSms());
+        assertEquals(yesNoSubscribed, updatedRepSubscription.getSubscribeEmail());
+        assertEquals(yesNoSubscribed, updatedRepSubscription.getSubscribeSms());
         assertEquals("rep@mail.com", updatedRepSubscription.getEmail());
         assertEquals("07123456700", updatedRepSubscription.getMobile());
     }

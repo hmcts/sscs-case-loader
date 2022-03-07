@@ -2,11 +2,11 @@ package uk.gov.hmcts.reform.sscs.services.mapper;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
@@ -73,7 +73,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertNotNull(caseData.getAppeal().getAppellant());
         assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Elderberry"));
         assertNull(caseData.getAppeal().getAppellant().getAppointee());
-        assertThat(caseData.getAppeal().getAppellant().getIsAppointee(), is("No"));
+        assertThat(caseData.getAppeal().getAppellant().getIsAppointee(), is(NO));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class TransformAppealCaseToCaseDataTest {
         assertNotNull(caseData.getAppeal().getAppellant().getAppointee());
         assertThat(caseData.getAppeal().getAppellant().getName().getLastName(), is("Appellant"));
         assertThat(caseData.getAppeal().getAppellant().getAppointee().getName().getLastName(), is("Appointee"));
-        assertThat(caseData.getAppeal().getAppellant().getIsAppointee(), is("Yes"));
+        assertThat(caseData.getAppeal().getAppellant().getIsAppointee(), is(YES));
     }
 
     @Test
@@ -201,10 +201,10 @@ public class TransformAppealCaseToCaseDataTest {
             10, caseData.getSubscriptions().getRepresentativeSubscription().getTya().length());
         final Subscription expectedRepresentativeSubscription = Subscription.builder()
             .email("john@example.com")
-            .subscribeEmail("No")
+            .subscribeEmail(NO)
             .mobile("07123456789")
             .reason("")
-            .subscribeSms("No")
+            .subscribeSms(NO)
             .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())
             .build();
         final Contact expectedContact = Contact.builder().email("john@example.com").mobile("07123456789").build();
@@ -232,10 +232,10 @@ public class TransformAppealCaseToCaseDataTest {
             10, caseData.getSubscriptions().getRepresentativeSubscription().getTya().length());
         final Subscription expectedRepresentativeSubscription = Subscription.builder()
             .email("")
-            .subscribeEmail("No")
+            .subscribeEmail(NO)
             .mobile("07123456789")
             .reason("")
-            .subscribeSms("No")
+            .subscribeSms(NO)
             .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())
             .build();
         final Contact expectedContact = Contact.builder().mobile("07123456789").build();
@@ -254,10 +254,10 @@ public class TransformAppealCaseToCaseDataTest {
             10, caseData.getSubscriptions().getRepresentativeSubscription().getTya().length());
         final Subscription expectedRepresentativeSubscription = Subscription.builder()
             .email("john@example.com")
-            .subscribeEmail("No")
+            .subscribeEmail(NO)
             .mobile("")
             .reason("")
-            .subscribeSms("No")
+            .subscribeSms(NO)
             .tya(caseData.getSubscriptions().getRepresentativeSubscription().getTya())
             .build();
         final Contact expectedContact = Contact.builder().email("john@example.com").build();

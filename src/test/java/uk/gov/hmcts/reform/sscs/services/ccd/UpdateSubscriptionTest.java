@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import org.junit.Test;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -19,9 +21,9 @@ public class UpdateSubscriptionTest {
             .build())
         .subscriptions(Subscriptions.builder()
             .representativeSubscription(Subscription.builder()
-                .subscribeSms("No").subscribeEmail("No").email("harry.potter@mail.com").build())
+                .subscribeSms(NO).subscribeEmail(NO).email("harry.potter@mail.com").build())
             .appointeeSubscription(Subscription.builder()
-                .email("appointee.new@email.com").subscribeEmail("No").build())
+                .email("appointee.new@email.com").subscribeEmail(NO).build())
             .build())
         .build();
 
@@ -32,11 +34,11 @@ public class UpdateSubscriptionTest {
             .build())
         .subscriptions(Subscriptions.builder()
             .representativeSubscription(Subscription.builder()
-                .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com")
+                .subscribeSms(YES).mobile("0777").subscribeEmail(YES).email("harry.potter@mail.com")
                     .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").build())
             .appointeeSubscription(Subscription.builder()
-                .wantSmsNotifications("Yes")
-                .subscribeSms("Yes").mobile("0777").email("appointee.old@email.com").subscribeEmail("Yes").build())
+                .wantSmsNotifications(YES)
+                .subscribeSms(YES).mobile("0777").email("appointee.old@email.com").subscribeEmail(YES).build())
             .build()
         ).build();
 
@@ -46,11 +48,11 @@ public class UpdateSubscriptionTest {
             .build())
         .subscriptions(Subscriptions.builder()
             .appellantSubscription(Subscription.builder()
-                .wantSmsNotifications("Yes")
-                .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("appellant.old@email.com")
+                .wantSmsNotifications(YES)
+                .subscribeSms(YES).mobile("0777").subscribeEmail(YES).email("appellant.old@email.com")
                 .build())
             .representativeSubscription(Subscription.builder()
-                .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email("harry.potter@mail.com")
+                .subscribeSms(YES).mobile("0777").subscribeEmail(YES).email("harry.potter@mail.com")
                 .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").build())
             .build()
         ).build();
@@ -58,11 +60,11 @@ public class UpdateSubscriptionTest {
     @Test
     public void givenAChangeInAppointee_shouldNotUnsubscribeAppointeeOrRep() {
         final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
-                .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").subscribeSms("Yes").mobile("0777")
-                .subscribeEmail("Yes").build();
+                .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").subscribeSms(YES).mobile("0777")
+                .subscribeEmail(YES).build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder().email("appointee.old@email.com")
-            .wantSmsNotifications("Yes").subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+            .wantSmsNotifications(YES).subscribeSms(YES).mobile("0777").subscribeEmail(YES).build();
 
         UpdateSubscription.SubscriptionUpdate appointeeSubscriptionUpdate =
             new UpdateSubscription.SubscriptionUpdate() {
@@ -94,19 +96,19 @@ public class UpdateSubscriptionTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .appellantSubscription(Subscription.builder()
-                    .subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").email(null)
+                    .subscribeSms(YES).mobile("0777").subscribeEmail(YES).email(null)
                     .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").build())
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("No").subscribeEmail("No").email("harry.potter@mail.com").build())
+                    .subscribeSms(NO).subscribeEmail(NO).email("harry.potter@mail.com").build())
                 .build()
             ).build();
 
         final Subscription expectedRepSubscription = Subscription.builder().email("harry.potter@mail.com")
-            .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").subscribeSms("Yes").mobile("0777")
-            .subscribeEmail("Yes").build();
+            .lastLoggedIntoMya("2020-01-24T00:00:00+01:00").subscribeSms(YES).mobile("0777")
+            .subscribeEmail(YES).build();
 
         final Subscription expectedAppellantSubscription = Subscription.builder().email("appellant.old@email.com")
-            .wantSmsNotifications("Yes").subscribeSms("Yes").mobile("0777").subscribeEmail("Yes").build();
+            .wantSmsNotifications(YES).subscribeSms(YES).mobile("0777").subscribeEmail(YES).build();
 
         UpdateSubscription.SubscriptionUpdate appellantSubscriptionUpdate =
             new UpdateSubscription.SubscriptionUpdate() {

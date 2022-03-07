@@ -1,23 +1,15 @@
 package uk.gov.hmcts.reform.sscs.services.mapper;
 
+import static java.util.Objects.nonNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.isYesOrNo;
+
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
-import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.DwpTimeExtension;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
-import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
-import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
-import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
-import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 
@@ -122,16 +114,20 @@ public class TransformAppealCaseToCaseData {
         return caseDataBuilder.buildRegionalProcessingCentre(appealCase, appellantParty);
     }
 
+
     private Appellant appellant(final Parties appellantParty,
                                 final Optional<Parties> appointeeParty,
                                 final AppealCase appealCase) {
         Appointee appointee = appointeeParty.map((Parties party) -> appointee(party, appealCase)).orElse(null);
+
+        YesNo hasAppointee = isYesOrNo(nonNull(appointee)
+            && nonNull(appointee.getName())
+            && nonNull(appointee.getName().getLastName()));
+
         return Appellant.builder()
             .name(caseDataBuilder.buildName(appellantParty))
             .contact(caseDataBuilder.buildContact(appellantParty))
-            .isAppointee(appointee != null
-                && appointee.getName() != null
-                && appointee.getName().getLastName() != null ? "Yes" : "No")
+            .isAppointee(hasAppointee)
             .identity(caseDataBuilder.buildIdentity(appellantParty, appealCase))
             .appointee(appointee)
             .build();
@@ -151,7 +147,7 @@ public class TransformAppealCaseToCaseData {
 
     private Representative representative(final Parties representativeParty) {
         return Representative.builder()
-            .hasRepresentative("Yes")
+            .hasRepresentative(YES)
             .contact(caseDataBuilder.buildContact(representativeParty))
             .name(caseDataBuilder.buildName(representativeParty))
             .build();

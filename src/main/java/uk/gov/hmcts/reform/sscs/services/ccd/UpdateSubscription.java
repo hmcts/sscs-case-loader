@@ -1,5 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static java.util.Objects.nonNull;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
@@ -8,9 +12,6 @@ import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
 @Slf4j
 class UpdateSubscription {
-
-    private static final String YES = "Yes";
-    private static final String NO = "No";
 
     private UpdateSubscription() {
         // Empty
@@ -41,13 +42,13 @@ class UpdateSubscription {
                                                                     Subscription exisitingSubscription,
                                                                     String caseReference) {
         return newSubscription.toBuilder()
-            .wantSmsNotifications(exisitingSubscription != null ? exisitingSubscription.getWantSmsNotifications() : NO)
-            .subscribeSms(exisitingSubscription != null && exisitingSubscription.isSmsSubscribed() ? YES : NO)
-            .subscribeEmail(exisitingSubscription != null && exisitingSubscription.isEmailSubscribed() ? YES : NO)
+            .wantSmsNotifications(nonNull(exisitingSubscription) ? exisitingSubscription.getWantSmsNotifications() : NO)
+            .subscribeSms(nonNull(exisitingSubscription) && exisitingSubscription.isSmsSubscribed() ? YES : NO)
+            .subscribeEmail(nonNull(exisitingSubscription) && exisitingSubscription.isEmailSubscribed() ? YES : NO)
             .mobile(getValidMobileNumber(newSubscription, exisitingSubscription, caseReference))
-            .email(exisitingSubscription != null ? exisitingSubscription.getEmail() : newSubscription.getEmail())
-            .tya(exisitingSubscription != null ? exisitingSubscription.getTya() : newSubscription.getTya())
-            .lastLoggedIntoMya(exisitingSubscription != null ? exisitingSubscription.getLastLoggedIntoMya() : null)
+            .email(nonNull(exisitingSubscription) ? exisitingSubscription.getEmail() : newSubscription.getEmail())
+            .tya(nonNull(exisitingSubscription) ? exisitingSubscription.getTya() : newSubscription.getTya())
+            .lastLoggedIntoMya(nonNull(exisitingSubscription) ? exisitingSubscription.getLastLoggedIntoMya() : null)
             .build();
     }
 

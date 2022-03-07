@@ -2,29 +2,11 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataNoWhenThereAreGapsDataWithNewAppointeeNameHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithEmptyFields;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreExistingCcdDataUpdatesWithNullFields;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithEmptyFields;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNewAppointeeHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataUpdatesWithNullFields;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeContactHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithNewAppointeeIdentityHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeEmailHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeFirstNameHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeLastNameHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeMobileHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeeNinoHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedAppointeePhoneHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedMobileHappyPaths;
-import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.updateCcdDataWhenThereAreGapsDataWithUpdatedPhoneHappyPaths;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.NO;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.*;
 
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;
@@ -33,8 +15,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
-import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAndCcdDataUpdateScenario;
-import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.GapsAppellantData;
+import uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHelper.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class UpdateCcdAppellantDataTest {
@@ -60,15 +41,15 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("No")
-                    .subscribeEmail("No")
-                    .wantSmsNotifications("No")
+                    .subscribeSms(NO)
+                    .subscribeEmail(NO)
+                    .wantSmsNotifications(NO)
                     .email("harry.potter@mail.com")
                     .build())
                 .appointeeSubscription(Subscription.builder()
                     .email("appointee.new@email.com")
-                    .subscribeEmail("No")
-                    .wantSmsNotifications("No")
+                    .subscribeEmail(NO)
+                    .wantSmsNotifications(NO)
                     .build())
                 .build())
             .build();
@@ -80,36 +61,36 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("Yes")
+                    .subscribeSms(YES)
                     .mobile("0777")
-                    .subscribeEmail("Yes")
-                    .wantSmsNotifications("Yes")
+                    .subscribeEmail(YES)
+                    .wantSmsNotifications(YES)
                     .email("harry.potter@mail.com")
                     .build())
                 .appointeeSubscription(Subscription.builder()
-                    .subscribeSms("Yes")
-                    .wantSmsNotifications("Yes")
+                    .subscribeSms(YES)
+                    .wantSmsNotifications(YES)
                     .mobile("0777")
                     .email("appointee.old@email.com")
-                    .subscribeEmail("Yes")
+                    .subscribeEmail(YES)
                     .build())
                 .build()
             ).build();
 
         final Subscription expectedRepSubscription = Subscription.builder()
             .email("harry.potter@mail.com")
-            .subscribeSms("Yes")
+            .subscribeSms(YES)
             .mobile("0777")
-            .wantSmsNotifications("Yes")
-            .subscribeEmail("Yes")
+            .wantSmsNotifications(YES)
+            .subscribeEmail(YES)
             .build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder()
             .email("appointee.old@email.com")
-            .subscribeSms("Yes")
-            .wantSmsNotifications("Yes")
+            .subscribeSms(YES)
+            .wantSmsNotifications(YES)
             .mobile("0777")
-            .subscribeEmail("Yes")
+            .subscribeEmail(YES)
             .build();
 
         boolean isUpdated = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCase);
@@ -130,15 +111,15 @@ public class UpdateCcdAppellantDataTest {
                 .build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("No")
-                    .subscribeEmail("No")
-                    .wantSmsNotifications("No")
+                    .subscribeSms(NO)
+                    .subscribeEmail(NO)
+                    .wantSmsNotifications(NO)
                     .email("harry.potter@mail.com")
                     .build())
                 .appellantSubscription(Subscription.builder()
                     .email("appellant.new@email.com")
-                    .wantSmsNotifications("No")
-                    .subscribeEmail("No")
+                    .wantSmsNotifications(NO)
+                    .subscribeEmail(NO)
                     .build())
                 .build())
             .build();
@@ -148,17 +129,17 @@ public class UpdateCcdAppellantDataTest {
                 .appellant(Appellant.builder().name(name).build()).build())
             .subscriptions(Subscriptions.builder()
                 .representativeSubscription(Subscription.builder()
-                    .subscribeSms("Yes")
+                    .subscribeSms(YES)
                     .mobile("0777")
-                    .subscribeEmail("Yes")
-                    .wantSmsNotifications("Yes")
+                    .subscribeEmail(YES)
+                    .wantSmsNotifications(YES)
                     .email("harry.potter@mail.com")
                     .build())
                 .appellantSubscription(Subscription.builder()
                     .email("appellant.old@email.com")
-                    .subscribeEmail("Yes")
-                    .wantSmsNotifications("Yes")
-                    .subscribeSms("Yes")
+                    .subscribeEmail(YES)
+                    .wantSmsNotifications(YES)
+                    .subscribeSms(YES)
                     .mobile("0777")
                     .build())
                 .build()
@@ -166,18 +147,18 @@ public class UpdateCcdAppellantDataTest {
 
         final Subscription expectedRepSubscription = Subscription.builder()
             .email("harry.potter@mail.com")
-            .subscribeSms("Yes")
-            .wantSmsNotifications("Yes")
+            .subscribeSms(YES)
+            .wantSmsNotifications(YES)
             .mobile("0777")
-            .subscribeEmail("Yes")
+            .subscribeEmail(YES)
             .build();
 
         final Subscription expectedAppointeeSubscription = Subscription.builder()
             .email("appellant.old@email.com")
-            .subscribeSms("Yes")
-            .wantSmsNotifications("Yes")
+            .subscribeSms(YES)
+            .wantSmsNotifications(YES)
             .mobile("0777")
-            .subscribeEmail("Yes")
+            .subscribeEmail(YES)
             .build();
 
         boolean isUpdated = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCase);
@@ -335,9 +316,9 @@ public class UpdateCcdAppellantDataTest {
                 .name(Name.builder().firstName("Ap").lastName("pointee").build())
                 .contact(Contact.builder().email("test@test.com").build())
                 .build())
-            .isAppointee("No")
-            .isAddressSameAsAppointee("Yes")
-            .confidentialityRequired(YesNo.NO)
+            .isAppointee(NO)
+            .isAddressSameAsAppointee(YES)
+            .confidentialityRequired(NO)
             .role(Role.builder().build())
             .build();
 
@@ -364,11 +345,11 @@ public class UpdateCcdAppellantDataTest {
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getAppointee().getContact().getEmail(),
             equalTo("test@test.com"));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getIsAppointee(),
-            equalTo("No"));
+            equalTo(NO));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getIsAddressSameAsAppointee(),
-            equalTo("Yes"));
+            equalTo(YES));
         assertThat(existingCcdCaseData.getAppeal().getAppellant().getConfidentialityRequired(),
-            equalTo(YesNo.NO));
+            equalTo(NO));
         assertNotNull(existingCcdCaseData.getAppeal().getAppellant().getRole());
     }
 
@@ -380,7 +361,7 @@ public class UpdateCcdAppellantDataTest {
             .identity(Identity.builder()
                 .nino(normalisedNino)
                 .build())
-            .isAppointee("Yes")
+            .isAppointee(YES)
             .appointee(Appointee.builder()
                 .name(Name.builder().firstName("F").lastName("L").build())
                 .contact(Contact.builder().build())
@@ -399,7 +380,7 @@ public class UpdateCcdAppellantDataTest {
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
         assertTrue(updateData);
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIsAppointee(), equalTo("Yes"));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIsAppointee(), equalTo(YES));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee().getContact(),
             equalTo(appellant.getAppointee().getContact()));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee().getIdentity(),
@@ -416,7 +397,7 @@ public class UpdateCcdAppellantDataTest {
             .identity(Identity.builder()
                 .nino(normalisedNino)
                 .build())
-            .isAppointee("Yes")
+            .isAppointee(YES)
             .appointee(Appointee.builder()
                 .name(Name.builder().firstName("F").lastName("L").build())
                 .contact(Contact.builder().build())
@@ -438,7 +419,7 @@ public class UpdateCcdAppellantDataTest {
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
         assertTrue(updateData);
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIsAppointee(), equalTo("Yes"));
+        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIsAppointee(), equalTo(YES));
         assertEquals("",
             existingCaseDetails.getData().getAppeal().getAppellant().getAppointee().getName().getFirstName());
         assertEquals("",
