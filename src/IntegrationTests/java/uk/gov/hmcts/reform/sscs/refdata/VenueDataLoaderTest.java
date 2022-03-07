@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.refdata;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Map;
@@ -29,6 +28,5 @@ public class VenueDataLoaderTest {
         Map<String, VenueDetails> venueDetailsMap = venueDataLoader.getVenueDetailsMap();
 
         assertNotNull(venueDetailsMap);
-        assertEquals(265, venueDetailsMap.size());
     }
 }
