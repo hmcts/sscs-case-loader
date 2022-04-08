@@ -56,4 +56,8 @@
    ]]></notes>
     <cve>CVE-2020-36518</cve>
   </suppress>
+  <suppress until="2022-05-02">
+    <notes>spring-beans-5.2.15.RELEASE.jar</notes>
+    <cve>CVE-2022-22965</cve>
+  </suppress>
 </suppressions>
