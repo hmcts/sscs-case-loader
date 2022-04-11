@@ -60,4 +60,10 @@
     <notes>spring-beans-5.2.15.RELEASE.jar</notes>
     <cve>CVE-2022-22965</cve>
   </suppress>
+      <suppress until="2022-05-02">
+    <notes><![CDATA[
+   file name: spring-aop-5.2.15.RELEASE.jar
+   ]]></notes>
+    <cve>CVE-2022-22950</cve>
+  </suppress>
 </suppressions>
