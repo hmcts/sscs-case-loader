@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs.refdata;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKey.CASE_CODE;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.CASE_CODE_ID;
 import static uk.gov.hmcts.reform.sscs.refdata.domain.RefKeyField.CCD_KEY;
@@ -23,7 +22,7 @@ public class RefDataRepositoryTest {
         repo.add(CASE_CODE, "A", CASE_CODE_ID, "A");
         repo.add(CASE_CODE, "A", CCD_KEY, "1");
 
-        assertThat(repo.find(CASE_CODE, "A", CASE_CODE_ID), is("A"));
-        assertThat(repo.find(CASE_CODE, "A", CCD_KEY), is("1"));
+        assertThat(repo.find(CASE_CODE, "A", CASE_CODE_ID)).isEqualTo("A");
+        assertThat(repo.find(CASE_CODE, "A", CCD_KEY)).isEqualTo("1");;
     }
 }
