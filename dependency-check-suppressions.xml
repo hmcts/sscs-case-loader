@@ -56,4 +56,14 @@
    ]]></notes>
     <cve>CVE-2020-36518</cve>
   </suppress>
+  <suppress until="2022-04-21">
+    <notes><![CDATA[
+   file name: jackson-databind-2.11.0.jar
+   ]]></notes>
+    <cve>CVE-2022-23221</cve>
+    <cve>CVE-2021-23463</cve>
+    <cve>CVE-2021-42392</cve>
+    <cve>CVE-2021-42550</cve>
+    <cve>CVE-2022-23181</cve>
+  </suppress>
 </suppressions>
