@@ -19,12 +19,6 @@
     <notes><![CDATA[
    logback packages
    ]]></notes>
-    <cve>CVE-2021-42550</cve>
-  </suppress>
-  <suppress until="2022-06-15">
-    <notes><![CDATA[
-   tomcat packages
-   ]]></notes>
     <cve>CVE-2022-23181</cve>
   </suppress>
   <suppress until="2022-06-15">
