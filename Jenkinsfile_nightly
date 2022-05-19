@@ -59,7 +59,7 @@ withNightlyPipeline(type, product, component) {
   enableSecurityScan()
 
   loadVaultSecrets(secrets)
-  enableFortifyScan()
+//  enableFortifyScan()
 
   enableAksStagingDeployment()
   disableLegacyDeployment()
@@ -75,9 +75,9 @@ withNightlyPipeline(type, product, component) {
     }
   }
 
-  after('fortify-scan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-  }
+//  after('fortify-scan') {
+//    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+//  }
 
   after('securityScan') {
     echo "Checking case number:"
