@@ -183,7 +183,7 @@ def versions = [
   springBoot      : springBoot.class.package.implementationVersion,
   springHystrix   : '1.4.2.RELEASE',
   springfoxSwagger: '2.8.0',
-  sscsCommon      : '4.9.11',
+  sscsCommon      : '4.11.2',
 ]
 
 ext["rest-assured.version"] = '4.3.0'
