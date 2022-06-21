@@ -6,7 +6,7 @@ plugins {
   id 'org.springframework.boot' version '2.3.5.RELEASE'
   id 'uk.gov.hmcts.java' version '0.12.12'
   id 'com.github.ben-manes.versions' version '0.41.0'
-  id 'net.ltgt.apt' version '0.21'
+  id 'net.ltgt.apt' version '0.21'S
   id 'org.sonarqube' version '3.3'
   id 'org.owasp.dependencycheck' version '6.2.2'
   id "com.gorylenko.gradle-git-properties" version "2.3.2"
@@ -183,7 +183,7 @@ def versions = [
   springBoot      : springBoot.class.package.implementationVersion,
   springHystrix   : '1.4.2.RELEASE',
   springfoxSwagger: '2.8.0',
-  sscsCommon      : '4.11.2',
+  sscsCommon      : '4.11.3',
 ]
 
 ext["rest-assured.version"] = '4.3.0'
