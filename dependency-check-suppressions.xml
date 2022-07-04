@@ -99,4 +99,7 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-netflix\-hystrix\-dashboard@.*$</packageUrl>
     <cve>CVE-2021-22053</cve>
   </suppress>
+  <suppress>
+    <cve>CVE-2022-33915</cve>
+  </suppress>
 </suppressions>
