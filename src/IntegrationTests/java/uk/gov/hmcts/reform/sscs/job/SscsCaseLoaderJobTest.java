@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.job;
 
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -33,7 +34,7 @@ public class SscsCaseLoaderJobTest {
     @Test
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction() {
         sscsCaseLoaderJob.run();
-        verify(caseLoaderService, times(1)).process();
+        verify(caseLoaderService, atLeastOnce()).process();
 
     }
 }
