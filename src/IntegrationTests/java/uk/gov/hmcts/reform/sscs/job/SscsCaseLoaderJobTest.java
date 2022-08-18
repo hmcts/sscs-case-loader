@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.sscs.job;
 
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
@@ -12,6 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.services.CaseLoaderService;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
+
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -33,7 +34,7 @@ public class SscsCaseLoaderJobTest {
     @Test
     public void givenHostname_shouldRunTheProcessOnlyIfItIsProduction() {
         sscsCaseLoaderJob.run();
-        verify(caseLoaderService, times(1)).process();
+        verify(caseLoaderService, atLeastOnce()).process();
 
     }
 }
