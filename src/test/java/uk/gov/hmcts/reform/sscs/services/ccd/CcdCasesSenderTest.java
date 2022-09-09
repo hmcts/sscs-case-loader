@@ -206,7 +206,7 @@ public class CcdCasesSenderTest {
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCcdCase, idamTokens);
 
         verify(updateCcdCaseService, times(1))
-            .updateCase(eq(SscsCaseData.builder().build()), anyLong(), eq("caseUpdated"),
+            .updateCase(any(SscsCaseData.class), anyLong(), eq("caseUpdated"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
     }
 
