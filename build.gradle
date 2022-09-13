@@ -324,9 +324,9 @@ dependencies {
   compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
   compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.3'
 
-  compileOnly 'org.projectlombok:lombok:1.18.22'
+  compileOnly 'org.projectlombok:lombok:1.18.24'
   annotationProcessor "org.projectlombok:lombok:1.18.22"
-  testCompileOnly 'org.projectlombok:lombok:1.18.18'
+  testCompileOnly 'org.projectlombok:lombok:1.18.24'
   testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
   e2eCompile 'org.projectlombok:lombok:1.18.18'
   e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
