@@ -29,6 +29,7 @@ import static uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantDataTestHe
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -576,8 +577,11 @@ public class UpdateCcdAppellantDataTest {
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.email));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
             equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.nino));
-        assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee(),
-            equalTo(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.appointee));
+
+        Assertions.assertThat(gapsAndCcdDataUpdateScenario.expectedExistingCcdAppellantName.appointee)
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee());
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
