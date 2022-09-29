@@ -255,7 +255,7 @@ dependencyManagement {
     }
 
     //CVE-2022-25857, CVE-2022-38749, CVE-2022-38750, CVE-2022-38751
-    dependencySet(group: 'org.yaml', version: '1.31') {
+    dependencySet(group: 'org.yaml', version: '1.32') {
       entry 'snakeyaml'
     }
 
