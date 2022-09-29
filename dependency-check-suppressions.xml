@@ -24,4 +24,12 @@
     ]]></notes>
     <cve>CVE-2022-38752</cve>
   </suppress>
+  <suppress until="2022-10-30">
+    <notes><![CDATA[
+   Temporary suppression to get the build working for a while. PET ticket SSCS-10907 will be used to fix it permanently.
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.codehaus\.jettison/jettison@.*$</packageUrl>
+    <cve>CVE-2022-40149</cve>
+    <cve>CVE-2022-40150</cve>
+  </suppress>
 </suppressions>
