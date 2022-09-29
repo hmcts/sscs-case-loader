@@ -145,6 +145,7 @@ public class CaseLoaderServiceTest {
                 .build())
             .build();
         SscsCaseData caseDataWithInvalidScNumber = SscsCaseData.builder()
+            .jointParty(caseData.getJointParty())
             .caseReference("invalidCaseRef")
             .appeal(appeal)
             .build();
@@ -153,6 +154,7 @@ public class CaseLoaderServiceTest {
         events.add(Event.builder().value(EventDetails.builder().type(SENT_TO_DWP.getCcdType()).build()).build());
 
         SscsCaseData updatedCaseData = SscsCaseData.builder()
+            .jointParty(caseData.getJointParty())
             .events(events)
             .caseReference("caseRef")
             .appeal(appeal)
@@ -186,6 +188,7 @@ public class CaseLoaderServiceTest {
                 .build())
             .build();
         SscsCaseData caseDataScNumber = SscsCaseData.builder()
+            .jointParty(caseData.getJointParty())
             .caseReference("SC001/19/00365123")
             .appeal(appeal)
             .build();
@@ -194,6 +197,7 @@ public class CaseLoaderServiceTest {
         events.add(Event.builder().value(EventDetails.builder().type(SENT_TO_DWP.getCcdType()).build()).build());
 
         SscsCaseData updatedCaseData = SscsCaseData.builder()
+            .jointParty(caseData.getJointParty())
             .events(events)
             .caseReference("caseRef")
             .appeal(appeal)

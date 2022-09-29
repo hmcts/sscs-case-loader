@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
@@ -140,7 +141,10 @@ public class UpdateCcdRepresentativeTest {
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        Assertions.assertThat(existingCaseData.getAppeal().getRep())
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(gapsCaseData.getAppeal().getRep());
         assertEquals(ABCDEFGH_2, existingCaseData.getSubscriptions().getRepresentativeSubscription().getTya());
         assertEquals("harry.potter@wizards.com",
                 existingCaseData.getSubscriptions().getRepresentativeSubscription().getEmail());
@@ -205,7 +209,10 @@ public class UpdateCcdRepresentativeTest {
 
         SscsCaseData expectedExistingRepsData = gapsCaseData.toBuilder().build();
         expectedExistingRepsData.getAppeal().getRep().getContact().setMobile("07123456789");
-        assertEquals(expectedExistingRepsData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        Assertions.assertThat(existingCaseData.getAppeal().getRep())
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(gapsCaseData.getAppeal().getRep());
 
         assertEquals(gapsCaseData.getSubscriptions().getRepresentativeSubscription(),
             existingCaseData.getSubscriptions().getRepresentativeSubscription());
@@ -237,7 +244,11 @@ public class UpdateCcdRepresentativeTest {
 
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
         assertTrue("rep contact has changed", hasDataChanged);
-        assertEquals(gapsCaseData.getAppeal().getRep(), existingCaseData.getAppeal().getRep());
+        Assertions.assertThat(existingCaseData.getAppeal().getRep())
+            .usingRecursiveComparison()
+            .ignoringFields("id")
+            .isEqualTo(gapsCaseData.getAppeal().getRep());
+
         assertEquals(gapsCaseData.getAppeal().getRep().getContact().getMobile(),
             existingCaseData.getAppeal().getRep().getContact().getMobile());
 
@@ -259,7 +270,10 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
         assertFalse(hasDataChanged);
-        assertEquals(existingCaseData, gapsCaseData);
+        Assertions.assertThat(existingCaseData)
+            .usingRecursiveComparison()
+            .ignoringFields("jointParty")
+            .isEqualTo(gapsCaseData);
     }
 
     @Test
@@ -277,7 +291,10 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
         assertFalse(hasDataChanged);
-        assertEquals(existingCaseData, originalExistingCaseData);
+        Assertions.assertThat(existingCaseData)
+            .usingRecursiveComparison()
+            .ignoringFields("jointParty")
+            .isEqualTo(originalExistingCaseData);
     }
 
     @Test
@@ -286,23 +303,23 @@ public class UpdateCcdRepresentativeTest {
             .appeal(Appeal.builder().build())
             .build();
 
-        SscsCaseData ccdCaseData = SscsCaseData.builder().appeal(Appeal.builder()
-            .rep(
-                Representative.builder().name(Name.builder().lastName("Potter").build()).build()
-            ).build())
-            .subscriptions(
-                Subscriptions.builder()
-                    .representativeSubscription(
-                        Subscription.builder()
-                            .wantSmsNotifications(YES)
-                            .subscribeEmail(YES)
-                            .email("test@test.com")
-                            .subscribeSms(YES)
-                            .mobile("07811111111")
-                            .build()
-                    )
-                    .build()
-            )
+        SscsCaseData ccdCaseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .rep(Representative.builder()
+                    .name(Name.builder()
+                        .lastName("Potter")
+                        .build())
+                    .build())
+                .build())
+            .subscriptions(Subscriptions.builder()
+                .representativeSubscription(Subscription.builder()
+                    .wantSmsNotifications(YES)
+                    .subscribeEmail(YES)
+                    .email("test@test.com")
+                    .subscribeSms(YES)
+                    .mobile("07811111111")
+                    .build())
+                .build())
             .build();
         SscsCaseData expectedCaseData = ccdCaseData.toBuilder()
             .subscriptions(
@@ -322,7 +339,10 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(newCaseData, ccdCaseData);
 
         assertTrue(hasDataChanged);
-        assertEquals(expectedCaseData, ccdCaseData);
+        Assertions.assertThat(ccdCaseData)
+            .usingRecursiveComparison()
+            .ignoringFields("jointParty")
+            .isEqualTo(expectedCaseData);
     }
 
     @Test
@@ -339,7 +359,10 @@ public class UpdateCcdRepresentativeTest {
         boolean hasDataChanged = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCaseData);
 
         assertFalse(hasDataChanged);
-        assertEquals(existingCaseData, originalExistingCaseData);
+        Assertions.assertThat(existingCaseData)
+            .usingRecursiveComparison()
+            .ignoringFields("jointParty")
+            .isEqualTo(originalExistingCaseData);
     }
 
     @Test
