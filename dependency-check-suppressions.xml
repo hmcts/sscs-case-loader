@@ -25,4 +25,13 @@
     <cve>CVE-2022-40149</cve>
     <cve>CVE-2022-40150</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name:
+   tomcat-embed-core-10.1.0-M17.jar
+   tomcat-embed-websocket-10.1.0-M17.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/.*$</packageUrl>
+    <cve>CVE-2021-43980</cve>
+  </suppress>
 </suppressions>
