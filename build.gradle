@@ -134,6 +134,16 @@ dependencyCheck {
   // range of 7-10 fails the build, anything lower and it doesn't fail the build
   failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 7.0 : 11
   suppressionFile = 'dependency-check-suppressions.xml'
+  cveValidForHours = 24 // on Jenkins we have 24, so if you get more vulnerabilities locally, try to normalize this value with Jenkins
+
+  analyzers {
+    retirejs {
+      enabled = false
+    }
+    ossIndex {
+      enabled = false
+    }
+  }
 }
 
 repositories {
@@ -314,7 +324,7 @@ dependencies {
 
   compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
   compile group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
-  compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.17.1'
+  compile group: 'com.github.hmcts', name: 'sscs-common', version: '4.12.3'
 
   compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
