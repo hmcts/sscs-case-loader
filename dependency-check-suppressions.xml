@@ -45,10 +45,15 @@
   </suppress>
   <suppress until="2022-10-30">
     <notes><![CDATA[
-   file name: jackson-databind-2.11.0.jar
+   file name:
+   jackson-databind-2.11.0.jar
+   jackson-dataformats-binary:2.11.3
    ]]></notes>
-    <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
+    <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson.*$</packageUrl>
     <cve>CVE-2020-36518</cve>
+    <cve>CVE-2020-28491</cve>
+    <cve>CVE-2022-42004</cve>
+    <cve>CVE-2022-42003</cve>
   </suppress>
   <suppress until="2022-10-30">
     <notes><![CDATA[
@@ -59,4 +64,15 @@
     <packageUrl regex="true">^pkg:maven/ch\.qos\.logback.*$</packageUrl>
     <cve>CVE-2021-42550</cve>
   </suppress>
+  <suppress until="2022-10-30">
+    <notes><![CDATA[
+   file name:
+   org.springframework.cloud
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/.*$</packageUrl>
+    <cve>CVE-2021-22053</cve>
+    <cve>CVE-2021-22044</cve>
+    <cve>CVE-2020-5412</cve>
+  </suppress>
+
 </suppressions>
