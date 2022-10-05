@@ -134,16 +134,15 @@ dependencyCheck {
   // range of 7-10 fails the build, anything lower and it doesn't fail the build
   failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 7.0 : 11
   suppressionFile = 'dependency-check-suppressions.xml'
-
-  cveValidForHours = 4 // on Jenkins we have 24, so if you get more vulnerabilities locally, try to normalize this value with Jenkins
+  cveValidForHours = 24 // on Jenkins we have 24, so if you get more vulnerabilities locally, try to normalize this value with Jenkins
 
   analyzers {
-      retirejs {
-          enabled = false
-      }
-      ossIndex {
-          enabled = false
-      }
+    retirejs {
+      enabled = false
+    }
+    ossIndex {
+      enabled = false
+    }
   }
 }
 
