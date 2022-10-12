@@ -1,78 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <suppress>
-    <notes><![CDATA[
-   CVE-2018-1258: we do not use Spring Method Security, so this does not affect us
-   ]]></notes>
-    <packageUrl regex="true">^org\.springframework\.security:spring-.*:.*$</packageUrl>
-    <cve>CVE-2018-1258</cve>
-    <cve>CVE-2020-5408</cve>
-    <cve>CVE-2022-22976</cve>
-  </suppress>
   <suppress until="2023-09-01">
-    <!-- 2022-09: Not applicable to us. We don't use HTTP Invoker nor do we communicate through native java bean serialization.
-    We use JSON instead. Suppressed for a year to allow re-assessing in the unlikely event we decide to introduce it. -->
     <notes><![CDATA[
-          spring-core-5.2.20.RELEASE.jar
+   2022-09: Not applicable to us. We don't use HTTP Invoker nor do we communicate through native java bean serialization.
+    We use JSON instead. Suppressed for a year to allow re-assessing in the unlikely event we decide to introduce it.
    ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-web@.*$</packageUrl>
     <cve>CVE-2016-1000027</cve>
   </suppress>
-  <suppress until="2022-10-30">
+  <suppress until="2023-09-01">
     <notes><![CDATA[
-   Temporary suppression to get the build working for a while. PET ticket SSCS-10907 will be used to fix it permanently.
+   2022-09: Not applicable to us. This vulnerability requires both spring-cloud-netflix-hystrix-dashboard and
+    spring-boot-starter-thymeleaf. We have neither in our codebase or dependencies, so the vulnerability doesn't
+    apply to us. Suppressed for a year to allow re-assessing in the unlikely event we decide to introduce those
+    dependencies.
    ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.codehaus\.jettison/jettison@.*$</packageUrl>
-    <cve>CVE-2022-40149</cve>
-    <cve>CVE-2022-40150</cve>
-  </suppress>
-  <suppress until="2022-10-30">
-    <notes><![CDATA[
-   file name:
-   tomcat-embed-core-10.1.0-M17.jar
-   tomcat-embed-websocket-10.1.0-M17.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/.*$</packageUrl>
-    <cve>CVE-2021-43980</cve>
-  </suppress>
-  <suppress until="2022-10-30">
-    <notes><![CDATA[
-   file name: h2-1.4.200.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/com\.h2database/h2@.*$</packageUrl>
-    <cve>CVE-2021-23463</cve>
-    <cve>CVE-2022-23221</cve>
-    <cve>CVE-2021-42392</cve>
-  </suppress>
-  <suppress until="2022-10-30">
-    <notes><![CDATA[
-   file name:
-   jackson-databind-2.11.0.jar
-   jackson-dataformats-binary:2.11.3
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson.*$</packageUrl>
-    <cve>CVE-2020-36518</cve>
-    <cve>CVE-2020-28491</cve>
-    <cve>CVE-2022-42004</cve>
-    <cve>CVE-2022-42003</cve>
-  </suppress>
-  <suppress until="2022-10-30">
-    <notes><![CDATA[
-   file name:
-   logback-core-1.2.3.jar
-   logback-classic-1.2.3.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/ch\.qos\.logback.*$</packageUrl>
-    <cve>CVE-2021-42550</cve>
-  </suppress>
-  <suppress until="2022-10-30">
-    <notes><![CDATA[
-   file name:
-   org.springframework.cloud
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/.*$</packageUrl>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-.*netflix.*@.*$</packageUrl>
     <cve>CVE-2021-22053</cve>
+  </suppress>
+  <suppress until = "2022-11-01">
+    <notes><![CDATA[
+    file name: spring-cloud-openfeign-core-2.2.9.RELEASE.jar
+    ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org.springframework\.cloud/spring-cloud-.*openfeign.*@.*$</packageUrl>
     <cve>CVE-2021-22044</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: spring-cloud-starter-hystrix-1.4.2.RELEASE.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-starter\-hystrix.*@.*$</packageUrl>
     <cve>CVE-2020-5412</cve>
   </suppress>
-
+  <suppress until = "2022-11-01">
+    <notes><![CDATA[
+   file name: jackson-databind-2.13.4.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
+    <cve>CVE-2022-42003</cve>
+  </suppress>
+  <suppress until = "2022-11-01">
+    <notes><![CDATA[
+   file name: h2-1.4.200.jar
+   Upgrade, causes error
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.h2database/h2@.*$</packageUrl>
+    <cve>CVE-2021-42392</cve>
+    <cve>CVE-2022-23221</cve>
+    <cve>CVE-2021-23463</cve>
+  </suppress>
 </suppressions>
