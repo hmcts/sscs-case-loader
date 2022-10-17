@@ -8,7 +8,7 @@ plugins {
   id 'com.github.ben-manes.versions' version '0.41.0'
   id 'net.ltgt.apt' version '0.21'
   id 'org.sonarqube' version '3.3'
-  id 'org.owasp.dependencycheck' version '7.1.2'
+  id 'org.owasp.dependencycheck' version '7.2.1'
   id "com.gorylenko.gradle-git-properties" version "2.3.2"
 }
 
@@ -96,8 +96,8 @@ pmd {
 }
 
 dependencies {
-  integrationTestCompile(sourceSets.test.output)
-  e2eCompile(sourceSets.test.output)
+  integrationTestImplementation (sourceSets.test.output)
+  e2eImplementation (sourceSets.test.output)
 }
 
 jacoco {
@@ -150,7 +150,6 @@ repositories {
   mavenLocal()
 
   mavenCentral()
-  jcenter()
 
   maven {
     url 'https://repo.spring.io/libs-milestone'
@@ -181,31 +180,18 @@ sonarqube {
 
 
 configurations {
-  integrationTestCompile.extendsFrom(testCompile)
-  integrationTestRuntime.extendsFrom(testRuntime)
-  e2eRuntime.extendsFrom(testRuntime)
-  e2eCompile.extendsFrom(testCompile)
+  integrationTestImplementation .extendsFrom(testImplementation )
+  integrationTestRuntimeOnly.extendsFrom(testRuntimeOnly)
+  e2eRuntimeOnly.extendsFrom(testRuntimeOnly)
+  e2eImplementation .extendsFrom(testImplementation )
 }
-
-def versions = [
-  logback         : '1.2.3',
-  reformLogging   : '5.1.7',
-  springBoot      : springBoot.class.package.implementationVersion,
-  springHystrix   : '1.4.2.RELEASE',
-  springfoxSwagger: '2.8.0',
-  sscsCommon      : '4.17.1',
-]
 
 ext["rest-assured.version"] = '4.3.0'
 
-ext {
-  springCloudVersion = 'Hoxton.SR12'
-}
-
 dependencyManagement {
   imports {
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    mavenBom "org.springframework.boot:spring-boot-starter-parent:${versions.springBoot}"
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR12"
+    mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBoot.class.package.implementationVersion}"
   }
   dependencies {
     dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -277,86 +263,98 @@ dependencyManagement {
 
 
     //CVE-2021-28170
-    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
+    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
 
     //CVE-2021-40690
     dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.3.0'
 
-  }
-}
-
-configurations.all {
-  resolutionStrategy {
-    eachDependency { DependencyResolveDetails details ->
-      if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-        details.useVersion '2.11.0'
-      }
-      if (details.requested.group == 'org.codehaus.groovy') {
-        details.useVersion "3.0.7"
-        details.because "needed by rest-assured>=4.3"
-      }
+    //CVE-2021-42550
+    dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
+        entry 'logback-core'
+        entry 'logback-classic'
     }
+
+    //CVE-2020-36518, CVE-2022-42003, CVE-2022-42004
+    dependencySet(group: 'com.fasterxml.jackson.core', version: '2.13.4') {
+        entry 'jackson-databind'
+        entry 'jackson-core'
+        entry 'jackson-annotations'
+    }
+
+    //CVE-2020-36518, CVE-2022-42003, CVE-2022-42004
+    dependencySet(group: 'com.fasterxml.jackson.dataformat', version: '2.13.4') {
+        entry 'jackson-dataformat-cbor'
+        entry 'jackson-dataformat-yaml'
+        entry 'jackson-dataformat-xml'
+        entry 'jackson-dataformat-smile'
+    }
+
+    //CVE-2022-40149, CVE-2022-40150
+    dependency group: 'org.codehaus.jettison', name: 'jettison', version: '1.5.1'
+
   }
 }
 
 dependencies {
+  implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-batch'
+  implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  implementation  group: 'org.springframework.batch', name: 'spring-batch-test'
+  implementation group: 'com.h2database', name: 'h2'
 
-  compile 'org.springframework.boot:spring-boot-starter-batch'
-  compile 'org.springframework.boot:spring-boot-starter-test'
-  compile 'org.springframework.batch:spring-batch-test'
-  compile 'com.h2database:h2'
+  implementation  group: 'org.unix4j', name: 'unix4j-command', version: '0.6'
 
+  implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+  implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+  implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+  implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
+  implementation  group: 'org.springframework', name: 'spring-context-support'
 
-  compile 'org.unix4j:unix4j-command:0.6'
+  implementation  group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
-  compile group: 'org.springframework', name: 'spring-context-support'
+  implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.4.2.RELEASE'
+  implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.2.RELEASE'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
+  implementation  group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
 
-  compile group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
-  compile group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
+  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
+  implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.1.1'
+  implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.8.6'
 
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: versions.springHystrix
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: versions.springHystrix
+  implementation  group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
+  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.19.0'
 
-  compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
-  compile group: 'com.github.hmcts', name: 'java-logging', version: versions.reformLogging
-  compile group: 'com.github.hmcts', name: 'sscs-common', version: versions.sscsCommon
+  implementation  group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+  implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 
-  compile group: 'com.jcraft', name: 'jsch', version: '0.1.55'
-  compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+  implementation  group: 'org.json', name: 'json', version: '20211205'
 
-  compile group: 'org.json', name: 'json', version: '20211205'
+  implementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
+  implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.3'
 
-  compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  compile group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.3'
+  implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
-  compileOnly 'org.projectlombok:lombok:1.18.22'
-  annotationProcessor "org.projectlombok:lombok:1.18.22"
-  testCompileOnly 'org.projectlombok:lombok:1.18.18'
-  testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
-  e2eCompile 'org.projectlombok:lombok:1.18.18'
-  e2eAnnotationProcessor "org.projectlombok:lombok:1.18.18"
+  implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  testImplementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  e2eImplementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  e2eAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
-  testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
-  testCompile group: 'io.rest-assured', name: 'rest-assured'
-  testCompile group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
+  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
+  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
+  testImplementation  group: 'io.rest-assured', name: 'rest-assured'
+  testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
   }
-  compile group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  integrationTestCompile group: 'commons-io', name: 'commons-io', version: '2.11.0'
+  implementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
+  integrationTestImplementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
-  testCompile 'pl.pragmatists:JUnitParams:1.1.1'
+  testImplementation  group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
 
-  runtime "org.springframework.boot:spring-boot-properties-migrator"
-
+  runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
 }
 
 bootJar {
