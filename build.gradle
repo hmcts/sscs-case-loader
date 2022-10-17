@@ -315,8 +315,13 @@ dependencies {
   implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.2.RELEASE'
 
   implementation  group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
+
+  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
+  implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.1.1'
+  implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.8.6'
+
   implementation  group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
-  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.18.0-RC-CVE-Fix-3'
+  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.19.0'
 
   implementation  group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
@@ -325,6 +330,9 @@ dependencies {
 
   implementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.3'
+
+  implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
   implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
