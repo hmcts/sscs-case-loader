@@ -66,17 +66,17 @@ public class UpdateSubscriptionTest {
 
         UpdateSubscription.SubscriptionUpdate appointeeSubscriptionUpdate =
             new UpdateSubscription.SubscriptionUpdate() {
-            @Override
-            public Subscription getSubscription(Subscriptions subscriptions) {
-                return subscriptions.getAppointeeSubscription();
-            }
+                @Override
+                public Subscription getSubscription(Subscriptions subscriptions) {
+                    return subscriptions.getAppointeeSubscription();
+                }
 
-            @Override
-            public Subscriptions updateExistingSubscriptions(Subscription subscription) {
-                return existingAppointeeCase.getSubscriptions().toBuilder()
-                    .appointeeSubscription(subscription).build();
-            }
-        };
+                @Override
+                public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                    return existingAppointeeCase.getSubscriptions().toBuilder()
+                        .appointeeSubscription(subscription).build();
+                }
+            };
         UpdateSubscription.updateSubscription(gapsCaseData, existingAppointeeCase, appointeeSubscriptionUpdate);
 
         assertEquals(expectedRepSubscription, existingAppointeeCase.getSubscriptions().getRepresentativeSubscription());

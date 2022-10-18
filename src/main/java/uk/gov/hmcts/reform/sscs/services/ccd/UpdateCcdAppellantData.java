@@ -54,34 +54,34 @@ class UpdateCcdAppellantData {
         if (!hasAppointee && appellantContactChanged) {
             final UpdateSubscription.SubscriptionUpdate appellantSubscriptionUpdate =
                 new UpdateSubscription.SubscriptionUpdate() {
-                @Override
-                public Subscription getSubscription(Subscriptions subscriptions) {
-                    return subscriptions.getAppellantSubscription();
-                }
+                    @Override
+                    public Subscription getSubscription(Subscriptions subscriptions) {
+                        return subscriptions.getAppellantSubscription();
+                    }
 
-                @Override
-                public Subscriptions updateExistingSubscriptions(Subscription subscription) {
-                    return existingCcdCaseData.getSubscriptions().toBuilder()
-                        .appellantSubscription(subscription).build();
-                }
-            };
+                    @Override
+                    public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                        return existingCcdCaseData.getSubscriptions().toBuilder()
+                            .appellantSubscription(subscription).build();
+                    }
+                };
             UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, appellantSubscriptionUpdate);
         }
 
         if (appointeeChanged) {
             final UpdateSubscription.SubscriptionUpdate appointeeSubscriptionUpdate =
                 new UpdateSubscription.SubscriptionUpdate() {
-                @Override
-                public Subscription getSubscription(Subscriptions subscriptions) {
-                    return subscriptions.getAppointeeSubscription();
-                }
+                    @Override
+                    public Subscription getSubscription(Subscriptions subscriptions) {
+                        return subscriptions.getAppointeeSubscription();
+                    }
 
-                @Override
-                public Subscriptions updateExistingSubscriptions(Subscription subscription) {
-                    return existingCcdCaseData.getSubscriptions().toBuilder()
-                        .appointeeSubscription(subscription).build();
-                }
-            };
+                    @Override
+                    public Subscriptions updateExistingSubscriptions(Subscription subscription) {
+                        return existingCcdCaseData.getSubscriptions().toBuilder()
+                            .appointeeSubscription(subscription).build();
+                    }
+                };
             UpdateSubscription.updateSubscription(gapsCaseData, existingCcdCaseData, appointeeSubscriptionUpdate);
         }
 
