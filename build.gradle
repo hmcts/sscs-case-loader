@@ -327,7 +327,7 @@ dependencies {
   implementation  group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 
-  implementation  group: 'org.json', name: 'json', version: '20211205'
+  implementation  group: 'org.json', name: 'json', version: '20220924'
 
   implementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.3'
