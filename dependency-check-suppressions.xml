@@ -8,7 +8,7 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-web@.*$</packageUrl>
     <cve>CVE-2016-1000027</cve>
   </suppress>
-  <suppress until="2023-09-01">
+  <suppress until="2023-09-08">
     <notes><![CDATA[
    2022-09: Not applicable to us. This vulnerability requires both spring-cloud-netflix-hystrix-dashboard and
     spring-boot-starter-thymeleaf. We have neither in our codebase or dependencies, so the vulnerability doesn't
@@ -18,7 +18,7 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-.*netflix.*@.*$</packageUrl>
     <cve>CVE-2021-22053</cve>
   </suppress>
-  <suppress until = "2022-11-01">
+  <suppress until = "2022-11-08">
     <notes><![CDATA[
     file name: spring-cloud-openfeign-core-2.2.9.RELEASE.jar
     ]]></notes>
@@ -32,14 +32,14 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-starter\-hystrix.*@.*$</packageUrl>
     <cve>CVE-2020-5412</cve>
   </suppress>
-  <suppress until = "2022-11-01">
+  <suppress until = "2022-11-08">
     <notes><![CDATA[
    file name: jackson-databind-2.13.4.jar
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
     <cve>CVE-2022-42003</cve>
   </suppress>
-  <suppress until = "2022-11-01">
+  <suppress until = "2022-11-08">
     <notes><![CDATA[
    file name: h2-1.4.200.jar
    Upgrade, causes error
