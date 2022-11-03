@@ -205,12 +205,12 @@ dependencyManagement {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.0-M17') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.1') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
-    dependencySet(group: 'org.springframework.security', version: '5.6.1') {
+    dependencySet(group: 'org.springframework.security', version: '5.7.5') {
       entry 'spring-security-crypto'
     }
 
@@ -257,11 +257,6 @@ dependencyManagement {
     dependencySet(group: 'org.yaml', version: '1.33') {
       entry 'snakeyaml'
     }
-
-    dependencySet(group: 'org.springframework.security', version: '5.7.2') {
-      entry 'spring-security-crypto'
-    }
-
 
     //CVE-2021-28170
     dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
