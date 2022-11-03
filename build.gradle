@@ -304,8 +304,6 @@ dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation  group: 'org.springframework', name: 'spring-context-support'
-  
-  implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.7.5'
 
   implementation  group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
