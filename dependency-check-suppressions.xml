@@ -8,7 +8,7 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-web@.*$</packageUrl>
     <cve>CVE-2016-1000027</cve>
   </suppress>
-  <suppress until="2023-09-08">
+  <suppress until="2023-09-01">
     <notes><![CDATA[
    2022-09: Not applicable to us. This vulnerability requires both spring-cloud-netflix-hystrix-dashboard and
     spring-boot-starter-thymeleaf. We have neither in our codebase or dependencies, so the vulnerability doesn't
