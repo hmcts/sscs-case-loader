@@ -285,8 +285,8 @@ dependencyManagement {
         entry 'jackson-dataformat-smile'
     }
 
-    //CVE-2022-40149, CVE-2022-40150
-    dependency group: 'org.codehaus.jettison', name: 'jettison', version: '1.5.1'
+    //CVE-2022-40149, CVE-2022-40150, CVE-2022-45685, CVE-2022-45693
+    dependency group: 'org.codehaus.jettison', name: 'jettison', version: '1.5.3'
 
   }
 }
