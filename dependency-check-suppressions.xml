@@ -64,4 +64,18 @@
     <packageUrl regex="true">^pkg:maven/org\.latencyutils/LatencyUtils@.*$</packageUrl>
     <cve>CVE-2021-4277</cve>
   </suppress>
+  <suppress until = "2023-02-01">
+    <notes><![CDATA[
+   file name: launchdarkly-java-server-sdk-5.10.3.jar (shaded: org.yaml:snakeyaml:1.32)
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+    <cve>CVE-2022-3064</cve>
+    <cve>CVE-2021-4235</cve>
+  </suppress>
+  <suppress until = "2023-02-01">
+    <notes><![CDATA[
+   file name: tomcat-embed-core-10.1.1.jar
+   ]]></notes>
+    <cve>CVE-2022-45143</cve>
+  </suppress>
 </suppressions>
