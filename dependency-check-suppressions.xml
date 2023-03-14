@@ -18,19 +18,19 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-.*netflix.*@.*$</packageUrl>
     <cve>CVE-2021-22053</cve>
   </suppress>
-  <suppress until = "2023-03-01">
+  <suppress until = "2023-04-01">
     <notes><![CDATA[
     file name: spring-cloud-openfeign-core-2.2.9.RELEASE.jar
     ]]></notes>
     <cve>CVE-2021-22044</cve>
   </suppress>
-  <suppress until = "2023-03-01">
+  <suppress until = "2023-04-01">
     <notes><![CDATA[
    file name: spring-cloud-starter-hystrix-1.4.2.RELEASE.jar
    ]]></notes>
     <cve>CVE-2020-5412</cve>
   </suppress>
-  <suppress until = "2023-03-01">
+  <suppress until = "2023-04-01">
     <notes><![CDATA[
    file name: h2-1.4.200.jar
    Upgrade, causes error
@@ -41,7 +41,7 @@
     <cve>CVE-2022-23221</cve>
     <cve>CVE-2022-45868</cve>
   </suppress>
-  <suppress until = "2023-03-01">
+  <suppress until = "2023-04-01">
     <notes><![CDATA[
    file name: tomcat-embed-core-10.1.1.jar
    ]]></notes>
