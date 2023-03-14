@@ -8,5 +8,5 @@ maintainers:
   - name: HMCTS SSCS Team
 dependencies:
   - name: job
-    version: ^0.7.4
+    version: ^0.7.10
     repository: https://hmctspublic.azurecr.io/helm/v1/repo/
