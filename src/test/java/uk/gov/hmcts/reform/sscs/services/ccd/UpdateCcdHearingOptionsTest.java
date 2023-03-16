@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
 import junitparams.JUnitParamsRunner;
