@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
