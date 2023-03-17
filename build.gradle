@@ -54,9 +54,6 @@ sourceSets {
 }
 
 task integration(type: Test) {
-  testLogging.showStandardStreams(true)
-  testLogging.showStackTraces(true)
-  outputs.upToDateWhen {false}
   setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
   setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
