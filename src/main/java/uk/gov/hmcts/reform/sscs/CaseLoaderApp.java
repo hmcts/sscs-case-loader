@@ -42,13 +42,4 @@ public class CaseLoaderApp {
             .jurisdictionId(coreCaseDataJurisdictionId)
             .build();
     }
-
-    @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext context) {
-        return args -> {
-            System.out.println("--------------------------------BEANS LIST------------------------------");
-            Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
-            System.out.println("--------------------------------BEANS LIST END------------------------------");
-        };
-    }
 }
