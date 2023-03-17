@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ComponentScan(basePackages = {"config.properties"})
+@ComponentScan(basePackages = {"uk.gov.hmcts.reform"})
 public class IdamPropertiesTest {
 
     @MockBean
