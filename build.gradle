@@ -54,6 +54,7 @@ sourceSets {
 }
 
 task integration(type: Test) {
+  outputs.upToDateWhen {false}
   setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
   setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
