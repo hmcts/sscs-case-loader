@@ -8,6 +8,6 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 
   tags = "${merge(var.common_tags,
-    map("lastUpdated", "${timestamp()}")
+    tomap({"lastUpdated" = "${timestamp()}"})
     )}"
 }
