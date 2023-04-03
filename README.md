@@ -116,14 +116,28 @@ Dockerisation is a work in progress.
 
 This setup is required if files need to be processed via sftp server
 
-* To simply build the SFTP server
+* To simply build the SFTP server:
 ```bash
 docker-compose rm -f && docker-compose -f docker-compose-sftp.yml build && docker-compose -f docker-compose-sftp.yml up
 ```
 
 * To login into a container which is currently running on your system and view transferred files
 
-Place file to be transferred under `docker/sftp/data/incoming` and make sure `docker/sftp/data/incoming/processed` folder should contain atleast one file then:
+Place file to be transferred under `docker/sftp/data/incoming` and make sure `docker/sftp/data/incoming/processed` folder should contain atleast one file and `docker/sftp/data/incoming/failed` should be empty then structure should look like that:
+
+```
+sscs-case-loader/
+├─ docker/
+│  ├─ sftp/
+│  │  ├─ data/
+│  │  │  ├─ incoming/
+│  │  │  │  ├─ processed/
+│  │  │  │  │  ├─ <something>.xml
+│  │  │  │  ├─ failed/
+│  │  │  │  ├─ <something>xml
+```
+After running the case-loader job, you should not see any errors and files should land in **processed** directory.
+
 
 ```
 To connect into sftp container from sscs-case-loader container use:
