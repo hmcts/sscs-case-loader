@@ -134,7 +134,7 @@ sscs-case-loader/
 │  │  │  │  ├─ processed/
 │  │  │  │  │  ├─ <something>.xml
 │  │  │  │  ├─ failed/
-│  │  │  │  ├─ <something>xml
+│  │  │  │  ├─ <something>.xml
 ```
 After running the case-loader job, you should not see any errors and files should land in **processed** directory.
 
