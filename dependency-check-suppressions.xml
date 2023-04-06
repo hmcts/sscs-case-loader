@@ -34,12 +34,6 @@
   </suppress>
   <suppress until = "2023-06-01">
     <notes><![CDATA[
-   file name: tomcat-embed-core-10.1.1.jar
-   ]]></notes>
-    <cve>CVE-2022-45143</cve>
-  </suppress>
-  <suppress until = "2023-06-01">
-    <notes><![CDATA[
    file name: android-json-0.0.20131108.vaadin1.jar
    ]]></notes>
     <cve>CVE-2022-45688</cve>
@@ -57,18 +51,5 @@
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
     <cve>CVE-2022-1471</cve>
-  </suppress>
-  <suppress until = "2023-06-01">
-    <notes><![CDATA[
-file name: spring-aop-5.3.22.jar
-]]></notes>
-    <cve>CVE-2023-20860</cve>
-    <cve>CVE-2023-20861</cve>
-  </suppress>
-  <suppress until = "2023-06-01">
-    <notes><![CDATA[
-   file name: tomcat-embed-core-10.1.1.jar
-   ]]></notes>
-    <cve>CVE-2023-28708</cve>
   </suppress>
 </suppressions>
