@@ -270,8 +270,8 @@ dependencyManagement {
         entry 'logback-classic'
     }
 
-    //CVE-2022-40149, CVE-2022-40150, CVE-2022-45685, CVE-2022-45693
-    dependency group: 'org.codehaus.jettison', name: 'jettison', version: '1.5.3'
+    //CVE-2022-40149, CVE-2022-40150, CVE-2022-45685, CVE-2022-45693, CVE-2023-1436
+    dependency group: 'org.codehaus.jettison', name: 'jettison', version: '1.5.4'
 
   }
 }
