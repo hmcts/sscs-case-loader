@@ -131,7 +131,7 @@ public class ProcessCaseTest {
                 .data(caseDataMap)
                 .build();
 
-        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("data.caseReference", "SC068/01/00001");
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("reference", "SC068/01/00001");
 
         when(coreCaseDataApi.searchCases(
             anyString(),
@@ -180,7 +180,7 @@ public class ProcessCaseTest {
 
         // SC reference case
 
-        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("data.caseReference", "SC068/01/00001");
+        SearchSourceBuilder query = SscsQueryBuilder.findCaseBySingleField("reference", "SC068/01/00001");
 
         verify(coreCaseDataApi, times(1)).searchCases(
             eq(USER_AUTH_WITH_TYPE),
