@@ -3,7 +3,7 @@
   <Appeal_Case>
     <Extract_Time_UTC>2018-03-06T20:26:05.1+00:00</Extract_Time_UTC>
     <Appeal_Case_Id>3553607</Appeal_Case_Id>
-    <Appeal_Case_RefNum>SC068/18/01217</Appeal_Case_RefNum>
+    <Appeal_Case_RefNum>1680793003482861</Appeal_Case_RefNum>
     <Appeal_Case_Confidential>N</Appeal_Case_Confidential>
     <!--PIP benefit type-->
     <Appeal_Case_Case_Code_Id>1707</Appeal_Case_Case_Code_Id>
@@ -28,7 +28,7 @@
       <Attending>Y</Attending>
       <Disability_Needs>N</Disability_Needs>
       <Interpreter_Signer_Id>206</Interpreter_Signer_Id>
-      <DOB>1982-12-10T00:00:00+00:00</DOB>
+      <DOB>2019-12-10T00:00:00+00:00</DOB>
     </Parties>
     <Hearing>
       <Hearing_Id>289784</Hearing_Id>
