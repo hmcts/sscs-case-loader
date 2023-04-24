@@ -55,10 +55,13 @@ public class XmlValidator {
                 failure = false;
             }
         } catch (IOException e) {
+            log.error("Exception : " + e.getMessage());
             throw new GapsValidationException("Failed to read stream for xml file " + xmlFile.getName(), e);
         } catch (SAXException e) {
+            log.error("Exception : " + e.getMessage());
             throw new GapsValidationException("Failed to read schema", e);
         } catch (XMLStreamException e) {
+            log.error("Exception : " + e.getMessage());
             throw new GapsValidationException("Failed to parse xml file " + xmlFile.getName(), e);
         } finally {
             if (failure) {
