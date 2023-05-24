@@ -205,7 +205,7 @@ dependencyManagement {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.7') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.9') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
