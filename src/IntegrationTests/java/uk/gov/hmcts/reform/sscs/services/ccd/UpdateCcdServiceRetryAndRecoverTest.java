@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
