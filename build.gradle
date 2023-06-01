@@ -4,7 +4,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-  id 'org.springframework.boot' version '2.7.11'
+  id 'org.springframework.boot' version '2.3.5.RELEASE'
   id 'uk.gov.hmcts.java' version '0.12.12'
   id 'com.github.ben-manes.versions' version '0.41.0'
   id 'org.sonarqube' version '3.3'
@@ -187,7 +187,7 @@ configurations {
   e2eImplementation .extendsFrom(testImplementation )
 }
 
-ext["rest-assured.version"] = '4.5.1'
+ext["rest-assured.version"] = '4.3.0'
 
 dependencyManagement {
   imports {
@@ -215,7 +215,7 @@ dependencyManagement {
     }
 
     //CVE-2021-22118
-    dependencySet(group: 'org.springframework', version: '5.3.27') {
+    dependencySet(group: 'org.springframework', version: '5.2.24.RELEASE') {
       entry 'spring-aop'
       entry 'spring-aspects'
       entry 'spring-beans'
@@ -254,7 +254,7 @@ dependencyManagement {
     }
 
     //CVE-2022-25857, CVE-2022-38749, CVE-2022-38750, CVE-2022-38751
-    dependencySet(group: 'org.yaml', version: '2.0') {
+    dependencySet(group: 'org.yaml', version: '1.33') {
       entry 'snakeyaml'
     }
 
