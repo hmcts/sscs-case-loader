@@ -66,7 +66,6 @@ public class TransformationService {
     private List<SscsCaseData> doTransformGapsCasesToSscsCases(List<AppealCase> appealCases) {
         return appealCases.stream()
             .filter(c -> isCaseCreatedDateBeforeThan(c.getCreateDate()))
-            .filter(c -> !isNinoNull(c.getAppealCaseNino(), c.getAppealCaseRefNum()))
             .filter(c -> !isAroboticTestCase(c))
             .map(transformAppealCaseToCaseData::transform)
             .collect(Collectors.toList());
