@@ -4,12 +4,12 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-  id 'org.springframework.boot' version '2.3.5.RELEASE'
-  id 'uk.gov.hmcts.java' version '0.12.12'
-  id 'com.github.ben-manes.versions' version '0.41.0'
-  id 'org.sonarqube' version '3.3'
-  id 'org.owasp.dependencycheck' version '8.0.2'
-  id "com.gorylenko.gradle-git-properties" version "2.3.2"
+  id 'org.springframework.boot' version '2.7.12'
+  id 'uk.gov.hmcts.java' version '0.12.43'
+  id 'com.github.ben-manes.versions' version '0.46.0'
+  id 'org.sonarqube' version '4.0.0.2929'
+  id 'org.owasp.dependencycheck' version '8.2.1'
+  id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -190,7 +190,6 @@ configurations {
   e2eImplementation .extendsFrom(testImplementation )
 }
 
-ext["rest-assured.version"] = '4.3.0'
 
 dependencyManagement {
   imports {
@@ -213,12 +212,12 @@ dependencyManagement {
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
-    dependencySet(group: 'org.springframework.security', version: '5.7.5') {
+    dependencySet(group: 'org.springframework.security', version: '5.7.8') {
       entry 'spring-security-crypto'
     }
 
     //CVE-2021-22118
-    dependencySet(group: 'org.springframework', version: '5.2.24.RELEASE') {
+    dependencySet(group: 'org.springframework', version: '5.3.27') {
       entry 'spring-aop'
       entry 'spring-aspects'
       entry 'spring-beans'
@@ -337,7 +336,7 @@ dependencies {
 
   testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
   testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
-  testImplementation  group: 'io.rest-assured', name: 'rest-assured'
+  testImplementation  group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0'
   testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
   }
@@ -348,7 +347,7 @@ dependencies {
 
   testImplementation  group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
 
-  runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
+  runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator', version: '2.7.12'
 }
 
 bootJar {
