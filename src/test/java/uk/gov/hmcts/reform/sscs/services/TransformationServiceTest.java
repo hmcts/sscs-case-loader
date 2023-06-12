@@ -7,7 +7,6 @@ import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Test;
