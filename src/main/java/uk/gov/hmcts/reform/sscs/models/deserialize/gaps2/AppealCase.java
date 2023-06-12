@@ -95,7 +95,7 @@ public class AppealCase {
         return first.isPresent() ? first.get().getDateSet().toLocalDate() : LocalDate.of(1900, 1, 1);
     }
 
-    public String getAppealCaseNino(){
+    public String getAppealCaseNino() {
         return appealCaseNino == null ? "" : appealCaseNino;
     }
 }

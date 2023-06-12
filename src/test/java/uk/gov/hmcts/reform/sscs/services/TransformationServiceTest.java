@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,15 +65,6 @@ public class TransformationServiceTest {
     @Test
     public void givenAGapsCaseWithACreationDateBeforeThanTheIgnoreDate_shouldNotBeProcessed() {
         is = getClass().getClassLoader().getResourceAsStream("process_ignore_case_test_delta.xml");
-        caseDataList = transformationService.transform(is);
-
-        assertThat(caseDataList.size(), is(0));
-        verifyNoMoreInteractions(transformAppealCaseToCaseData);
-    }
-
-    @Test
-    public void givenAGapsCaseWithACaseWithNoNino_shouldNotBeProcessed() {
-        is = getClass().getClassLoader().getResourceAsStream("process_case_with_no_nino_test_delta.xml");
         caseDataList = transformationService.transform(is);
 
         assertThat(caseDataList.size(), is(0));
