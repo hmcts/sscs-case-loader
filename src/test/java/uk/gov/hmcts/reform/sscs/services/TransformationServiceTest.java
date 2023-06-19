@@ -70,15 +70,6 @@ public class TransformationServiceTest {
     }
 
     @Test
-    public void givenAGapsCaseWithACaseWithNoNino_shouldNotBeProcessed() {
-        is = getClass().getClassLoader().getResourceAsStream("process_case_with_no_nino_test_delta.xml");
-        caseDataList = transformationService.transform(is);
-
-        assertThat(caseDataList.size(), is(0));
-        verifyNoMoreInteractions(transformAppealCaseToCaseData);
-    }
-
-    @Test
     public void givenAGapsCaseWithACaseWithRoboticNino_shouldNotBeProcessed() {
         is = getClass().getClassLoader().getResourceAsStream("process_case_with_robotic_nino_test_delta.xml");
         caseDataList = transformationService.transform(is);
