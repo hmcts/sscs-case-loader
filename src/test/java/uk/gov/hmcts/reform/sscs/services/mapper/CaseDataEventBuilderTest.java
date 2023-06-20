@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -22,6 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import uk.gov.hmcts.reform.sscs.CaseDetailsUtils;
@@ -62,7 +62,7 @@ public class CaseDataEventBuilderTest extends CaseDataBuilderBase {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        MockitoAnnotations.openMocks(this);
         IdamTokens idamTokens = IdamTokens.builder()
             .idamOauth2Token("oauth2Token")
             .serviceAuthorization("serviceAuthorizationToken")
