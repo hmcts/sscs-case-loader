@@ -83,4 +83,8 @@ withPipeline(type, product, component) {
       junit '**/test-results/**/*.xml'
     }
   }
+
+  afterSuccess('fortify-scan') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+  }
 }
