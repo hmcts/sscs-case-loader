@@ -5,7 +5,6 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 
 @EnableBatchProcessing
 @SpringBootApplication
-@EnableHystrixDashboard
 @SuppressWarnings("HideUtilityClassConstructor")
 @EnableFeignClients(basePackages = {
     "uk.gov.hmcts.reform.idam",
