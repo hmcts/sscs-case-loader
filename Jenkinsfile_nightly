@@ -75,9 +75,9 @@ withNightlyPipeline(type, product, component) {
     }
   }
 
-//  after('fortify-scan') {
-//    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-//  }
+  after('fortify-scan') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+  }
 
   afterSuccess('securityScan') {
     echo "Checking case number:"
