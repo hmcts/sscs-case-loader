@@ -59,7 +59,7 @@ withNightlyPipeline(type, product, component) {
   enableSecurityScan()
 
   loadVaultSecrets(secrets)
-//  enableFortifyScan()
+  enableFortifyScan()
 
   enableAksStagingDeployment()
   disableLegacyDeployment()
