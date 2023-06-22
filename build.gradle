@@ -5,11 +5,11 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.0'
   id 'org.springframework.boot' version '2.7.12'
-  id 'uk.gov.hmcts.java' version '0.12.12'
-  id 'com.github.ben-manes.versions' version '0.41.0'
-  id 'org.sonarqube' version '3.3'
-  id 'org.owasp.dependencycheck' version '8.0.2'
-  id "com.gorylenko.gradle-git-properties" version "2.3.2"
+  id 'uk.gov.hmcts.java' version '0.12.43'
+  id 'com.github.ben-manes.versions' version '0.47.0'
+  id 'org.sonarqube' version '4.2.0.3129'
+  id 'org.owasp.dependencycheck' version '8.2.1'
+  id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -194,30 +194,27 @@ ext["rest-assured.version"] = '5.3.1'
 
 dependencyManagement {
   imports {
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.7"
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3"
     mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBoot.class.package.implementationVersion}"
   }
   dependencies {
     dependency group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-    dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
-    dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.17.1'
+    dependency group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.20.0'
+    dependency group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.20.0'
 
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '32.0.1-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
-    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.9') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.10') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
     dependencySet(group: 'org.springframework.security', version: '5.8.4') {
-      entry 'spring-security-config'
-      entry 'spring-security-core'
       entry 'spring-security-crypto'
-      entry 'spring-security-web'
     }
 
     //CVE-2021-22118
@@ -241,21 +238,21 @@ dependencyManagement {
     }
 
     //CVE-2021-27568
-    dependencySet(group: 'net.minidev', version: '2.4.7') {
+    dependencySet(group: 'net.minidev', version: '2.4.11') {
       entry 'json-smart'
       entry 'accessors-smart'
     }
 
     //CVE-2021-27807
-    dependencySet(group: 'org.apache.pdfbox', version: '2.0.25') {
+    dependencySet(group: 'org.apache.pdfbox', version: '2.0.28') {
       entry 'pdfbox'
     }
 
-     dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
+     dependencySet(group: 'org.apache.xmlgraphics', version: '1.16') {
       entry 'batik-all'
     }
 
-    dependencySet(group: 'org.apache.commons', version: '1.21') {
+    dependencySet(group: 'org.apache.commons', version: '1.23.0') {
       entry 'commons-compress'
     }
 
@@ -265,13 +262,13 @@ dependencyManagement {
     }
 
     //CVE-2021-28170
-    dependency group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+    dependency group: 'org.glassfish', name: 'jakarta.el', version: '5.0.0-M1'
 
     //CVE-2021-40690
-    dependency group: 'org.apache.santuario', name: 'xmlsec', version: '2.3.0'
+    dependency group: 'org.apache.santuario', name: 'xmlsec', version: '3.0.2'
 
     //CVE-2021-42550
-    dependencySet(group: 'ch.qos.logback', version: '1.2.11') {
+    dependencySet(group: 'ch.qos.logback', version: '1.2.12') {
         entry 'logback-core'
         entry 'logback-classic'
     }
@@ -284,6 +281,7 @@ dependencyManagement {
 
 dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-batch'
+  implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   implementation  group: 'org.springframework.batch', name: 'spring-batch-test'
   implementation group: 'com.h2database', name: 'h2'
 
@@ -291,42 +289,34 @@ dependencies {
 
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation  group: 'org.springframework', name: 'spring-context-support'
 
-  implementation  group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
+  implementation  group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version: '0.1.1'
 
   implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.4.7.RELEASE'
   implementation  group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.4.7.RELEASE'
 
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix'
+  implementation  group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.2'
 
+  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.1.0'
+  implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.1'
+  implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.9.2'
 
-  implementation  group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.4'
-
-  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
-  implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '2.1.1'
-  implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.8.6'
-
-  implementation  group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
-  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.25.22'
+  implementation  group: 'com.github.hmcts', name: 'java-logging', version: '6.0.1'
+  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.0'
 
   implementation  group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 
-  implementation  group: 'org.json', name: 'json', version: '20211205'
+  implementation  group: 'org.json', name: 'json', version: '20230618'
 
-  implementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.16.3'
+  implementation  group: 'commons-io', name: 'commons-io', version: '2.13.0'
+  implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '8.8.1'
 
   implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-
-  implementation group: 'com.atlassian.oai', name: 'swagger-request-validator-mockmvc', version: '2.35.1'
-
-
 
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.15.2'
@@ -337,32 +327,25 @@ dependencies {
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.15.2'
 
-  implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  testImplementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  e2eImplementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
-  e2eAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+  implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+  testImplementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+  e2eImplementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+  e2eAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
 
-  implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.5.Final'
-  implementation group: 'org.projectlombok', name: 'lombok-mapstruct-binding', version: '0.2.0'
-
-
-  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
-  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
+  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.38.0'
+  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.38.0'
   testImplementation  group: 'io.rest-assured', name: 'rest-assured'
-  testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
+  testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.3.0', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
   }
-  implementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  integrationTestImplementation  group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
+  integrationTestImplementation  group: 'commons-io', name: 'commons-io', version: '2.13.0'
 
   testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
   testImplementation  group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
-
-  testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.0-M1'
-
 
   runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
 }
