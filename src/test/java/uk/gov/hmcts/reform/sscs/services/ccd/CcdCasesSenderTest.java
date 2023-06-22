@@ -55,7 +55,7 @@ public class CcdCasesSenderTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         ccdCasesSender = new CcdCasesSender(updateCcdCaseService,
             updateCcdCaseData);
         idamTokens = IdamTokens.builder()

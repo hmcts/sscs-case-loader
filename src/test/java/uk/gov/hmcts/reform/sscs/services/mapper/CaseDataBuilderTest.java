@@ -52,7 +52,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         createAppealCase(getHearing());
     }
 
