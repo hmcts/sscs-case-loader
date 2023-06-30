@@ -201,7 +201,7 @@ dependencyManagement {
 
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '32.1.0-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
