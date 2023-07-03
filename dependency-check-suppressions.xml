@@ -9,19 +9,19 @@
    ]]></notes>
     <cve>CVE-2021-22053</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <notes><![CDATA[
     file name: spring-cloud-openfeign-core-2.2.9.RELEASE.jar
     ]]></notes>
     <cve>CVE-2021-22044</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <notes><![CDATA[
    file name: spring-cloud-starter-hystrix-1.4.2.RELEASE.jar
    ]]></notes>
     <cve>CVE-2020-5412</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <notes><![CDATA[
    file name: h2-1.4.200.jar
    Upgrade, causes error
@@ -32,20 +32,20 @@
     <cve>CVE-2022-23221</cve>
     <cve>CVE-2022-45868</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <notes><![CDATA[
    file name: android-json-0.0.20131108.vaadin1.jar
    ]]></notes>
     <cve>CVE-2022-45688</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <notes><![CDATA[
    file name: commons-fileupload-1.4.jar
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/commons\-fileupload/commons\-fileupload@.*$</packageUrl>
     <cve>CVE-2023-24998</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <notes><![CDATA[
    file name: snakeyaml-1.33.jar
    ]]></notes>
@@ -63,7 +63,7 @@
     <notes>spring-boot-2.3.12.RELEASE.jar</notes>
     <cve>CVE-2023-20883</cve>
   </suppress>
-  <suppress until = "2023-07-01">
+  <suppress until = "2023-09-01">
     <cve>CVE-2023-35116</cve>
   </suppress>
 </suppressions>

@@ -210,7 +210,7 @@ dependencyManagement {
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
-    dependencySet(group: 'org.springframework.security', version: '5.7.5') {
+    dependencySet(group: 'org.springframework.security', version: '5.7.9') {
       entry 'spring-security-crypto'
     }
 
@@ -235,7 +235,7 @@ dependencyManagement {
     }
 
     //CVE-2021-27568
-    dependencySet(group: 'net.minidev', version: '2.4.7') {
+    dependencySet(group: 'net.minidev', version: '2.4.11') {
       entry 'json-smart'
       entry 'accessors-smart'
     }
@@ -317,13 +317,13 @@ dependencies {
 
 
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.3'
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.3'
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.3'
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
-  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.14.3'
 
   implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
