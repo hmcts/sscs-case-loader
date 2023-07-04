@@ -53,7 +53,7 @@ public class UpdateCcdCaseDataTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         updateCcdCaseData = new UpdateCcdCaseData(updateCcdAppellantData, updateCcdHearingOptions,
             updateCcdHearingType, updateDwpTimeExtension, updateEvents, updateCcdRpc, updateCcdProcessingVenue);
     }
