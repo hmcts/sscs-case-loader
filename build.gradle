@@ -204,7 +204,7 @@ dependencyManagement {
 
     // checkstyle needs a certain version and so does spring fox swagger, so can't use latest
     // fun times...
-    dependencySet(group: 'com.google.guava', version: '32.0.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '32.1.0-jre') {
       entry 'guava'
     }
     // until 9.0.29 - CVE-2019-12418, CVE-2019-17563
@@ -213,7 +213,7 @@ dependencyManagement {
       entry 'tomcat-embed-websocket'
     }
     //CVE-2021-22112
-    dependencySet(group: 'org.springframework.security', version: '5.7.5') {
+    dependencySet(group: 'org.springframework.security', version: '5.7.9') {
       entry 'spring-security-crypto'
     }
 
@@ -238,7 +238,7 @@ dependencyManagement {
     }
 
     //CVE-2021-27568
-    dependencySet(group: 'net.minidev', version: '2.4.7') {
+    dependencySet(group: 'net.minidev', version: '2.4.11') {
       entry 'json-smart'
       entry 'accessors-smart'
     }
@@ -307,7 +307,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'ccd-client', version: '4.8.6'
 
   implementation  group: 'com.github.hmcts', name: 'java-logging', version: '5.1.7'
-  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.0'
+  implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '4.26.2'
 
   implementation  group: 'com.jcraft', name: 'jsch', version: '0.1.55'
   implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
@@ -321,13 +321,13 @@ dependencies {
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.3'
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.3'
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.3'
   // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
-  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.14.1'
+  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.14.3'
 
   implementation  group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
