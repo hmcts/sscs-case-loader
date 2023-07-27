@@ -86,7 +86,7 @@ task fortifyScan(type: JavaExec)  {
 }
 
 pmd {
-  toolVersion = "6.5.0"
+  toolVersion = "6.55.0"
   ignoreFailures = true
   sourceSets = [
     sourceSets.main,
@@ -244,11 +244,11 @@ dependencyManagement {
     }
 
     //CVE-2021-27807
-    dependencySet(group: 'org.apache.pdfbox', version: '2.0.25') {
+    dependencySet(group: 'org.apache.pdfbox', version: '2.0.29') {
       entry 'pdfbox'
     }
 
-     dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
+     dependencySet(group: 'org.apache.xmlgraphics', version: '1.16') {
       entry 'batik-all'
     }
 
