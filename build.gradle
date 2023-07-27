@@ -245,7 +245,7 @@ dependencyManagement {
       entry 'pdfbox'
     }
 
-     dependencySet(group: 'org.apache.xmlgraphics', version: '1.14') {
+     dependencySet(group: 'org.apache.xmlgraphics', version: '1.16') {
       entry 'batik-all'
     }
 
