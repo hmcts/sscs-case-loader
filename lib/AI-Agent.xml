@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationInsightsAgent>
+  <AgentLogger>INFO</AgentLogger>
+  <Instrumentation>
+    <BuiltIn enabled="true">
+      <HTTP enabled="true" W3C="true" enableW3CBackCompat="true"/>
+      <MaxStatementQueryLimitInMS>1000</MaxStatementQueryLimitInMS>
+    </BuiltIn>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender">
+      <Method name="sendCreateCcdCases" reportCaughtExceptions="true" reportExecutionTime="true"/>
+      <Method name="sendUpdateCcdCases" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdAppellantData">
+      <Method name="updateCcdAppellantData" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdCaseData">
+      <Method name="updateCcdRecordForChangesAndReturnUpdateType" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdHearingOptions">
+      <Method name="updateHearingOptions" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdHearingType">
+      <Method name="updateHearingType" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateCcdRepresentative">
+      <Method name="updateCcdRepresentative" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateDwpTimeExtension">
+      <Method name="updateDwpTimeExtension" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateEvents">
+      <Method name="update" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateGeneratedFields">
+      <Method name="updateGeneratedFields" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+    <Class name="uk.gov.hmcts.reform.sscs.services.ccd.UpdateSubscription">
+      <Method name="updateSubscription" reportCaughtExceptions="true" reportExecutionTime="true"/>
+    </Class>
+  </Instrumentation>
+</ApplicationInsightsAgent>
