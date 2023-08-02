@@ -7,3 +7,4 @@ COPY build/libs/sscs-case-loader.jar /opt/app/
 
 CMD ["sscs-case-loader.jar"]
 EXPOSE 8082
+
