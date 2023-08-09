@@ -24,7 +24,9 @@ public class CaseLoaderApp {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(CaseLoaderApp.class, args);
-        SpringApplication.exit(context);
+        int exitCode = SpringApplication.exit(context);
+
+        System.exit(exitCode);
     }
 
     @Bean
