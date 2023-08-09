@@ -3,22 +3,34 @@ job:
   ingressHost: ${SERVICE_FQDN}
   keyVaults:
     sscs:
-      resourceGroup: sscs
       secrets:
-        - idam-api
-        - idam-sscs-systemupdate-user
-        - idam-sscs-systemupdate-password
-        - sscs-s2s-secret
-        - s2s-micro
-        - idam-s2s-api
-        - ccd-api
-        - idam-redirect
-        - idam-sscs-oauth2-client-secret
-        - idam-oauth-user
-        - ccd-jid
-        - ccd-tid
-        - sftp-dir
-        - sftp-user
-        - sftp-host
-        - sftp-port
-        - gaps2-service-sftp-private-key
+        - name: idam-api
+          alias: IDAM_URL
+        - name: idam-sscs-systemupdate-user
+          alias: IDAM_SSCS_SYSTEMUPDATE_USER
+        - name: idam-sscs-systemupdate-password
+          alias: IDAM_SSCS_SYSTEMUPDATE_PASSWORD
+        - name: sscs-s2s-secret
+          alias: IDAM_S2S_AUTH_TOTP_SECRET
+        - name: s2s-micro
+          alias: IDAM_S2S_AUTH_MICROSERVICE
+        - name: ccd-api
+          alias: CORE_CASE_DATA_API_URL
+        - name: idam-sscs-oauth2-client-secret
+          alias: IDAM_OAUTH2_CLIENT_SECRET
+        - name: idam-oauth-user
+          alias: IDAM_OAUTH2_CLIENT_ID
+        - name: ccd-jid
+          alias: CORE_CASE_DATA_JURISDICTION_ID
+        - name: ccd-tid
+          alias: CORE_CASE_DATA_CASE_TYPE_ID
+        - name: sftp-dir
+          alias: GAPS2_SFTP_DIR
+        - name: sftp-user
+          alias: GAPS2_SFTP_USER
+        - name: sftp-host
+          alias: GAPS2_SFTP_HOST
+        - name: sftp-port
+          alias: GAPS2_SFTP_PORT
+        - name: gaps2-service-sftp-private-key
+          alias: GAPS2_KEY_LOCATION
