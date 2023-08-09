@@ -8,7 +8,8 @@ spring:
     url: jdbc:h2:mem:localhost;DB_CLOSE_ON_EXIT=FALSE
     username: admin
     password:
-
+  config:
+    import: "optional:configtree:/mnt/secrets/sscs/"
 core_case_data:
   api:
     url: ${CORE_CASE_DATA_API_URL:http://localhost:4452}
