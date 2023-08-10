@@ -34,6 +34,7 @@ public class CaseIdMapUtils {
             FileInputStream fis = new FileInputStream(toRead);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
+            @SuppressWarnings("unchecked")
             HashMap<String,String> mapInFile = (HashMap<String,String>)ois.readObject();
 
             ois.close();
