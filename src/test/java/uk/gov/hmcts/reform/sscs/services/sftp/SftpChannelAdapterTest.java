@@ -235,6 +235,7 @@ public class SftpChannelAdapterTest {
     }
 
     @Test(expected = Exception.class)
+    @SuppressWarnings("unchecked") // API is unchecked
     public void shouldThrowExceptionIfProcessedFolderIsEmpty() throws Exception {
         List<ChannelSftp.LsEntry> lsEntries = newArrayList();
         when(channel.ls("processed/*.xml")).thenReturn(new Vector(lsEntries));

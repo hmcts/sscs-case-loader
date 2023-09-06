@@ -1,4 +1,5 @@
-ARG APP_INSIGHTS_AGENT_VERSION=3.4.13
+# renovate: datasource=github-releases depName=microsoft/ApplicationInsights-Java
+ARG APP_INSIGHTS_AGENT_VERSION=3.4.15
 
 FROM hmctspublic.azurecr.io/base/java:17-distroless
 
