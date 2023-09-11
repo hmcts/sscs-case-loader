@@ -1,37 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <suppress until="2023-09-01">
-    <notes><![CDATA[
-   2022-09: Not applicable to us. This vulnerability requires both spring-cloud-netflix-hystrix-dashboard and
-    spring-boot-starter-thymeleaf. We have neither in our codebase or dependencies, so the vulnerability doesn't
-    apply to us. Suppressed for a year to allow re-assessing in the unlikely event we decide to introduce those
-    dependencies.
-   ]]></notes>
-    <cve>CVE-2021-22053</cve>
-  </suppress>
-  <suppress until = "2023-09-01">
-    <notes><![CDATA[
-    file name: spring-cloud-openfeign-core-2.2.9.RELEASE.jar
-    ]]></notes>
-    <cve>CVE-2021-22044</cve>
-  </suppress>
-  <suppress until = "2023-09-01">
-    <notes><![CDATA[
-   file name: spring-cloud-starter-hystrix-1.4.2.RELEASE.jar
-   ]]></notes>
-    <cve>CVE-2020-5412</cve>
-  </suppress>
-  <suppress until = "2023-09-01">
-    <notes><![CDATA[
-   file name: h2-1.4.200.jar
-   Upgrade, causes error
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/com\.h2database/h2@.*$</packageUrl>
-    <cve>CVE-2021-42392</cve>
-    <cve>CVE-2021-23463</cve>
-    <cve>CVE-2022-23221</cve>
-    <cve>CVE-2022-45868</cve>
-  </suppress>
   <suppress until = "2023-10-06">
     <cve>CVE-2022-45688</cve>
   </suppress>
@@ -55,21 +23,7 @@
     <cve>CVE-2022-41854</cve>
     <cve>CVE-2022-38750</cve>
   </suppress>
-  <suppress until = "2023-07-01">
-    <notes><![CDATA[
-   file name: spring-security-crypto-5.7.5.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
-    <cve>CVE-2023-20862</cve>
-  </suppress>
-  <suppress>
-    <notes>spring-boot-2.3.12.RELEASE.jar</notes>
-    <cve>CVE-2023-20883</cve>
-  </suppress>
   <suppress until = "2023-10-06">
     <cve>CVE-2023-35116</cve>
-  </suppress>
-  <suppress until="2023-10-06">
-    <cve>CVE-2023-41080</cve>
   </suppress>
 </suppressions>
