@@ -188,7 +188,7 @@ dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-batch'
   testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'org.springframework.batch', name: 'spring-batch-test'
-  implementation group: 'com.h2database', name: 'h2'
+  implementation group: 'com.h2database', name: 'h2', version: '2.2.222'
 
   implementation  group: 'org.unix4j', name: 'unix4j-command', version: '0.6'
 
