@@ -17,7 +17,7 @@ core_case_data:
   caseTypeId: ${CORE_CASE_DATA_CASE_TYPE_ID:Benefit}
 
 idam:
-  url: ${IDAM_URL:http://localhost:5000}
+  url: ${IDAM_URL:http://localhost:5062}
   s2s-auth:
     totp_secret: ${IDAM_S2S_AUTH_TOTP_SECRET:AAAAAAAAAAAAAAAC}
     microservice: ${IDAM_S2S_AUTH_MICROSERVICE:sscs}
@@ -30,9 +30,9 @@ idam:
       id: ${IDAM_OAUTH2_CLIENT_ID:sscs}
       secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
     redirectUrl: ${IDAM_OAUTH2_REDIRECT_URL:https://localhost:3000/authenticated}
-    jwkUrl: ${IDAM_API_JWK_URL:http://localhost:5000/jwks}
+    jwkUrl: ${IDAM_API_JWK_URL:http://localhost:5062/jwks}
   api:
-    url: ${IDAM_URL:http://localhost:5000}
+    url: ${IDAM_URL:http://localhost:5062}
   client:
     id: ${IDAM_OAUTH2_CLIENT_ID:sscs}
     secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}
