@@ -58,6 +58,7 @@ sscs.case.loader:
   shutdown.delay.time: 7
   processMinorEvents: ${PROCESS_MINOR_EVENTS:true}
   useExistingDate: ${USE_EXISTING_DATE:true}
+  startTime: ${CASE_LOADER_START_TIME:10}
 
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}
@@ -70,3 +71,7 @@ spring.main.allow-bean-definition-overriding: true
 judicial-ref:
   api:
     url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
+
+features:
+  data-migration:
+    interpreter: ${INTERPRETER_DATA_MIGRATION_ENABLED:false}
