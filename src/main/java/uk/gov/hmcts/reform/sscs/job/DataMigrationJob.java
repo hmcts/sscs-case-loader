@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.sscs.job;
 
+import static java.time.LocalDateTime.now;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
-
-import static java.time.LocalDateTime.now;
 
 @Component
 @Slf4j

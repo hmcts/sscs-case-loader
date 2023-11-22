@@ -1,19 +1,17 @@
 package uk.gov.hmcts.reform.sscs.job;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
+import static java.time.LocalDateTime.now;
 
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static java.time.LocalDateTime.now;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
 @Component
 @Slf4j
@@ -28,8 +26,11 @@ public abstract class SscsJob {
     public SscsJob(CaseLoaderTimerTask caseLoaderTimerTask) {
         this.caseLoaderTimerTask = caseLoaderTimerTask;
     }
+
     abstract boolean readyToRun();
+
     abstract void process();
+
     public void run() {
         String logPrefix = "SSCS Job " + UUID.randomUUID().toString();
 
