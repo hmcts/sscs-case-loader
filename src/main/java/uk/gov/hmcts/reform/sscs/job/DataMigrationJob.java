@@ -11,10 +11,6 @@ import static java.time.LocalDateTime.now;
 @Slf4j
 public class DataMigrationJob extends SscsJob {
 
-
-    @Value("${sscs.case.loader.shutdown.delay.time}")
-    private int shutdownDelayTime;
-
     @Value("${features.data-migration.interpreter}")
     private boolean interpreterDataMigrationEnabled;
 

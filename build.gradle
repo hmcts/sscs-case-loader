@@ -26,6 +26,14 @@ tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror" << "-Xlint:deprecation"
 }
 
+tasks.withType(Test) {
+  useJUnitPlatform()
+
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
+
 mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp'
 
 sourceSets {
