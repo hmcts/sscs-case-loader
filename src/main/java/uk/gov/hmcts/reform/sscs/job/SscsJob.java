@@ -35,9 +35,9 @@ public abstract class SscsJob {
         String logPrefix = "SSCS Job " + UUID.randomUUID().toString();
 
         try {
-            log.info("{} scheduler started : {} ", logPrefix, now().format(DateTimeFormatter.ISO_DATE_TIME));
+            log.info("{} scheduler started : {}", logPrefix, now().format(DateTimeFormatter.ISO_DATE_TIME));
             process();
-            log.info("{} scheduler ended : {} ", logPrefix, now().format(DateTimeFormatter.ISO_DATE_TIME));
+            log.info("{} scheduler ended : {}", logPrefix, now().format(DateTimeFormatter.ISO_DATE_TIME));
         } catch (Exception e) {
             log.error("{} scheduler failed at {} due to exception: {}",
                 logPrefix, now().format(DateTimeFormatter.ISO_DATE_TIME), e);

@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.job;
 import static java.time.LocalDateTime.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ch.qos.logback.classic.Level;
@@ -54,6 +55,18 @@ class DataMigrationJobTest {
         ReflectionTestUtils.setField(underTest, "interpreterDataMigrationEnabled", migrationEnabled);
 
         assertEquals(underTest.readyToRun(), assertion);
+    }
+
+    @Test
+    void shouldRunTheJob() {
+        underTest.run();
+
+        verify(mockedAppender, times(4)).doAppend(logEventCaptor.capture());
+        var capturedLogs = logEventCaptor.getAllValues();
+        assertEquals("{} scheduler started : {}", capturedLogs.get(0).getMessage());
+        assertEquals("Processing Interpreter data migration job", capturedLogs.get(1).getMessage());
+        assertEquals("{} scheduler ended : {}", capturedLogs.get(2).getMessage());
+        assertEquals("Case loader Shutting down...", capturedLogs.get(3).getMessage());
     }
 
     @Test
