@@ -61,16 +61,6 @@ withPipeline(type, product, component) {
   nonServiceApp()
   syncBranchesWithMaster(branchesToSync)
 
-  before('akschartsinstall') {
-    echo "Setting up data for functional tests"
-
-    try {
-      builder.gradle('functionalPreDeploy')
-    } finally {
-      junit '**/reports/jacoco/test/*.xml'
-    }
-  }
-
   afterSuccess('akschartsinstall') {
     echo "Checking case number:"
     sh "cat ccdCaseId.tmp"
