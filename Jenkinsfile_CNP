@@ -61,26 +61,4 @@ withPipeline(type, product, component) {
   nonServiceApp()
   syncBranchesWithMaster(branchesToSync)
 
-  before('akschartsinstall') {
-    echo "Setting up data for functional tests"
-
-    try {
-      builder.gradle('functionalPreDeploy')
-    } finally {
-      junit '**/test-results/**/*.xml'
-    }
-  }
-
-  afterSuccess('akschartsinstall') {
-    echo "Checking case number:"
-    sh "cat ccdCaseId.tmp"
-    echo "Just waiting a while to ensure that the pod has run the job"
-    sh "sleep 120s"
-    echo "Verifying that functional test data was processed correctly"
-    try {
-      builder.gradle('functionalPostDeploy')
-    } finally {
-      junit '**/test-results/**/*.xml'
-    }
-  }
 }

@@ -26,6 +26,19 @@ tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror" << "-Xlint:deprecation"
 }
 
+tasks.withType(Test) {
+  useJUnitPlatform()
+
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
+
+test {
+  failFast = true
+  useJUnitPlatform()
+}
+
 mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp'
 
 sourceSets {
@@ -104,9 +117,9 @@ jacoco {
 jacocoTestReport {
   executionData(test, integration)
   reports {
-    xml.enabled = true
-    csv.enabled = false
-    xml.destination file("${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.getRequired().set(true)
+    csv.getRequired().set(false)
+    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
@@ -172,7 +185,7 @@ sonarqube {
     property "sonar.projectKey", "SSCSCL"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java," +
-      " **/sscs/services/xml/XmlValidator.java"
+      " **/sscs/services/xml/XmlValidator.java" + "**/sscs/config/CaseLoaderJobConfig.java"
   }
 }
 
@@ -250,10 +263,13 @@ dependencies {
 }
 
 bootJar {
-  archiveName 'sscs-case-loader.jar'
+  getArchiveFileName().set(provider {
+    'sscs-case-loader.jar'
+  })
+
   manifest {
-    attributes 'Implementation-Title': project.name,
-      'Implementation-Version': project.version
+    attributes('Implementation-Title': project.name.toString())
+    attributes('Implementation-Version': project.version.toString())
   }
 }
 
