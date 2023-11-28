@@ -35,9 +35,9 @@ class SscsCaseLoaderJobTest {
     }
 
     @ParameterizedTest
-    @MethodSource("getStartTimeScenarios")
-    void shouldBeReadyToRunOnOrAfterStartTime(int caseLoaderStartTime, boolean assertion) {
-        ReflectionTestUtils.setField(underTest, "caseLoaderStartTime", caseLoaderStartTime);
+    @MethodSource("getEndHourScenarios")
+    void shouldBeReadyToRunOnOrAfterStartTime(int caseLoaderEndHour, boolean assertion) {
+        ReflectionTestUtils.setField(underTest, "caseLoaderEndHour", caseLoaderEndHour);
 
         assertEquals(underTest.readyToRun(), assertion);
     }
@@ -49,11 +49,11 @@ class SscsCaseLoaderJobTest {
         verify(caseLoaderService, atMostOnce()).process();
     }
 
-    private static List<Arguments> getStartTimeScenarios() {
+    private static List<Arguments> getEndHourScenarios() {
         return List.of(
             Arguments.of(now().getHour(), true),
-            Arguments.of(now().getHour() - 1, true),
-            Arguments.of(now().getHour() + 1, false)
+            Arguments.of(now().getHour() - 1, false),
+            Arguments.of(now().getHour() + 1, true)
         );
     }
 }

@@ -58,7 +58,8 @@ sscs.case.loader:
   shutdown.delay.time: 7
   processMinorEvents: ${PROCESS_MINOR_EVENTS:true}
   useExistingDate: ${USE_EXISTING_DATE:true}
-  startTime: ${CASE_LOADER_START_TIME:10}
+  startHour: ${CASE_LOADER_START_HOUR:21}
+  endHour: ${CASE_LOADER_END_HOUR:7}
 
 logging.level:
   org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}

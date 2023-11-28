@@ -14,8 +14,8 @@ public class DataMigrationJob extends SscsJob {
     @Value("${features.data-migration.interpreter}")
     private boolean interpreterDataMigrationEnabled;
 
-    @Value("${sscs.case.loader.startTime}")
-    private int caseLoaderStartTime;
+    @Value("${sscs.case.loader.startHour}")
+    private int caseLoaderStartHour;
 
     public DataMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask) {
         super(caseLoaderTimerTask);
@@ -23,7 +23,7 @@ public class DataMigrationJob extends SscsJob {
 
     @Override
     public boolean readyToRun() {
-        return interpreterDataMigrationEnabled && now().getHour() < caseLoaderStartTime;
+        return interpreterDataMigrationEnabled && now().getHour() >= caseLoaderStartHour;
     }
 
     public void process() {

@@ -16,11 +16,8 @@ public class SscsCaseLoaderJob extends SscsJob {
 
     private final CaseLoaderService caseLoaderService;
 
-    @Value("${sscs.case.loader.shutdown.delay.time}")
-    private int shutdownDelayTime;
-
-    @Value("${sscs.case.loader.startTime}")
-    private int caseLoaderStartTime;
+    @Value("${sscs.case.loader.endHour}")
+    private int caseLoaderEndHour;
 
     @Autowired
     public SscsCaseLoaderJob(CaseLoaderService caseLoaderService, CaseLoaderTimerTask caseLoaderTimerTask) {
@@ -29,12 +26,11 @@ public class SscsCaseLoaderJob extends SscsJob {
     }
 
     public boolean readyToRun() {
-        return now().getHour() >= caseLoaderStartTime;
+        return now().getHour() <= caseLoaderEndHour;
     }
 
     public void process() {
-        String logPrefix = "CASELOADER " + UUID.randomUUID().toString();
-        caseLoaderService.setLogPrefix(logPrefix);
+        caseLoaderService.setLogPrefix("CASELOADER " + UUID.randomUUID());
         caseLoaderService.process();
     }
 
