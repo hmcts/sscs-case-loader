@@ -49,9 +49,9 @@ class DataMigrationJobTest {
     }
 
     @ParameterizedTest
-    @MethodSource("getStartTimeScenarios")
-    void shouldBeReadyToRunOnOrAfterStartTime(boolean migrationEnabled, int caseLoaderStartTime, boolean assertion) {
-        ReflectionTestUtils.setField(underTest, "caseLoaderStartTime", caseLoaderStartTime);
+    @MethodSource("getStartHourScenarios")
+    void shouldBeReadyToRunOnOrAfterStartTime(boolean migrationEnabled, int caseLoaderStartHour, boolean assertion) {
+        ReflectionTestUtils.setField(underTest, "caseLoaderStartHour", caseLoaderStartHour);
         ReflectionTestUtils.setField(underTest, "interpreterDataMigrationEnabled", migrationEnabled);
 
         assertEquals(underTest.readyToRun(), assertion);
@@ -77,14 +77,14 @@ class DataMigrationJobTest {
         assertEquals("Processing Interpreter data migration job", logEventCaptor.getValue().getMessage());
     }
 
-    private static List<Arguments> getStartTimeScenarios() {
+    private static List<Arguments> getStartHourScenarios() {
         return List.of(
             Arguments.of(false, now().getHour(), false),
             Arguments.of(false, now().getHour() - 1, false),
             Arguments.of(false, now().getHour() + 1, false),
-            Arguments.of(true, now().getHour(), false),
-            Arguments.of(true, now().getHour() - 1, false),
-            Arguments.of(true, now().getHour() + 1, true)
+            Arguments.of(true, now().getHour(), true),
+            Arguments.of(true, now().getHour() - 1, true),
+            Arguments.of(true, now().getHour() + 1, false)
         );
     }
 }
