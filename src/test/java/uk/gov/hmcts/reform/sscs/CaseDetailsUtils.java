@@ -24,7 +24,7 @@ public final class CaseDetailsUtils {
         SscsCcdConvertService sscsCcdConvertService = new SscsCcdConvertService();
         InputStream resourceAsStream = CaseDetailsUtils.class.getClassLoader().getResourceAsStream(caseDetails);
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json().build();
-        return sscsCcdConvertService.getCaseDetails(mapper.readerFor(CaseDetails.class).readValue(resourceAsStream));
+        return sscsCcdConvertService.getCaseDetails((CaseDetails) mapper.readerFor(CaseDetails.class).readValue(resourceAsStream));
     }
 
 }
