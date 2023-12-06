@@ -236,14 +236,11 @@ dependencies {
   implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
-  // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
-  // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
-  // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
-  // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor'
+  implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv'
   implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names'
 
   testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
