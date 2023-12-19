@@ -33,6 +33,5 @@ public class DataMigrationService {
             idamService.getIdamTokens(),
             ((JSONObject)row).getString("mapped_language_value")
         ));
-        System.out.println(data);
     }
 }

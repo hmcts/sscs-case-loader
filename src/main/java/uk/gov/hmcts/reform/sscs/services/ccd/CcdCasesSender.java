@@ -70,14 +70,17 @@ public class CcdCasesSender {
     }
 
     public void updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
-        log.info("Setting language value to ({}) for case ({})", language, caseId);
         var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
         var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
-        caseData.getAppeal().getHearingOptions().setLanguages(language);
 
-        updateCcdCaseService.updateCase(caseData, caseId,
-            startEventResponse.getEventId(), startEventResponse.getToken(),
-            MIGRATE_CASE, "", "", idamTokens);
+        if (!caseData.getAppeal().getHearingOptions().getLanguages().equals(language)) {
+            log.info("Setting language value to ({}) for case ({})", language, caseId);
+
+            caseData.getAppeal().getHearingOptions().setLanguages(language);
+
+            updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
+                startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+        }
     }
 
     private void ifThereIsChangesThenUpdateCase(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData,
