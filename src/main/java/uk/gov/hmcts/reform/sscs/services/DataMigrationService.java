@@ -25,13 +25,13 @@ public class DataMigrationService {
         this.idamService = idamService;
     }
 
-    public void process() {
+    public void process(String languageColumn) {
         String decodedString = new String(Base64.getDecoder().decode(encodedDataString));
         JSONArray data = new JSONArray(decodedString);
         data.iterator().forEachRemaining(row -> ccdCasesSender.updateLanguage(
             ((JSONObject)row).getLong("reference"),
             idamService.getIdamTokens(),
-            ((JSONObject)row).getString("mapped_language_value")
+            ((JSONObject)row).getString(languageColumn)
         ));
     }
 }
