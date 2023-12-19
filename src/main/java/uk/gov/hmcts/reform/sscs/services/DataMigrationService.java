@@ -31,7 +31,7 @@ public class DataMigrationService {
         data.iterator().forEachRemaining(row -> ccdCasesSender.updateLanguage(
             ((JSONObject)row).getLong("reference"),
             idamService.getIdamTokens(),
-            ((JSONObject)row).getString(languageColumn)
+            ((JSONObject)row).getString(languageColumn).trim()
         ));
     }
 }
