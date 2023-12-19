@@ -29,7 +29,7 @@ public class MigrationDataEncoderApp {
                  csvMapper.readerFor(Map.class).with(bootstrap).readValues(migrationFile)) {
 
             List<Map<String, String>> migrationData = mappingIterator.readAll();
-            migrationData.removeIf(row -> !row.get("Interpreter").trim().equals("Yes"));
+            migrationData.removeIf(row -> !row.get("interpreter").trim().equals("Yes"));
             JSONArray jsonObject = new JSONArray(migrationData);
             String encodedMigrationData = Base64.getEncoder().encodeToString(jsonObject.toString().getBytes());
 

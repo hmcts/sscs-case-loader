@@ -2,25 +2,37 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Base64;
 
 @Service
 @Slf4j
 public class DataMigrationService {
 
-    public static final String MIGRATION_FILE_NAME = "encoded_interpreter_data.txt";
+    private final CcdCasesSender ccdCasesSender;
+    private final IdamService idamService;
 
-    public void process() throws IOException {
-        //extract case data
-        //updateCases
-        String read = Files.readAllLines(Paths.get(MIGRATION_FILE_NAME)).get(0);
-        String decodedString = new String(Base64.getDecoder().decode(read));
+    @Value("${features.data-migration.data-string}")
+    private String encodedDataString;
+
+    public DataMigrationService(CcdCasesSender ccdCasesSender, IdamService idamService) {
+        this.ccdCasesSender = ccdCasesSender;
+        this.idamService = idamService;
+    }
+
+    public void process() {
+        String decodedString = new String(Base64.getDecoder().decode(encodedDataString));
         JSONArray data = new JSONArray(decodedString);
+        data.iterator().forEachRemaining(row -> ccdCasesSender.updateLanguage(
+            ((JSONObject)row).getLong("reference"),
+            idamService.getIdamTokens(),
+            ((JSONObject)row).getString("mapped_language_value")
+        ));
         System.out.println(data);
     }
 }

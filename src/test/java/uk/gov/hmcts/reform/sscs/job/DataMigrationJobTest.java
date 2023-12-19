@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +32,8 @@ class DataMigrationJobTest {
 
     @Mock
     CaseLoaderTimerTask timerTask;
+    @Mock
+    DataMigrationService migrationService;
 
     @Mock
     private Appender<ILoggingEvent> mockedAppender;
@@ -45,7 +48,7 @@ class DataMigrationJobTest {
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         root.addAppender(mockedAppender);
         root.setLevel(Level.INFO);
-        underTest = new DataMigrationJob(timerTask);
+        underTest = new DataMigrationJob(timerTask, migrationService);
     }
 
     @ParameterizedTest

@@ -4,10 +4,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.READY_TO_LIST;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
 
@@ -23,7 +30,24 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
@@ -49,6 +73,10 @@ public class CcdCasesSenderTest {
     private UpdateCcdCaseService updateCcdCaseService;
     @Mock
     private UpdateCcdCaseData updateCcdCaseData;
+    @Mock
+    private CcdClient ccdClient;
+    @Mock
+    private SscsCcdConvertService sscsCcdConvertService;
 
     private CcdCasesSender ccdCasesSender;
     private IdamTokens idamTokens;
@@ -56,8 +84,7 @@ public class CcdCasesSenderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        ccdCasesSender = new CcdCasesSender(updateCcdCaseService,
-            updateCcdCaseData);
+        ccdCasesSender = new CcdCasesSender(updateCcdCaseService, updateCcdCaseData, ccdClient, sscsCcdConvertService);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
             .serviceAuthorization(SERVICE_AUTHORIZATION)
