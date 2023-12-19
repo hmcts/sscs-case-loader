@@ -18,12 +18,13 @@ import java.util.Map;
 @Slf4j
 public class MigrationDataEncoderApp {
 
-    public static final String MIGRATION_FILE_NAME = "mapped_interpreter_language.csv";
+    public static final String MIGRATION_FILE = "src/main/resources/data-migration/example_mapped_language_data.csv";
+    public static final String ENCODED_STRING_FILE = "src/main/resources/data-migration/example_encoded_migration_data.txt";
 
     public static void main(String[] args) {
         CsvSchema bootstrap = CsvSchema.emptySchema().withHeader();
         CsvMapper csvMapper = new CsvMapper();
-        File migrationFile = new File(MIGRATION_FILE_NAME);
+        File migrationFile = new File(MIGRATION_FILE);
 
         try (MappingIterator<Map<String, String>> mappingIterator =
                  csvMapper.readerFor(Map.class).with(bootstrap).readValues(migrationFile)) {
@@ -33,7 +34,7 @@ public class MigrationDataEncoderApp {
             JSONArray jsonObject = new JSONArray(migrationData);
             String encodedMigrationData = Base64.getEncoder().encodeToString(jsonObject.toString().getBytes());
 
-            Path path = Paths.get("encoded_interpreter_data.txt");
+            Path path = Paths.get(ENCODED_STRING_FILE);
             Files.write(path, encodedMigrationData.getBytes());
 
         } catch (IOException e) {

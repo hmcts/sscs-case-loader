@@ -224,6 +224,14 @@ Here are some other functionalities it provides:
  * [Request caching](https://github.com/Netflix/Hystrix/wiki/How-it-Works#request-caching), allowing
  different code paths to execute Hystrix Commands without worrying about duplicating work
 
+## Data migration
+* Export mapped data sheet as csv and save it in a file named "example_mapped_language_data.csv" and folder path:
+  "src/main/resources/data-migration"
+* Ensure the relevant columns are named as follows: "interpreter", "reference", "mapped_language_value".
+* Run the "MigrationDataEncoderApp" to generate the encoded migration data string, which will be saved in a file named
+  "example_encoded_migration_data.txt" and folder path "src/main/resources/data-migration".
+* Copy the encoded string into the "encoded_migration_data_string" secret in the relevant keyvault
+
 ## Troubleshooting
 
 ### IDE Settings

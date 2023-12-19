@@ -17,7 +17,7 @@ public class DataMigrationService {
     private final CcdCasesSender ccdCasesSender;
     private final IdamService idamService;
 
-    @Value("${features.data-migration.data-string}")
+    @Value("${features.data-migration.encoded-data-string}")
     private String encodedDataString;
 
     public DataMigrationService(CcdCasesSender ccdCasesSender, IdamService idamService) {

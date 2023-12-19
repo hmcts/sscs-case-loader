@@ -30,7 +30,7 @@ class DataMigrationServiceTest {
 
     @Test
     void process() throws IOException {
-        byte[] encodedBytes =  Files.readAllBytes(Paths.get("src/test/resources/encoded_migration_data.txt"));
+        byte[] encodedBytes =  Files.readAllBytes(Paths.get("src/test/resources/example_encoded_migration_data.txt"));
         ReflectionTestUtils.setField(underTest, "encodedDataString", new String(encodedBytes));
         underTest.process();
     }

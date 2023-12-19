@@ -1,0 +1,4 @@
+    reference     ,      state       ,      event_id      , case_data_id ,submitted_language                                      , existing_language_value                        ,interpreter,mapped_language_value,,Uma Comments
+1703021924600418, readyToList      , validAppealCreated ,1234567,2072471050,                                                               , Yes,Arabic,,Language not captured correctly
+1703021981888666, hearing          , validAppealCreated ,1234568,                                                                                         ,                                                               , Yes,Bengali,,
+1703021993672710, hearing          , validAppealCreated ,1234569,                                                                                         ,                                                               , ,,,
