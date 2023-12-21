@@ -229,7 +229,7 @@ Here are some other functionalities it provides:
 * The following columns are required: "reference", "state"," "interpreter", "mapped_language_value", "existing_language_value".
 * Update the name of the migration file in the "MigrationDataEncoderApp" class.
 * Run the "MigrationDataEncoderApp" to generate the encoded migration data string, which will be saved in a file named
-  "encoded_migration_data.txt" at the root of the project.
+  "<YYYYMMDD>_encoded_migration_data.txt" at the root of the project.
 * Copy the encoded string into the "encoded_migration_data_string" secret in the relevant keyvault sscs-<env>
 * This completes the setup required for the data migration cron job.
 * When the job runs it will read the encoded string from the vault, decode it, extract the migration data and update the

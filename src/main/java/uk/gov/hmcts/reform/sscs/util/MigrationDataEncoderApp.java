@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 @Slf4j
 public class MigrationDataEncoderApp {
 
-    public static final String MIGRATION_FILE = "example_mapped_language_data.csv";
+    public static final String MIGRATION_FILE = "20231221_mapped_interpreter_language.csv";
     public static final String ENCODED_STRING_FILE = "encoded_migration_data.txt";
 
     private static final String INTERPRETER_COLUMN = "interpreter";
@@ -36,17 +37,26 @@ public class MigrationDataEncoderApp {
         try (MappingIterator<Map<String, String>> mappingIterator =
                  csvMapper.readerFor(Map.class).with(bootstrap).readValues(migrationFile)) {
 
+            log.info("Parsing migration file ({}) to generate encoded string of migration data json", MIGRATION_FILE);
+
             List<Map<String, String>> migrationData = mappingIterator.readAll();
             migrationData.removeIf(row -> !row.get(INTERPRETER_COLUMN).trim().equals(YES.toString()));
             migrationData.removeIf(row -> row.get(STATE_COLUMN).trim().equals(VOID_STATE.toString())
                 || row.get(STATE_COLUMN).trim().equals(DORMANT_APPEAL_STATE.toString()));
-            JSONArray jsonObject = new JSONArray(migrationData);
-            String encodedMigrationData = Base64.getEncoder().encodeToString(jsonObject.toString().getBytes());
 
-            Path path = Paths.get(ENCODED_STRING_FILE);
+            log.info("encoding data for for {} cases", migrationData.size());
+
+            JSONArray migrationDataJson = new JSONArray(migrationData);
+            String encodedMigrationData = Base64.getEncoder().encodeToString(migrationDataJson.toString().getBytes());
+            Path path = Paths.get(LocalDate.now().toString().replace("-", "")
+                    .concat("_" + ENCODED_STRING_FILE));
             Files.write(path, encodedMigrationData.getBytes());
 
+            log.info("Generated encoded string and saved it under {}", path);
+
         } catch (IOException e) {
+            log.error("There was a problem encoding the migration data, migration file ({}), encoded string file ({})",
+                MIGRATION_FILE, ENCODED_STRING_FILE);
             throw new RuntimeException(e);
         }
     }
