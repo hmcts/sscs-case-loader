@@ -225,12 +225,15 @@ Here are some other functionalities it provides:
  different code paths to execute Hystrix Commands without worrying about duplicating work
 
 ## Data migration
-* Export mapped data sheet as csv and save it in a file named "example_mapped_language_data.csv" and folder path:
-  "src/main/resources/data-migration"
-* Ensure the relevant columns are named as follows: "interpreter", "reference", "mapped_language_value".
+* Export mapped data sheet as csv and save it as "<YYYYMMDD>_mapped_language_data.csv" at the root of the project.
+* The following columns are required: "reference", "state"," "interpreter", "mapped_language_value", "existing_language_value".
+* Update the name of the migration file in the "MigrationDataEncoderApp" class.
 * Run the "MigrationDataEncoderApp" to generate the encoded migration data string, which will be saved in a file named
-  "example_encoded_migration_data.txt" and folder path "src/main/resources/data-migration".
-* Copy the encoded string into the "encoded_migration_data_string" secret in the relevant keyvault
+  "encoded_migration_data.txt" at the root of the project.
+* Copy the encoded string into the "encoded_migration_data_string" secret in the relevant keyvault sscs-<env>
+* This completes the setup required for the data migration cron job.
+* When the job runs it will read the encoded string from the vault, decode it, extract the migration data and update the
+  language values for all cases included the migration sheet.
 
 ## Troubleshooting
 

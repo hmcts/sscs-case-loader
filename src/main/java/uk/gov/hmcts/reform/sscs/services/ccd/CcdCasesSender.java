@@ -24,6 +24,8 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.READY_TO_LIST;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
 
 
 @Service
@@ -72,8 +74,12 @@ public class CcdCasesSender {
     public void updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
         var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
         var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
+        var hasExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE)
+            || startEventResponse.getCaseDetails().getState().equals(DORMANT_APPEAL_STATE);
 
-        if (!caseData.getAppeal().getHearingOptions().getLanguages().equals(language)) {
+        if (caseData.getAppeal().getHearingOptions().getLanguages().equals(language) || hasExcludedState) {
+            log.info("Skipping case ({}) as language value already matching ({})", caseId, language);
+        } else {
             log.info("Setting language value to ({}) for case ({})", language, caseId);
 
             caseData.getAppeal().getHearingOptions().setLanguages(language);

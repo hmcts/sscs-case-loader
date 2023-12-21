@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,6 @@ import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 import java.util.Base64;
 
 @Service
-@Slf4j
 public class DataMigrationService {
 
     private final CcdCasesSender ccdCasesSender;

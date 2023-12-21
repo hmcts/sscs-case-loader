@@ -15,11 +15,18 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+
 @Slf4j
 public class MigrationDataEncoderApp {
 
-    public static final String MIGRATION_FILE = "src/main/resources/data-migration/example_mapped_language_data.csv";
-    public static final String ENCODED_STRING_FILE = "src/main/resources/data-migration/example_encoded_migration_data.txt";
+    public static final String MIGRATION_FILE = "example_mapped_language_data.csv";
+    public static final String ENCODED_STRING_FILE = "encoded_migration_data.txt";
+
+    private static final String INTERPRETER_COLUMN = "interpreter";
+    private static final String STATE_COLUMN = "state";
 
     public static void main(String[] args) {
         CsvSchema bootstrap = CsvSchema.emptySchema().withHeader();
@@ -30,7 +37,9 @@ public class MigrationDataEncoderApp {
                  csvMapper.readerFor(Map.class).with(bootstrap).readValues(migrationFile)) {
 
             List<Map<String, String>> migrationData = mappingIterator.readAll();
-            migrationData.removeIf(row -> !row.get("interpreter").trim().equals("Yes"));
+            migrationData.removeIf(row -> !row.get(INTERPRETER_COLUMN).trim().equals(YES.toString()));
+            migrationData.removeIf(row -> row.get(STATE_COLUMN).trim().equals(VOID_STATE.toString())
+                || row.get(STATE_COLUMN).trim().equals(DORMANT_APPEAL_STATE.toString()));
             JSONArray jsonObject = new JSONArray(migrationData);
             String encodedMigrationData = Base64.getEncoder().encodeToString(jsonObject.toString().getBytes());
 

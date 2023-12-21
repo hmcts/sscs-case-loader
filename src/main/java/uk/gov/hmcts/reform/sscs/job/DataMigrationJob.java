@@ -12,8 +12,8 @@ import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 @Slf4j
 public class DataMigrationJob extends SscsJob {
 
-    private static final String MAPPED_LANGUAGE_COLUMN = "mapped_language_value";
-    private static final String EXISTING_LANGUAGE_COLUMN = "existing_language_value";
+    public static final String MAPPED_LANGUAGE_COLUMN = "mapped_language_value";
+    public static final String EXISTING_LANGUAGE_COLUMN = "existing_language_value";
 
     private DataMigrationService migrationService;
 
@@ -37,8 +37,8 @@ public class DataMigrationJob extends SscsJob {
     }
 
     public void process() {
-        log.info("Processing Interpreter data migration job");
         String languageColumn = isRollback ? EXISTING_LANGUAGE_COLUMN : MAPPED_LANGUAGE_COLUMN;
+        log.info("Processing Interpreter data {} job", isRollback ? "rollback" : "migration");
         migrationService.process(languageColumn);
     }
 
