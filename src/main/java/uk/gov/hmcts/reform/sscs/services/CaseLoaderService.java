@@ -238,8 +238,7 @@ public class CaseLoaderService {
                 return searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
             } catch (FeignException.FeignClientException feignException) {
                 if (HttpStatus.BAD_REQUEST.value() == feignException.status()) {
-                    log.error(logPrefixWithFile + "FeignException with message {} for case with SC {} and ccdID {} "
-                            + "could not be searched for, skipping case...",
+                    log.error(logPrefixWithFile + "FeignException with message {} for case with SC {} and ccdID {} ",
                         feignException.getMessage(), caseData.getCaseReference(), caseData.getCcdCaseId());
                     return Collections.emptyList();
                 }

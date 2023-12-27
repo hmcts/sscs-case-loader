@@ -10,9 +10,11 @@ import feign.RequestTemplate;
 import java.io.InputStream;
 import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
+
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -250,9 +252,9 @@ public class CaseLoaderServiceTest {
             new HashMap<>(), null, new RequestTemplate());
 
         doThrow(new FeignException.BadRequest("Case reference is not valid", request, null, null))
-            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
 
-        caseLoaderService.process();
+        Assertions.assertDoesNotThrow(()->caseLoaderService.process());
     }
 
     @Test(expected = ProcessDeltaException.class)
@@ -268,7 +270,7 @@ public class CaseLoaderServiceTest {
             new HashMap<>(), null, new RequestTemplate());
 
         doThrow(new FeignException.BadRequest("Case reference is not valid", request, null, null))
-            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
 
         caseLoaderService.process();
     }
