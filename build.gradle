@@ -111,15 +111,17 @@ dependencies {
 }
 
 jacoco {
-  toolVersion = "0.8.8"
+  toolVersion = "0.8.11"
 }
 
 jacocoTestReport {
   executionData(test, integration)
+  executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
   reports {
     xml.getRequired().set(true)
     csv.getRequired().set(false)
     xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    html.destination file("${buildDir}/reports/jacoco/jacocoTestReport.html")
   }
 }
 
@@ -173,6 +175,7 @@ repositories {
 tasks.withType(Copy).all { duplicatesStrategy 'warn' }
 
 project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
+
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
@@ -183,7 +186,7 @@ sonarqube {
   properties {
     property "sonar.projectName", "SSCS - Case loader"
     property "sonar.projectKey", "SSCSCL"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java," +
       " **/sscs/services/xml/XmlValidator.java" + "**/sscs/config/CaseLoaderJobConfig.java"
   }
