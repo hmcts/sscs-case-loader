@@ -4,13 +4,12 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import javax.xml.stream.XMLStreamException;
-
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
+import java.io.InputStream;
+import java.util.HashMap;
+import javax.xml.stream.XMLStreamException;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -213,7 +212,7 @@ public class CaseLoaderServiceTest {
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
         when(searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens)))
-                .thenReturn(singletonList(sscsCaseDetails));
+            .thenReturn(singletonList(sscsCaseDetails));
 
         doThrow(RuntimeException.class).when(ccdCasesSender).sendUpdateCcdCases(any(), any(), any());
 

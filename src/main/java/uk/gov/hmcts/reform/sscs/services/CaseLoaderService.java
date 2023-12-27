@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services;
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.hasAppellantIdentify;
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.normaliseNino;
 
+import feign.FeignException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -11,8 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
-
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -193,7 +192,8 @@ public class CaseLoaderService {
         IdamTokens idamTokens = idamService.getIdamTokens();
 
         try {
-            List<SscsCaseDetails> sscsCaseDetailsList = getCasesByCaseRefOrCaseIdWithInvalidReferenceErrorHandlingIfEnabled(caseData, idamTokens);
+            List<SscsCaseDetails> sscsCaseDetailsList =
+                getCasesByCaseRefOrCaseIdWithInvalidReferenceErrorHandlingIfEnabled(caseData, idamTokens);
             if (!CollectionUtils.isEmpty(sscsCaseDetailsList) && (sscsCaseDetailsList.size() > 1)) {
                 log.info(logPrefixWithFile + " found multiple cases {} with SC {} and ccdID {} "
                         + "skipping case...",
@@ -229,7 +229,10 @@ public class CaseLoaderService {
         }
     }
 
-    private List<SscsCaseDetails> getCasesByCaseRefOrCaseIdWithInvalidReferenceErrorHandlingIfEnabled(SscsCaseData caseData, IdamTokens idamTokens) {
+    private List<SscsCaseDetails> getCasesByCaseRefOrCaseIdWithInvalidReferenceErrorHandlingIfEnabled(
+        SscsCaseData caseData,
+        IdamTokens idamTokens
+    ) {
         if (invalidCaseRefErrorHandlingEnabled) {
             try {
                 return searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
