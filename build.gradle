@@ -184,8 +184,8 @@ integration.shouldRunAfter(test)
 
 sonarqube {
   properties {
-    property "sonar.projectName", "SSCS - sscs-caseloader"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:sscs-caseloader"
+    property "sonar.projectName", "SSCS - Case loader"
+    property "sonar.projectKey", "SSCSCL"
     property "sonar.coverage.jacoco.xmlReportPaths", "${projectDir}/build/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java," +
       " **/sscs/services/xml/XmlValidator.java" + "**/sscs/config/CaseLoaderJobConfig.java"
