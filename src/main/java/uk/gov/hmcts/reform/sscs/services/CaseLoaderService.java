@@ -7,11 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
+
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -44,6 +49,8 @@ public class CaseLoaderService {
     private String logPrefixWithFile;
     private CaseLoaderMetrics metrics;
     private CaseLoaderMetrics fileMetrics;
+    @Value("${features.invalid-case-ref.error.handling}")
+    private boolean invalidCaseRefErrorHandlingEnabled;
 
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
@@ -186,8 +193,7 @@ public class CaseLoaderService {
         IdamTokens idamTokens = idamService.getIdamTokens();
 
         try {
-            List<SscsCaseDetails> sscsCaseDetailsList = searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData,
-                idamTokens);
+            List<SscsCaseDetails> sscsCaseDetailsList = getCasesByCaseRefOrCaseIdWithInvalidReferenceErrorHandlingIfEnabled(caseData, idamTokens);
             if (!CollectionUtils.isEmpty(sscsCaseDetailsList) && (sscsCaseDetailsList.size() > 1)) {
                 log.info(logPrefixWithFile + " found multiple cases {} with SC {} and ccdID {} "
                         + "skipping case...",
@@ -223,4 +229,22 @@ public class CaseLoaderService {
         }
     }
 
+    private List<SscsCaseDetails> getCasesByCaseRefOrCaseIdWithInvalidReferenceErrorHandlingIfEnabled(SscsCaseData caseData, IdamTokens idamTokens) {
+        if (invalidCaseRefErrorHandlingEnabled) {
+            try {
+                return searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
+            } catch (FeignException.FeignClientException feignException) {
+                if (HttpStatus.BAD_REQUEST.value() == feignException.status()) {
+                    log.error(logPrefixWithFile + "FeignException with message {} for case with SC {} and ccdID {} "
+                            + "could not be searched for, skipping case...",
+                        feignException.getMessage(), caseData.getCaseReference(), caseData.getCcdCaseId());
+                    return Collections.emptyList();
+                }
+                throw feignException;
+            }
+        }
+        return searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
+    }
 }
+
+

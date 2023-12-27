@@ -2,22 +2,22 @@ package uk.gov.hmcts.reform.sscs.services;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
+
+import feign.FeignException;
+import feign.Request;
+import feign.RequestTemplate;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -238,4 +238,39 @@ public class CaseLoaderServiceTest {
 
     }
 
+    @Test
+    public void shouldSkipTheCaseWhileSearchingCaseIfCaseIdIsInvalidAndFeatureEnabledForErrorHandling() {
+        ReflectionTestUtils.setField(caseLoaderService, "invalidCaseRefErrorHandlingEnabled", true);
+
+        caseData.setCaseReference("SC001//00365123");
+        caseData.setCcdCaseId("1234");
+
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
+
+        Request request = Request.create(Request.HttpMethod.GET, "url",
+            new HashMap<>(), null, new RequestTemplate());
+
+        doThrow(new FeignException.BadRequest("Case reference is not valid", request, null, null))
+            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+
+        caseLoaderService.process();
+    }
+
+    @Test(expected = ProcessDeltaException.class)
+    public void shouldThrowFeignExceptionWhileSearchingCaseIfCaseIdIsInvalidAndFeatureDisabledForErrorHandling() {
+        ReflectionTestUtils.setField(caseLoaderService, "invalidCaseRefErrorHandlingEnabled", false);
+
+        caseData.setCaseReference("SC001//00365123");
+        caseData.setCcdCaseId("1234");
+
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
+
+        Request request = Request.create(Request.HttpMethod.GET, "url",
+            new HashMap<>(), null, new RequestTemplate());
+
+        doThrow(new FeignException.BadRequest("Case reference is not valid", request, null, null))
+            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(eq(caseData), eq(idamTokens));
+
+        caseLoaderService.process();
+    }
 }
