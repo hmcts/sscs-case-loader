@@ -10,7 +10,6 @@ import feign.RequestTemplate;
 import java.io.InputStream;
 import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
-
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -254,7 +253,7 @@ public class CaseLoaderServiceTest {
         doThrow(new FeignException.BadRequest("Case reference is not valid", request, null, null))
             .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
 
-        Assertions.assertDoesNotThrow(()->caseLoaderService.process());
+        Assertions.assertDoesNotThrow(() -> caseLoaderService.process());
     }
 
     @Test(expected = ProcessDeltaException.class)
