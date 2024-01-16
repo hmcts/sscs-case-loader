@@ -38,7 +38,7 @@ job:
         alias: GAPS2_KEY_LOCATION
       - name: app-insights-connection-string
         alias: app-insights-connection-string
-      - name: encoded_migration_data_string
+      - name: encoded-migration-data-string
         alias: ENCODED_MIGRATION_DATA_STRING
   environment:
     CORE_CASE_DATA_JURISDICTION_ID: SSCS

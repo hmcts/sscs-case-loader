@@ -62,6 +62,7 @@ class DataMigrationJobTest {
 
     @Test
     void shouldRunTheJob() {
+        ReflectionTestUtils.setField(underTest, "isRollback", false);
         underTest.run();
 
         verify(mockedAppender, times(4)).doAppend(logEventCaptor.capture());
