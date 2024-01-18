@@ -70,7 +70,7 @@ public class CcdCasesSender {
         }
     }
 
-    public void updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
+    public boolean updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
         var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
         var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
         var hasExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE)
@@ -78,13 +78,21 @@ public class CcdCasesSender {
 
         if (caseData.getAppeal().getHearingOptions().getLanguages().equals(language) || hasExcludedState) {
             log.info("Skipping case ({}) as language value already matching ({})", caseId, language);
+            return false;
         } else {
-            log.info("Setting language value to ({}) for case ({})", language, caseId);
+            try {
+                log.info("Setting language value to ({}) for case ({})", language, caseId);
 
-            caseData.getAppeal().getHearingOptions().setLanguages(language);
+                caseData.getAppeal().getHearingOptions().setLanguages(language);
 
-            updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
-                startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+                updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
+                    startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+                return true;
+            } catch (Exception exception) {
+                log.info("Case ({}) could not be updated", caseId, exception);
+                return false;
+            }
+
         }
     }
 

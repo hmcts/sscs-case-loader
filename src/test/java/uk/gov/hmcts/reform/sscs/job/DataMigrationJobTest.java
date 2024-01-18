@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.sscs.job.DataMigrationJob.EXISTING_LANGUAGE_COLUMN;
+import static uk.gov.hmcts.reform.sscs.job.DataMigrationJob.MAPPED_LANGUAGE_COLUMN;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -68,17 +70,23 @@ class DataMigrationJobTest {
         verify(mockedAppender, times(4)).doAppend(logEventCaptor.capture());
         var capturedLogs = logEventCaptor.getAllValues();
         assertEquals("{} scheduler started : {}", capturedLogs.get(0).getMessage());
-        assertEquals("Processing Interpreter data migration job", capturedLogs.get(1).getMessage());
+        assertEquals("Processing Interpreter data migration job", capturedLogs.get(1).getFormattedMessage());
         assertEquals("{} scheduler ended : {}", capturedLogs.get(2).getMessage());
-        assertEquals("Case loader Shutting down...", capturedLogs.get(3).getMessage());
+        assertEquals("Case loader Shutting down...", capturedLogs.get(3).getFormattedMessage());
     }
 
-    @Test
-    void shouldProcessTheJob() {
+    @ParameterizedTest
+    @MethodSource("getRollbackScenarios")
+    void shouldProcessTheJob(boolean isRollback, String languageColumn) {
+        ReflectionTestUtils.setField(underTest, "isRollback", isRollback);
         underTest.process();
 
+        verify(migrationService).process(languageColumn);
         verify(mockedAppender, atMostOnce()).doAppend(logEventCaptor.capture());
-        assertEquals("Processing Interpreter data migration job", logEventCaptor.getValue().getMessage());
+        String job = isRollback ? "rollback" : "migration";
+        assertEquals(
+            "Processing Interpreter data " + job + " job", logEventCaptor.getValue().getFormattedMessage()
+        );
     }
 
     private static List<Arguments> getStartHourScenarios() {
@@ -89,6 +97,13 @@ class DataMigrationJobTest {
             Arguments.of(true, now().getHour(), true),
             Arguments.of(true, now().getHour() - 1, true),
             Arguments.of(true, now().getHour() + 1, false)
+        );
+    }
+
+    private static List<Arguments> getRollbackScenarios() {
+        return List.of(
+            Arguments.of(true, EXISTING_LANGUAGE_COLUMN),
+            Arguments.of(false, MAPPED_LANGUAGE_COLUMN)
         );
     }
 }
