@@ -1,11 +1,12 @@
 package uk.gov.hmcts.reform.sscs.util;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,10 +16,8 @@ import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-
-import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 
 @Slf4j
 public class MigrationDataEncoderApp {
@@ -28,6 +27,9 @@ public class MigrationDataEncoderApp {
 
     private static final String INTERPRETER_COLUMN = "interpreter";
     private static final String STATE_COLUMN = "state";
+
+    private MigrationDataEncoderApp() {
+    }
 
     public static void main(String[] args) {
         CsvSchema bootstrap = CsvSchema.emptySchema().withHeader();

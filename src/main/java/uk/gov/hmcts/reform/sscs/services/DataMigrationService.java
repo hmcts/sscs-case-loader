@@ -1,13 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import java.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
-
-import java.util.Base64;
 
 @Service
 public class DataMigrationService {
