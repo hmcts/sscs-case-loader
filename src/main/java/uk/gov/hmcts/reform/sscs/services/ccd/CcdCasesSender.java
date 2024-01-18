@@ -73,8 +73,8 @@ public class CcdCasesSender {
     public boolean updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
         var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
         var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
-        var hasExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE)
-            || startEventResponse.getCaseDetails().getState().equals(DORMANT_APPEAL_STATE);
+        var hasExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE.toString())
+            || startEventResponse.getCaseDetails().getState().equals(DORMANT_APPEAL_STATE.toString());
 
         if (caseData.getAppeal().getHearingOptions().getLanguages().equals(language) || hasExcludedState) {
             log.info("Skipping case ({}) as language value already matching ({})", caseId, language);
