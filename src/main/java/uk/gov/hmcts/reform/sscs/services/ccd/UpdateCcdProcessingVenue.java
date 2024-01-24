@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -23,12 +24,19 @@ class UpdateCcdProcessingVenue {
 
         if (!gapsProcessingVenue.equalsIgnoreCase(existingProcessingVenue)) {
 
-            log.info("Processing venue has changed from {} to {} for case {}", existingProcessingVenue,
-                gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+            try{
+                log.info("Processing venue has changed from {} to {} for case {}", existingProcessingVenue,
+                    gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
 
-            existingCcdCaseData.setProcessingVenue(gapsProcessingVenue);
+                existingCcdCaseData.setProcessingVenue(gapsProcessingVenue);
 
-            venueUpdated = true;
+                venueUpdated = true;
+
+            } catch (FeignException e) {
+                log.info("Could not update processing venue from {} to {} for case {}", existingProcessingVenue,
+                    gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+            }
+
         } else {
             log.info("Processing venue has not changed for case {} . Processing venue =  {}",
                 existingCcdCaseData.getCcdCaseId(), existingProcessingVenue);
