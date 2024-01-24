@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLog.debugCaseLoaderException;
+
 @Slf4j
 @Service
 class UpdateCcdProcessingVenue {
@@ -33,8 +35,7 @@ class UpdateCcdProcessingVenue {
                 venueUpdated = true;
 
             } catch (FeignException e) {
-                log.info("Could not update processing venue from {} to {} for case {}", existingProcessingVenue,
-                    gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+                debugCaseLoaderException(log, e, "Could not update processing venue");
             }
 
         } else {
