@@ -11,6 +11,7 @@ public final class FeignExceptionLogger {
 
     public static void debugCaseLoaderException(Logger logger, FeignException exception, String introMessage) {
         logger.debug(
+            "{}. CCD response: {}",
             introMessage,
             // exception.contentUTF8() uses response body internally
             exception.responseBody().isPresent() ? exception.contentUTF8() : exception.getMessage()
