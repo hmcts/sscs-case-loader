@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLog.debugCaseLoaderException;
+
 @Slf4j
 @Service
 class UpdateCcdHearingType {
@@ -21,9 +23,10 @@ class UpdateCcdHearingType {
                     if (!gaps2HearingType.equals(ccdHearingType)) {
                         try {
                             existingCcdCaseData.getAppeal().setHearingType(gaps2HearingType);
-                        } catch (FeignException e) {
-                            log.info("Could not update hearing type from {} to {} for case {}", gaps2HearingType,
+                            log.info("Updated hearing type from {} to {} for case {}", gaps2HearingType,
                                 ccdHearingType, existingCcdCaseData.getCcdCaseId());
+                        } catch (FeignException e) {
+                            debugCaseLoaderException(log, e, "Could not update hearing type");
                         }
                         return true;
                     }
