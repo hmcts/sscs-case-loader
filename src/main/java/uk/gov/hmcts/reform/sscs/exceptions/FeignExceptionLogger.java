@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.sscs.exceptions;
+
 import feign.FeignException;
 import org.slf4j.Logger;
-public class FeignExceptionLog {
+
+public final class FeignExceptionLogger {
+
+    private FeignExceptionLogger() {
+        // empty utility class construct
+    }
 
     public static void debugCaseLoaderException(Logger logger, FeignException exception, String introMessage) {
         logger.debug(

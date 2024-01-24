@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
+
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
-
-import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLog.debugCaseLoaderException;
 
 @Slf4j
 @Service
