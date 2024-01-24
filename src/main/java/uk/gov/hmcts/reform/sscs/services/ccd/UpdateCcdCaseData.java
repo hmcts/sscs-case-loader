@@ -1,10 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
+
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
 
 @Slf4j
 @Service
@@ -61,12 +64,41 @@ class UpdateCcdCaseData {
         boolean updateProcessingVenue = false;
 
         if (null != gapsCaseData && null != gapsCaseData.getAppeal()) {
-            updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
-            updateHearingOptions = updateCcdHearingOptions.updateHearingOptions(gapsCaseData, existingCcdCaseData);
-            updateHearingType = updateCcdHearingType.updateHearingType(gapsCaseData, existingCcdCaseData);
-            updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
-            updateRpc = updateCcdRpc.updateCcdRpc(gapsCaseData, existingCcdCaseData);
-            updateProcessingVenue = updateCcdProcessingVenue.updateVenue(gapsCaseData, existingCcdCaseData);
+            try {
+                updateParties = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCcdCaseData);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Appellant Details");
+            }
+
+            try {
+                updateHearingOptions = updateCcdHearingOptions.updateHearingOptions(gapsCaseData, existingCcdCaseData);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Hearing Options");
+            }
+
+            try {
+                updateHearingType = updateCcdHearingType.updateHearingType(gapsCaseData, existingCcdCaseData);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Hearing Type");
+            }
+
+            try {
+                updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Representative Details");
+            }
+
+            try {
+                updateRpc = updateCcdRpc.updateCcdRpc(gapsCaseData, existingCcdCaseData);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Regional Processing Centre Details");
+            }
+
+            try {
+                updateProcessingVenue = updateCcdProcessingVenue.updateVenue(gapsCaseData, existingCcdCaseData);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Processing Venue Details");
+            }
         }
 
         boolean ccdDataChanged =  dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType
