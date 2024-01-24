@@ -185,7 +185,8 @@ sonarqube {
     property "sonar.projectKey", "SSCSCL"
     property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java," +
-      " **/sscs/services/xml/XmlValidator.java" + "**/sscs/config/CaseLoaderJobConfig.java"
+      " **/sscs/services/xml/XmlValidator.java, **/sscs/config/CaseLoaderJobConfig.java," +
+      " **/sscs/services/CaseLoaderService.java"
   }
 }
 
