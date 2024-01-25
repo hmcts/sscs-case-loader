@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
+
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
-
-import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
 
 @Slf4j
 @Service
@@ -59,7 +59,7 @@ class UpdateCcdCaseData {
         boolean updateParties = false;
         boolean updateHearingOptions = false;
         boolean updateHearingType = false;
-        boolean updateRepresentative = false;
+        boolean updateRep = false;
         boolean updateRpc = false;
         boolean updateProcessingVenue = false;
 
@@ -83,7 +83,7 @@ class UpdateCcdCaseData {
             }
 
             try {
-                updateRepresentative = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
+                updateRep = UpdateCcdRepresentative.updateCcdRepresentative(gapsCaseData, existingCcdCaseData);
             } catch (FeignException e) {
                 debugCaseLoaderException(log, e, "Could not update Representative Details");
             }
@@ -91,7 +91,7 @@ class UpdateCcdCaseData {
             try {
                 updateRpc = updateCcdRpc.updateCcdRpc(gapsCaseData, existingCcdCaseData);
             } catch (FeignException e) {
-                debugCaseLoaderException(log, e, "Could not update Regional Processing Centre Details");
+                debugCaseLoaderException(log, e, "Could not update Regional Processing Center Details");
             }
 
             try {
@@ -102,7 +102,7 @@ class UpdateCcdCaseData {
         }
 
         boolean ccdDataChanged =  dwpTimeExtension || updateParties || updateHearingOptions || updateHearingType
-            || updateRepresentative || updateRpc || updateProcessingVenue;
+            || updateRep || updateRpc || updateProcessingVenue;
 
         log.info("updatedCCdData is {} for case {}", ccdDataChanged,
             existingCcdCaseData == null ? "null" : existingCcdCaseData.getCcdCaseId());

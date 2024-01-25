@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 
+@Slf4j
 @Service
 class UpdateCcdAppellantData {
     boolean updateCcdAppellantData(SscsCaseData gapsCaseData,
@@ -96,13 +100,21 @@ class UpdateCcdAppellantData {
         Identity existingCcdAppellantIdentity = existingCcdAppellant.getIdentity();
 
         if (null == existingCcdAppellantIdentity) {
-            existingCcdAppellant.setIdentity(gapsAppellantIdentity);
+            try {
+                existingCcdAppellant.setIdentity(gapsAppellantIdentity);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appellant identity");
+            }
             return true;
         }
 
         if (null != gapsAppellantIdentity && StringUtils.isNotBlank(gapsAppellantIdentity.getNino())
             && !gapsAppellantIdentity.getNino().equals(existingCcdAppellantIdentity.getNino())) {
-            existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
+            try {
+                existingCcdAppellantIdentity.setNino(gapsAppellantIdentity.getNino());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appellant Nino");
+            }
             return true;
         }
 
@@ -121,19 +133,31 @@ class UpdateCcdAppellantData {
 
         if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getEmail())
             && !gapsAppellantContact.getEmail().equals(existingCcdAppellantContact.getEmail())) {
-            existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
+            try {
+                existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appellant email");
+            }
             return true;
         }
 
         if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getMobile())
             && !gapsAppellantContact.getMobile().equals(existingCcdAppellantContact.getMobile())) {
-            existingCcdAppellantContact.setMobile(gapsAppellantContact.getMobile());
+            try {
+                existingCcdAppellantContact.setMobile(gapsAppellantContact.getMobile());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appellant mobile");
+            }
             return true;
         }
 
         if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getPhone())
             && !gapsAppellantContact.getPhone().equals(existingCcdAppellantContact.getPhone())) {
-            existingCcdAppellantContact.setPhone(gapsAppellantContact.getPhone());
+            try {
+                existingCcdAppellantContact.setPhone(gapsAppellantContact.getPhone());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appellant phone number");
+            }
             return true;
         }
 
@@ -177,13 +201,21 @@ class UpdateCcdAppellantData {
             if (null == existingCcdAppointee) {
                 existingCcdAppointee = Appointee.builder().build();
             }
-            existingCcdAppointee.setIdentity(gapsAppointeeIdentity);
+            try {
+                existingCcdAppointee.setIdentity(gapsAppointeeIdentity);
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appointee identity");
+            }
             return true;
         }
 
         if (null != gapsAppointeeIdentity && StringUtils.isNotBlank(gapsAppointeeIdentity.getNino())
             && !gapsAppointeeIdentity.getNino().equals(existingCcdAppointeeIdentity.getNino())) {
-            existingCcdAppointeeIdentity.setNino(gapsAppointeeIdentity.getNino());
+            try {
+                existingCcdAppointeeIdentity.setNino(gapsAppointeeIdentity.getNino());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appointee Nino");
+            }
             return true;
         }
         return false;
@@ -206,19 +238,32 @@ class UpdateCcdAppellantData {
 
         if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getEmail())
             && !gapsAppointeeContact.getEmail().equals(existingCcdAppointeeContact.getEmail())) {
-            existingCcdAppointeeContact.setEmail(gapsAppointeeContact.getEmail());
+            try {
+                existingCcdAppointeeContact.setEmail(gapsAppointeeContact.getEmail());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appointee email");
+            }
+
             return true;
         }
 
         if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getMobile())
             && !gapsAppointeeContact.getMobile().equals(existingCcdAppointeeContact.getMobile())) {
-            existingCcdAppointeeContact.setMobile(gapsAppointeeContact.getMobile());
+            try {
+                existingCcdAppointeeContact.setMobile(gapsAppointeeContact.getMobile());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appointee mobile");
+            }
             return true;
         }
 
         if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getPhone())
             && !gapsAppointeeContact.getPhone().equals(existingCcdAppointeeContact.getPhone())) {
-            existingCcdAppointeeContact.setPhone(gapsAppointeeContact.getPhone());
+            try {
+                existingCcdAppointeeContact.setPhone(gapsAppointeeContact.getPhone());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update appointee phone number");
+            }
             return true;
         }
 

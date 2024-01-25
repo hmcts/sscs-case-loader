@@ -2,7 +2,9 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.util.UkMobile;
@@ -44,7 +46,11 @@ final class UpdateCcdRepresentative {
                     || nonNull(existingCcdCaseData.getAppeal().getRep().getOrganisation()));
                 String hasRepYesOrNo = hasRep ? "Yes" : "No";
                 if (!equalsIgnoreCase(existingCcdCaseData.getAppeal().getRep().getHasRepresentative(), hasRepYesOrNo)) {
-                    existingCcdCaseData.getAppeal().getRep().setHasRepresentative(hasRepYesOrNo);
+                    try {
+                        existingCcdCaseData.getAppeal().getRep().setHasRepresentative(hasRepYesOrNo);
+                    } catch (FeignException e) {
+                        debugCaseLoaderException(log, e, "Could not update Has Representative");
+                    }
                 }
             }
         }
@@ -111,7 +117,11 @@ final class UpdateCcdRepresentative {
             updateContact(gapsCaseData.getCaseReference(), existingCcdCaseData, rep);
         }
         if (rep.getAddress() != null) {
-            existingCcdCaseData.getAppeal().getRep().setAddress(rep.getAddress());
+            try {
+                existingCcdCaseData.getAppeal().getRep().setAddress(rep.getAddress());
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Rep address");
+            }
         }
     }
 
@@ -131,7 +141,11 @@ final class UpdateCcdRepresentative {
             .mobile(mobileNumber)
             .build();
 
-        existingCcdCaseData.getAppeal().getRep().setContact(contact);
+        try {
+            existingCcdCaseData.getAppeal().getRep().setContact(contact);
+        } catch (FeignException e) {
+            debugCaseLoaderException(log, e, "Could not update Reps contact details");
+        }
     }
 
 }

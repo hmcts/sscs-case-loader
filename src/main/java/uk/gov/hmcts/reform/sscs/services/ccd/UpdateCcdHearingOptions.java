@@ -1,10 +1,15 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 
+@Slf4j
 @Service
 class UpdateCcdHearingOptions {
     boolean updateHearingOptions(SscsCaseData gapsCaseData,
@@ -25,7 +30,13 @@ class UpdateCcdHearingOptions {
         if (StringUtils.isNotBlank(gaps2WantsToAttend)) {
             if (StringUtils.isNotBlank(existingCcdWantsToAttend)) {
                 if (!gaps2WantsToAttend.equals(existingCcdWantsToAttend)) {
-                    existingCcdCaseData.getAppeal().getHearingOptions().setWantsToAttend(gaps2WantsToAttend);
+                    try {
+                        existingCcdCaseData.getAppeal().getHearingOptions().setWantsToAttend(gaps2WantsToAttend);
+                        log.info("Updated Hearing Options from {} to {} for case {}", existingCcdWantsToAttend,
+                            gaps2WantsToAttend, existingCcdCaseData.getCcdCaseId());
+                    } catch (FeignException e) {
+                        debugCaseLoaderException(log, e, "Could not update hearing type");
+                    }
                     return true;
                 }
             } else {

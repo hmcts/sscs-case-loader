@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCaseLoaderException;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
@@ -24,17 +26,21 @@ class UpdateCcdRpc {
 
         if (hasRpcChanged(gapsRpc, existingRpc)) {
 
-            log.info("RPC has changed from {} to {} for case {}", toName(existingRpc), toName(gapsRpc),
-                existingCcdCaseData.getCcdCaseId());
+            try {
+                log.info("RPC has changed from {} to {} for case {}", toName(existingRpc), toName(gapsRpc),
+                    existingCcdCaseData.getCcdCaseId());
 
-            existingCcdCaseData.setRegionalProcessingCenter(gapsRpc);
-            existingCcdCaseData.setRegion(gapsRpc.getName());
+                existingCcdCaseData.setRegionalProcessingCenter(gapsRpc);
+                existingCcdCaseData.setRegion(gapsRpc.getName());
 
-            String isScottishCase = isScottishCase(gapsRpc, existingCcdCaseData);
+                String isScottishCase = isScottishCase(gapsRpc, existingCcdCaseData);
 
-            existingCcdCaseData.setIsScottishCase(isScottishCase);
+                existingCcdCaseData.setIsScottishCase(isScottishCase);
 
-            rpcUpdated = true;
+                rpcUpdated = true;
+            } catch (FeignException e) {
+                debugCaseLoaderException(log, e, "Could not update Regional Processing Center");
+            }
         } else {
             log.info("RPC has not changed for case {} . RPC =  {}", existingCcdCaseData.getCcdCaseId(),
                 toName(existingRpc));
