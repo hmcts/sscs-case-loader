@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.sscs.exceptions.FeignExceptionLogger.debugCase
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.util.automaton.Operations;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 
@@ -131,8 +132,7 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getEmail())
-            && !gapsAppellantContact.getEmail().equals(existingCcdAppellantContact.getEmail())) {
+        if (checkGapsAndCcdEmailContactMatch(gapsAppellantContact, existingCcdAppellantContact)) {
             try {
                 existingCcdAppellantContact.setEmail(gapsAppellantContact.getEmail());
             } catch (FeignException e) {
@@ -141,8 +141,7 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getMobile())
-            && !gapsAppellantContact.getMobile().equals(existingCcdAppellantContact.getMobile())) {
+        if (checkGapsAndCcdMobileContactMatch(gapsAppellantContact, existingCcdAppellantContact)) {
             try {
                 existingCcdAppellantContact.setMobile(gapsAppellantContact.getMobile());
             } catch (FeignException e) {
@@ -151,8 +150,7 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppellantContact && StringUtils.isNotBlank(gapsAppellantContact.getPhone())
-            && !gapsAppellantContact.getPhone().equals(existingCcdAppellantContact.getPhone())) {
+        if (checkGapsAndCcdPhoneContactMatch(gapsAppellantContact, existingCcdAppellantContact)){
             try {
                 existingCcdAppellantContact.setPhone(gapsAppellantContact.getPhone());
             } catch (FeignException e) {
@@ -236,8 +234,7 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getEmail())
-            && !gapsAppointeeContact.getEmail().equals(existingCcdAppointeeContact.getEmail())) {
+        if (checkGapsAndCcdEmailContactMatch(gapsAppointeeContact, existingCcdAppointeeContact)) {
             try {
                 existingCcdAppointeeContact.setEmail(gapsAppointeeContact.getEmail());
             } catch (FeignException e) {
@@ -247,8 +244,7 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getMobile())
-            && !gapsAppointeeContact.getMobile().equals(existingCcdAppointeeContact.getMobile())) {
+        if (checkGapsAndCcdMobileContactMatch(gapsAppointeeContact, existingCcdAppointeeContact)) {
             try {
                 existingCcdAppointeeContact.setMobile(gapsAppointeeContact.getMobile());
             } catch (FeignException e) {
@@ -257,8 +253,7 @@ class UpdateCcdAppellantData {
             return true;
         }
 
-        if (null != gapsAppointeeContact && StringUtils.isNotBlank(gapsAppointeeContact.getPhone())
-            && !gapsAppointeeContact.getPhone().equals(existingCcdAppointeeContact.getPhone())) {
+        if (checkGapsAndCcdPhoneContactMatch(gapsAppointeeContact, existingCcdAppointeeContact)) {
             try {
                 existingCcdAppointeeContact.setPhone(gapsAppointeeContact.getPhone());
             } catch (FeignException e) {
@@ -268,5 +263,19 @@ class UpdateCcdAppellantData {
         }
 
         return false;
+    }
+
+    private boolean checkGapsAndCcdEmailContactMatch(Contact gapsContact, Contact existingContact){
+        return (null != gapsContact && StringUtils.isNotBlank(gapsContact.getEmail())
+            && !gapsContact.getEmail().equals(existingContact.getEmail()));
+    }
+
+    private boolean checkGapsAndCcdMobileContactMatch(Contact gapsContact, Contact existingContact){
+        return (null != gapsContact && StringUtils.isNotBlank(gapsContact.getMobile())
+            && !gapsContact.getMobile().equals(existingContact.getMobile()));
+    }
+    private boolean checkGapsAndCcdPhoneContactMatch(Contact gapsContact, Contact existingContact){
+        return (null != gapsContact && StringUtils.isNotBlank(gapsContact.getPhone())
+            && !gapsContact.getPhone().equals(existingContact.getPhone()));
     }
 }
