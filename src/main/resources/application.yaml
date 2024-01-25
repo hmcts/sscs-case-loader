@@ -76,6 +76,6 @@ judicial-ref:
 features:
   data-migration:
     interpreter: ${INTERPRETER_DATA_MIGRATION_ENABLED:false}
-    invalid-case-ref:
-      error:
-       handling: ${INVALID_CASE_REF_ERROR_HANDLING_ENABLED:false}
+  invalid-case-ref:
+    error:
+      handling: ${INVALID_CASE_REF_ERROR_HANDLING_ENABLED:false}
