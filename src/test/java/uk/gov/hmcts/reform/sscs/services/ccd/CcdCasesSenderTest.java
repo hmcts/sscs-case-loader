@@ -4,32 +4,62 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.CaseDetailsUtils.getSscsCaseDetails;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.READY_TO_LIST;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.VALID_APPEAL;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.models.GapsEvent.RESPONSE_RECEIVED;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Document;
+import uk.gov.hmcts.reform.sscs.ccd.domain.DocumentDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Event;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.EventType;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Evidence;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Identity;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Name;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CcdCasesSenderTest {
 
     static final String CASE_DETAILS_JSON = "CaseDetailsWithOneEventAndNoEvidence.json";
@@ -49,15 +79,18 @@ public class CcdCasesSenderTest {
     private UpdateCcdCaseService updateCcdCaseService;
     @Mock
     private UpdateCcdCaseData updateCcdCaseData;
+    @Mock
+    private CcdClient ccdClient;
+    @Mock
+    private SscsCcdConvertService sscsCcdConvertService;
 
     private CcdCasesSender ccdCasesSender;
     private IdamTokens idamTokens;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        ccdCasesSender = new CcdCasesSender(updateCcdCaseService,
-            updateCcdCaseData);
+        ccdCasesSender = new CcdCasesSender(updateCcdCaseService, updateCcdCaseData, ccdClient, sscsCcdConvertService);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
             .serviceAuthorization(SERVICE_AUTHORIZATION)
@@ -86,6 +119,28 @@ public class CcdCasesSenderTest {
         assertNull(caseData.getAppeal().getHearingOptions());
         assertNull(caseData.getAppeal().getRep());
         assertNull(caseData.getAppeal().getSigner());
+    }
+
+    @Test
+    void shouldUpdateLanguage() {
+        var caseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder().languages("Swahili").build()).build()
+            ).build();
+        var caseDetails = CaseDetails.builder().state("ReadyToList").data(new HashMap<>()).build();
+        var startEventResponse = StartEventResponse.builder()
+            .caseDetails(caseDetails)
+            .eventId("migrateCase")
+            .token("random-token").build();
+        when(ccdClient.startEvent(eq(idamTokens), anyLong(), eq("migrateCase"))).thenReturn(startEventResponse);
+        when(sscsCcdConvertService.getCaseData(anyMap())).thenReturn(caseData);
+
+        ccdCasesSender.updateLanguage(anyLong(), eq(idamTokens), "Somali");
+
+        verify(updateCcdCaseService).updateCase(
+            eq(caseData), anyLong(), eq("migrateCase"), eq("random-token"),
+            eq("migrateCase"), eq(""), eq(""), eq(idamTokens)
+        );
     }
 
     @Test
