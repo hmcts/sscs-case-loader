@@ -224,6 +224,17 @@ Here are some other functionalities it provides:
  * [Request caching](https://github.com/Netflix/Hystrix/wiki/How-it-Works#request-caching), allowing
  different code paths to execute Hystrix Commands without worrying about duplicating work
 
+## Data migration
+* Export mapped data sheet as csv and save it as "<YYYYMMDD>_mapped_language_data.csv" at the root of the project.
+* The following columns are required: "reference", "state"," "interpreter", "mapped_language_value", "existing_language_value".
+* Update the name of the migration file in the "MigrationDataEncoderApp" class.
+* Run the "MigrationDataEncoderApp" to generate the encoded migration data string, which will be saved in a file named
+  "<YYYYMMDD>_encoded_migration_data.txt" at the root of the project.
+* Copy the encoded string into the "encoded_migration_data_string" secret in the relevant keyvault sscs-<env>
+* This completes the setup required for the data migration cron job.
+* When the job runs it will read the encoded string from the vault, decode it, extract the migration data and update the
+  language values for all cases included the migration sheet.
+
 ## Troubleshooting
 
 ### IDE Settings

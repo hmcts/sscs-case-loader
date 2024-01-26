@@ -69,13 +69,14 @@ logging.level:
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
 spring.main.allow-bean-definition-overriding: true
 
-judicial-ref:
-  api:
-    url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
+judicial-ref.api.url: ${JUDICIAL_REF_API_URL:http://localhost:5555}
+ccd-callback-orchestrator.api.url: ${CCD_CALLBACK_ORCHESTRATOR_API_URL:http://localhost:8070}
 
 features:
   data-migration:
     interpreter: ${INTERPRETER_DATA_MIGRATION_ENABLED:false}
+    rollback: ${DATA_MIGRATION_ROLLBACK:false}
+    encoded-data-string: ${ENCODED_MIGRATION_DATA_STRING:W3sicmVmZXJlbmNlIjoiMTcwMzAyMTkyNDYwMDQxOCIsImludGVycHJldGVyIjoiIFllcyIsInN0YXRlIjoiIHJlYWR5VG9MaXN0ICAgICAgIiwiZXhpc3RpbmdfbGFuZ3VhZ2VfdmFsdWUiOiIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLCJtYXBwZWRfbGFuZ3VhZ2VfdmFsdWUiOiJiZW5nYWxpIn1d}
   invalid-case-ref:
     error:
       handling: ${INVALID_CASE_REF_ERROR_HANDLING_ENABLED:false}

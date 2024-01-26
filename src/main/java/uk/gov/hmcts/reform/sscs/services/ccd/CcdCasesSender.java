@@ -2,7 +2,12 @@ package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.DWP_RESPOND;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.READY_TO_LIST;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
@@ -22,16 +32,21 @@ import uk.gov.hmcts.reform.sscs.models.UpdateType;
 public class CcdCasesSender {
 
     private static final String SSCS_APPEAL_UPDATED_EVENT = "SSCS - appeal updated event";
+    private static final String MIGRATE_CASE = "migrateCase";
     private static final String UPDATED_SSCS = "Updated SSCS";
     private final UpdateCcdCaseService updateCcdCaseService;
     private final UpdateCcdCaseData updateCcdCaseData;
+    private final CcdClient ccdClient;
+    private final SscsCcdConvertService sscsCcdConvertService;
     private String logPrefix = "";
 
     @Autowired
-    CcdCasesSender(UpdateCcdCaseService updateCcdCaseService,
-                   UpdateCcdCaseData updateCcdCaseData) {
+    CcdCasesSender(UpdateCcdCaseService updateCcdCaseService, UpdateCcdCaseData updateCcdCaseData, CcdClient ccdClient,
+                   SscsCcdConvertService sscsCcdConvertService) {
         this.updateCcdCaseService = updateCcdCaseService;
         this.updateCcdCaseData = updateCcdCaseData;
+        this.ccdClient = ccdClient;
+        this.sscsCcdConvertService = sscsCcdConvertService;
     }
 
     public void setLogPrefix(String logPrefix) {
@@ -52,6 +67,32 @@ public class CcdCasesSender {
             addMissingExistingHearings(gapsCaseData, existingCcdCaseData);
 
             ifThereIsChangesThenUpdateCase(gapsCaseData, existingCcdCaseData, existingCcdCase.getId(), idamTokens);
+        }
+    }
+
+    public boolean updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
+        var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
+        var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
+        var hasExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE.toString())
+            || startEventResponse.getCaseDetails().getState().equals(DORMANT_APPEAL_STATE.toString());
+
+        if (caseData.getAppeal().getHearingOptions().getLanguages().equals(language) || hasExcludedState) {
+            log.info("Skipping case ({}) as language value already matching ({})", caseId, language);
+            return false;
+        } else {
+            try {
+                log.info("Setting language value to ({}) for case ({})", language, caseId);
+
+                caseData.getAppeal().getHearingOptions().setLanguages(language);
+
+                updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
+                    startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+                return true;
+            } catch (Exception exception) {
+                log.info("Case ({}) could not be updated", caseId, exception);
+                return false;
+            }
+
         }
     }
 
