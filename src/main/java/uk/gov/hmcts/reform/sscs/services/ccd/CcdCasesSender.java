@@ -9,6 +9,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.READY_TO_LIST;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
 
+import feign.FeignException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -131,8 +132,18 @@ public class CcdCasesSender {
 
         existingCcdCaseData.setCaseReference(caseData.getCaseReference());
 
-        updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
+        try {
+            updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
                 SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+        } catch (FeignException e) {
+            log.error(
+                "{}. CCD response: {}",
+                String.format("Could not update event %s for case %d", eventType, existingCaseId),
+                // exception.contentUTF8() uses response body internally
+                e.responseBody().isPresent() ? e.contentUTF8() : e.getMessage()
+            );
+            throw e;
+        }
     }
 
     private boolean hasCaseRefBeenAdded(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
