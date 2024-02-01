@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.sscs.util;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -15,15 +14,13 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
-
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 
 @Slf4j
 public class MigrationDataEncoderApp {
 
-        public static final String MIGRATION_FILE = "PROD_migration_data_fullSet.csv";
-//    public static final String MIGRATION_FILE = "PROD_rollback_data_delta.csv";
+    public static final String MIGRATION_FILE = "PROD_migration_data_fullSet.csv";
     public static final String ENCODED_STR_FILE = "ENCODED_" + MIGRATION_FILE.replace(".csv", ".txt");
 
     private MigrationDataEncoderApp() {

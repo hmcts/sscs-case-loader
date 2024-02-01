@@ -2,13 +2,12 @@ package uk.gov.hmcts.reform.sscs.job;
 
 import static java.time.LocalDateTime.now;
 
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
-
-import java.io.IOException;
 
 @Component
 @Slf4j
