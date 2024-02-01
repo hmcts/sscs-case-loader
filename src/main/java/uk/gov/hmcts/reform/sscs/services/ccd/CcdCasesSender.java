@@ -86,8 +86,8 @@ public class CcdCasesSender {
             if (isInExcludedState || !needInterpreter || languageAlreadySet) {
                 log.info(
                     "Skipping case ({}) because language already set ({}) OR Interpreter={} or state={}",
-                    caseData.getAppeal().getHearingOptions().getLanguageInterpreter(),
-                    caseId, language, startEventResponse.getCaseDetails().getState()
+                    caseId, language, caseData.getAppeal().getHearingOptions().getLanguageInterpreter(),
+                    startEventResponse.getCaseDetails().getState()
                 );
                 return false;
             } else {
