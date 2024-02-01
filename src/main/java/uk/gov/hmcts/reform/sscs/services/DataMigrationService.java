@@ -31,7 +31,7 @@ public class DataMigrationService {
     }
 
     public void process(String languageColumn) throws IOException {
-        JSONArray data = new JSONArray(decompressB64(encodedDataString));
+        JSONArray data = new JSONArray(decompressAndB64Decode(encodedDataString));
         AtomicInteger unprocessed = new AtomicInteger(data.length());
         log.info("Number of cases to be migrated: ({})", unprocessed.get());
         data.iterator().forEachRemaining(row -> {
@@ -47,16 +47,11 @@ public class DataMigrationService {
         log.info("Number of unprocessed cases: ({})", unprocessed.get());
     }
 
-    private String decompressB64(String b64Compressed) throws IOException {
-        byte[] decompressedBArray = decompress(Base64.getDecoder().decode(b64Compressed));
-        return new String(decompressedBArray, StandardCharsets.UTF_8);
-    }
-
-    private static byte[] decompress(byte[] compressedTxt) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try (OutputStream ios = new InflaterOutputStream(os)) {
-            ios.write(compressedTxt);
+    private String decompressAndB64Decode(String b64Compressed) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (OutputStream inflaterOutputStream = new InflaterOutputStream(outputStream)) {
+            inflaterOutputStream.write(Base64.getDecoder().decode(b64Compressed));
         }
-        return os.toByteArray();
+        return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
     }
 }

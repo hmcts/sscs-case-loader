@@ -41,7 +41,7 @@ public class MigrationDataEncoderApp {
 
             JSONArray migrationDataJson = new JSONArray(migrationData);
 
-            String encodedMigrationData = compressAndReturnB64(migrationDataJson.toString());
+            String encodedMigrationData = compressAndB64Encode(migrationDataJson.toString());
             Path path = Paths.get(LocalDate.now().toString().replace("-", "")
                 .concat("_" + ENCODED_STR_FILE));
             Files.write(path, encodedMigrationData.getBytes());
@@ -55,7 +55,7 @@ public class MigrationDataEncoderApp {
         }
     }
 
-    public static String compressAndReturnB64(String text) throws IOException {
+    public static String compressAndB64Encode(String text) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(outputStream)) {
             deflaterOutputStream.write(text.getBytes());
