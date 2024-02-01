@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.sscs.job;
 
 import static java.time.LocalDateTime.now;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.sscs.job.DataMigrationJob.EXISTING_LANGUAGE_COLUMN;
@@ -88,6 +92,15 @@ class DataMigrationJobTest {
         assertEquals(
             "Processing Interpreter data " + job + " job", logEventCaptor.getValue().getFormattedMessage()
         );
+    }
+
+    @Test
+    void shouldProcessTheJob() throws IOException {
+        doThrow(new IOException("Simulating decode failure")).when(migrationService).process(anyString());
+
+        Exception exception = assertThrows(RuntimeException.class, () -> underTest.process());
+
+        assertTrue(exception.getMessage().contains("Simulating decode failure"));
     }
 
     private static List<Arguments> getStartHourScenarios() {
