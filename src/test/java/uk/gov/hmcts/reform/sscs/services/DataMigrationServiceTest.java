@@ -25,20 +25,16 @@ import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 
+import java.io.IOException;
+
 
 @ExtendWith(MockitoExtension.class)
 class DataMigrationServiceTest {
 
-    private static final String ENCODED_DATA_STRING = "W3sicmVmZXJlbmNlIjoiMTcwMzAyMTkyNDYwMDQxOCIsIiI6IiIsImV2ZW50X"
-        + "2lkIjoiIHZhbGlkQXBwZWFsQ3JlYXRlZCAiLCJleGlzdGluZ19sYW5ndWFnZV92YWx1ZSI6IiAgICAgICAgICAgICAgICAgICAgICAgICAg"
-        + "ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICIsIm1hcHBlZF9sYW5ndWFnZV92YWx1ZSI6IkFyYWJpYyIsInN1Ym1pdHRl"
-        + "ZF9sYW5ndWFnZSI6IjIwNzI0NzEwNTAiLCJpbnRlcnByZXRlciI6IiBZZXMiLCJzdGF0ZSI6IiByZWFkeVRvTGlzdCAgICAgICIsIlVtYSBD"
-        + "b21tZW50cyI6Ikxhbmd1YWdlIG5vdCBjYXB0dXJlZCBjb3JyZWN0bHkiLCJjYXNlX2RhdGFfaWQiOiIxMjM0NTY3In0seyJyZWZlcmVuY2Ui"
-        + "OiIxNzAzMDIxOTgxODg4NjY2IiwiIjoiIiwiZXZlbnRfaWQiOiIgdmFsaWRBcHBlYWxDcmVhdGVkICIsImV4aXN0aW5nX2xhbmd1YWdlX3Zh"
-        + "bHVlIjoiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiwibWFwcGVkX2xh"
-        + "bmd1YWdlX3ZhbHVlIjoiQmVuZ2FsaSIsInN1Ym1pdHRlZF9sYW5ndWFnZSI6IiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg"
-        + "ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiwiaW50ZXJwcmV0ZXIiOiIgWWVzIiwic3R"
-        + "hdGUiOiIgaGVhcmluZyAgICAgICAgICAiLCJVbWEgQ29tbWVudHMiOiIiLCJjYXNlX2RhdGFfaWQiOiIxMjM0NTY4In1d";
+    private static final String COMPRESSSED_ENCODED_DATA_STRING = "eJzNUT1PwzAQ/SuW5w52mjqGrXTtCANCKLraR7AUO5F9qahQ/z" +
+        "sXgRBf7dIFDyfZfvfuvXcPrzLjE2ZMDuW11I1aqkpfVbVRqtZWLiS/csU9JmqD55vYQx/8ehwR+k1GIPRiRryEQiF1bQ+pm6DDlnHTTCouO8" +
+        "wdgaf538zrDLvgGFCmXQxEXzD8W6mmqhutVooRIRHmMSPXWdI9lrmNWP18ZRv+cDts2cLn0LsIYjPEyMYLY7YfxCINJByMNGU27oac0VF/4A" +
+        "YHBVsPBO856WpZr0wjj4u/M7baWmuM+ecZ32DqWMypkC8cfFbS+Z09I2TO4lvHj52dWoqVx8c3AbDIhg==";
 
     @Mock
     private CcdCasesSender ccdCasesSender;
@@ -61,8 +57,8 @@ class DataMigrationServiceTest {
     }
 
     @Test
-    void shouldProcessCases() {
-        ReflectionTestUtils.setField(underTest, "encodedDataString", ENCODED_DATA_STRING);
+    void shouldProcessCases() throws IOException {
+        ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
         IdamTokens tokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(tokens);
         when(ccdCasesSender.updateLanguage(eq(1703021924600418L), eq(tokens), eq("Arabic")))

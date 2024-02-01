@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
+import java.io.IOException;
+
 @Component
 @Slf4j
 public class DataMigrationJob extends SscsJob {
@@ -39,7 +41,12 @@ public class DataMigrationJob extends SscsJob {
     public void process() {
         String languageColumn = isRollback ? EXISTING_LANGUAGE_COLUMN : MAPPED_LANGUAGE_COLUMN;
         log.info("Processing Interpreter data {} job", isRollback ? "rollback" : "migration");
-        migrationService.process(languageColumn);
+        try {
+            migrationService.process(languageColumn);
+        } catch (IOException e) {
+            log.error("{} job failed to decode encodedDataString", isRollback ? "rollback" : "migration", e);
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -1,7 +1,13 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.InflaterOutputStream;
+
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,9 +31,8 @@ public class DataMigrationService {
         this.idamService = idamService;
     }
 
-    public void process(String languageColumn) {
-        String decodedString = new String(Base64.getDecoder().decode(encodedDataString));
-        JSONArray data = new JSONArray(decodedString);
+    public void process(String languageColumn) throws IOException {
+        JSONArray data = new JSONArray(decompressB64(encodedDataString));
         AtomicInteger unprocessed = new AtomicInteger(data.length());
         log.info("Number of cases to be migrated: ({})", unprocessed.get());
         data.iterator().forEachRemaining(row -> {
@@ -41,5 +46,18 @@ public class DataMigrationService {
             }
         });
         log.info("Number of unprocessed cases: ({})", unprocessed.get());
+    }
+
+    private String decompressB64(String b64Compressed) throws IOException {
+        byte[] decompressedBArray = decompress(Base64.getDecoder().decode(b64Compressed));
+        return new String(decompressedBArray, StandardCharsets.UTF_8);
+    }
+
+    private static byte[] decompress(byte[] compressedTxt) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try (OutputStream ios = new InflaterOutputStream(os)) {
+            ios.write(compressedTxt);
+        }
+        return os.toByteArray();
     }
 }

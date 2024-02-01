@@ -13,6 +13,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+
+import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,7 +79,7 @@ class DataMigrationJobTest {
 
     @ParameterizedTest
     @MethodSource("getRollbackScenarios")
-    void shouldProcessTheJob(boolean isRollback, String languageColumn) {
+    void shouldProcessTheJob(boolean isRollback, String languageColumn) throws IOException {
         ReflectionTestUtils.setField(underTest, "isRollback", isRollback);
         underTest.process();
 
