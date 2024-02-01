@@ -20,7 +20,7 @@ import org.json.JSONArray;
 @Slf4j
 public class MigrationDataEncoderApp {
 
-    public static final String MIGRATION_FILE = "PROD_migration_data_fullSet.csv";
+    public static final String MIGRATION_FILE = "local_migration_data.csv";
     public static final String ENCODED_STR_FILE = "ENCODED_" + MIGRATION_FILE.replace(".csv", ".txt");
 
     private MigrationDataEncoderApp() {

@@ -83,7 +83,11 @@ public class CcdCasesSender {
             var languageAlreadySet = language.equals(caseData.getAppeal().getHearingOptions().getLanguages());
 
             if (isInExcludedState || !needInterpreter || languageAlreadySet) {
-                log.info("Skipping case ({}) as language value already matching ({})", caseId, language);
+                log.info(
+                    "Skipping case ({}) because language already set ({}) OR Interpreter=NO or state=void/dormant",
+                    caseId, language, startEventResponse.getCaseDetails().getState(),
+                    caseData.getAppeal().getHearingOptions().getLanguageInterpreter()
+                );
                 return false;
             } else {
                 log.info("Setting language value to ({}) for case ({})", language, caseId);
