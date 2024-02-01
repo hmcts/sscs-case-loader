@@ -1,19 +1,18 @@
 package uk.gov.hmcts.reform.sscs.util;
 
+import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.compressAndB64Encode;
+
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DeflaterOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 
@@ -53,13 +52,5 @@ public class MigrationDataEncoderApp {
                 MIGRATION_FILE, ENCODED_STR_FILE);
             throw new RuntimeException(e);
         }
-    }
-
-    public static String compressAndB64Encode(String text) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(outputStream)) {
-            deflaterOutputStream.write(text.getBytes());
-        }
-        return new String(Base64.getEncoder().encode(outputStream.toByteArray()));
     }
 }

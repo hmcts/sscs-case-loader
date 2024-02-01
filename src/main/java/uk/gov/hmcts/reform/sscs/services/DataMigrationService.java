@@ -1,12 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import java.io.ByteArrayOutputStream;
+import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.decompressAndB64Decode;
+
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.InflaterOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,13 +42,5 @@ public class DataMigrationService {
             }
         });
         log.info("Number of unprocessed cases: ({})", unprocessed.get());
-    }
-
-    private String decompressAndB64Decode(String b64Compressed) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (OutputStream inflaterOutputStream = new InflaterOutputStream(outputStream)) {
-            inflaterOutputStream.write(Base64.getDecoder().decode(b64Compressed));
-        }
-        return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
     }
 }
