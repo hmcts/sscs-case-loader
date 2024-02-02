@@ -1,12 +1,11 @@
 package uk.gov.hmcts.reform.sscs.util;
 
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.compressAndB64Encode;
 import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.decompressAndB64Decode;
+
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 class MigrationStringUtilsTest {
 
