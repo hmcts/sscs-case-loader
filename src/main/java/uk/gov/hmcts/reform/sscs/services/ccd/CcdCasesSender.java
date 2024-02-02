@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.ccd.domain.YesNo;
 import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
@@ -72,28 +73,35 @@ public class CcdCasesSender {
     }
 
     public boolean updateLanguage(Long caseId, IdamTokens idamTokens, String language) {
-        var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
-        var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
-        var hasExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE.toString())
-            || startEventResponse.getCaseDetails().getState().equals(DORMANT_APPEAL_STATE.toString());
+        try {
+            var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
+            var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
 
-        if (caseData.getAppeal().getHearingOptions().getLanguages().equals(language) || hasExcludedState) {
-            log.info("Skipping case ({}) as language value already matching ({})", caseId, language);
-            return false;
-        } else {
-            try {
+            var isInExcludedState = startEventResponse.getCaseDetails().getState().equals(VOID_STATE.toString())
+                || startEventResponse.getCaseDetails().getState().equals(DORMANT_APPEAL_STATE.toString());
+            var needInterpreter = YesNo.YES.getValue()
+                .equals(caseData.getAppeal().getHearingOptions().getLanguageInterpreter());
+            var languageAlreadySet = language.equals(caseData.getAppeal().getHearingOptions().getLanguages());
+
+            if (isInExcludedState || !needInterpreter || languageAlreadySet) {
+                log.info(
+                    "Skipping case ({}) because language already set ({}) OR Interpreter={} or state={}",
+                    caseId, language, caseData.getAppeal().getHearingOptions().getLanguageInterpreter(),
+                    startEventResponse.getCaseDetails().getState()
+                );
+                return false;
+            } else {
                 log.info("Setting language value to ({}) for case ({})", language, caseId);
 
                 caseData.getAppeal().getHearingOptions().setLanguages(language);
-
                 updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
                     startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
                 return true;
-            } catch (Exception exception) {
-                log.info("Case ({}) could not be updated", caseId, exception);
-                return false;
             }
 
+        } catch (Exception exception) {
+            log.info("Case ({}) could not be updated", caseId, exception);
+            return false;
         }
     }
 

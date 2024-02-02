@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.sscs.services;
 
-import java.util.Base64;
+import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.decompressAndB64Decode;
+
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -25,9 +27,8 @@ public class DataMigrationService {
         this.idamService = idamService;
     }
 
-    public void process(String languageColumn) {
-        String decodedString = new String(Base64.getDecoder().decode(encodedDataString));
-        JSONArray data = new JSONArray(decodedString);
+    public void process(String languageColumn) throws IOException {
+        JSONArray data = new JSONArray(decompressAndB64Decode(encodedDataString));
         AtomicInteger unprocessed = new AtomicInteger(data.length());
         log.info("Number of cases to be migrated: ({})", unprocessed.get());
         data.iterator().forEachRemaining(row -> {
