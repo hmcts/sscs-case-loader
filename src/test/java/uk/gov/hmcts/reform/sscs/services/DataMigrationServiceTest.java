@@ -1,5 +1,10 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -15,7 +20,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
+import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 
 
@@ -49,5 +56,20 @@ class DataMigrationServiceTest {
 
     @Test
     void shouldProcessCases() throws IOException {
+        ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
+        IdamTokens tokens = IdamTokens.builder().build();
+        when(idamService.getIdamTokens()).thenReturn(tokens);
+        when(ccdCasesSender.updateProcessingVenue(eq(1703021924600418L), eq(tokens)))
+            .thenReturn(true);
+        when(ccdCasesSender.updateProcessingVenue(eq(1703021981888666L), eq(tokens)))
+            .thenReturn(false);
+
+        underTest.process();
+
+        verify(ccdCasesSender).updateProcessingVenue(1703021924600418L, tokens);
+        verify(mockedAppender, times(2)).doAppend(logEventCaptor.capture());
+        var capturedLogs = logEventCaptor.getAllValues();
+        assertEquals("Number of cases to be migrated: (2)", capturedLogs.get(0).getFormattedMessage());
+        assertEquals("Number of unprocessed cases: (1)", capturedLogs.get(1).getFormattedMessage());
     }
 }

@@ -27,7 +27,7 @@ public class DataMigrationService {
         this.idamService = idamService;
     }
 
-    public void process(String languageColumn) throws IOException {
+    public void process() throws IOException {
         JSONArray data = new JSONArray(decompressAndB64Decode(encodedDataString));
         AtomicInteger unprocessed = new AtomicInteger(data.length());
         log.info("Number of cases to be migrated: ({})", unprocessed.get());

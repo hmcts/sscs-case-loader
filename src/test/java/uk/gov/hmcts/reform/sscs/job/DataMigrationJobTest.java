@@ -4,7 +4,6 @@ import static java.time.LocalDateTime.now;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -86,7 +85,7 @@ class DataMigrationJobTest {
         ReflectionTestUtils.setField(underTest, "isRollback", isRollback);
         underTest.process();
 
-        verify(migrationService).process(languageColumn);
+        verify(migrationService).process();
         verify(mockedAppender, atMostOnce()).doAppend(logEventCaptor.capture());
         String job = isRollback ? "rollback" : "migration";
         assertEquals(
@@ -96,7 +95,7 @@ class DataMigrationJobTest {
 
     @Test
     void shouldProcessTheJob() throws IOException {
-        doThrow(new IOException("Simulating decode failure")).when(migrationService).process(anyString());
+        doThrow(new IOException("Simulating decode failure")).when(migrationService).process();
 
         Exception exception = assertThrows(RuntimeException.class, () -> underTest.process());
 
