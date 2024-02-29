@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.sscs.job.DataMigrationJob.MAPPED_LANGUAGE_COLUMN;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -59,14 +60,14 @@ class DataMigrationServiceTest {
         ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
         IdamTokens tokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(tokens);
-        when(ccdCasesSender.updateProcessingVenue(eq(1703021924600418L), eq(tokens)))
+        when(ccdCasesSender.updateLanguage(eq(1703021924600418L), eq(tokens), eq("Arabic")))
             .thenReturn(true);
-        when(ccdCasesSender.updateProcessingVenue(eq(1703021981888666L), eq(tokens)))
+        when(ccdCasesSender.updateLanguage(eq(1703021981888666L), eq(tokens), eq("Bengali")))
             .thenReturn(false);
 
-        underTest.process();
+        underTest.process(MAPPED_LANGUAGE_COLUMN);
 
-        verify(ccdCasesSender).updateProcessingVenue(1703021924600418L, tokens);
+        verify(ccdCasesSender).updateLanguage(1703021924600418L, tokens, "Arabic");
         verify(mockedAppender, times(2)).doAppend(logEventCaptor.capture());
         var capturedLogs = logEventCaptor.getAllValues();
         assertEquals("Number of cases to be migrated: (2)", capturedLogs.get(0).getFormattedMessage());
