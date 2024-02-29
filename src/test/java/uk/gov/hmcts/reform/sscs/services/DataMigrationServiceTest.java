@@ -13,6 +13,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
+
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -56,7 +58,7 @@ class DataMigrationServiceTest {
         underTest = new DataMigrationService(ccdCasesSender, idamService);
     }
 
-    @Disabled
+    @Ignore
     @Test
     void shouldProcessCases() throws IOException {
         ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
