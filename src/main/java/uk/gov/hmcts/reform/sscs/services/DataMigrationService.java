@@ -32,10 +32,9 @@ public class DataMigrationService {
         AtomicInteger unprocessed = new AtomicInteger(data.length());
         log.info("Number of cases to be migrated: ({})", unprocessed.get());
         data.iterator().forEachRemaining(row -> {
-            boolean success = ccdCasesSender.updateLanguage(
+            boolean success = ccdCasesSender.updateProcessingVenue(
                 ((JSONObject) row).getLong("reference"),
-                idamService.getIdamTokens(),
-                ((JSONObject) row).getString(languageColumn).trim()
+                idamService.getIdamTokens()
             );
             if (success) {
                 unprocessed.decrementAndGet();

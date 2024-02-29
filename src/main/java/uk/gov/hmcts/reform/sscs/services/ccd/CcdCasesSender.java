@@ -105,6 +105,32 @@ public class CcdCasesSender {
         }
     }
 
+    public boolean updateProcessingVenue(Long caseId, IdamTokens idamTokens) {
+        try {
+            var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
+            var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
+            var processingVenue = caseData.getProcessingVenue();
+            if(processingVenue.equals("Langstone, NPort")){
+                caseData.setProcessingVenue("Langstone, Newport");
+
+            } else if (processingVenue.equals("South")){
+                caseData.setProcessingVenue("South Shields");
+            } else {
+                log.info("Could not update Processing Venue for case ({})", caseId);
+                return false;
+            }
+            log.info("Setting processing venue value to ({}) for case ({})", caseData.getProcessingVenue(), caseId);
+
+            updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
+                startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+            return true;
+
+        } catch (Exception exception){
+            log.info("Case ({}) could not be updated", caseId, exception);
+            return false;
+        }
+    }
+
     private void ifThereIsChangesThenUpdateCase(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData,
                                                 Long existingCaseId, IdamTokens idamTokens) {
 
