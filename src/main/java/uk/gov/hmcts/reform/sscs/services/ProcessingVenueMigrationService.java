@@ -20,7 +20,7 @@ public class ProcessingVenueMigrationService {
     private final CcdCasesSender ccdCasesSender;
     private final IdamService idamService;
 
-    @Value("${features.data-migration.encoded-data-string}")
+    @Value("${features.venue-migration.encoded-data-string}")
     private String encodedDataString;
 
     public ProcessingVenueMigrationService(CcdCasesSender ccdCasesSender, IdamService idamService) {
@@ -28,14 +28,15 @@ public class ProcessingVenueMigrationService {
         this.idamService = idamService;
     }
 
-    public void process() throws IOException {
+    public void process(String venue) throws IOException {
         JSONArray data = new JSONArray(decompressAndB64Decode(encodedDataString));
         AtomicInteger unprocessed = new AtomicInteger(data.length());
         log.info("Number of cases to be migrated: ({})", unprocessed.get());
         data.iterator().forEachRemaining(row -> {
             boolean success = ccdCasesSender.updateProcessingVenue(
                 ((JSONObject) row).getLong("reference"),
-                idamService.getIdamTokens()
+                idamService.getIdamTokens(),
+                ((JSONObject) row).getString(venue).trim()
             );
             if (success) {
                 unprocessed.decrementAndGet();

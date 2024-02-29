@@ -77,6 +77,10 @@ features:
     interpreter: ${INTERPRETER_DATA_MIGRATION_ENABLED:false}
     rollback: ${DATA_MIGRATION_ROLLBACK:false}
     encoded-data-string: ${ENCODED_MIGRATION_DATA_STRING:W3sicmVmZXJlbmNlIjoiMTcwMzAyMTkyNDYwMDQxOCIsImludGVycHJldGVyIjoiIFllcyIsInN0YXRlIjoiIHJlYWR5VG9MaXN0ICAgICAgIiwiZXhpc3RpbmdfbGFuZ3VhZ2VfdmFsdWUiOiIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLCJtYXBwZWRfbGFuZ3VhZ2VfdmFsdWUiOiJiZW5nYWxpIn1d}
+  venue-migration:
+    enabled: ${VENUE_MIGRATION_ENABLED:false}
+    rollback: ${VENUE_MIGRATION_ROLLBACK:false}
+    encoded-data-string: ${ENCODED_VENUE_MIGRATION_DATA_STRING:}
   invalid-case-ref:
     error:
       handling: ${INVALID_CASE_REF_ERROR_HANDLING_ENABLED:false}
