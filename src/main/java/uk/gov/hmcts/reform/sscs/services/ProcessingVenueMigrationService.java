@@ -1,5 +1,9 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.decompressAndB64Decode;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,10 +12,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static uk.gov.hmcts.reform.sscs.util.MigrationStringUtils.decompressAndB64Decode;
 
 @Service
 @Slf4j

@@ -1,15 +1,13 @@
 package uk.gov.hmcts.reform.sscs.job;
 
+import static java.time.LocalDateTime.now;
+
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.services.ProcessingVenueMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
-
-import java.io.IOException;
-
-import static java.time.LocalDateTime.now;
 
 @Component
 @Slf4j
@@ -29,7 +27,8 @@ public class ProcessingVenueMigrationJob extends SscsJob {
     @Value("${sscs.case.loader.startHour}")
     private int caseLoaderStartHour;
 
-    public ProcessingVenueMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask, ProcessingVenueMigrationService migrationService) {
+    public ProcessingVenueMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask,
+                                       ProcessingVenueMigrationService migrationService) {
         super(caseLoaderTimerTask);
         this.migrationService = migrationService;
     }
