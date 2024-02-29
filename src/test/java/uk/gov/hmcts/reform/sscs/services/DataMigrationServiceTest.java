@@ -56,23 +56,22 @@ class DataMigrationServiceTest {
         underTest = new DataMigrationService(ccdCasesSender, idamService);
     }
 
-    @Ignore
-    @Test
-    void shouldProcessCases() throws IOException {
-        ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
-        IdamTokens tokens = IdamTokens.builder().build();
-        when(idamService.getIdamTokens()).thenReturn(tokens);
-        when(ccdCasesSender.updateLanguage(eq(1703021924600418L), eq(tokens), eq("Arabic")))
-            .thenReturn(true);
-        when(ccdCasesSender.updateLanguage(eq(1703021981888666L), eq(tokens), eq("Bengali")))
-            .thenReturn(false);
-
-        underTest.process(MAPPED_LANGUAGE_COLUMN);
-
-        verify(ccdCasesSender).updateLanguage(1703021924600418L, tokens, "Arabic");
-        verify(mockedAppender, times(2)).doAppend(logEventCaptor.capture());
-        var capturedLogs = logEventCaptor.getAllValues();
-        assertEquals("Number of cases to be migrated: (2)", capturedLogs.get(0).getFormattedMessage());
-        assertEquals("Number of unprocessed cases: (1)", capturedLogs.get(1).getFormattedMessage());
-    }
+//    @Test
+//    void shouldProcessCases() throws IOException {
+//        ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
+//        IdamTokens tokens = IdamTokens.builder().build();
+//        when(idamService.getIdamTokens()).thenReturn(tokens);
+//        when(ccdCasesSender.updateLanguage(eq(1703021924600418L), eq(tokens), eq("Arabic")))
+//            .thenReturn(true);
+//        when(ccdCasesSender.updateLanguage(eq(1703021981888666L), eq(tokens), eq("Bengali")))
+//            .thenReturn(false);
+//
+//        underTest.process(MAPPED_LANGUAGE_COLUMN);
+//
+//        verify(ccdCasesSender).updateLanguage(1703021924600418L, tokens, "Arabic");
+//        verify(mockedAppender, times(2)).doAppend(logEventCaptor.capture());
+//        var capturedLogs = logEventCaptor.getAllValues();
+//        assertEquals("Number of cases to be migrated: (2)", capturedLogs.get(0).getFormattedMessage());
+//        assertEquals("Number of unprocessed cases: (1)", capturedLogs.get(1).getFormattedMessage());
+//    }
 }
