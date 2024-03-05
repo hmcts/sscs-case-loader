@@ -10,11 +10,11 @@ import org.springframework.batch.repeat.RepeatStatus;
 public class CaseLoaderTasklet implements Tasklet {
 
     private SscsCaseLoaderJob sscsCaseLoaderJob;
-    private DataMigrationJob dataMigrationJob;
+    private ProcessingVenueMigrationJob venueMigrationJob;
 
-    public CaseLoaderTasklet(SscsCaseLoaderJob sscsCaseLoaderJob, DataMigrationJob dataMigrationJob) {
+    public CaseLoaderTasklet(SscsCaseLoaderJob sscsCaseLoaderJob, ProcessingVenueMigrationJob dataMigrationJob) {
         this.sscsCaseLoaderJob = sscsCaseLoaderJob;
-        this.dataMigrationJob = dataMigrationJob;
+        this.venueMigrationJob = dataMigrationJob;
     }
 
 
@@ -23,7 +23,7 @@ public class CaseLoaderTasklet implements Tasklet {
                                 ChunkContext chunkContext) {
 
         runJob(sscsCaseLoaderJob);
-        runJob(dataMigrationJob);
+        runJob(venueMigrationJob);
 
         return RepeatStatus.FINISHED;
     }
