@@ -24,8 +24,8 @@ public class ProcessingVenueMigrationJob extends SscsJob {
     @Value("${features.venue-migration.rollback}")
     private boolean isRollback;
 
-    @Value("${sscs.case.loader.startHour}")
-    private int caseLoaderStartHour;
+    @Value("${features.venue-migration.startHour}")
+    private int migrationStartHour;
 
     public ProcessingVenueMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask,
                                        ProcessingVenueMigrationService migrationService) {
@@ -35,7 +35,7 @@ public class ProcessingVenueMigrationJob extends SscsJob {
 
     @Override
     public boolean readyToRun() {
-        return venueDataMigrationEnabled && now().getHour() >= caseLoaderStartHour;
+        return venueDataMigrationEnabled && now().getHour() >= migrationStartHour;
     }
 
     public void process() {

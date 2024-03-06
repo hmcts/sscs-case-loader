@@ -81,6 +81,7 @@ features:
     enabled: ${VENUE_MIGRATION_ENABLED:false}
     rollback: ${VENUE_MIGRATION_ROLLBACK:false}
     encoded-data-string: ${ENCODED_VENUE_MIGRATION_DATA_STRING:}
+    startHour: ${VENUE_MIGRATION_START_HOUR:}
   invalid-case-ref:
     error:
       handling: ${INVALID_CASE_REF_ERROR_HANDLING_ENABLED:false}

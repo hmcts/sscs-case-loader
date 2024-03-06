@@ -61,7 +61,7 @@ class ProcessingVenueMigrationJobTest {
     @ParameterizedTest
     @MethodSource("getStartHourScenarios")
     void shouldBeReadyToRunOnOrAfterStartTime(boolean migrationEnabled, int caseLoaderStartHour, boolean assertion) {
-        ReflectionTestUtils.setField(underTest, "caseLoaderStartHour", caseLoaderStartHour);
+        ReflectionTestUtils.setField(underTest, "migrationStartHour", caseLoaderStartHour);
         ReflectionTestUtils.setField(underTest, "venueDataMigrationEnabled", migrationEnabled);
 
         assertEquals(underTest.readyToRun(), assertion);
