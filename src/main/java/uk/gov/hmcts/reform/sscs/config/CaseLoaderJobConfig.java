@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.gov.hmcts.reform.sscs.job.CaseLoaderTasklet;
-import uk.gov.hmcts.reform.sscs.job.DataMigrationJob;
+import uk.gov.hmcts.reform.sscs.job.InterpreterMigrationJob;
 import uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob;
 import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 
@@ -29,7 +29,7 @@ public class CaseLoaderJobConfig {
     @Autowired
     private ProcessingVenueMigrationJob venueMigrationJob;
     @Autowired
-    private DataMigrationJob dataMigrationJob;
+    private InterpreterMigrationJob interpreterMigrationJob;
 
     @Bean
     public Job caseLoaderJob(Step caseLoaderStep) {
@@ -46,7 +46,7 @@ public class CaseLoaderJobConfig {
 
     public Tasklet tasklet() {
 
-        return new CaseLoaderTasklet(sscsCaseLoaderJob, dataMigrationJob, venueMigrationJob);
+        return new CaseLoaderTasklet(sscsCaseLoaderJob, interpreterMigrationJob, venueMigrationJob);
 
     }
 }

@@ -1,36 +1,38 @@
 package uk.gov.hmcts.reform.sscs.job;
 
 import static java.time.LocalDateTime.now;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
 
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.sscs.services.ProcessingVenueMigrationService;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
 @Component
 @Slf4j
-public class ProcessingVenueMigrationJob extends SscsJob {
+public class ProcessingVenueMigrationJob extends DataMigrationJob {
 
-    public static final String MAPPED_VENUE_COLUMN = "mapped_venue_value";
-    public static final String EXISTING_VENUE_COLUMN = "existing_venue_value";
-
-    private ProcessingVenueMigrationService migrationService;
 
     @Value("${features.venue-migration.enabled}")
     private boolean venueDataMigrationEnabled;
 
-    @Value("${features.venue-migration.rollback}")
-    private boolean isRollback;
+    @Value("${features.venue-migration.encoded-data-string}")
+    private String venueEncodedDataString;
 
     @Value("${features.venue-migration.startHour}")
     private int migrationStartHour;
 
+    @Value("${features.venue-migration.rollback}")
+    public boolean isVenueRollback;
+
+
     public ProcessingVenueMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask,
-                                       ProcessingVenueMigrationService migrationService) {
-        super(caseLoaderTimerTask);
-        this.migrationService = migrationService;
+                                       DataMigrationService migrationService) {
+        super(caseLoaderTimerTask, migrationService);
     }
 
     @Override
@@ -38,15 +40,35 @@ public class ProcessingVenueMigrationJob extends SscsJob {
         return venueDataMigrationEnabled && now().getHour() >= migrationStartHour;
     }
 
-    public void process() {
-        String venueColumn = isRollback ? EXISTING_VENUE_COLUMN : MAPPED_VENUE_COLUMN;
-        log.info("Processing Venue data {} job", isRollback ? "rollback" : "migration");
-        try {
-            migrationService.process(venueColumn);
-        } catch (IOException e) {
-            log.error("{} job failed to decode encodedDataString", isRollback ? "rollback" : "migration", e);
-            throw new RuntimeException(e);
+    @Override
+    String getEncodedDataString() {
+        return venueEncodedDataString;
+    }
+
+    @Override
+    boolean getIsRollback() {
+        return isVenueRollback;
+    }
+
+    public void updateCaseData(SscsCaseData caseData, String venue) {
+        caseData.setProcessingVenue(venue);
+        log.info("Setting processing venue value to ({})", caseData.getProcessingVenue());
+
+    }
+
+    public boolean shouldBeSkipped(SscsCaseDetails caseDetails, String venue) {
+        var isInExcludedState = caseDetails.getState().equals(VOID_STATE.toString())
+            || caseDetails.getState().equals(DORMANT_APPEAL_STATE.toString());
+        boolean shouldBeSkipped = venue.equals(caseDetails.getData().getProcessingVenue())
+            || isInExcludedState;
+        if (shouldBeSkipped) {
+            log.info(
+                "Skipping case ({}) because venue already set ({})  or state={}",
+                caseDetails.getId(), venue,
+                caseDetails.getState()
+            );
         }
+        return shouldBeSkipped;
     }
 
 }

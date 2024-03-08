@@ -5,12 +5,13 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.EXISTING_VENUE_COLUMN;
-import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.MAPPED_VENUE_COLUMN;
+import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.EXISTING_DATA_COLUMN;
+import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.MAPPED_DATA_COLUMN;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -31,7 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.sscs.services.ProcessingVenueMigrationService;
+import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,13 +41,18 @@ class ProcessingVenueMigrationJobTest {
     @Mock
     CaseLoaderTimerTask timerTask;
     @Mock
-    ProcessingVenueMigrationService migrationService;
+    DataMigrationService migrationService;
 
     @Mock
     private Appender<ILoggingEvent> mockedAppender;
 
     @Captor
     private ArgumentCaptor<LoggingEvent> logEventCaptor;
+
+    private static final String COMPRESSSED_ENCODED_DATA_STRING = "eJzNUT1PwzAQ/SuW5w52mjqGrXTtCANCKLraR7AUO5F9qahQ/z"
+        + "sXgRBf7dIFDyfZfvfuvXcPrzLjE2ZMDuW11I1aqkpfVbVRqtZWLiS/csU9JmqD55vYQx/8ehwR+k1GIPRiRryEQiF1bQ+pm6DDlnHTTCouO8"
+        + "wdgaf538zrDLvgGFCmXQxEXzD8W6mmqhutVooRIRHmMSPXWdI9lrmNWP18ZRv+cDts2cLn0LsIYjPEyMYLY7YfxCINJByMNGU27oac0VF/4A"
+        + "YHBVsPBO856WpZr0wjj4u/M7baWmuM+ecZ32DqWMypkC8cfFbS+Z09I2TO4lvHj52dWoqVx8c3AbDIhg==";
 
     ProcessingVenueMigrationJob underTest;
 
@@ -69,13 +75,15 @@ class ProcessingVenueMigrationJobTest {
 
     @Test
     void shouldRunTheJob() {
-        ReflectionTestUtils.setField(underTest, "isRollback", false);
+        ReflectionTestUtils.setField(underTest, "isVenueRollback", false);
+        ReflectionTestUtils.setField(underTest, "venueEncodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
+
         underTest.run();
 
         verify(mockedAppender, times(4)).doAppend(logEventCaptor.capture());
         var capturedLogs = logEventCaptor.getAllValues();
         assertEquals("{} scheduler started : {}", capturedLogs.get(0).getMessage());
-        assertEquals("Processing Venue data migration job", capturedLogs.get(1).getFormattedMessage());
+        assertEquals("Processing migration job", capturedLogs.get(1).getFormattedMessage());
         assertEquals("{} scheduler ended : {}", capturedLogs.get(2).getMessage());
         assertEquals("Case loader Shutting down...", capturedLogs.get(3).getFormattedMessage());
     }
@@ -83,20 +91,23 @@ class ProcessingVenueMigrationJobTest {
     @ParameterizedTest
     @MethodSource("getRollbackScenarios")
     void shouldProcessTheJob(boolean isRollback, String languageColumn) throws IOException {
-        ReflectionTestUtils.setField(underTest, "isRollback", isRollback);
+        ReflectionTestUtils.setField(underTest, "isVenueRollback", isRollback);
+        ReflectionTestUtils.setField(underTest, "venueDataMigrationEnabled", true);
+        ReflectionTestUtils.setField(underTest, "venueEncodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
         underTest.process();
 
-        verify(migrationService).process(languageColumn);
+        verify(migrationService).process(eq(languageColumn), eq(underTest), eq(COMPRESSSED_ENCODED_DATA_STRING));
         verify(mockedAppender, atMostOnce()).doAppend(logEventCaptor.capture());
         String job = isRollback ? "rollback" : "migration";
         assertEquals(
-            "Processing Venue data " + job + " job", logEventCaptor.getValue().getFormattedMessage()
+            "Processing " + job + " job", logEventCaptor.getValue().getFormattedMessage()
         );
     }
 
     @Test
     void shouldProcessTheJob() throws IOException {
-        doThrow(new IOException("Simulating decode failure")).when(migrationService).process(anyString());
+        doThrow(new IOException("Simulating decode failure"))
+            .when(migrationService).process(anyString(), eq(underTest), eq(null));
 
         Exception exception = assertThrows(RuntimeException.class, () -> underTest.process());
 
@@ -116,8 +127,8 @@ class ProcessingVenueMigrationJobTest {
 
     private static List<Arguments> getRollbackScenarios() {
         return List.of(
-            Arguments.of(true, EXISTING_VENUE_COLUMN),
-            Arguments.of(false, MAPPED_VENUE_COLUMN)
+            Arguments.of(true, EXISTING_DATA_COLUMN),
+            Arguments.of(false, MAPPED_DATA_COLUMN)
         );
     }
 }

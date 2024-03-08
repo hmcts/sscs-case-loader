@@ -56,6 +56,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.job.DataMigrationJob;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
@@ -83,6 +84,9 @@ public class CcdCasesSenderTest {
     private CcdClient ccdClient;
     @Mock
     private SscsCcdConvertService sscsCcdConvertService;
+
+    @Mock
+    private DataMigrationJob migrationJob;
 
     private CcdCasesSender ccdCasesSender;
     private IdamTokens idamTokens;
@@ -135,7 +139,7 @@ public class CcdCasesSenderTest {
         when(ccdClient.startEvent(eq(idamTokens), anyLong(), eq("migrateCase"))).thenReturn(startEventResponse);
         when(sscsCcdConvertService.getCaseData(anyMap())).thenReturn(caseData);
 
-        ccdCasesSender.updateLanguage(anyLong(), eq(idamTokens), "Somali");
+        ccdCasesSender.updateCaseMigration(anyLong(), eq(idamTokens), "Somali", migrationJob);
 
         verify(updateCcdCaseService).updateCase(
             eq(caseData), anyLong(), eq("migrateCase"), eq("random-token"),
