@@ -32,6 +32,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.HearingOptions;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
@@ -112,6 +116,83 @@ class InterpreterMigrationJobTest {
 
         assertTrue(exception.getMessage().contains("Simulating decode failure"));
     }
+
+    @ParameterizedTest
+    @MethodSource("getInvalidStates")
+    void shouldSkipDormantOrVoidCase(String state) {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder()
+                    .appeal(Appeal.builder().hearingOptions(
+                        HearingOptions.builder()
+                            .languages("Welsh")
+                            .build()).build())
+                    .build())
+            .state(state).build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, "Arabic");
+        assertTrue(shouldSkip);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getLanguages")
+    void shouldSkipIdenticalLanguage(String language) {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder()
+                    .appeal(Appeal.builder().hearingOptions(
+                        HearingOptions.builder()
+                            .languages(language)
+                            .build()).build())
+                    .build())
+            .state("validAppeal").build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, language);
+        assertTrue(shouldSkip);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getLanguages")
+    void shouldSkipIfNeedsInterpreter(String language) {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder()
+                    .appeal(Appeal.builder().hearingOptions(
+                        HearingOptions.builder()
+                            .languages(language)
+                            .languageInterpreter("Yes")
+                            .build()).build())
+                    .build())
+            .state("validAppeal").build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, "Test");
+        assertTrue(shouldSkip);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getLanguages")
+    void shouldProcessDifferentLanguage(String language) {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder()
+                    .appeal(Appeal.builder().hearingOptions(
+                        HearingOptions.builder()
+                            .languages("Welsh")
+                            .build()).build())
+                    .build())
+            .state("validAppeal").build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, language);
+        assertTrue(!shouldSkip);
+    }
+
+    private static List<Arguments> getInvalidStates() {
+        return List.of(
+            Arguments.of("voidState"),
+            Arguments.of("dormantAppealState")
+        );
+    }
+
+    private static List<Arguments> getLanguages() {
+        return List.of(
+            Arguments.of("Arabic"),
+            Arguments.of("Bengali"),
+            Arguments.of("Spanish")
+        );
+    }
+
 
     private static List<Arguments> getStartHourScenarios() {
         return List.of(
