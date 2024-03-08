@@ -120,11 +120,8 @@ class ProcessingVenueMigrationJobTest {
     @MethodSource("getInvalidStates")
     void shouldSkipDormantOrVoidCase(String state) {
         SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
-                SscsCaseData.builder().
-                    processingVenue("South Shields")
-                    .build()).
-            state(state)
-            .build();
+                SscsCaseData.builder().processingVenue("South Shields").build())
+            .state(state).build();
         boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, caseDetails.getData().getProcessingVenue());
         assertTrue(shouldSkip);
     }
@@ -132,10 +129,8 @@ class ProcessingVenueMigrationJobTest {
     @Test
     void shouldSkipIdenticalVenue() {
         SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
-                SscsCaseData.builder().
-                    processingVenue("South Shields")
-                    .build()).
-            state("validAppeal")
+                SscsCaseData.builder().processingVenue("South Shields").build())
+            .state("validAppeal")
             .build();
         boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, caseDetails.getData().getProcessingVenue());
         assertTrue(shouldSkip);
@@ -144,13 +139,11 @@ class ProcessingVenueMigrationJobTest {
     @Test
     void shouldProcessDifferentVenue() {
         SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
-                SscsCaseData.builder().
-                    processingVenue("South")
-                    .build()).
-            state("validAppeal")
+                SscsCaseData.builder().processingVenue("South").build())
+            .state("validAppeal")
             .build();
         boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, "South Shields");
-        assert(!shouldSkip);
+        assertTrue(!shouldSkip);
     }
 
     private static List<Arguments> getInvalidStates() {
