@@ -32,6 +32,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
@@ -112,6 +114,50 @@ class ProcessingVenueMigrationJobTest {
         Exception exception = assertThrows(RuntimeException.class, () -> underTest.process());
 
         assertTrue(exception.getMessage().contains("Simulating decode failure"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("getInvalidStates")
+    void shouldSkipDormantOrVoidCase(String state) {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder().
+                    processingVenue("South Shields")
+                    .build()).
+            state(state)
+            .build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, caseDetails.getData().getProcessingVenue());
+        assertTrue(shouldSkip);
+    }
+
+    @Test
+    void shouldSkipIdenticalVenue() {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder().
+                    processingVenue("South Shields")
+                    .build()).
+            state("validAppeal")
+            .build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, caseDetails.getData().getProcessingVenue());
+        assertTrue(shouldSkip);
+    }
+
+    @Test
+    void shouldProcessDifferentVenue() {
+        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
+                SscsCaseData.builder().
+                    processingVenue("South")
+                    .build()).
+            state("validAppeal")
+            .build();
+        boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, "South Shields");
+        assert(!shouldSkip);
+    }
+
+    private static List<Arguments> getInvalidStates() {
+        return List.of(
+            Arguments.of("voidState"),
+            Arguments.of("dormantState")
+        );
     }
 
     private static List<Arguments> getStartHourScenarios() {
