@@ -22,8 +22,11 @@ public class InterpreterMigrationJob extends DataMigrationJob {
     private boolean interpreterDataMigrationEnabled;
 
 
-    @Value("${sscs.case.loader.startHour}")
-    private int caseLoaderStartHour;
+    @Value("${features.data-migration.startHour}")
+    private int migrationStartHour;
+
+    @Value("${features.data-migration.endHour}")
+    private int migrationEndHour;
 
     @Value("${features.data-migration.encoded-data-string}")
     private String interpreterEncodedDataString;
@@ -40,7 +43,9 @@ public class InterpreterMigrationJob extends DataMigrationJob {
 
     @Override
     public boolean readyToRun() {
-        return interpreterDataMigrationEnabled && now().getHour() >= caseLoaderStartHour;
+        return interpreterDataMigrationEnabled
+            && now().getHour() >= migrationStartHour
+            && now().getHour() <= migrationEndHour;
     }
 
     @Override

@@ -26,6 +26,9 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
     @Value("${features.venue-migration.startHour}")
     private int migrationStartHour;
 
+    @Value("${features.venue-migration.endHour}")
+    private int migrationEndHour;
+
     @Value("${features.venue-migration.rollback}")
     public boolean isVenueRollback;
 
@@ -37,7 +40,9 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
 
     @Override
     public boolean readyToRun() {
-        return venueDataMigrationEnabled && now().getHour() >= migrationStartHour;
+        return venueDataMigrationEnabled
+            && now().getHour() >= migrationStartHour
+            && now().getHour() <= migrationEndHour;
     }
 
     @Override
