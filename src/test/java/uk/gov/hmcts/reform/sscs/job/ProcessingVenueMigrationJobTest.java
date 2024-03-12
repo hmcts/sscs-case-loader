@@ -68,8 +68,12 @@ class ProcessingVenueMigrationJobTest {
 
     @ParameterizedTest
     @MethodSource("getStartHourScenarios")
-    void shouldBeReadyToRunOnOrAfterStartTime(boolean migrationEnabled, int caseLoaderStartHour, boolean assertion) {
-        ReflectionTestUtils.setField(underTest, "migrationStartHour", caseLoaderStartHour);
+    void shouldBeReadyToRunOnOrAfterStartTime(boolean migrationEnabled,
+                                              int migrationStartHour,
+                                              int migrationEndHour,
+                                              boolean assertion) {
+        ReflectionTestUtils.setField(underTest, "migrationStartHour", migrationStartHour);
+        ReflectionTestUtils.setField(underTest, "migrationEndHour", migrationEndHour);
         ReflectionTestUtils.setField(underTest, "venueDataMigrationEnabled", migrationEnabled);
 
         assertEquals(underTest.readyToRun(), assertion);
@@ -155,12 +159,14 @@ class ProcessingVenueMigrationJobTest {
 
     private static List<Arguments> getStartHourScenarios() {
         return List.of(
-            Arguments.of(false, now().getHour(), false),
-            Arguments.of(false, now().getHour() - 1, false),
-            Arguments.of(false, now().getHour() + 1, false),
-            Arguments.of(true, now().getHour(), true),
-            Arguments.of(true, now().getHour() - 1, true),
-            Arguments.of(true, now().getHour() + 1, false)
+            Arguments.of(false, now().getHour(), now().getHour() + 1, false),
+            Arguments.of(false, now().getHour() - 1, now().getHour(),  false),
+            Arguments.of(false, now().getHour() + 1,  now().getHour() + 2, false),
+            Arguments.of(true, now().getHour(), now().getHour() + 1, true),
+            Arguments.of(true, now().getHour() - 1, now().getHour() + 1, true),
+            Arguments.of(true, now().getHour() - 2, now().getHour() - 1, false),
+            Arguments.of(false, now().getHour() - 1, now().getHour() + 1, false),
+            Arguments.of(true, now().getHour() + 1, now().getHour() + 2, false)
         );
     }
 
