@@ -175,6 +175,7 @@ class InterpreterMigrationJobTest {
                     .appeal(Appeal.builder().hearingOptions(
                         HearingOptions.builder()
                             .languages("Welsh")
+                            .languageInterpreter("Yes")
                             .build()).build())
                     .build())
             .state("validAppeal").build();
