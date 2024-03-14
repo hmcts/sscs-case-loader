@@ -199,6 +199,14 @@ configurations {
   e2eImplementation.extendsFrom(testImplementation )
 }
 
+dependencyManagement {
+  dependencies {
+    dependencySet(group: 'org.yaml', version: '1.33') {
+      entry 'snakeyaml'
+    }
+  }
+}
+
 dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-batch'
   testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
