@@ -153,13 +153,13 @@ class InterpreterMigrationJobTest {
 
     @ParameterizedTest
     @MethodSource("getLanguages")
-    void shouldSkipIfNeedsInterpreter(String language) {
+    void shouldSkipIfInterpreterNotNeeded(String language) {
         SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(
                 SscsCaseData.builder()
                     .appeal(Appeal.builder().hearingOptions(
                         HearingOptions.builder()
                             .languages(language)
-                            .languageInterpreter("Yes")
+                            .languageInterpreter("No")
                             .build()).build())
                     .build())
             .state("validAppeal").build();

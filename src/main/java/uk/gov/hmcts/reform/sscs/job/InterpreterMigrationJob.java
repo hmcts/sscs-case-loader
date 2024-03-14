@@ -68,7 +68,7 @@ public class InterpreterMigrationJob extends DataMigrationJob {
             .equals(caseDetails.getData().getAppeal().getHearingOptions().getLanguageInterpreter());
         boolean shouldBeSkipped = language.equals(caseDetails.getData().getAppeal().getHearingOptions().getLanguages())
             || isInExcludedState
-            || needInterpreter;
+            || !needInterpreter;
         if (shouldBeSkipped) {
             log.info(
                 "Skipping case ({}) because language already set ({}) OR Interpreter={} or state={}",
@@ -82,7 +82,7 @@ public class InterpreterMigrationJob extends DataMigrationJob {
     }
 
     @Override
-    boolean getIsRollback() {
+    boolean isRollback() {
         return isInterpreterRollback;
     }
 

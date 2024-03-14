@@ -51,7 +51,7 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
     }
 
     @Override
-    boolean getIsRollback() {
+    boolean isRollback() {
         return isVenueRollback;
     }
 

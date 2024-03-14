@@ -30,19 +30,19 @@ public abstract class DataMigrationJob extends SscsJob {
     abstract String getEncodedDataString();
 
     public void process() {
-        String migrationColumn = getIsRollback() ? EXISTING_DATA_COLUMN : MAPPED_DATA_COLUMN;
-        log.info("Processing {} job", getIsRollback() ? "rollback" : "migration");
+        String migrationColumn = isRollback() ? EXISTING_DATA_COLUMN : MAPPED_DATA_COLUMN;
+        log.info("Processing {} job", isRollback() ? "rollback" : "migration");
         try {
             migrationService.process(migrationColumn, this, getEncodedDataString());
         } catch (IOException e) {
-            log.error("{} job failed to decode encodedDataString", getIsRollback() ? "rollback" : "migration", e);
+            log.error("{} job failed to decode encodedDataString", isRollback() ? "rollback" : "migration", e);
             throw new RuntimeException(e);
         }
     }
 
     public abstract boolean shouldBeSkipped(SscsCaseDetails caseDetails, String fieldValue);
 
-    abstract boolean getIsRollback();
+    abstract boolean isRollback();
 
     public abstract void updateCaseData(SscsCaseData caseData, String fieldValue);
 
