@@ -4,6 +4,5 @@
     <cve>CVE-2022-1471</cve>
     <cve>CVE-2023-6378</cve>
     <cve>CVE-2023-6481</cve>
-    <cve>CVE-2023-34042</cve>
   </suppress>
 </suppressions>
