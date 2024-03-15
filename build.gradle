@@ -201,6 +201,7 @@ configurations {
 
 dependencyManagement {
   dependencies {
+    // CVE-2022-25857, CVE-2022-38749, CVE-2022-38750, CVE-2022-38751, CVE-2022-38752, CVE-2022-41854
     dependencySet(group: 'org.yaml', version: '1.33') {
       entry 'snakeyaml'
     }
@@ -241,8 +242,6 @@ dependencies {
   implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '5.3.4'
 
   implementation 'com.github.mwiede:jsch:0.2.11'
-
-//  implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
 
