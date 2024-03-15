@@ -204,6 +204,12 @@ dependencyManagement {
     dependencySet(group: 'org.yaml', version: '1.33') {
       entry 'snakeyaml'
     }
+
+    //CVE-2023-6378, CVE-2023-6481
+    dependencySet(group: 'ch.qos.logback', version: '1.2.13') {
+      entry 'logback-core'
+      entry 'logback-classic'
+    }
   }
 }
 
