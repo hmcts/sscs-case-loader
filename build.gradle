@@ -219,7 +219,7 @@ dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   implementation  group: 'org.springframework', name: 'spring-context-support'
-  implementation  ('org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8')
+  implementation  ('org.springframework.cloud:spring-cloud-starter-openfeign:3.1.9')
 
   // https://mvnrepository.com/artifact/commons-lang/commons-lang
   implementation 'commons-lang:commons-lang:2.6'
@@ -236,7 +236,7 @@ dependencies {
 
   implementation 'com.github.mwiede:jsch:0.2.11'
 
-  implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+//  implementation  group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
 
