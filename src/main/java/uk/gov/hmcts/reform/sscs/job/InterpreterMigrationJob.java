@@ -18,20 +18,20 @@ import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 public class InterpreterMigrationJob extends DataMigrationJob {
 
 
-    @Value("${features.data-migration.interpreter}")
+    @Value("${features.interpreter-migration.interpreter}")
     private boolean interpreterDataMigrationEnabled;
 
 
-    @Value("${features.data-migration.startHour}")
+    @Value("${features.interpreter-migration.startHour}")
     private int migrationStartHour;
 
-    @Value("${features.data-migration.endHour}")
+    @Value("${features.interpreter-migration.endHour}")
     private int migrationEndHour;
 
-    @Value("${features.data-migration.encoded-data-string}")
+    @Value("${features.interpreter-migration.encoded-data-string}")
     private String interpreterEncodedDataString;
 
-    @Value("${features.data-migration.rollback}")
+    @Value("${features.interpreter-migration.rollback}")
     public  boolean isInterpreterRollback;
 
 
