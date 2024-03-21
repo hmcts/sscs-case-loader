@@ -33,6 +33,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
@@ -181,6 +182,24 @@ public class CcdCasesSenderTest {
         verify(updateCcdCaseService, times(1))
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(APPEAL_RECEIVED.getType()),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+    }
+
+
+    @Test
+    public void shouldOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedAndUpdateV2IsEnabled()
+        throws Exception {
+        ReflectionTestUtils.setField(ccdCasesSender, "caseLoaderUpdateCaseV2Enabled", true);
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        sscsCaseDetails.getData().setCaseReference(null);
+        given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
+            .willReturn(UpdateType.DATA_UPDATE);
+
+        ccdCasesSender.sendUpdateCcdCases(buildCaseData(RESPONSE_RECEIVED),
+            sscsCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCaseV2(anyLong(), eq(APPEAL_RECEIVED.getType()), eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS),
+                eq(idamTokens), any());
     }
 
     @Test

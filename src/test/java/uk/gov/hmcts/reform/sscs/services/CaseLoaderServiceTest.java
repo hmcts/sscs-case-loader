@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.sscs.services;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
 
 import feign.FeignException;
 import feign.Request;
@@ -18,11 +19,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.BenefitType;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.exceptions.ProcessDeltaException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -54,6 +59,10 @@ public class CaseLoaderServiceTest {
     private SearchCcdCaseService searchCcdCaseService;
     @Mock
     private IdamService idamService;
+    @Mock
+    private CcdClient ccdClient;
+    @Mock
+    private SscsCcdConvertService sscsCcdConvertService;
 
     private SscsCaseData caseData;
 
@@ -72,7 +81,9 @@ public class CaseLoaderServiceTest {
             ccdCasesSender,
             refDataFactory,
             idamService,
-            searchCcdCaseService);
+            searchCcdCaseService,
+            sscsCcdConvertService,
+            ccdClient);
 
         Appeal appeal = Appeal.builder()
             .benefitType(BenefitType.builder()
@@ -240,8 +251,6 @@ public class CaseLoaderServiceTest {
 
     @Test
     public void shouldSkipTheCaseWhileSearchingCaseIfCaseIdIsInvalidAndFeatureEnabledForErrorHandling() {
-        ReflectionTestUtils.setField(caseLoaderService, "invalidCaseRefErrorHandlingEnabled", true);
-
         caseData.setCaseReference("SC001//00365123");
         caseData.setCcdCaseId("1234");
 
@@ -256,21 +265,24 @@ public class CaseLoaderServiceTest {
         Assertions.assertDoesNotThrow(() -> caseLoaderService.process());
     }
 
-    @Test(expected = ProcessDeltaException.class)
-    public void shouldThrowFeignExceptionWhileSearchingCaseIfCaseIdIsInvalidAndFeatureDisabledForErrorHandling() {
-        ReflectionTestUtils.setField(caseLoaderService, "invalidCaseRefErrorHandlingEnabled", false);
+    @Test
+    public void shouldGetCaseDataFromStartResponseWhileSearchingCaseIfCaseIdIsInvalidAndFeatureEnabled() {
+        ReflectionTestUtils.setField(caseLoaderService, "caseLoaderUpdateCaseV2Enabled", true);
 
         caseData.setCaseReference("SC001//00365123");
-        caseData.setCcdCaseId("1234");
+        caseData.setCcdCaseId("1234567890");
+
+        var startEventResponse = StartEventResponse.builder()
+            .caseDetails(CaseDetails.builder().build())
+            .eventId(CASE_UPDATED.getCcdType())
+            .token("random-token").build();
 
         when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
-
-        Request request = Request.create(Request.HttpMethod.GET, "url",
-            new HashMap<>(), null, new RequestTemplate());
-
-        doThrow(new FeignException.BadRequest("Case reference is not valid", request, null, null))
-            .when(searchCcdCaseService).findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
+        when(ccdClient.startEvent(eq(idamTokens), anyLong(), anyString())).thenReturn(startEventResponse);
+        when(transformService.transform(inputStream)).thenReturn(newArrayList(caseData));
 
         caseLoaderService.process();
+        verify(searchCcdCaseService, never()).findCaseByCaseRef(any(), any());
+        verify(ccdClient).startEvent(eq(idamTokens), anyLong(), eq(CASE_UPDATED.getCcdType()));
     }
 }

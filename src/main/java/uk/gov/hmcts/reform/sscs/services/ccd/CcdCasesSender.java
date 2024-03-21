@@ -13,9 +13,11 @@ import feign.FeignException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
@@ -40,6 +42,8 @@ public class CcdCasesSender {
     private final UpdateCcdCaseData updateCcdCaseData;
     private final CcdClient ccdClient;
     private final SscsCcdConvertService sscsCcdConvertService;
+    @Value("${features.case-loader-update-caseV2.enabled:false}")
+    private boolean caseLoaderUpdateCaseV2Enabled;
     private String logPrefix = "";
 
     @Autowired
@@ -138,11 +142,16 @@ public class CcdCasesSender {
     private void updateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
                             IdamTokens idamTokens, String eventType) {
 
-        existingCcdCaseData.setCaseReference(caseData.getCaseReference());
-
         try {
-            updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
-                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+            if (caseLoaderUpdateCaseV2Enabled) {
+                Consumer<SscsCaseData> mutator = data -> data.setCaseReference(caseData.getCaseReference());
+                updateCcdCaseService.updateCaseV2(
+                    existingCaseId, eventType, SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens, mutator);
+            } else {
+                existingCcdCaseData.setCaseReference(caseData.getCaseReference());
+                updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
+                    SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+            }
         } catch (FeignException e) {
             log.error(
                 "{}. CCD response: {}",

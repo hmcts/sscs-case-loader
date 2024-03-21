@@ -57,5 +57,6 @@ job:
     CASE_LOADER_START_HOUR: 21
     CASE_LOADER_END_HOUR: 7
     ELINKS_V2_FEATURE_ENABLED: false
+    CASE_LOADER_UPDATE_CASE_V2_ENABLED: false
 global:
   jobKind: CronJob
