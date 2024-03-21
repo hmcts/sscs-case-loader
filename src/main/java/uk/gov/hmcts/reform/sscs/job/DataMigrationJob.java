@@ -1,31 +1,23 @@
 package uk.gov.hmcts.reform.sscs.job;
 
-import static java.time.LocalDateTime.now;
-
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
 @Component
 @Slf4j
-public class DataMigrationJob extends SscsJob {
+public abstract class DataMigrationJob extends SscsJob {
 
-    public static final String MAPPED_LANGUAGE_COLUMN = "mapped_language_value";
-    public static final String EXISTING_LANGUAGE_COLUMN = "existing_language_value";
+    public static final String MAPPED_DATA_COLUMN = "mapped_data_value";
+    public static final String EXISTING_DATA_COLUMN = "existing_data_value";
 
-    private DataMigrationService migrationService;
+    private final DataMigrationService migrationService;
 
-    @Value("${features.data-migration.interpreter}")
-    private boolean interpreterDataMigrationEnabled;
 
-    @Value("${features.data-migration.rollback}")
-    private boolean isRollback;
-
-    @Value("${sscs.case.loader.startHour}")
-    private int caseLoaderStartHour;
 
     public DataMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask, DataMigrationService migrationService) {
         super(caseLoaderTimerTask);
@@ -33,19 +25,25 @@ public class DataMigrationJob extends SscsJob {
     }
 
     @Override
-    public boolean readyToRun() {
-        return interpreterDataMigrationEnabled && now().getHour() >= caseLoaderStartHour;
-    }
+    abstract boolean readyToRun();
+
+    abstract String getEncodedDataString();
 
     public void process() {
-        String languageColumn = isRollback ? EXISTING_LANGUAGE_COLUMN : MAPPED_LANGUAGE_COLUMN;
-        log.info("Processing Interpreter data {} job", isRollback ? "rollback" : "migration");
+        String migrationColumn = isRollback() ? EXISTING_DATA_COLUMN : MAPPED_DATA_COLUMN;
+        log.info("Processing {} job", isRollback() ? "rollback" : "migration");
         try {
-            migrationService.process(languageColumn);
+            migrationService.process(migrationColumn, this, getEncodedDataString());
         } catch (IOException e) {
-            log.error("{} job failed to decode encodedDataString", isRollback ? "rollback" : "migration", e);
+            log.error("{} job failed to decode encodedDataString", isRollback() ? "rollback" : "migration", e);
             throw new RuntimeException(e);
         }
     }
+
+    public abstract boolean shouldBeSkipped(SscsCaseDetails caseDetails, String fieldValue);
+
+    abstract boolean isRollback();
+
+    public abstract void updateCaseData(SscsCaseData caseData, String fieldValue);
 
 }
