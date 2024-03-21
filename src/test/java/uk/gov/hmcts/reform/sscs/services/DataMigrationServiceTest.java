@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.sscs.job.DataMigrationJob.MAPPED_LANGUAGE_COLUMN;
+import static uk.gov.hmcts.reform.sscs.job.DataMigrationJob.MAPPED_DATA_COLUMN;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -21,19 +21,18 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
+import uk.gov.hmcts.reform.sscs.job.DataMigrationJob;
 import uk.gov.hmcts.reform.sscs.services.ccd.CcdCasesSender;
 
 
 @ExtendWith(MockitoExtension.class)
 class DataMigrationServiceTest {
 
-    private static final String COMPRESSSED_ENCODED_DATA_STRING = "eJzNUT1PwzAQ/SuW5w52mjqGrXTtCANCKLraR7AUO5F9qahQ/z"
-        + "sXgRBf7dIFDyfZfvfuvXcPrzLjE2ZMDuW11I1aqkpfVbVRqtZWLiS/csU9JmqD55vYQx/8ehwR+k1GIPRiRryEQiF1bQ+pm6DDlnHTTCouO8"
-        + "wdgaf538zrDLvgGFCmXQxEXzD8W6mmqhutVooRIRHmMSPXWdI9lrmNWP18ZRv+cDts2cLn0LsIYjPEyMYLY7YfxCINJByMNGU27oac0VF/4A"
-        + "YHBVsPBO856WpZr0wjj4u/M7baWmuM+ecZ32DqWMypkC8cfFbS+Z09I2TO4lvHj52dWoqVx8c3AbDIhg==";
+    private static final String COMPRESSSED_ENCODED_DATA_STRING = "eJyLrlYqSk1LLUrNS05VslIyNLO0NDYxNzUzsTQztTAw"
+        + "VtJRSq3ILC7JzEuPT0ksSYwvS8wpBSkMLkjMyyzOAMrnJhYUpKagyjoWJSZlJivV6qCZbm5gZmFgZm5kZmJsaWxugNN0N5AOXIY7pe"
+        + "alJ+ZkKtXGAgB1Yj3B";
 
     @Mock
     private CcdCasesSender ccdCasesSender;
@@ -41,6 +40,9 @@ class DataMigrationServiceTest {
     private IdamService idamService;
     @Mock
     private Appender<ILoggingEvent> mockedAppender;
+
+    @Mock
+    private DataMigrationJob job;
 
     @Captor
     private ArgumentCaptor<LoggingEvent> logEventCaptor;
@@ -57,17 +59,15 @@ class DataMigrationServiceTest {
 
     @Test
     void shouldProcessCases() throws IOException {
-        ReflectionTestUtils.setField(underTest, "encodedDataString", COMPRESSSED_ENCODED_DATA_STRING);
         IdamTokens tokens = IdamTokens.builder().build();
         when(idamService.getIdamTokens()).thenReturn(tokens);
-        when(ccdCasesSender.updateLanguage(eq(1703021924600418L), eq(tokens), eq("Arabic")))
+        when(ccdCasesSender.updateCaseMigration(eq(1699347564965803L), eq(tokens), eq("Arabic"), eq(job)))
             .thenReturn(true);
-        when(ccdCasesSender.updateLanguage(eq(1703021981888666L), eq(tokens), eq("Bengali")))
+        when(ccdCasesSender.updateCaseMigration(eq(1706806726439370L), eq(tokens), eq("Bengali"), eq(job)))
             .thenReturn(false);
 
-        underTest.process(MAPPED_LANGUAGE_COLUMN);
+        underTest.process(MAPPED_DATA_COLUMN, job, COMPRESSSED_ENCODED_DATA_STRING);
 
-        verify(ccdCasesSender).updateLanguage(1703021924600418L, tokens, "Arabic");
         verify(mockedAppender, times(2)).doAppend(logEventCaptor.capture());
         var capturedLogs = logEventCaptor.getAllValues();
         assertEquals("Number of cases to be migrated: (2)", capturedLogs.get(0).getFormattedMessage());

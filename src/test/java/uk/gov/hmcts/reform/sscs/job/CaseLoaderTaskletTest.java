@@ -18,34 +18,41 @@ public class CaseLoaderTaskletTest {
     private SscsCaseLoaderJob caseLoaderJob;
 
     @Mock
-    private DataMigrationJob dataMigrationJob;
+    private InterpreterMigrationJob interpreterMigrationJob;
+
+    @Mock
+    private ProcessingVenueMigrationJob venueMigrationJob;
 
     CaseLoaderTasklet underTest;
 
     @BeforeEach
     public void setup() {
-        underTest = new CaseLoaderTasklet(caseLoaderJob, dataMigrationJob);
+        underTest = new CaseLoaderTasklet(caseLoaderJob, interpreterMigrationJob, venueMigrationJob);
     }
 
     @Test
     public void shouldExecuteCaseLoaderJob() {
         when(caseLoaderJob.readyToRun()).thenReturn(true);
-        when(dataMigrationJob.readyToRun()).thenReturn(false);
+        when(interpreterMigrationJob.readyToRun()).thenReturn(false);
+        when(venueMigrationJob.readyToRun()).thenReturn(false);
 
         underTest.execute(null, null);
 
         verify(caseLoaderJob, atMostOnce()).run();
-        verify(dataMigrationJob, never()).run();
+        verify(interpreterMigrationJob, never()).run();
+        verify(venueMigrationJob, never()).run();
     }
 
     @Test
     public void shouldExecuteDataMigrationJob() {
         when(caseLoaderJob.readyToRun()).thenReturn(false);
-        when(dataMigrationJob.readyToRun()).thenReturn(true);
+        when(interpreterMigrationJob.readyToRun()).thenReturn(true);
+        when(venueMigrationJob.readyToRun()).thenReturn(true);
 
         underTest.execute(null, null);
 
         verify(caseLoaderJob, never()).run();
-        verify(dataMigrationJob, atMostOnce()).run();
+        verify(interpreterMigrationJob, atMostOnce()).run();
+        verify(venueMigrationJob, atMostOnce()).run();
     }
 }
