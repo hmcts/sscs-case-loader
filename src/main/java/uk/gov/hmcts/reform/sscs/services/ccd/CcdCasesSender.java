@@ -85,7 +85,6 @@ public class CcdCasesSender {
             } else {
                 log.info("Updating case data for case ({})",  caseId);
                 job.updateCaseData(caseData, fieldValue);
-
                 CaseDataContent caseDataContent = sscsCcdConvertService.getCaseDataContent(
                     startEventResponse.getToken(), MIGRATE_CASE, caseData, "", "");
                 ccdClient.submitEventForCaseworker(idamTokens, caseId, caseDataContent);
