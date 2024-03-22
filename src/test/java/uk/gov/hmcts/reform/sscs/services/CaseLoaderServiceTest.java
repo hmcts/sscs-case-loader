@@ -250,7 +250,7 @@ public class CaseLoaderServiceTest {
     }
 
     @Test
-    public void shouldSkipTheCaseWhileSearchingCaseIfCaseIdIsInvalidAndFeatureEnabledForErrorHandling() {
+    public void shouldSkipTheCaseWhileSearchingCaseIfCaseIdIsInvalid() {
         caseData.setCaseReference("SC001//00365123");
         caseData.setCcdCaseId("1234");
 

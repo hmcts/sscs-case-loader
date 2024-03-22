@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
 import uk.gov.hmcts.reform.sscs.ccd.domain.HearingDetails;
@@ -84,8 +85,10 @@ public class CcdCasesSender {
             } else {
                 log.info("Updating case data for case ({})",  caseId);
                 job.updateCaseData(caseData, fieldValue);
-                updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
-                    startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+
+                CaseDataContent caseDataContent = sscsCcdConvertService.getCaseDataContent(
+                    startEventResponse.getToken(), MIGRATE_CASE, caseData, "", "");
+                ccdClient.submitEventForCaseworker(idamTokens, caseId, caseDataContent);
                 return true;
             }
 
