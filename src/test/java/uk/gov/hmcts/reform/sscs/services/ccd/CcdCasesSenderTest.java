@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -33,6 +34,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
@@ -132,18 +135,21 @@ public class CcdCasesSenderTest {
                 .hearingOptions(HearingOptions.builder().languages("Swahili").build()).build()
             ).build();
         var caseDetails = CaseDetails.builder().state("ReadyToList").data(new HashMap<>()).build();
+        String migrateCaseEvent = "migrateCase";
         var startEventResponse = StartEventResponse.builder()
             .caseDetails(caseDetails)
-            .eventId("migrateCase")
+            .eventId(migrateCaseEvent)
             .token("random-token").build();
-        when(ccdClient.startEvent(eq(idamTokens), anyLong(), eq("migrateCase"))).thenReturn(startEventResponse);
+
+        when(ccdClient.startEvent(eq(idamTokens), anyLong(), eq(migrateCaseEvent))).thenReturn(startEventResponse);
         when(sscsCcdConvertService.getCaseData(anyMap())).thenReturn(caseData);
+        when(sscsCcdConvertService.getCaseDataContent(any(), eq(migrateCaseEvent), any(), anyString(), anyString()))
+            .thenReturn(CaseDataContent.builder().build());
 
         ccdCasesSender.updateCaseMigration(anyLong(), eq(idamTokens), "Somali", migrationJob);
 
-        verify(updateCcdCaseService).updateCase(
-            eq(caseData), anyLong(), eq("migrateCase"), eq("random-token"),
-            eq("migrateCase"), eq(""), eq(""), eq(idamTokens)
+        verify(ccdClient).submitEventForCaseworker(
+            eq(idamTokens), anyLong(), any(CaseDataContent.class)
         );
     }
 
@@ -185,6 +191,24 @@ public class CcdCasesSenderTest {
         verify(updateCcdCaseService, times(1))
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(APPEAL_RECEIVED.getType()),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+    }
+
+
+    @Test
+    public void shouldOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedAndUpdateV2IsEnabled()
+        throws Exception {
+        ReflectionTestUtils.setField(ccdCasesSender, "caseLoaderUpdateCaseV2Enabled", true);
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        sscsCaseDetails.getData().setCaseReference(null);
+        given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
+            .willReturn(UpdateType.DATA_UPDATE);
+
+        ccdCasesSender.sendUpdateCcdCases(buildCaseData(RESPONSE_RECEIVED),
+            sscsCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService, times(1))
+            .updateCaseV2(anyLong(), eq(APPEAL_RECEIVED.getType()), eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS),
+                eq(idamTokens), any());
     }
 
     @Test
