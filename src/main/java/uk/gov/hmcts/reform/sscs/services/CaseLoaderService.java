@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.sscs.services;
 
+import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.hasAppellantIdentify;
 import static uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService.normaliseNino;
 
@@ -8,19 +9,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.domain.State;
 import uk.gov.hmcts.reform.sscs.ccd.service.SearchCcdCaseService;
+import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.exceptions.ProcessDeltaException;
 import uk.gov.hmcts.reform.sscs.exceptions.TransformException;
 import uk.gov.hmcts.reform.sscs.idam.IdamService;
@@ -43,15 +48,20 @@ public class CaseLoaderService {
     private final RefDataFactory refDataFactory;
     private final IdamService idamService;
     private final SearchCcdCaseService searchCcdCaseService;
+    private final SscsCcdConvertService sscsCcdConvertService;
+    private final CcdClient ccdClient;
     private String logPrefix;
     private String logPrefixWithFile;
     private CaseLoaderMetrics metrics;
     private CaseLoaderMetrics fileMetrics;
+    @Value("${features.case-loader-update-caseV2.enabled:false}")
+    private boolean caseLoaderUpdateCaseV2Enabled;
 
     @Autowired
     CaseLoaderService(SftpSshService sftpSshService, XmlValidator xmlValidator, TransformationService transformService,
                       CcdCasesSender ccdCasesSender, RefDataFactory refDataFactory, IdamService idamService,
-                      SearchCcdCaseService searchCcdCaseService) {
+                      SearchCcdCaseService searchCcdCaseService, SscsCcdConvertService sscsCcdConvertService,
+                      CcdClient ccdClient) {
         this.sftpSshService = sftpSshService;
         this.xmlValidator = xmlValidator;
         this.transformService = transformService;
@@ -59,6 +69,8 @@ public class CaseLoaderService {
         this.refDataFactory = refDataFactory;
         this.idamService = idamService;
         this.searchCcdCaseService = searchCcdCaseService;
+        this.sscsCcdConvertService = sscsCcdConvertService;
+        this.ccdClient = ccdClient;
     }
 
     public void setLogPrefix(String logPrefix) {
@@ -231,7 +243,16 @@ public class CaseLoaderService {
         IdamTokens idamTokens
     ) {
         try {
-            return searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
+            if (caseLoaderUpdateCaseV2Enabled) {
+                List<SscsCaseDetails> caseDetailsList = new ArrayList<>();
+                var startEventResponse = ccdClient.startEvent(
+                    idamTokens, Long.valueOf(caseData.getCcdCaseId()), CASE_UPDATED.getCcdType());
+                caseDetailsList.add(sscsCcdConvertService.getCaseDetails(startEventResponse));
+
+                return caseDetailsList;
+            } else {
+                return searchCcdCaseService.findListOfCasesByCaseRefOrCaseId(caseData, idamTokens);
+            }
         } catch (FeignException.FeignClientException feignException) {
             if (HttpStatus.BAD_REQUEST.value() == feignException.status()) {
                 log.error(logPrefixWithFile + "FeignException with message {} for case with SC {} and ccdID {} ",
