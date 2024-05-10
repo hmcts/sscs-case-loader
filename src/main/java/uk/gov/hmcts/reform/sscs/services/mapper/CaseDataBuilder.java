@@ -155,6 +155,11 @@ class CaseDataBuilder {
         String postcode = appointeeParty.map(Parties::getPostCode)
             .orElse(appellantParty.map(Parties::getPostCode).orElse(null));
 
+        if (StringUtils.isBlank(postcode)) {
+            log.info("CaseLoader - Gaps case data missing postcode, processing venue unchanged for case id {}", caseId);
+            return null;
+        }
+
         return airLookupService.lookupAirVenueNameByPostCode(postcode, benefitType);
 
     }
@@ -189,7 +194,7 @@ class CaseDataBuilder {
 
                     String appealTime = hearing.getAppealTime();
                     String activeInActive = getActiveInActiveVenueInfo(venueDetails);
-                    log.info("Hearing booked for case {} on {} at {} venue {}",
+                    log.info("Hearing data updated for case {} on {} at {} venue {}",
                         appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
                         venueDetails.getVenueId());
                     hearings = HearingDetails.builder()
