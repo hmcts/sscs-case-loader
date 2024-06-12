@@ -151,6 +151,17 @@ Changing to: /incoming
 sftp> dir
 SSCS_Extract_Reference_2017-06-30-09-01-31.xml
 ```
+## Testing event/case updates manually locally
+* do the above steps
+* Create/copy the extract delta xml you need
+* ensure that there is no gaps caseId (Appeal_Case_RefNum), but there is a ccdId (Additional_Ref) that already exsits on your local db
+* ensure that the newest Major_Status element has the type of event you are tring to test (see GapsEvent class)
+* ensure that for event updates the list of Major_Status is different to that already on your ccd case locally
+* Run the CaseLoaderApp in your ide
+* This should pick up the delta file you changed
+* (I found that the last action of moving to the processed folder did not work because of directory permissions, but that may only be an Ubuntu thing)
+
+
 ## Running e2e locally
 
 * Bring up the upstream systems using sscs-docker (https://github.com/hmcts/sscs-docker) project.
