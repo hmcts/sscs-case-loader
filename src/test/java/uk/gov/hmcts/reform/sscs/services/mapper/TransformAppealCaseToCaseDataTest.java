@@ -277,6 +277,16 @@ public class TransformAppealCaseToCaseDataTest {
         assertEquals("Venue1", caseData.getProcessingVenue());
     }
 
+    @Test
+    public void givenACaseWithNoPostcodes_shouldTransformToCaseDataWithoutProcessingVenue()
+        throws Exception {
+        final AppealCase appealCase = getAppealCase("AppealCaseWithNoParties.json");
+
+        final SscsCaseData caseData = transformAppealCaseToCaseData.transform(appealCase);
+
+        assertNull(caseData.getProcessingVenue());
+    }
+
     public static AppealCase getAppealCase(String filename) throws Exception {
         ObjectMapper mapper = Jackson2ObjectMapperBuilder
             .json()
