@@ -75,7 +75,8 @@ class ProcessingVenueMigrationJobTest {
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         root.addAppender(mockedAppender);
         root.setLevel(Level.INFO);
-        underTest = new ProcessingVenueMigrationJob(timerTask, migrationService, venueService, refDataService, regionalProcessingCenterService);
+        underTest = new ProcessingVenueMigrationJob(
+            timerTask, migrationService, venueService, refDataService, regionalProcessingCenterService);
     }
 
     @ParameterizedTest

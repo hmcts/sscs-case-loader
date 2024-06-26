@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,8 +22,6 @@ import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
-
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -54,7 +53,10 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
 
 
     public ProcessingVenueMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask,
-                                       DataMigrationService migrationService, VenueService venueService, RefDataService refDataService, RegionalProcessingCenterService regionalProcessingCenterService) {
+                                       DataMigrationService migrationService,
+                                       VenueService venueService,
+                                       RefDataService refDataService,
+                                       RegionalProcessingCenterService regionalProcessingCenterService) {
         super(caseLoaderTimerTask, migrationService);
         this.venueService = venueService;
         this.refDataService = refDataService;
@@ -84,7 +86,8 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
         CourtVenue courtVenue = refDataService.getCourtVenueRefDataByEpimsId(venueEpimsId);
         RegionalProcessingCenter newRpc = regionalProcessingCenterService.getByPostcode(postCode);
 
-        log.info("Setting processing venue value to ({}) and Case management location to region ({})", venue, courtVenue.getRegionId());
+        log.info("Setting processing venue value to ({}) and Case management location to region ({})",
+            venue, courtVenue.getRegionId());
         caseData.setCaseManagementLocation(CaseManagementLocation.builder()
             .baseLocation(newRpc.getEpimsId())
             .region(courtVenue.getRegionId()).build());
