@@ -34,6 +34,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.service.RefDataService;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
@@ -44,6 +47,15 @@ class ProcessingVenueMigrationJobTest {
     CaseLoaderTimerTask timerTask;
     @Mock
     DataMigrationService migrationService;
+
+    @Mock
+    VenueService venueService;
+
+    @Mock
+    RefDataService refDataService;
+
+    @Mock
+    RegionalProcessingCenterService regionalProcessingCenterService;
 
     @Mock
     private Appender<ILoggingEvent> mockedAppender;
@@ -63,7 +75,7 @@ class ProcessingVenueMigrationJobTest {
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         root.addAppender(mockedAppender);
         root.setLevel(Level.INFO);
-        underTest = new ProcessingVenueMigrationJob(timerTask, migrationService);
+        underTest = new ProcessingVenueMigrationJob(timerTask, migrationService, venueService, refDataService, regionalProcessingCenterService);
     }
 
     @ParameterizedTest

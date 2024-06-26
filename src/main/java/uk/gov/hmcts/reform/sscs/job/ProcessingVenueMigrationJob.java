@@ -3,14 +3,26 @@ package uk.gov.hmcts.reform.sscs.job;
 import static java.time.LocalDateTime.now;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.DORMANT_APPEAL_STATE;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.State.VOID_STATE;
+import static uk.gov.hmcts.reform.sscs.ccd.domain.YesNo.YES;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CaseManagementLocation;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.model.CourtVenue;
+import uk.gov.hmcts.reform.sscs.service.RefDataService;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
+
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -33,9 +45,20 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
     public boolean isVenueRollback;
 
 
+    private final VenueService venueService;
+
+    private final RefDataService refDataService;
+
+    private final RegionalProcessingCenterService regionalProcessingCenterService;
+
+
+
     public ProcessingVenueMigrationJob(CaseLoaderTimerTask caseLoaderTimerTask,
-                                       DataMigrationService migrationService) {
+                                       DataMigrationService migrationService, VenueService venueService, RefDataService refDataService, RegionalProcessingCenterService regionalProcessingCenterService) {
         super(caseLoaderTimerTask, migrationService);
+        this.venueService = venueService;
+        this.refDataService = refDataService;
+        this.regionalProcessingCenterService = regionalProcessingCenterService;
     }
 
     @Override
@@ -56,8 +79,16 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
     }
 
     public void updateCaseData(SscsCaseData caseData, String venue) {
+        String postCode = resolvePostCode(caseData);
+        String venueEpimsId = venueService.getEpimsIdForVenue(venue);
+        CourtVenue courtVenue = refDataService.getCourtVenueRefDataByEpimsId(venueEpimsId);
+        RegionalProcessingCenter newRpc = regionalProcessingCenterService.getByPostcode(postCode);
+
+        log.info("Setting processing venue value to ({}) and Case management location to region ({})", venue, courtVenue.getRegionId());
+        caseData.setCaseManagementLocation(CaseManagementLocation.builder()
+            .baseLocation(newRpc.getEpimsId())
+            .region(courtVenue.getRegionId()).build());
         caseData.setProcessingVenue(venue);
-        log.info("Setting processing venue value to ({})", caseData.getProcessingVenue());
 
     }
 
@@ -74,6 +105,19 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
             );
         }
         return shouldBeSkipped;
+    }
+
+    private static String resolvePostCode(SscsCaseData sscsCaseData) {
+        if (YES.getValue().equalsIgnoreCase(sscsCaseData.getAppeal().getAppellant().getIsAppointee())) {
+            return Optional.ofNullable(sscsCaseData.getAppeal().getAppellant().getAppointee())
+                .map(Appointee::getAddress)
+                .map(Address::getPostcode)
+                .map(String::trim)
+                .filter(StringUtils::isNotEmpty)
+                .orElse(sscsCaseData.getAppeal().getAppellant().getAddress().getPostcode());
+        }
+
+        return sscsCaseData.getAppeal().getAppellant().getAddress().getPostcode();
     }
 
 }
