@@ -175,6 +175,12 @@ class ProcessingVenueMigrationJobTest {
 
     @Test
     void shouldProcessUpdateCase() {
+        when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
+        when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
+            .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
+        when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
+            .thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
+
         SscsCaseData caseData = SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .appellant(Appellant.builder().address(Address.builder().postcode("TS1 1ST")
@@ -182,12 +188,6 @@ class ProcessingVenueMigrationJobTest {
                             .build())
                         .build())
                     .build();
-
-        when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
-        when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
-            .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
-        when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
-            .thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
 
         underTest.updateCaseData(caseData, VENUE);
         assertEquals(caseData.getCaseManagementLocation().getBaseLocation(),EPIMS_ID);
