@@ -21,7 +21,6 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -176,8 +175,7 @@ class ProcessingVenueMigrationJobTest {
 
     @Test
     void shouldProcessUpdateCase() {
-        SscsCaseData caseData =
-                SscsCaseData.builder()
+        SscsCaseData caseData = SscsCaseData.builder()
                     .appeal(Appeal.builder()
                         .appellant(Appellant.builder().address(Address.builder().postcode("TS1 1ST")
                                 .build())
@@ -186,8 +184,10 @@ class ProcessingVenueMigrationJobTest {
                     .build();
 
         when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
-        when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID)).thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
-        when(regionalProcessingCenterService.getByPostcode("TS1 1ST")).thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
+        when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
+            .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
+        when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
+            .thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
 
         underTest.updateCaseData(caseData, VENUE);
         assertEquals(caseData.getCaseManagementLocation().getBaseLocation(),EPIMS_ID);
