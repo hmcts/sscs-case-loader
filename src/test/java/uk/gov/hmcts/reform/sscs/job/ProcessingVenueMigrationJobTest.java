@@ -36,6 +36,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -173,21 +174,14 @@ class ProcessingVenueMigrationJobTest {
         assertTrue(!shouldSkip);
     }
 
-    @Test
-    void shouldProcessUpdateCase() {
+    @ParameterizedTest
+    @MethodSource("getUpdateCaseScenarios")
+    void shouldProcessUpdateCase(SscsCaseData caseData) {
         when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
         when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
             .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
         when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
             .thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
-
-        SscsCaseData caseData = SscsCaseData.builder()
-                    .appeal(Appeal.builder()
-                        .appellant(Appellant.builder().address(Address.builder().postcode("TS1 1ST")
-                                .build())
-                            .build())
-                        .build())
-                    .build();
 
         underTest.updateCaseData(caseData, VENUE);
         assertEquals(caseData.getCaseManagementLocation().getBaseLocation(),EPIMS_ID);
@@ -219,6 +213,31 @@ class ProcessingVenueMigrationJobTest {
         return List.of(
             Arguments.of(true, EXISTING_DATA_COLUMN),
             Arguments.of(false, MAPPED_DATA_COLUMN)
+        );
+    }
+
+    private static List<Object> getUpdateCaseScenarios() {
+        return List.of(
+            SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder().address(Address.builder().postcode("TS1 1ST")
+                            .build())
+                        .build())
+                    .build())
+                .build(),
+
+            SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder()
+                        .isAppointee("YES")
+                        .appointee(Appointee.builder()
+                            .address(Address.builder().postcode("TS1 1ST").build())
+                            .build())
+                        .address(Address.builder().postcode("TS1 1ST")
+                            .build())
+                        .build())
+                    .build())
+                .build()
         );
     }
 }
