@@ -37,6 +37,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CaseManagementLocation;
 import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
@@ -224,6 +225,9 @@ class ProcessingVenueMigrationJobTest {
                             .build())
                         .build())
                     .build())
+                .caseManagementLocation(CaseManagementLocation.builder()
+                    .baseLocation("1111")
+                    .region("Leeds").build())
                 .build(),
 
             SscsCaseData.builder()
@@ -237,6 +241,9 @@ class ProcessingVenueMigrationJobTest {
                             .build())
                         .build())
                     .build())
+                .caseManagementLocation(CaseManagementLocation.builder()
+                    .baseLocation("1111")
+                    .region("Leeds").build())
                 .build()
         );
     }
