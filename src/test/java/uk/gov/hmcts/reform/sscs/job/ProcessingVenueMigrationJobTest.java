@@ -10,6 +10,7 @@ import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.EXISTING_DATA_COLUMN;
 import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.MAPPED_DATA_COLUMN;
 
@@ -20,6 +21,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import java.io.IOException;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +34,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.model.CourtVenue;
 import uk.gov.hmcts.reform.sscs.service.RefDataService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
 import uk.gov.hmcts.reform.sscs.service.VenueService;
@@ -67,6 +74,10 @@ class ProcessingVenueMigrationJobTest {
         + "sXgRBf7dIFDyfZfvfuvXcPrzLjE2ZMDuW11I1aqkpfVbVRqtZWLiS/csU9JmqD55vYQx/8ehwR+k1GIPRiRryEQiF1bQ+pm6DDlnHTTCouO8"
         + "wdgaf538zrDLvgGFCmXQxEXzD8W6mmqhutVooRIRHmMSPXWdI9lrmNWP18ZRv+cDts2cLn0LsIYjPEyMYLY7YfxCINJByMNGU27oac0VF/4A"
         + "YHBVsPBO856WpZr0wjj4u/M7baWmuM+ecZ32DqWMypkC8cfFbS+Z09I2TO4lvHj52dWoqVx8c3AbDIhg==";
+
+    private static final String EPIMS_ID = "123456";
+    private static final String REGION_ID = "1234";
+    private static final String VENUE = "Sheffield";
 
     ProcessingVenueMigrationJob underTest;
 
@@ -161,6 +172,27 @@ class ProcessingVenueMigrationJobTest {
             .build();
         boolean shouldSkip = underTest.shouldBeSkipped(caseDetails, "South Shields");
         assertTrue(!shouldSkip);
+    }
+
+    @Test
+    void shouldProcessUpdateCase() {
+        SscsCaseData caseData =
+                SscsCaseData.builder()
+                    .appeal(Appeal.builder()
+                        .appellant(Appellant.builder().address(Address.builder().postcode("TS1 1ST")
+                                .build())
+                            .build())
+                        .build())
+                    .build();
+
+        when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
+        when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID)).thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
+        when(regionalProcessingCenterService.getByPostcode("TS1 1ST")).thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
+
+        underTest.updateCaseData(caseData, VENUE);
+        assertEquals(caseData.getCaseManagementLocation().getBaseLocation(),EPIMS_ID);
+        assertEquals(caseData.getCaseManagementLocation().getRegion(),REGION_ID);
+        assertEquals(caseData.getProcessingVenue(),VENUE);
     }
 
     private static List<Arguments> getInvalidStates() {
