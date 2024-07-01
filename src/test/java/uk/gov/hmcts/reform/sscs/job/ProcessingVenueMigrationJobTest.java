@@ -182,11 +182,13 @@ class ProcessingVenueMigrationJobTest {
         when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
             .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
         when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
-            .thenReturn(RegionalProcessingCenter.builder().epimsId(EPIMS_ID).build());
+            .thenReturn(RegionalProcessingCenter.builder().name(VENUE).epimsId(EPIMS_ID).build());
 
         underTest.updateCaseData(caseData, VENUE);
         assertEquals(caseData.getCaseManagementLocation().getBaseLocation(),EPIMS_ID);
         assertEquals(caseData.getCaseManagementLocation().getRegion(),REGION_ID);
+        assertEquals(caseData.getRegionalProcessingCenter().getEpimsId(),EPIMS_ID);
+        assertEquals(caseData.getRegion(),VENUE);
         assertEquals(caseData.getProcessingVenue(),VENUE);
     }
 
