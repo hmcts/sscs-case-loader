@@ -88,3 +88,8 @@ features:
   invalid-case-ref:
     error:
       handling: ${INVALID_CASE_REF_ERROR_HANDLING_ENABLED:false}
+
+location_ref:
+  enabled: true
+  api:
+    url: ${RD_LOCATION_REF_API_URL:http://rd-location-ref-api-aat.service.core-compute-aat.internal}
