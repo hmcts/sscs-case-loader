@@ -32,6 +32,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
 @RunWith(JUnitParamsRunner.class)
@@ -40,6 +41,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     public static final String YES = "Yes";
     @Mock
     private ReferenceDataService refDataService;
+    @Mock
+    private VenueService venueService;
     @Mock
     private CaseDataEventBuilder caseDataEventBuilder;
     @Mock
@@ -68,8 +71,8 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
             .minorStatus(Collections.singletonList(
                 super.buildMinorStatusGivenIdAndDate("26", HEARING_POSTPONED_DATE)))
             .build();
-        caseDataBuilder = new CaseDataBuilder(refDataService, caseDataEventBuilder, regionalProcessingCentreService,
-            airLookupService);
+        caseDataBuilder = new CaseDataBuilder(refDataService, venueService, caseDataEventBuilder,
+            regionalProcessingCentreService, airLookupService);
     }
 
     public List<uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Hearing> getHearing() {
@@ -259,15 +262,17 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
     }
 
     @Test
-    public void givenHearingInDeltaWhenBuildingHearingThenHearingIdAndVenueIdIsBuilt() {
+    public void givenHearingInDeltaWhenBuildingHearingThenHearingIdAndVenueIdAndEpimsIdIsBuilt() {
         when(refDataService.getVenueDetails("venue")).thenReturn(VenueDetails.builder()
             .venName("name")
             .build());
+        when(venueService.getEpimsIdForVenueId("venue")).thenReturn("epims");
 
         List<Hearing> hearingList = caseDataBuilder.buildHearings(appeal);
 
         assertEquals("id", hearingList.get(0).getValue().getHearingId());
         assertEquals("venue", hearingList.get(0).getValue().getVenueId());
+        assertEquals("epims", hearingList.get(0).getValue().getEpimsId());
     }
 
     @Test

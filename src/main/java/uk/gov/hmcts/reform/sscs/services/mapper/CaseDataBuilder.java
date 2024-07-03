@@ -38,6 +38,7 @@ import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.Parties;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.PostponementRequests;
 import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 import uk.gov.hmcts.reform.sscs.util.UkMobile;
@@ -52,17 +53,20 @@ class CaseDataBuilder {
     private static final String POSTPONEMENT_GRANTED = "Y";
 
     private final ReferenceDataService referenceDataService;
+    private final VenueService venueService;
     private final CaseDataEventBuilder caseDataEventBuilder;
     private final RegionalProcessingCenterService regionalProcessingCenterService;
     private final AirLookupService airLookupService;
 
     @Autowired
     CaseDataBuilder(ReferenceDataService referenceDataService,
+                    VenueService venueService,
                     CaseDataEventBuilder caseDataEventBuilder,
                     RegionalProcessingCenterService regionalProcessingCenterService,
                     AirLookupService airLookupService
     ) {
         this.referenceDataService = referenceDataService;
+        this.venueService = venueService;
         this.caseDataEventBuilder = caseDataEventBuilder;
         this.regionalProcessingCenterService = regionalProcessingCenterService;
         this.airLookupService = airLookupService;
@@ -197,6 +201,7 @@ class CaseDataBuilder {
                     log.info("Hearing data updated for case {} on {} at {} venue {}",
                         appealCase.getAdditionalRef(), hearing.getSessionDate(), activeInActive,
                         venueDetails.getVenueId());
+                    String venueEpimsId = venueService.getEpimsIdForVenueId(hearing.getVenueId());
                     hearings = HearingDetails.builder()
                         .venue(venue)
                         .hearingDate(hearing.getSessionDate().substring(0, 10))
@@ -204,6 +209,7 @@ class CaseDataBuilder {
                         .adjourned(isAdjourned(appealCase.getMajorStatus(), hearing) ? YES : NO)
                         .hearingId(hearing.getHearingId())
                         .venueId(hearing.getVenueId())
+                        .epimsId(venueEpimsId)
                         .build();
 
                     hearingsList.add(uk.gov.hmcts.reform.sscs.ccd.domain.Hearing.builder().value(hearings).build());

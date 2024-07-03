@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
 import uk.gov.hmcts.reform.sscs.models.deserialize.gaps2.AppealCase;
 import uk.gov.hmcts.reform.sscs.service.AirLookupService;
 import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.date.DateHelper;
 import uk.gov.hmcts.reform.sscs.services.refdata.ReferenceDataService;
 
@@ -35,6 +36,8 @@ public class TransformAppealCaseToCaseDataTest {
 
     @Mock
     private ReferenceDataService referenceDataService;
+    @Mock
+    private VenueService venueService;
 
     @Mock
     private AirLookupService airLookupService;
@@ -54,7 +57,8 @@ public class TransformAppealCaseToCaseDataTest {
     @Before
     public void setUp() {
         final CaseDataBuilder caseDataBuilder =
-            new CaseDataBuilder(referenceDataService, caseDataEventBuilder, regionalProcessingCenterService,
+            new CaseDataBuilder(referenceDataService, venueService, caseDataEventBuilder,
+                regionalProcessingCenterService,
                 airLookupService);
 
         transformAppealCaseToCaseData = new TransformAppealCaseToCaseData(caseDataBuilder);
