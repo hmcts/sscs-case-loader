@@ -50,6 +50,7 @@ job:
     IDAM_API_JWK_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net/jwks
     IDAM_S2S_AUTH: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     CORE_CASE_DATA_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    RD_LOCATION_REF_API_URL: "http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     IGNORE_CASES_BEFORE_DATE: 1017-07-01
     LOG_LEVEL_SPRING_WEB: INFO
     LOG_LEVEL_SSCS: INFO

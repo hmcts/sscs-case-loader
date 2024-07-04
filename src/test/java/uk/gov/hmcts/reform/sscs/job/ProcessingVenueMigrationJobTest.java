@@ -10,6 +10,7 @@ import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.EXISTING_DATA_COLUMN;
 import static uk.gov.hmcts.reform.sscs.job.ProcessingVenueMigrationJob.MAPPED_DATA_COLUMN;
 
@@ -32,8 +33,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Address;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appeal;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appellant;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Appointee;
+import uk.gov.hmcts.reform.sscs.ccd.domain.CaseManagementLocation;
+import uk.gov.hmcts.reform.sscs.ccd.domain.RegionalProcessingCenter;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
+import uk.gov.hmcts.reform.sscs.model.CourtVenue;
+import uk.gov.hmcts.reform.sscs.service.RefDataService;
+import uk.gov.hmcts.reform.sscs.service.RegionalProcessingCenterService;
+import uk.gov.hmcts.reform.sscs.service.VenueService;
 import uk.gov.hmcts.reform.sscs.services.DataMigrationService;
 import uk.gov.hmcts.reform.sscs.util.CaseLoaderTimerTask;
 
@@ -46,6 +57,15 @@ class ProcessingVenueMigrationJobTest {
     DataMigrationService migrationService;
 
     @Mock
+    VenueService venueService;
+
+    @Mock
+    RefDataService refDataService;
+
+    @Mock
+    RegionalProcessingCenterService regionalProcessingCenterService;
+
+    @Mock
     private Appender<ILoggingEvent> mockedAppender;
 
     @Captor
@@ -56,6 +76,10 @@ class ProcessingVenueMigrationJobTest {
         + "wdgaf538zrDLvgGFCmXQxEXzD8W6mmqhutVooRIRHmMSPXWdI9lrmNWP18ZRv+cDts2cLn0LsIYjPEyMYLY7YfxCINJByMNGU27oac0VF/4A"
         + "YHBVsPBO856WpZr0wjj4u/M7baWmuM+ecZ32DqWMypkC8cfFbS+Z09I2TO4lvHj52dWoqVx8c3AbDIhg==";
 
+    private static final String EPIMS_ID = "123456";
+    private static final String REGION_ID = "1234";
+    private static final String VENUE = "Sheffield";
+
     ProcessingVenueMigrationJob underTest;
 
     @BeforeEach
@@ -63,7 +87,8 @@ class ProcessingVenueMigrationJobTest {
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         root.addAppender(mockedAppender);
         root.setLevel(Level.INFO);
-        underTest = new ProcessingVenueMigrationJob(timerTask, migrationService);
+        underTest = new ProcessingVenueMigrationJob(
+            timerTask, migrationService, venueService, refDataService, regionalProcessingCenterService);
     }
 
     @ParameterizedTest
@@ -150,6 +175,23 @@ class ProcessingVenueMigrationJobTest {
         assertTrue(!shouldSkip);
     }
 
+    @ParameterizedTest
+    @MethodSource("getUpdateCaseScenarios")
+    void shouldProcessUpdateCase(SscsCaseData caseData) {
+        when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
+        when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
+            .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
+        when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
+            .thenReturn(RegionalProcessingCenter.builder().name(VENUE).epimsId(EPIMS_ID).build());
+
+        underTest.updateCaseData(caseData, VENUE);
+        assertEquals(caseData.getCaseManagementLocation().getBaseLocation(),EPIMS_ID);
+        assertEquals(caseData.getCaseManagementLocation().getRegion(),REGION_ID);
+        assertEquals(caseData.getRegionalProcessingCenter().getEpimsId(),EPIMS_ID);
+        assertEquals(caseData.getRegion(),VENUE);
+        assertEquals(caseData.getProcessingVenue(),VENUE);
+    }
+
     private static List<Arguments> getInvalidStates() {
         return List.of(
             Arguments.of("voidState"),
@@ -174,6 +216,37 @@ class ProcessingVenueMigrationJobTest {
         return List.of(
             Arguments.of(true, EXISTING_DATA_COLUMN),
             Arguments.of(false, MAPPED_DATA_COLUMN)
+        );
+    }
+
+    private static List<Object> getUpdateCaseScenarios() {
+        return List.of(
+            SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder().address(Address.builder().postcode("TS1 1ST")
+                            .build())
+                        .build())
+                    .build())
+                .caseManagementLocation(CaseManagementLocation.builder()
+                    .baseLocation("1111")
+                    .region("Leeds").build())
+                .build(),
+
+            SscsCaseData.builder()
+                .appeal(Appeal.builder()
+                    .appellant(Appellant.builder()
+                        .isAppointee("YES")
+                        .appointee(Appointee.builder()
+                            .address(Address.builder().postcode("TS1 1ST").build())
+                            .build())
+                        .address(Address.builder().postcode("TS1 1ST")
+                            .build())
+                        .build())
+                    .build())
+                .caseManagementLocation(CaseManagementLocation.builder()
+                    .baseLocation("1111")
+                    .region("Leeds").build())
+                .build()
         );
     }
 }
