@@ -8,7 +8,7 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.43'
   id 'com.github.ben-manes.versions' version '0.46.0'
   id 'org.sonarqube' version '4.3.0.3225'
-  id 'org.owasp.dependencycheck' version '9.0.6'
+  id 'org.owasp.dependencycheck' version '10.0.3'
   id "com.gorylenko.gradle-git-properties" version "2.4.1"
   id "io.freefair.lombok" version "8.1.0"
 }
@@ -22,11 +22,11 @@ java {
   }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror" << "-Xlint:deprecation"
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
   useJUnitPlatform()
 
   testLogging {
@@ -39,7 +39,13 @@ test {
   useJUnitPlatform()
 }
 
-mainClassName = 'uk.gov.hmcts.reform.sscs.CaseLoaderApp'
+application {
+  mainClass.set('uk.gov.hmcts.reform.sscs.CaseLoaderApp')
+
+  // this is required to force Java running on the Azure Windows Server OS into using
+  // UTF-8 as the default character set instead of windows-1252 which causes issues
+  applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
+}
 
 sourceSets {
   integrationTest {
@@ -63,12 +69,12 @@ sourceSets {
   }
 }
 
-task integration(type: Test) {
+tasks.register('integration', Test) {
   setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
   setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
-task functionalPreDeploy(type: Test) {
+tasks.register('functionalPreDeploy', Test) {
   group = 'Functional Tests'
   description = 'Place delta files on the sftp server ready to be consumed when AKS job is created'
   setTestClassesDirs(sourceSets.e2e.output.classesDirs)
@@ -77,7 +83,7 @@ task functionalPreDeploy(type: Test) {
   exclude "uk/gov/hmcts/reform/sscs/functional/postdeploy/**"
 }
 
-task functionalPostDeploy(type: Test) {
+tasks.register('functionalPostDeploy', Test) {
   group = 'Functional Tests'
   description = 'Verifies that files from functionPreDeploy step were processed following job creation in AKS'
   setTestClassesDirs(sourceSets.e2e.output.classesDirs)
@@ -86,8 +92,8 @@ task functionalPostDeploy(type: Test) {
   exclude "uk/gov/hmcts/reform/sscs/functional/predeploy/**"
 }
 
-task fortifyScan(type: JavaExec)  {
-  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+tasks.register('fortifyScan', JavaExec) {
+  mainClass = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
   classpath += sourceSets.test.runtimeClasspath
   jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
@@ -101,7 +107,7 @@ pmd {
     sourceSets.integrationTest,
     sourceSets.e2e
   ]
-  reportsDir = file("$project.buildDir/reports/pmd")
+  reportsDir = layout.buildDirectory.dir("reports/pmd").get().asFile
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
@@ -119,7 +125,7 @@ jacocoTestReport {
   reports {
     xml.getRequired().set(true)
     csv.getRequired().set(false)
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.outputLocation = layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
@@ -170,9 +176,12 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-tasks.withType(Copy).all { duplicatesStrategy 'warn' }
+tasks.withType(Copy).configureEach { duplicatesStrategy DuplicatesStrategy.WARN }
 
-project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
+project.tasks.named('sonarqube') {
+  dependsOn test, integration, jacocoTestReport
+}
+
 check.dependsOn integration
 checkstyleMain.shouldRunAfter(compileJava)
 test.shouldRunAfter(checkstyleTest)
@@ -183,7 +192,7 @@ sonarqube {
   properties {
     property "sonar.projectName", "SSCS - Case loader"
     property "sonar.projectKey", "SSCSCL"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    property "sonar.coverage.jacoco.xmlReportPaths", layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml")
     property "sonar.exclusions", "**/sscs/models/**, **/sscs/exceptions/**, **/sscs/CaseLoaderApp.java, " +
       "**/sscs/services/xml/XmlValidator.java, **/sscs/config/CaseLoaderJobConfig.java, " +
       "**/sscs/util/MigrationDataEncoderApp.java, **/sscs/services/ccd/CcdCasesSender.java, " +
@@ -238,7 +247,6 @@ dependencies {
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.4'
   implementation group: 'com.github.hmcts', name: 'java-logging', version: '6.0.1'
   implementation  group: 'com.github.hmcts', name: 'sscs-common', version: '5.11.0'
-
   implementation 'com.github.mwiede:jsch:0.2.11'
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
@@ -285,10 +293,6 @@ bootJar {
     attributes('Implementation-Version': project.version.toString())
   }
 }
-
-// this is required to force Java running on the Azure Windows Server OS into using
-// UTF-8 as the default character set instead of windows-1252 which causes issues
-applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 
 run {
   def debug = System.getProperty("debug")
