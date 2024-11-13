@@ -56,6 +56,7 @@ GradleBuilder builder = new GradleBuilder(this, product)
 def branchesToSync = ['demo', 'ithc', 'perftest']
 
 withPipeline(type, product, component) {
+  env.TEST_URL = params.URL_TO_TEST
 
   loadVaultSecrets(secrets)
   env.Rules = params.SecurityRules
