@@ -227,8 +227,6 @@ def versions = [
 
 dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: springBoot.class.package.implementationVersion
-  testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBoot.class.package.implementationVersion
-  testImplementation group: 'org.springframework.batch', name: 'spring-batch-test'
   implementation group: 'com.h2database', name: 'h2', version: '2.2.222'
 
   implementation  group: 'org.unix4j', name: 'unix4j-command', version: '0.6'
@@ -273,15 +271,16 @@ dependencies {
   testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
   }
-  implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation group: 'org.springframework.batch', name: 'spring-batch-test'
 
   testImplementation group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.10.0'
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.0'
   testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.10.0'
+
+  integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
   runtimeOnly group: 'org.springframework.boot', name: 'spring-boot-properties-migrator'
 }
