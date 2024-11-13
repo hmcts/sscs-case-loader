@@ -58,7 +58,8 @@ def branchesToSync = ['demo', 'ithc', 'perftest']
 withPipeline(type, product, component) {
 
   loadVaultSecrets(secrets)
-  enableFortifyScan()
+  env.Rules = params.SecurityRules
+  enableSecurityScan()
 
   enableSlackNotifications('#sscs-tech')
   if ("demo"  != "${env.BRANCH_NAME}") {
