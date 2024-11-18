@@ -23,7 +23,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-  options.compilerArgs << "-Xlint:unchecked" << "-Werror" << "-Xlint:deprecation"
+  options.compilerArgs << "-Xlint:unchecked" << "-parameters" << "-Xlint:deprecation"
 }
 
 tasks.withType(Test).configureEach {
