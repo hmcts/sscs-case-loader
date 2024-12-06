@@ -145,7 +145,7 @@ class CaseDataBuilder {
         return hearings.stream()
             .reduce(getLast())
             .map(hearing -> regionalProcessingCenterService.getByVenueId(hearing.getVenueId()))
-            .orElse(regionalProcessingCenterService.getByPostcode(appellantParty.getPostCode()));
+            .orElse(regionalProcessingCenterService.getByPostcode(appellantParty.getPostCode(), false));
     }
 
     String findProcessingVenue(String caseId, BenefitType benefitType, final Optional<Parties> appellantParty,

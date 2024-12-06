@@ -82,7 +82,7 @@ public class ProcessingVenueMigrationJob extends DataMigrationJob {
 
     public void updateCaseData(SscsCaseData caseData, String venue) {
         String postCode = resolvePostCode(caseData);
-        RegionalProcessingCenter newRpc = regionalProcessingCenterService.getByPostcode(postCode);
+        RegionalProcessingCenter newRpc = regionalProcessingCenterService.getByPostcode(postCode, false);
         String venueEpimsId = venueService.getEpimsIdForVenue(venue);
         log.info("Epims id for case {}: {}", caseData.getCaseReference(), venueEpimsId);
         CourtVenue courtVenue = refDataService.getCourtVenueRefDataByEpimsId(venueEpimsId);

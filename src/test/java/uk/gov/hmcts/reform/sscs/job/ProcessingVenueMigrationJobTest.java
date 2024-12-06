@@ -181,7 +181,7 @@ class ProcessingVenueMigrationJobTest {
         when(venueService.getEpimsIdForVenue(VENUE)).thenReturn(EPIMS_ID);
         when(refDataService.getCourtVenueRefDataByEpimsId(EPIMS_ID))
             .thenReturn(CourtVenue.builder().regionId(REGION_ID).build());
-        when(regionalProcessingCenterService.getByPostcode("TS1 1ST"))
+        when(regionalProcessingCenterService.getByPostcode("TS1 1ST", false))
             .thenReturn(RegionalProcessingCenter.builder().name(VENUE).epimsId(EPIMS_ID).build());
 
         underTest.updateCaseData(caseData, VENUE);
