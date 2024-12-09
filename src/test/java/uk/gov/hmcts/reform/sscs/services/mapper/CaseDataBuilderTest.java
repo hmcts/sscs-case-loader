@@ -276,7 +276,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
         RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
             .name("RPC form postcode")
             .build();
-        when(regionalProcessingCentreService.getByPostcode(applicantParty.getPostCode()))
+        when(regionalProcessingCentreService.getByPostcode(applicantParty.getPostCode(), false))
             .thenReturn(expectedRegionalProcessingCentre);
         RegionalProcessingCenter regionalProcessingCentre =
             caseDataBuilder.buildRegionalProcessingCentre(appeal, applicantParty);
@@ -290,7 +290,7 @@ public class CaseDataBuilderTest extends CaseDataBuilderBase {
         RegionalProcessingCenter expectedRegionalProcessingCentre = RegionalProcessingCenter.builder()
             .name("RPC form postcode")
             .build();
-        when(regionalProcessingCentreService.getByPostcode(applicantParty.getPostCode()))
+        when(regionalProcessingCentreService.getByPostcode(applicantParty.getPostCode(), false))
             .thenReturn(expectedRegionalProcessingCentre);
         RegionalProcessingCenter regionalProcessingCentre =
             caseDataBuilder.buildRegionalProcessingCentre(appeal, applicantParty);
