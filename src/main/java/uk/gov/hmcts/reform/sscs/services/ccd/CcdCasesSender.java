@@ -14,6 +14,7 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
 import uk.gov.hmcts.reform.sscs.ccd.domain.Hearing;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseDetails;
 import uk.gov.hmcts.reform.sscs.ccd.service.SscsCcdConvertService;
 import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService;
+import uk.gov.hmcts.reform.sscs.ccd.service.UpdateCcdCaseService.ConditionalUpdateResult;
 import uk.gov.hmcts.reform.sscs.idam.IdamTokens;
 import uk.gov.hmcts.reform.sscs.job.DataMigrationJob;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
@@ -39,6 +41,9 @@ public class CcdCasesSender {
     private final CcdClient ccdClient;
     private final SscsCcdConvertService sscsCcdConvertService;
     private String logPrefix = "";
+
+    @Value("${features.caseloader-case-updateV2.enabled}")
+    private boolean updateCaseV2Enabled;
 
     @Autowired
     CcdCasesSender(UpdateCcdCaseService updateCcdCaseService, UpdateCcdCaseData updateCcdCaseData, CcdClient ccdClient,
@@ -72,16 +77,29 @@ public class CcdCasesSender {
 
     public boolean updateCaseMigration(Long caseId, IdamTokens idamTokens, String fieldValue, DataMigrationJob job) {
         try {
-            var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
-            var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
-
-            if (job.shouldBeSkipped(sscsCcdConvertService.getCaseDetails(startEventResponse), fieldValue)) {
-                return false;
+            log.info("Updating case data for case ({})",  caseId);
+            if (updateCaseV2Enabled) {
+                return updateCcdCaseService.updateCaseV2Conditional(caseId, MIGRATE_CASE, idamTokens,
+                    sscsCaseDetails -> {
+                        boolean shouldBeSkipped = job.shouldBeSkipped(sscsCaseDetails, fieldValue);
+                        if (shouldBeSkipped) {
+                            return new ConditionalUpdateResult("", "", false);
+                        }
+                        job.updateCaseData(sscsCaseDetails.getData(), fieldValue);
+                        return new ConditionalUpdateResult("", "", true);
+                    }).isPresent();
             } else {
-                log.info("Updating case data for case ({})",  caseId);
-                job.updateCaseData(caseData, fieldValue);
-                updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
-                    startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+                var startEventResponse = ccdClient.startEvent(idamTokens, caseId, MIGRATE_CASE);
+                var caseData = sscsCcdConvertService.getCaseData(startEventResponse.getCaseDetails().getData());
+
+                if (job.shouldBeSkipped(sscsCcdConvertService.getCaseDetails(startEventResponse), fieldValue)) {
+                    return false;
+                } else {
+                    job.updateCaseData(caseData, fieldValue);
+                    updateCcdCaseService.updateCase(caseData, caseId, startEventResponse.getEventId(),
+                        startEventResponse.getToken(), MIGRATE_CASE, "", "", idamTokens);
+                }
+
                 return true;
             }
 
@@ -121,22 +139,33 @@ public class CcdCasesSender {
             && existingCcdCaseData.getCreatedInGapsFrom().equals(READY_TO_LIST.getCcdType());
     }
 
-    private void updateCase(SscsCaseData caseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
+    private void updateCase(SscsCaseData gapsCaseData, SscsCaseData existingCcdCaseData, Long existingCaseId,
                             IdamTokens idamTokens, String eventType) {
 
-        existingCcdCaseData.setCaseReference(caseData.getCaseReference());
-
-        try {
-            updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
-                SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
-        } catch (FeignException e) {
-            log.error(
-                "{}. CCD response: {}",
-                String.format("Could not update event %s for case %d", eventType, existingCaseId),
-                // exception.contentUTF8() uses response body internally
-                e.responseBody().isPresent() ? e.contentUTF8() : e.getMessage()
+        if (updateCaseV2Enabled) {
+            updateCcdCaseService.updateCaseV2(existingCaseId, eventType, SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS,
+                idamTokens,
+                sscsCaseDetails -> {
+                    SscsCaseData caseDataToBeUpdated = sscsCaseDetails.getData();
+                    addMissingExistingHearings(gapsCaseData, caseDataToBeUpdated);
+                    updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(gapsCaseData, caseDataToBeUpdated);
+                }
             );
-            throw e;
+        } else {
+            existingCcdCaseData.setCaseReference(gapsCaseData.getCaseReference());
+
+            try {
+                updateCcdCaseService.updateCase(existingCcdCaseData, existingCaseId, eventType,
+                    SSCS_APPEAL_UPDATED_EVENT, UPDATED_SSCS, idamTokens);
+            } catch (FeignException e) {
+                log.error(
+                    "{}. CCD response: {}",
+                    String.format("Could not update event %s for case %d", eventType, existingCaseId),
+                    // exception.contentUTF8() uses response body internally
+                    e.responseBody().isPresent() ? e.contentUTF8() : e.getMessage()
+                );
+                throw e;
+            }
         }
     }
 
