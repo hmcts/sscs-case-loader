@@ -135,7 +135,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenACaseUpdate_shouldOnlyOverwriteFieldsThatExistInGapsDataV2() throws Exception {
+    void givenACaseUpdate_shouldOnlyOverwriteFieldsThatExistInGapsDataV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
         SscsCaseData caseData = buildTestCaseDataWithAppellantAndBenefitType();
 
@@ -194,7 +194,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldUpdateLanguageV2() {
+    void shouldUpdateLanguageV2() {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
         var caseData = SscsCaseData.builder()
             .appeal(Appeal.builder()
@@ -258,7 +258,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedV2() throws Exception {
+    void shouldOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
@@ -307,7 +307,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldNotOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedAndNewEventV2()
+    void shouldNotOverrideEventToAppealReceivedGivenThereIsACaseReferenceHasBeenAddedAndNewEventV2()
         throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
@@ -446,7 +446,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenNonDigitalCaseAndGapsEvent_thenProcessGapsEventr_response_received_dwp_respondV2()
+    void givenNonDigitalCaseAndGapsEvent_thenProcessGapsEventr_response_received_dwp_respondV2()
         throws IOException {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
@@ -493,7 +493,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void givenNonDigitalCaseAndGapsEvent_thenProcessGapsEvent_appeal_received_appeal_receivedV2()
+    void givenNonDigitalCaseAndGapsEvent_thenProcessGapsEvent_appeal_received_appeal_receivedV2()
         throws IOException {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
@@ -552,7 +552,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldUpdateCcdGivenThereIsADataChangeV2() {
+    void shouldUpdateCcdGivenThereIsADataChangeV2() {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = SscsCaseData.builder()
@@ -611,7 +611,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldNotUpdateCcdGivenThereIsNoEventChangeOrDataChangeV2() throws Exception {
+    void shouldNotUpdateCcdGivenThereIsNoEventChangeOrDataChangeV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = buildTestCaseDataWithAppellantAndBenefitType();
@@ -650,7 +650,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldNotUpdateCcdGivenNewEventIsNullV2() throws Exception {
+    void shouldNotUpdateCcdGivenNewEventIsNullV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
         SscsCaseData caseData = SscsCaseData.builder().build();
 
@@ -688,7 +688,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceivedV2() throws Exception {
+    void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceivedV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = buildTestCaseDataWithEventAndEvidence();
@@ -741,7 +741,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceivedAndExisingEvidenceIsNullV2() throws Exception {
+    void shouldNotUpdateCcdGivenNoNewFurtherEvidenceReceivedAndExisingEvidenceIsNullV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = SscsCaseData.builder()
@@ -827,7 +827,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldNotUpdateEvidenceIfEvidenceIsUnchangedV2() throws Exception {
+    void shouldNotUpdateEvidenceIfEvidenceIsUnchangedV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         final SscsCaseData caseData = SscsCaseData.builder()
@@ -895,7 +895,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldAddExistingHearingDetailsToTheCaseIfItsMissingInComingGaps2XmlV2() throws Exception {
+    void shouldAddExistingHearingDetailsToTheCaseIfItsMissingInComingGaps2XmlV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
@@ -960,7 +960,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldAddNewHearingDetailsFromGap2XmlToTheCcdV2() throws Exception {
+    void shouldAddNewHearingDetailsFromGap2XmlToTheCcdV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
@@ -1018,7 +1018,7 @@ public class CcdCasesSenderTest {
     }
 
     @Test
-    public void shouldAddExistingNewHearingDetailsFromCcdToCaseWhenNoHearingDetailsinGaps2XmlV2() throws Exception {
+    void shouldAddExistingNewHearingDetailsFromCcdToCaseWhenNoHearingDetailsinGaps2XmlV2() throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
