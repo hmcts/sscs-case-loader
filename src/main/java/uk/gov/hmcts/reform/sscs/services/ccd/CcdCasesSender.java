@@ -147,6 +147,7 @@ public class CcdCasesSender {
                 idamTokens,
                 sscsCaseDetails -> {
                     SscsCaseData caseDataToBeUpdated = sscsCaseDetails.getData();
+                    caseDataToBeUpdated.setCaseReference(gapsCaseData.getCaseReference());
                     addMissingExistingHearings(gapsCaseData, caseDataToBeUpdated);
                     updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(gapsCaseData, caseDataToBeUpdated);
                 }

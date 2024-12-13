@@ -150,8 +150,12 @@ public class CcdCasesSenderTest {
             eq(idamTokens),
             caseDetailsCaptor.capture());
 
-        SscsCaseDetails caseDetails = SscsCaseDetails.builder().data(caseData).build();
-        caseDetailsCaptor.getValue().accept(caseDetails);
+        caseDetailsCaptor.getValue().accept(existingCaseDetails);
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                existingCaseDetails.getData());
 
         Appellant appellant = caseData.getAppeal().getAppellant();
         BenefitType benefitType = caseData.getAppeal().getBenefitType();
@@ -261,8 +265,8 @@ public class CcdCasesSenderTest {
         sscsCaseDetails.getData().setCaseReference(null);
         given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
             .willReturn(UpdateType.DATA_UPDATE);
-
-        ccdCasesSender.sendUpdateCcdCases(buildCaseData(RESPONSE_RECEIVED),
+        SscsCaseData sscsCaseData = buildCaseData(RESPONSE_RECEIVED);
+        ccdCasesSender.sendUpdateCcdCases(sscsCaseData,
             sscsCaseDetails, idamTokens);
 
         verify(updateCcdCaseService).updateCaseV2(
@@ -274,6 +278,12 @@ public class CcdCasesSenderTest {
             caseDetailsCaptor.capture());
 
         caseDetailsCaptor.getValue().accept(sscsCaseDetails);
+        assertThat(sscsCaseDetails.getData().getCaseReference(), equalTo(sscsCaseData.getCaseReference()));
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                sscsCaseData,
+                sscsCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(APPEAL_RECEIVED.getType()),
@@ -305,8 +315,9 @@ public class CcdCasesSenderTest {
         sscsCaseDetails.getData().setCaseReference(null);
         given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
             .willReturn(UpdateType.EVENT_UPDATE);
+        SscsCaseData sscsCaseData = buildCaseData(RESPONSE_RECEIVED);
 
-        ccdCasesSender.sendUpdateCcdCases(buildCaseData(RESPONSE_RECEIVED),
+        ccdCasesSender.sendUpdateCcdCases(sscsCaseData,
             sscsCaseDetails, idamTokens);
 
         verify(updateCcdCaseService).updateCaseV2(
@@ -318,6 +329,12 @@ public class CcdCasesSenderTest {
             caseDetailsCaptor.capture());
 
         caseDetailsCaptor.getValue().accept(sscsCaseDetails);
+        assertThat(sscsCaseDetails.getData().getCaseReference(), equalTo(sscsCaseData.getCaseReference()));
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                sscsCaseData,
+                sscsCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(RESPONSE_RECEIVED.getType()),
@@ -344,7 +361,8 @@ public class CcdCasesSenderTest {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
-        ccdCasesSender.sendUpdateCcdCases(buildCaseData(gapsEvent),
+        SscsCaseData sscsCaseData = buildCaseData(gapsEvent);
+        ccdCasesSender.sendUpdateCcdCases(sscsCaseData,
             sscsCaseDetails, idamTokens);
 
         verify(updateCcdCaseService).updateCaseV2(
@@ -356,6 +374,11 @@ public class CcdCasesSenderTest {
             caseDetailsCaptor.capture());
 
         caseDetailsCaptor.getValue().accept(sscsCaseDetails);
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                sscsCaseData,
+                sscsCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(gapsEvent.getType()),
@@ -396,6 +419,11 @@ public class CcdCasesSenderTest {
             caseDetailsCaptor.capture());
 
         caseDetailsCaptor.getValue().accept(sscsCaseDetails);
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                sscsCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(gapsEvent.getType()),
@@ -439,6 +467,11 @@ public class CcdCasesSenderTest {
 
         caseDetailsCaptor.getValue().accept(sscsCaseDetails);
 
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                sscsCaseDetails.getData());
+
         verify(updateCcdCaseService, never())
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(eventType.getCcdType()),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
@@ -480,6 +513,11 @@ public class CcdCasesSenderTest {
             caseDetailsCaptor.capture());
 
         caseDetailsCaptor.getValue().accept(sscsCaseDetails);
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                sscsCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(sscsCaseDetails.getData()), anyLong(), eq(eventType.getCcdType()),
@@ -547,6 +585,11 @@ public class CcdCasesSenderTest {
 
         caseDetailsCaptor.getValue().accept(existingCcdCase);
 
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                existingCcdCase.getData());
+
         verify(updateCcdCaseService, never())
             .updateCase(any(SscsCaseData.class), anyLong(), eq("caseUpdated"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
@@ -575,17 +618,20 @@ public class CcdCasesSenderTest {
 
         given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
             .willReturn(UpdateType.NO_UPDATE);
-
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON);
         ccdCasesSender.sendUpdateCcdCases(caseData,
-            getSscsCaseDetails(CASE_DETAILS_WITH_APPEAL_RECEIVED_JSON), idamTokens);
+            sscsCaseDetails, idamTokens);
 
-        verify(updateCcdCaseService, times(0)).updateCaseV2(
+        verify(updateCcdCaseService, never()).updateCaseV2(
             anyLong(),
             any(),
             eq(SSCS_APPEAL_UPDATED_EVENT),
             eq(UPDATED_SSCS),
             eq(idamTokens),
             caseDetailsCaptor.capture());
+
+        verify(updateCcdCaseData, times(1))
+            .updateCcdRecordForChangesAndReturnUpdateType(caseData, sscsCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(caseData), anyLong(), any(),
@@ -608,15 +654,19 @@ public class CcdCasesSenderTest {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
         SscsCaseData caseData = SscsCaseData.builder().build();
 
-        ccdCasesSender.sendUpdateCcdCases(caseData, getSscsCaseDetails(CASE_DETAILS_JSON), idamTokens);
+        SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
+        ccdCasesSender.sendUpdateCcdCases(caseData, sscsCaseDetails, idamTokens);
 
-        verify(updateCcdCaseService, times(0)).updateCaseV2(
+        verify(updateCcdCaseService, never()).updateCaseV2(
             anyLong(),
             any(),
             eq(SSCS_APPEAL_UPDATED_EVENT),
             eq(UPDATED_SSCS),
             eq(idamTokens),
             caseDetailsCaptor.capture());
+
+        verify(updateCcdCaseData, never())
+            .updateCcdRecordForChangesAndReturnUpdateType(any(), any());
 
         verify(updateCcdCaseService, never())
             .updateCase(eq(caseData), anyLong(), any(),
@@ -648,13 +698,16 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
-        verify(updateCcdCaseService, times(0)).updateCaseV2(
+        verify(updateCcdCaseService, never()).updateCaseV2(
             anyLong(),
             eq("evidenceReceived"),
             eq(SSCS_APPEAL_UPDATED_EVENT),
             eq(UPDATED_SSCS),
             eq(idamTokens),
             caseDetailsCaptor.capture());
+
+        verify(updateCcdCaseData, times(1))
+            .updateCcdRecordForChangesAndReturnUpdateType(caseData, existingCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
             .updateCase(any(SscsCaseData.class), anyLong(), eq("evidenceReceived"),
@@ -710,13 +763,16 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
-        verify(updateCcdCaseService, times(0)).updateCaseV2(
+        verify(updateCcdCaseService, never()).updateCaseV2(
             anyLong(),
             eq("evidenceReceived"),
             eq(SSCS_APPEAL_UPDATED_EVENT),
             eq(UPDATED_SSCS),
             eq(idamTokens),
             caseDetailsCaptor.capture());
+
+        verify(updateCcdCaseData, times(1))
+            .updateCcdRecordForChangesAndReturnUpdateType(caseData, existingCaseDetails.getData());
 
         verify(updateCcdCaseService, never())
                 .updateCase(any(SscsCaseData.class), anyLong(), eq("evidenceReceived"),
@@ -801,6 +857,9 @@ public class CcdCasesSenderTest {
 
         caseDetailsCaptor.getValue().accept(existingCaseDetails);
 
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(caseData, existingCaseDetails.getData());
+
         verify(updateCcdCaseService, never())
             .updateCase(any(SscsCaseData.class), anyLong(), eq("appealReceived"),
                 eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
@@ -858,10 +917,16 @@ public class CcdCasesSenderTest {
 
         caseDetailsCaptor.getValue().accept(existingCaseDetails);
 
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                existingCaseDetails.getData());
+
         verify(updateCcdCaseService, never()).updateCase(any(),
             eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
             eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
 
+        assertThat(existingCaseDetails.getData().getCaseReference(), equalTo(caseData.getCaseReference()));
         assertThat(existingCaseDetails.getData().getHearings().size(), equalTo(3));
 
         HearingDetails hearingDetails = existingCaseDetails.getData().getHearings().get(0).getValue();
@@ -915,6 +980,11 @@ public class CcdCasesSenderTest {
 
         caseDetailsCaptor.getValue().accept(existingCaseDetails);
 
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                existingCaseDetails.getData());
+
         verify(updateCcdCaseService, never()).updateCase(any(),
             eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
             eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
@@ -966,6 +1036,11 @@ public class CcdCasesSenderTest {
             caseDetailsCaptor.capture());
 
         caseDetailsCaptor.getValue().accept(existingCaseDetails);
+
+        verify(updateCcdCaseData, times(2))
+            .updateCcdRecordForChangesAndReturnUpdateType(
+                caseData,
+                existingCaseDetails.getData());
 
         verify(updateCcdCaseService, never()).updateCase(any(),
             eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
