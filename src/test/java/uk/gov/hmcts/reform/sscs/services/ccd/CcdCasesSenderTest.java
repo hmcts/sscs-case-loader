@@ -227,6 +227,7 @@ public class CcdCasesSenderTest {
         when(migrationJob.shouldBeSkipped(any(), any())).thenReturn(true);
         ccdCasesSender.updateCaseMigration(1L, idamTokens, "Somali", migrationJob);
 
+        //todo: remove this comment
         verify(updateCcdCaseService).updateCaseV2Conditional(
             anyLong(),
             eq("migrateCase"),
