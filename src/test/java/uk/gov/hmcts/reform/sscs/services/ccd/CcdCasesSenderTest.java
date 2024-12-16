@@ -357,7 +357,7 @@ public class CcdCasesSenderTest {
     @ParameterizedTest
     @ValueSource(strings = {"APPEAL_RECEIVED", "RESPONSE_RECEIVED", "HEARING_BOOKED", "HEARING_POSTPONED",
         "APPEAL_LAPSED", "APPEAL_WITHDRAWN", "HEARING_ADJOURNED", "APPEAL_DORMANT"})
-    public void shouldUpdateCcdGivenThereIsAnEventChangeV2(GapsEvent gapsEvent) throws Exception {
+    void shouldUpdateCcdGivenThereIsAnEventChangeV2(GapsEvent gapsEvent) throws Exception {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
         SscsCaseDetails sscsCaseDetails = getSscsCaseDetails(CASE_DETAILS_JSON);
@@ -401,7 +401,7 @@ public class CcdCasesSenderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"RESPONSE_RECEIVED", "APPEAL_RECEIVED"})
-    public void givenDigitalCaseAndPreGapsEvent_thenTriggerCaseUpdatedEventV2(GapsEvent gapsEvent)
+    void givenDigitalCaseAndPreGapsEvent_thenTriggerCaseUpdatedEventV2(GapsEvent gapsEvent)
         throws IOException {
         setField(ccdCasesSender, "updateCaseV2Enabled", true);
 
