@@ -210,13 +210,40 @@ public class CcdCasesSenderTest {
         );
 
         SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().data(caseData).build();
-        conditionalCaseDetailsCaptor.getValue().apply(sscsCaseDetails);
+        ConditionalUpdateResult conditionalUpdateResult = conditionalCaseDetailsCaptor.getValue().apply(sscsCaseDetails);
+        assertThat(conditionalUpdateResult.willCommit(), equalTo(true));
 
         verify(updateCcdCaseService, never()).updateCase(
             eq(caseData), anyLong(), eq("migrateCase"), eq("random-token"),
             eq("migrateCase"), eq(""), eq(""), eq(idamTokens)
         );
+    }
 
+    @Test
+    void shouldNotUpdateLanguageV2() {
+        setField(ccdCasesSender, "updateCaseV2Enabled", true);
+        var caseData = SscsCaseData.builder()
+            .appeal(Appeal.builder()
+                .hearingOptions(HearingOptions.builder().languages("Swahili").build()).build()
+            ).build();
+
+        when(migrationJob.shouldBeSkipped(any(), any())).thenReturn(true);
+        ccdCasesSender.updateCaseMigration(1L, idamTokens, "Somali", migrationJob);
+
+        verify(updateCcdCaseService).updateCaseV2Conditional(
+            anyLong(),
+            eq("migrateCase"),
+            eq(idamTokens), conditionalCaseDetailsCaptor.capture()
+        );
+
+        SscsCaseDetails sscsCaseDetails = SscsCaseDetails.builder().data(caseData).build();
+        ConditionalUpdateResult conditionalUpdateResult = conditionalCaseDetailsCaptor.getValue().apply(sscsCaseDetails);
+        assertThat(conditionalUpdateResult.willCommit(), equalTo(false));
+
+        verify(updateCcdCaseService, never()).updateCase(
+            eq(caseData), anyLong(), eq("migrateCase"), eq("random-token"),
+            eq("migrateCase"), eq(""), eq(""), eq(idamTokens)
+        );
     }
 
     @ParameterizedTest()
