@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,13 +40,28 @@ public class CronExpressionProductionTest {
                 }
 
                 @Override
+                public Instant lastScheduledExecution() {
+                    return null;
+                }
+
+                @Override
                 public Date lastActualExecutionTime() {
                     return today;
                 }
 
                 @Override
+                public Instant lastActualExecution() {
+                    return null;
+                }
+
+                @Override
                 public Date lastCompletionTime() {
                     return today;
+                }
+
+                @Override
+                public Instant lastCompletion() {
+                    return null;
                 }
             });
 

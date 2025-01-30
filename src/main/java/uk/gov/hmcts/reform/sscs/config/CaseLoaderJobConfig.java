@@ -3,8 +3,9 @@ package uk.gov.hmcts.reform.sscs.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +20,7 @@ import uk.gov.hmcts.reform.sscs.job.SscsCaseLoaderJob;
 public class CaseLoaderJobConfig {
 
     @Autowired
-    private JobBuilderFactory jobBuilders;
-
-    @Autowired
-    private StepBuilderFactory stepBuilders;
+    private JobRepository jobRepository;
 
     @Autowired
     private SscsCaseLoaderJob sscsCaseLoaderJob;
@@ -33,14 +31,15 @@ public class CaseLoaderJobConfig {
 
     @Bean
     public Job caseLoaderJob(Step caseLoaderStep) {
-        return jobBuilders.get("caseLoaderJob").start(caseLoaderStep)
+        JobBuilder jobBuilders = new JobBuilder("caseLoaderJob");
+        return jobBuilders.start(caseLoaderStep)
             .build();
     }
 
     @Bean
     public Step caseLoaderStep() {
-        return stepBuilders.get("caseLoaderStep")
-            .tasklet(tasklet())
+        StepBuilder stepBuilders = new StepBuilder("caseLoaderStep", jobRepository);
+        return stepBuilders.tasklet(tasklet())
             .build();
     }
 
