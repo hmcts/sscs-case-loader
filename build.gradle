@@ -249,7 +249,7 @@ dependencies {
 
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.4'
   implementation group: 'com.github.hmcts', name: 'java-logging', version: '6.0.1'
-  implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'cacfbc7'
+  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.0.9'
   implementation group: 'com.github.mwiede', name: 'jsch', version: '0.2.11'
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
