@@ -54,7 +54,7 @@ public class ReferenceDataServiceTest {
             .active("Yes")
             .gapsVenName("Milton Keynes")
             .comments("")
-            .epimsId("815997")
+            .epimsId("497356")
             .build();
 
         assertEquals(venueDetails, referenceDataService.getVenueDetails("43"));
