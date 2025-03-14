@@ -1,0 +1,6478 @@
+[
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001AD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001BC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001BR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001CH"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001CI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001CX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001HC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001HS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001IJ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001LM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001PT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001QC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001SA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "4",
+        "benefitIssueCode": "001SG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001TB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001TD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001TP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "001UC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "4",
+        "benefitIssueCode": "001WC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002AR"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002CD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002CF"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "002EI"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "002GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002LC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "002LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002MD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002ML"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002MO"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "002RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "002RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "002VW"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003AR"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003CD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003CF"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "003EI"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "003GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003LC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "003LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003MD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003ML"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003MO"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "003RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "003RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "003VW"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013AR"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013CD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013CF"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013EI"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013MD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "013RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "014DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "014DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "014MN"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "014MN"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016PF"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016RG"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016RG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "016SU"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "016SU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022CA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022CA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022PC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022RB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "022SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "022SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023CA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023CA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023PC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023RB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "023SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "023SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024CA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024CA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024PC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024RB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "024SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "024SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025CA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025CA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025PC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025RB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "025SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "025SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026PC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026RB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "026SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "026SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028PC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028RB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "028SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "50"
+        ],
+        "category": "2",
+        "benefitIssueCode": "028SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030CO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "030RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031AA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031AA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031NW"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031NW"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031RY"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031RY"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031SS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031SX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "031XA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "031XA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "032RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "033RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "034SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "035RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "036AA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "036AA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "036CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "036CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "036DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "036DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "036DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "036DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "036ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "036ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037AR"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037CD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037CF"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037EI"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037MD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037OC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58",
+            "44"
+        ],
+        "category": "3",
+        "benefitIssueCode": "037RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045AP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045AS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045BW"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045CL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045CM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045CO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045DA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045DP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045HC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045PR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045SF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045SM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "045SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "050RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051CB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051FR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051WI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051IM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051NC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "4",
+        "benefitIssueCode": "051SG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051TL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "051TP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "4",
+        "benefitIssueCode": "051WC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053DQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053FX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053OI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "053RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054DQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054FX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054OI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "054RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "055CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "055DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "055EQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "055FC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "055IS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "NA",
+        "benefitIssueCode": ""
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057DK"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057DS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057RO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "057TU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "058CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "058CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "058DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061AS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061AT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061BW"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061DP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061DQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061WI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061HC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061IA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061ID"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061LM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061PR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061RG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061SF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061SM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061SU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061TT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "061WF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062CB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062IM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062NC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "4",
+        "benefitIssueCode": "062SG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "062TP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "4",
+        "benefitIssueCode": "062WC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064CS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064CS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064IA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064IA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064ID"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064ID"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "064RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "064RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067CB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067CB"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067CS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067CS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067DM"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067DM"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067EX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067FW"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067FW"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067IA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067IA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067ID"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067ID"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067OK"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067OK"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067OS"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067OX"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "067RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "067RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069AA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069AS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069BD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069CL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069DE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069DP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069OL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069PR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069RG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069RS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069SC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069SU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069TB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069TE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "069TO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070EI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "070RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073AS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073AT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073AV"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073AW"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073BW"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073DR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073FT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073HC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073LM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073RT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073SM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073SU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "073SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075AA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075AB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075AS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075AX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075BD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075BR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075CL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075DC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075DE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075DL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075DP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075HS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075LH"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075LX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075OL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075PR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RI"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075RS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075SC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075SU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075TB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075TE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075TO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075UA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "075UL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077AA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077AS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077BD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077CL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077DE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077DP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077HT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077IQ"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077OL"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077PC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077PR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077RG"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077SC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077SR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077SS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077SU"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077SX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077TB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077TE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "077TO"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "079RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082CB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "082RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088SF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "088SM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089PF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089SF"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "089SM"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "090DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "090FF"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091AA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091AA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091CC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091CE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091CP"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091DD"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091DQ"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091EC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091GC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091LE"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091ON"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091RA"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "58"
+        ],
+        "category": "5",
+        "benefitIssueCode": "091RC"
+    },
+    {
+        "panelRequirement": [
+            "84",
+            "85",
+            "85"
+        ],
+        "category": "6",
+        "benefitIssueCode": "091RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094CB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094LT"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "094RC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095CB"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "095RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096CC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096CE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096CP"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096CR"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "009DD"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096EC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096EX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096GC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096LE"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096OC"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096ON"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096OS"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096OX"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096RA"
+    },
+    {
+        "panelRequirement": ["84"],
+        "category": "1",
+        "benefitIssueCode": "096RC"
+    }
+]
