@@ -105,7 +105,7 @@ public class CreatePanelJsonFromCsv {
                     if (trimmedPanelMember.equals("85")){
                         trimmedPanelMember = "58";
                     }
-                    johTierArray.put(trimSuperfluousInfo(panelMember));
+                    johTierArray.put(trimmedPanelMember);
                 }
             }
             object.put("johTier", johTierArray);
