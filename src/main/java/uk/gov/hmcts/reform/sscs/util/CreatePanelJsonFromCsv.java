@@ -24,7 +24,7 @@ public class CreatePanelJsonFromCsv {
 //    replace any empty cells with two apostrophes ('')
 //    use online csv converter to convert xls to csv
     File csvFile = new File("johTierAutomateAttempt_2.csv");
-    static int benefitIssueCodeIndex =0;
+    static int benefitIssueCodeIndex = 0;
     static int category1Index = 1;
     static int category2Index = 2;
     static int panel1ColumnIndex = 3;
@@ -57,7 +57,7 @@ public class CreatePanelJsonFromCsv {
             }
 
             Path path = Paths.get(LocalDate.now().toString().replace("-", "")
-                .concat("_" + "PanelRequirementAutomateAttempt.json"));
+                .concat("_" + "johTierJsonMapping.json"));
 
             Files.write(path, arrayOfObjects.toString(4).getBytes()); // Indent with 4 spaces
             logger.debug("Written JSON array to file: {}", arrayOfObjects);
@@ -79,14 +79,36 @@ public class CreatePanelJsonFromCsv {
                 object.put("category", trimSuperfluousInfo(data[categoryIndex]).substring(0, 1));
             }
 
-            String[] panelRequirements = data[panelColumnIndex].split(" ");
-            JSONArray panelRequirementArray = new JSONArray();
-            for (String panelRequirement : panelRequirements) {
-                if(!trimSuperfluousInfo(panelRequirement).isEmpty()) {
-                    panelRequirementArray.put(trimSuperfluousInfo(panelRequirement));
+//            add fqpm key
+            if (data[categoryIndex].contains("FQPM") && panelColumnIndex == panel2ColumnIndex) {
+                object.put("fqpm", "true");
+            }
+
+            String[] johTier = data[panelColumnIndex].split(" ");
+            JSONArray johTierArray = new JSONArray();
+            for (String panelMember : johTier) {
+
+//                add specialism number
+                if (panelMember.contains("specialism")) {
+                    if (panelColumnIndex == panel2ColumnIndex) {
+                        object.put("specialism", "2");
+                    }
+                    else {
+                        object.put("specialism", "1");
+                    }
+                }
+
+//                trim panel member of specialism information
+                String trimmedPanelMember = trimSuperfluousInfo(panelMember);
+                if(!trimSuperfluousInfo(panelMember).isEmpty()) {
+//                    correct typo (85 should be 58)
+                    if (trimmedPanelMember.equals("85")){
+                        trimmedPanelMember = "58";
+                    }
+                    johTierArray.put(trimSuperfluousInfo(panelMember));
                 }
             }
-            object.put("panelRequirement", panelRequirementArray);
+            object.put("johTier", johTierArray);
 
             return object;
         }
