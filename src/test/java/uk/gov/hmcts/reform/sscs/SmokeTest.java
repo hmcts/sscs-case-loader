@@ -29,7 +29,7 @@ public class SmokeTest {
     }
 
     @Test
-    public void shouldExecuteCaseLoaderJob() {
+    public void shouldSuccessfullyStartupAndExit() {
         underTest.execute(null, null);
     }
 }
