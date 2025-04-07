@@ -222,7 +222,8 @@ dependencyManagement {
 }
 
 def versions = [
-  jackson : '2.17.2'
+  jackson : '2.17.2',
+  commons_io : '2.18.0'
 ]
 
 dependencies {
@@ -254,7 +255,7 @@ dependencies {
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
 
-  implementation  group: 'commons-io', name: 'commons-io', version: '2.18.0'
+  implementation  group: 'commons-io', name: 'commons-io', version: versions.commons_io
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.10'
 
   implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
@@ -273,7 +274,8 @@ dependencies {
   testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
   }
-  integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.18.0'
+
+  integrationTestImplementation group: 'commons-io', name: 'commons-io', version: versions.commons_io
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
