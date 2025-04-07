@@ -249,7 +249,7 @@ dependencies {
 
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '7.4'
   implementation group: 'com.github.hmcts', name: 'java-logging', version: '6.0.1'
-  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.1.5'
+  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.2.0'
   implementation group: 'com.github.mwiede', name: 'jsch', version: '0.2.11'
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
@@ -273,8 +273,7 @@ dependencies {
   testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
   }
-  implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-  integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+  integrationTestImplementation group: 'commons-io', name: 'commons-io', version: '2.18.0'
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
