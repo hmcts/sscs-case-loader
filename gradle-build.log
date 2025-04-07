@@ -1,0 +1,10 @@
+:compileTestJava
+:compileContractTestJava
+:processContractTestResources
+Encountered duplicate path "config/application_contract.properties" during copy operation configured with DuplicatesStrategy.WARN
+Encountered duplicate path "json/esQuery.json" during copy operation configured with DuplicatesStrategy.WARN
+Encountered duplicate path "json/sscs-map.json" during copy operation configured with DuplicatesStrategy.WARN
+Encountered duplicate path "json/base-case.json" during copy operation configured with DuplicatesStrategy.WARN
+Encountered duplicate path "json/case.json" during copy operation configured with DuplicatesStrategy.WARN
+:compileFunctionalTestJava
+:compileIntegrationTestJava
