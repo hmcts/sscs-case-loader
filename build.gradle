@@ -8,7 +8,7 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.43'
   id 'com.github.ben-manes.versions' version '0.46.0'
   id 'org.sonarqube' version '6.1.0.5360'
-  id 'org.owasp.dependencycheck' version '12.1.0'
+  id 'org.owasp.dependencycheck' version '12.1.1'
   id "com.gorylenko.gradle-git-properties" version "2.4.1"
   id "io.freefair.lombok" version "8.1.0"
 }
@@ -117,7 +117,7 @@ dependencies {
 }
 
 jacoco {
-  toolVersion = "0.8.12"
+  toolVersion = "0.8.13"
 }
 
 jacocoTestReport {
