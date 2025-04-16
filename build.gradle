@@ -268,8 +268,8 @@ dependencies {
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: versions.jackson
 
-  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '2.28.0'
-  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.28.0'
+  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit-fluent', version: '4.1.0'
+  testImplementation  group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '4.1.0'
   testImplementation  group: 'io.rest-assured', name: 'rest-assured'
   testImplementation  group: 'com.github.hmcts', name: 'fortify-client', version: '1.2.2', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
