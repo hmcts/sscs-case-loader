@@ -210,7 +210,7 @@ configurations {
 
 dependencyManagement {
   imports {
-    mavenBom "org.springframework:spring-framework-bom:5.3.33"
+    mavenBom "org.springframework:spring-framework-bom:5.3.39"
   }
   dependencies {
     // CVE-2022-1471
