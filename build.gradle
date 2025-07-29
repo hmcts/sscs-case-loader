@@ -214,13 +214,16 @@ dependencyManagement {
   }
   dependencies {
     // CVE-2022-1471
-    dependency group:'org.yaml', name:'snakeyaml', version:'2.0'
+    dependency group:'org.yaml', name:'snakeyaml', version:'2.4'
 
     //CVE-2023-6378, CVE-2023-6481
     dependencySet(group: 'ch.qos.logback', version: '1.2.13') {
       entry 'logback-core'
       entry 'logback-classic'
     }
+
+    // CVE-2025-48924
+    dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
   }
 }
 
@@ -261,7 +264,7 @@ dependencies {
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.10'
 
   implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.14.0'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
