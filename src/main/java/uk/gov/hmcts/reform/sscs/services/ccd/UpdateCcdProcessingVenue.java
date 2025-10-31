@@ -38,7 +38,8 @@ class UpdateCcdProcessingVenue {
             String venueEpimsId = venueService.getEpimsIdForVenue(gapsProcessingVenue);
             VenueDetails newVenue = venueService.getVenueDetailsForActiveVenueByEpimsId(venueEpimsId);
             if (nonNull(newVenue)) {
-                if (isEmpty(newVenue.getLegacyVenue()) || !Objects.equals(newVenue.getLegacyVenue(), existingProcessingVenue)) {
+                if (isEmpty(newVenue.getLegacyVenue())
+                    || !Objects.equals(newVenue.getLegacyVenue(), existingProcessingVenue)) {
                     log.info("Processing venue has changed from {} to {} for case {}", existingProcessingVenue,
                         gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
 
@@ -46,7 +47,7 @@ class UpdateCcdProcessingVenue {
                     venueUpdated = true;
                 } else {
                     log.info("Existing venue {} has not been replaced by {} for case {}.",
-                        existingProcessingVenue, gapsProcessingVenue ,existingCcdCaseData.getCcdCaseId() );
+                        existingProcessingVenue, gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
                 }
             }
         } else {
