@@ -53,6 +53,7 @@ public class ReferenceDataServiceTest {
             .url("https://goo.gl/maps/5nWYgZvnWGY2R3dV8")
             .active("Yes")
             .gapsVenName("Milton Keynes")
+            .legacyVenue("")
             .comments("")
             .epimsId("497356")
             .build();
