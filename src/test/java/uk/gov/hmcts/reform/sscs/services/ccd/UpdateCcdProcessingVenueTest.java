@@ -82,7 +82,8 @@ public class UpdateCcdProcessingVenueTest {
     @Test
     public void returnFalseWhenNewProcessingVenueHasLegacyVenueInCaseData() {
         when(venueService.getEpimsIdForVenue(any())).thenReturn("12345");
-        when(venueService.getVenueDetailsForActiveVenueByEpimsId("12345")).thenReturn(VenueDetails.builder().legacyVenue("venue2").build());
+        when(venueService.getVenueDetailsForActiveVenueByEpimsId("12345"))
+            .thenReturn(VenueDetails.builder().legacyVenue("venue2").build());
 
         assertFalse(
             classUnderTest.updateVenue(
