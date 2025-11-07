@@ -35,26 +35,37 @@ class UpdateCcdProcessingVenue {
         String existingProcessingVenue = existingCcdCaseData.getProcessingVenue();
 
         if (!gapsProcessingVenue.equalsIgnoreCase(existingProcessingVenue)) {
-            String venueEpimsId = venueService.getEpimsIdForVenue(gapsProcessingVenue);
-            VenueDetails newVenue = venueService.getVenueDetailsForActiveVenueByEpimsId(venueEpimsId);
-            if (nonNull(newVenue)) {
-                if (isEmpty(newVenue.getLegacyVenue())
-                    || !Objects.equals(newVenue.getLegacyVenue(), existingProcessingVenue)) {
-                    log.info("Processing venue has changed from {} to {} for case {}", existingProcessingVenue,
-                        gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
-
-                    existingCcdCaseData.setProcessingVenue(gapsProcessingVenue);
-                    venueUpdated = true;
-                } else {
-                    log.info("Existing venue {} has not been replaced by {} for case {}.",
-                        existingProcessingVenue, gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
-                }
-            }
+            return venueUpdatedFromGaps(gapsProcessingVenue, existingProcessingVenue, existingCcdCaseData);
         } else {
             log.info("Processing venue has not changed for case {} . Processing venue =  {}",
                 existingCcdCaseData.getCcdCaseId(), existingProcessingVenue);
         }
 
         return venueUpdated;
+    }
+
+    private boolean venueUpdatedFromGaps(String gapsProcessingVenue,
+                                         String existingProcessingVenue, SscsCaseData existingCcdCaseData) {
+        try {
+            String venueEpimsId = venueService.getEpimsIdForVenue(gapsProcessingVenue);
+            VenueDetails newVenue = venueService.getVenueDetailsForActiveVenueByEpimsId(venueEpimsId);
+            if (nonNull(newVenue) && (isEmpty(newVenue.getLegacyVenue())
+                || !Objects.equals(newVenue.getLegacyVenue(), existingProcessingVenue))) {
+                log.info("Processing venue has changed from {} to {} for case {}", existingProcessingVenue,
+                    gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+
+                existingCcdCaseData.setProcessingVenue(gapsProcessingVenue);
+                return true;
+            } else {
+                log.info("Existing venue {} has not been replaced by {} for case {}.",
+                    existingProcessingVenue, gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+                return false;
+            }
+
+        } catch (Exception e) {
+            log.info("Invalid venue {} for case {}, venue has not been updated.",
+                gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+            return false;
+        }
     }
 }

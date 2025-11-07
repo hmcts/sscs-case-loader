@@ -98,6 +98,22 @@ public class UpdateCcdProcessingVenueTest {
     }
 
     @Test
+    public void returnFalseWhenNewProcessingVenueIsInvalid() {
+        when(venueService.getEpimsIdForVenue(any())).thenThrow(new IllegalStateException());
+
+        assertFalse(
+            classUnderTest.updateVenue(
+                SscsCaseData.builder()
+                    .processingVenue("venue1")
+                    .build(),
+                SscsCaseData.builder()
+                    .processingVenue("venue2")
+                    .build()
+            )
+        );
+    }
+
+    @Test
     public void returnTrueWhenCcdDataHasDifferentProcessingVenue() {
         SscsCaseData gapsCaseData = SscsCaseData.builder()
             .processingVenue("Venue1")
