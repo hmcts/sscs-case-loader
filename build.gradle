@@ -223,12 +223,12 @@ dependencyManagement {
     }
 
     // CVE-2025-48924
-    dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
+    dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.19.0'
   }
 }
 
 def versions = [
-  jackson : '2.17.2',
+  jackson : '2.20.1',
   commons_io : '2.20.0'
 ]
 
@@ -263,7 +263,7 @@ dependencies {
   implementation  group: 'commons-io', name: 'commons-io', version: versions.commons_io
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.10'
 
-  implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+  implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.5.0'
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.14.0'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
