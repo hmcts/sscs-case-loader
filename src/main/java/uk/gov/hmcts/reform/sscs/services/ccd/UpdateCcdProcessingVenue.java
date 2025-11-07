@@ -63,7 +63,7 @@ class UpdateCcdProcessingVenue {
             }
 
         } catch (Exception e) {
-            log.warn("Invalid venue {} for case {}, venue has not been updated.",
+            log.info("Invalid venue {} for case {}, venue has not been updated.",
                 gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
             return false;
         }
