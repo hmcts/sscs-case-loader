@@ -44,7 +44,8 @@ class UpdateCcdProcessingVenue {
         return venueUpdated;
     }
 
-    private boolean venueUpdatedFromGaps(String gapsProcessingVenue, String existingProcessingVenue, SscsCaseData existingCcdCaseData) {
+    private boolean venueUpdatedFromGaps(String gapsProcessingVenue,
+                                         String existingProcessingVenue, SscsCaseData existingCcdCaseData) {
         try {
             String venueEpimsId = venueService.getEpimsIdForVenue(gapsProcessingVenue);
             VenueDetails newVenue = venueService.getVenueDetailsForActiveVenueByEpimsId(venueEpimsId);
@@ -62,7 +63,8 @@ class UpdateCcdProcessingVenue {
             }
 
         } catch (Exception e) {
-            log.warn("Invalid venue {} for case {}, venue has not been updated.", gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
+            log.warn("Invalid venue {} for case {}, venue has not been updated.",
+                gapsProcessingVenue, existingCcdCaseData.getCcdCaseId());
             return false;
         }
     }
