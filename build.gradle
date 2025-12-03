@@ -258,7 +258,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.3.13'
   implementation group: 'com.github.mwiede', name: 'jsch', version: '0.2.11'
 
-  implementation  group: 'org.json', name: 'json', version: '20240303'
+  implementation  group: 'org.json', name: 'json', version: '20250517'
 
   implementation  group: 'commons-io', name: 'commons-io', version: versions.commons_io
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.10'
