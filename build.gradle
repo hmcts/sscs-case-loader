@@ -224,6 +224,9 @@ dependencyManagement {
 
     // CVE-2025-48924
     dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
+
+    // CVE-2025-68161
+    dependency group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.25.3'
   }
 }
 
