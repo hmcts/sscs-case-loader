@@ -261,7 +261,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'core-case-data-store-client', version: '4.9.1.1'
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '8.1'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.9'
-  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.3.18'
+  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.3.20'
   implementation group: 'com.github.mwiede', name: 'jsch', version: '0.2.11'
 
   implementation  group: 'org.json', name: 'json', version: '20240303'
