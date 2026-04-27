@@ -6,5 +6,7 @@
     <cve>CVE-2026-22737</cve>
     <cve>CVE-2026-22735</cve>
     <cve>CVE-2026-22733</cve>
+    <cve>CVE-2026-22746</cve>
+    <cve>CVE-2026-22748</cve>
   </suppress>
 </suppressions>
