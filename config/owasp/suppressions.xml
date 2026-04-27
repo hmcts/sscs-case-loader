@@ -3,5 +3,10 @@
   <suppress until = "2026-05-07">
     <cve>CVE-2024-38820</cve>
     <cve>CVE-2026-22732</cve>
+    <cve>CVE-2026-22737</cve>
+    <cve>CVE-2026-22735</cve>
+    <cve>CVE-2026-22733</cve>
+    <cve>CVE-2026-22746</cve>
+    <cve>CVE-2026-22748</cve>
   </suppress>
 </suppressions>

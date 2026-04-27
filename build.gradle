@@ -226,7 +226,10 @@ dependencyManagement {
     dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
 
     // CVE-2025-68161
-    dependencySet(group: 'org.apache.logging.log4j', version: '2.25.3') {
+    // CVE-2026-34478
+    // CVE-2026-34481
+    // CVE-2026-34480
+    dependencySet(group: 'org.apache.logging.log4j', version: '2.25.4') {
       entry 'log4j-api'
       entry 'log4j-to-slf4j'
     }
