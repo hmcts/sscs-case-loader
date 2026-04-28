@@ -226,10 +226,16 @@ dependencyManagement {
     dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
 
     // CVE-2025-68161
-    dependencySet(group: 'org.apache.logging.log4j', version: '2.25.3') {
+    // CVE-2026-34478
+    // CVE-2026-34481
+    // CVE-2026-34480
+    dependencySet(group: 'org.apache.logging.log4j', version: '2.25.4') {
       entry 'log4j-api'
       entry 'log4j-to-slf4j'
     }
+
+    // Latest possible version for Spring Boot 2
+    dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.8.16'
   }
 }
 
@@ -261,7 +267,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'core-case-data-store-client', version: '4.9.1.1'
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '8.1'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '8.0.0'
-  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.3.37'
+  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.3.41'
 
   implementation group: 'com.github.mwiede', name: 'jsch', version: '0.2.11'
 
