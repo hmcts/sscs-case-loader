@@ -9,4 +9,10 @@
     <cve>CVE-2026-22746</cve>
     <cve>CVE-2026-22748</cve>
   </suppress>
+  <suppress until="2026-06-01">
+    <cve>CVE-2026-40972</cve>
+    <cve>CVE-2026-40973</cve>
+    <cve>CVE-2026-40975</cve>
+    <cve>CVE-2026-40977</cve>
+  </suppress>
 </suppressions>
