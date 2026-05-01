@@ -12,20 +12,17 @@ resource "azurerm_resource_group" "rg" {
   ))
 }
 
-data "azurerm_user_assigned_identity" "jenkins" {
-  name                = "jenkins-${var.env}-mi"
-  resource_group_name = "managed-identities-${var.env}-rg"
-}
-
 data "azurerm_key_vault" "case_loader" {
+  count               = var.jenkins_object_id != "" ? 1 : 0
   name                = "${var.product}-${var.component}-${var.env}"
   resource_group_name = "${var.product}-${var.component}-${var.env}"
 }
 
 resource "azurerm_key_vault_access_policy" "jenkins" {
-  key_vault_id = data.azurerm_key_vault.case_loader.id
+  count        = var.jenkins_object_id != "" ? 1 : 0
+  key_vault_id = data.azurerm_key_vault.case_loader[0].id
   tenant_id    = var.tenant_id
-  object_id    = data.azurerm_user_assigned_identity.jenkins.principal_id
+  object_id    = var.jenkins_object_id
 
   certificate_permissions = [
     "Create",
