@@ -217,7 +217,7 @@ dependencyManagement {
     dependency group:'org.yaml', name:'snakeyaml', version:'2.4'
 
     //CVE-2023-6378, CVE-2023-6481
-    dependencySet(group: 'ch.qos.logback', version: '1.2.13') {
+    dependencySet(group: 'ch.qos.logback', version: '1.5.32') {
       entry 'logback-core'
       entry 'logback-classic'
     }
@@ -229,7 +229,7 @@ dependencyManagement {
     // CVE-2026-34478
     // CVE-2026-34481
     // CVE-2026-34480
-    dependencySet(group: 'org.apache.logging.log4j', version: '2.25.4') {
+    dependencySet(group: 'org.apache.logging.log4j', version: '2.26.0') {
       entry 'log4j-api'
       entry 'log4j-to-slf4j'
     }
