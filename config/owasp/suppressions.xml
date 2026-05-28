@@ -22,5 +22,6 @@
     <cve>CVE-2025-37727</cve>
     <cve>CVE-2025-68390</cve>
     <cve>CVE-2016-1000027</cve>
+    <cve>CVE-2025-15104</cve>
   </suppress>
 </suppressions>
