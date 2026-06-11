@@ -23,5 +23,12 @@
     <cve>CVE-2025-68390</cve>
     <cve>CVE-2016-1000027</cve>
     <cve>CVE-2025-15104</cve>
+    <cve>CVE-2026-41842</cve>
+    <cve>CVE-2026-41849</cve>
+    <cve>CVE-2026-41850</cve>
+    <cve>CVE-2026-41851</cve>
+    <cve>CVE-2026-41840</cve>
+    <cve>CVE-2026-41841</cve>
+    <cve>CVE-2026-41843</cve>
   </suppress>
 </suppressions>
