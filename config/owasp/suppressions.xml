@@ -30,5 +30,16 @@
     <cve>CVE-2026-41840</cve>
     <cve>CVE-2026-41841</cve>
     <cve>CVE-2026-41843</cve>
+    <cve>CVE-2026-41844</cve>
+    <cve>CVE-2026-41853</cve>
+    <cve>CVE-2026-41852</cve>
+    <cve>CVE-2026-41848</cve>
+    <cve>CVE-2026-41847</cve>
+    <cve>CVE-2026-41846</cve>
+    <cve>CVE-2026-41845</cve>
+    <cve>CVE-2026-40988</cve>
+    <cve>CVE-2026-41838</cve>
+    <cve>CVE-2026-41003</cve>
+    <cve>CVE-2026-41694</cve>
   </suppress>
 </suppressions>
