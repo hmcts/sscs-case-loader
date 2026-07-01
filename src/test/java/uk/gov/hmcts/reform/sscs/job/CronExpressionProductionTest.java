@@ -1,14 +1,15 @@
 package uk.gov.hmcts.reform.sscs.job;
 
 import static java.sql.Timestamp.valueOf;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import junitparams.JUnitParamsRunner;
@@ -34,21 +35,6 @@ public class CronExpressionProductionTest {
 
         TriggerContext triggerContext = new TriggerContext() {
 
-            @Override
-            public Date lastScheduledExecutionTime() {
-                return null;
-            }
-
-            @Override
-            public Date lastActualExecutionTime() {
-                return null;
-            }
-
-            @Override
-            public Date lastCompletionTime() {
-                return null;
-            }
-
             public Instant lastScheduledExecution() {
                 return today.toInstant();
             }
@@ -61,12 +47,12 @@ public class CronExpressionProductionTest {
                 return today.toInstant();
             }
         };
-        Date nextExecutionTime = trigger.nextExecutionTime(triggerContext);
+        Instant nextExecutionTime = trigger.nextExecution(triggerContext);
 
         LocalDateTime nextExecution =
-            new Timestamp(nextExecutionTime.getTime()).toLocalDateTime();
-        assertTrue("cannot run in Saturday", nextExecution.getDayOfWeek() != DayOfWeek.SATURDAY);
-        assertTrue("cannot run in Sunday", nextExecution.getDayOfWeek() != DayOfWeek.SUNDAY);
+            LocalDateTime.ofInstant(nextExecutionTime, ZoneId.systemDefault());
+        assertNotSame("cannot run in Saturday", DayOfWeek.SATURDAY, nextExecution.getDayOfWeek());
+        assertNotSame("cannot run in Sunday", DayOfWeek.SUNDAY, nextExecution.getDayOfWeek());
 
         assertTrue("has to run at 9 o'clock or after",
             nextExecution.toLocalTime().isAfter(LocalTime.of(8, 59)));

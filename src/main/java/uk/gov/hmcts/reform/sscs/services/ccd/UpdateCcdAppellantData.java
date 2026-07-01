@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 
@@ -46,7 +45,7 @@ class UpdateCcdAppellantData {
 
         if (appointeeChanged) {
             final String hasAppointeeYesOrNo = hasAppointee ? "Yes" : "No";
-            if (!equalsIgnoreCase(existingCcdAppellant.getIsAppointee(), hasAppointeeYesOrNo)) {
+            if (!Strings.CI.equals(existingCcdAppellant.getIsAppointee(), hasAppointeeYesOrNo)) {
                 existingCcdAppellant.setIsAppointee(hasAppointeeYesOrNo);
             }
         }

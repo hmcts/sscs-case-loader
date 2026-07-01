@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
@@ -33,7 +33,7 @@ public class TransformAppealCaseToCaseDataIntegrationTest {
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-    @MockBean
+    @MockitoBean
     private ReferenceDataService referenceDataService;
 
     @Autowired
