@@ -235,7 +235,7 @@ ext {
 }
 
 def versions = [
-  jackson : '2.17.2',
+  jackson : '2.21.4',
   commons_io : '2.22.0'
 ]
 
@@ -262,7 +262,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'core-case-data-store-client', version: '4.9.1.1'
   implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '8.1'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '8.0.0'
-  implementation group: 'com.github.hmcts', name: 'sscs-common', version: '6.3.55'
+  implementation group: 'com.github.hmcts', name: 'sscs-common', version: 'b70bb56'
 
   implementation group: 'com.github.mwiede', name: 'jsch', version: '0.2.11'
 
@@ -275,7 +275,7 @@ dependencies {
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.14.0'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.22'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: versions.jackson
