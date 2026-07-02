@@ -7,8 +7,8 @@ plugins {
   id 'org.springframework.boot' version '3.5.15'
   id 'uk.gov.hmcts.java' version '0.12.70'
   id 'com.github.ben-manes.versions' version '0.46.0'
-  id 'org.sonarqube' version '6.2.0.5505'
-  id 'org.owasp.dependencycheck' version '12.1.3'
+  id 'org.sonarqube' version '6.3.1.5724'
+  id 'org.owasp.dependencycheck' version '12.2.2'
   id "com.gorylenko.gradle-git-properties" version "2.4.1"
   id "io.freefair.lombok" version "8.14.4"
 }
@@ -117,7 +117,7 @@ dependencies {
 }
 
 jacoco {
-  toolVersion = "0.8.13"
+  toolVersion = "0.8.15"
 }
 
 jacocoTestReport {
@@ -224,7 +224,7 @@ dependencyManagement {
 //    }
 
     // CVE-2025-48924
-    dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
+    dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.20.0'
 
     // Latest possible version for Spring Boot 2
     dependency group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.8.16'
@@ -236,7 +236,7 @@ ext {
 }
 
 def versions = [
-  jackson : '2.17.2',
+  jackson : '2.22.0',
   commons_io : '2.22.0'
 ]
 
@@ -272,11 +272,11 @@ dependencies {
   implementation  group: 'commons-io', name: 'commons-io', version: versions.commons_io
   implementation  group: 'org.elasticsearch', name: 'elasticsearch', version: '7.17.29'
 
-  implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.14.0'
+  implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.5.0'
+  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.15.0'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.22'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: versions.jackson
