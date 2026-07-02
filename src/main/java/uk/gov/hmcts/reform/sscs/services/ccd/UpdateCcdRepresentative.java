@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.hmcts.reform.sscs.ccd.domain.*;
+import org.apache.commons.lang3.Strings;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Contact;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Representative;
+import uk.gov.hmcts.reform.sscs.ccd.domain.SscsCaseData;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscription;
+import uk.gov.hmcts.reform.sscs.ccd.domain.Subscriptions;
 import uk.gov.hmcts.reform.sscs.util.UkMobile;
 
 @Slf4j
@@ -43,7 +47,8 @@ final class UpdateCcdRepresentative {
                     && nonNull(existingCcdCaseData.getAppeal().getRep().getName().getLastName()))
                     || nonNull(existingCcdCaseData.getAppeal().getRep().getOrganisation()));
                 String hasRepYesOrNo = hasRep ? "Yes" : "No";
-                if (!equalsIgnoreCase(existingCcdCaseData.getAppeal().getRep().getHasRepresentative(), hasRepYesOrNo)) {
+                if (!Strings.CI.equals(existingCcdCaseData.getAppeal().getRep().getHasRepresentative(),
+                    hasRepYesOrNo)) {
                     existingCcdCaseData.getAppeal().getRep().setHasRepresentative(hasRepYesOrNo);
                 }
             }

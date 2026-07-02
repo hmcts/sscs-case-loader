@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.exceptions.GapsValidationException;
 import uk.gov.hmcts.reform.sscs.services.gaps2.files.Gaps2File;
@@ -22,10 +22,10 @@ import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 @SpringBootTest
 public class XmlValidatorTest {
 
-    @MockBean
+    @MockitoBean
     private SftpSshService sftpSshService;
 
-    @MockBean
+    @MockitoBean
     private SftpChannelAdapter channelAdapter;
 
     @Autowired
