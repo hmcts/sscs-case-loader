@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,26 +31,40 @@ public class CronExpressionProductionTest {
         CronTrigger trigger = new CronTrigger(PRODUCTION_CRON_EXPRESSION);
         final Date today = valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, min))
             .with(TemporalAdjusters.previousOrSame(dayOfWeek)));
-        Date nextExecutionTime = trigger.nextExecutionTime(
-            new TriggerContext() {
 
-                @Override
-                public Date lastScheduledExecutionTime() {
-                    return today;
-                }
+        TriggerContext triggerContext = new TriggerContext() {
 
-                @Override
-                public Date lastActualExecutionTime() {
-                    return today;
-                }
+            @Override
+            public Date lastScheduledExecutionTime() {
+                return null;
+            }
 
-                @Override
-                public Date lastCompletionTime() {
-                    return today;
-                }
-            });
+            @Override
+            public Date lastActualExecutionTime() {
+                return null;
+            }
 
-        LocalDateTime nextExecution = new Timestamp(nextExecutionTime.getTime()).toLocalDateTime();
+            @Override
+            public Date lastCompletionTime() {
+                return null;
+            }
+
+            public Instant lastScheduledExecution() {
+                return today.toInstant();
+            }
+
+            public Instant lastActualExecution() {
+                return today.toInstant();
+            }
+
+            public Instant lastCompletion() {
+                return today.toInstant();
+            }
+        };
+        Date nextExecutionTime = trigger.nextExecutionTime(triggerContext);
+
+        LocalDateTime nextExecution =
+            new Timestamp(nextExecutionTime.getTime()).toLocalDateTime();
         assertTrue("cannot run in Saturday", nextExecution.getDayOfWeek() != DayOfWeek.SATURDAY);
         assertTrue("cannot run in Sunday", nextExecution.getDayOfWeek() != DayOfWeek.SUNDAY);
 
