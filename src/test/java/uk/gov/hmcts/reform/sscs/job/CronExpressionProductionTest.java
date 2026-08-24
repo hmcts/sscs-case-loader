@@ -1,13 +1,15 @@
 package uk.gov.hmcts.reform.sscs.job;
 
 import static java.sql.Timestamp.valueOf;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Timestamp;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import junitparams.JUnitParamsRunner;
@@ -30,28 +32,27 @@ public class CronExpressionProductionTest {
         CronTrigger trigger = new CronTrigger(PRODUCTION_CRON_EXPRESSION);
         final Date today = valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, min))
             .with(TemporalAdjusters.previousOrSame(dayOfWeek)));
-        Date nextExecutionTime = trigger.nextExecutionTime(
-            new TriggerContext() {
 
-                @Override
-                public Date lastScheduledExecutionTime() {
-                    return today;
-                }
+        TriggerContext triggerContext = new TriggerContext() {
 
-                @Override
-                public Date lastActualExecutionTime() {
-                    return today;
-                }
+            public Instant lastScheduledExecution() {
+                return today.toInstant();
+            }
 
-                @Override
-                public Date lastCompletionTime() {
-                    return today;
-                }
-            });
+            public Instant lastActualExecution() {
+                return today.toInstant();
+            }
 
-        LocalDateTime nextExecution = new Timestamp(nextExecutionTime.getTime()).toLocalDateTime();
-        assertTrue("cannot run in Saturday", nextExecution.getDayOfWeek() != DayOfWeek.SATURDAY);
-        assertTrue("cannot run in Sunday", nextExecution.getDayOfWeek() != DayOfWeek.SUNDAY);
+            public Instant lastCompletion() {
+                return today.toInstant();
+            }
+        };
+        Instant nextExecutionTime = trigger.nextExecution(triggerContext);
+
+        LocalDateTime nextExecution =
+            LocalDateTime.ofInstant(nextExecutionTime, ZoneId.systemDefault());
+        assertNotSame("cannot run in Saturday", DayOfWeek.SATURDAY, nextExecution.getDayOfWeek());
+        assertNotSame("cannot run in Sunday", DayOfWeek.SUNDAY, nextExecution.getDayOfWeek());
 
         assertTrue("has to run at 9 o'clock or after",
             nextExecution.toLocalTime().isAfter(LocalTime.of(8, 59)));

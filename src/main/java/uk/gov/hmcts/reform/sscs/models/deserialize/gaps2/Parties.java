@@ -1,35 +1,36 @@
 package uk.gov.hmcts.reform.sscs.models.deserialize.gaps2;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Builder;
 import lombok.Value;
 
 @Value
 @Builder
 public class Parties {
-    private String initials;
-    private String title;
-    private String surname;
-    private String email;
-    private String phone1;
-    private String phone2;
-    private String postCode;
-    private String disabilityNeeds;
-    private String interpreterSignerId;
-    private String dob;
-    private Integer roleId;
 
-    public Parties(@JsonProperty("INITIALS") String initials,
-            @JsonProperty("Title") String title,
-            @JsonProperty("Surname") String surname,
-            @JsonProperty("Email") String email,
-            @JsonProperty("Phone_1") String phone1,
-            @JsonProperty("Phone_2") String phone2,
-            @JsonProperty("Postcode") String postCode,
-            @JsonProperty("Disability_Needs") String disabilityNeeds,
-            @JsonProperty("Interpreter_Signer_Id") String interpreterSignerId,
-            @JsonProperty("DOB") String dob,
-            @JsonProperty("Role_Id") Integer roleId) {
+    String initials;
+    String title;
+    String surname;
+    String email;
+    String phone1;
+    String phone2;
+    String postCode;
+    String disabilityNeeds;
+    String interpreterSignerId;
+    String dob;
+    Integer roleId;
+
+    public Parties(@JsonAlias("INITIALS") String initials,
+                   @JsonAlias("Title") String title,
+                   @JsonAlias("Surname") String surname,
+                   @JsonAlias("Email") String email,
+                   @JsonAlias("Phone_1") String phone1,
+                   @JsonAlias("Phone_2") String phone2,
+                   @JsonAlias("Postcode") String postCode,
+                   @JsonAlias("Disability_Needs") String disabilityNeeds,
+                   @JsonAlias("Interpreter_Signer_Id") String interpreterSignerId,
+                   @JsonAlias("DOB") String dob,
+                   @JsonAlias("Role_Id") Integer roleId) {
         this.initials = initials;
         this.title = title;
         this.surname = surname;

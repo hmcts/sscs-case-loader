@@ -25,8 +25,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.ccd.domain.*;
 import uk.gov.hmcts.reform.sscs.ccd.service.CcdService;
@@ -46,29 +46,29 @@ import uk.gov.hmcts.reform.sscs.services.xml.XmlValidator;
 @ActiveProfiles("test")
 public class CaseLoaderServiceTest {
 
-    @MockBean
+    @MockitoBean
     private SftpSshService sftpSshService;
 
-    @MockBean
+    @MockitoBean
     private SftpChannelAdapter channelAdapter;
 
-    @MockBean
+    @MockitoBean
     private XmlValidator xmlValidator;
-    @MockBean
+    @MockitoBean
     private TransformationService transformService;
-    @MockBean
+    @MockitoBean
     private CcdService ccdService;
-    @MockBean
+    @MockitoBean
     private RefDataFactory refDataFactory;
     @Mock
     private Gaps2File file;
     @Mock
     private InputStream inputStream;
-    @MockBean
+    @MockitoBean
     private SearchCcdCaseService searchCcdCaseService;
-    @MockBean
+    @MockitoBean
     private UpdateCcdCaseService updateCcdCaseService;
-    @MockBean
+    @MockitoBean
     private IdamService idamService;
 
     private SscsCaseData caseData;

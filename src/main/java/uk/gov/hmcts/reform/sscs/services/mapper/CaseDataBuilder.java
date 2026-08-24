@@ -347,8 +347,9 @@ class CaseDataBuilder {
         SecureRandom random = new SecureRandom();
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
             .withinRange('0', 'z')
-            .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS).usingRandom(random::nextInt)
-            .build();
+            .filteredBy(CharacterPredicates.DIGITS, CharacterPredicates.LETTERS)
+            .usingRandom(random::nextInt)
+            .get();
         return generator.generate(10);
     }
 }

@@ -519,8 +519,6 @@ public class UpdateCcdAppellantDataTest {
                 equalTo(""));
         assertThat(existingCaseDetails.getData().getAppeal().getAppellant().getIdentity().getNino(),
                 equalTo(normalisedNino));
-
-
     }
 
     @Test
@@ -544,6 +542,7 @@ public class UpdateCcdAppellantDataTest {
                 .nino(gapsAndCcdDataUpdateScenario.gapsAppellantData.nino)
                 .build())
             .appointee(gapsAndCcdDataUpdateScenario.gapsAppellantData.appointee)
+            .isAppointee("Yes")
             .build();
 
         gapsCaseData = SscsCaseData.builder()
@@ -565,6 +564,7 @@ public class UpdateCcdAppellantDataTest {
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.nino);
         existingCaseDetails.getData().getAppeal().getAppellant().setAppointee(
             gapsAndCcdDataUpdateScenario.existingCcdAppellantData.appointee);
+        existingCaseDetails.getData().getAppeal().getAppellant().setIsAppointee("Yes");
 
         boolean updateData = updateCcdAppellantData.updateCcdAppellantData(gapsCaseData, existingCaseDetails.getData());
 
@@ -582,6 +582,13 @@ public class UpdateCcdAppellantDataTest {
             .usingRecursiveComparison()
             .ignoringFields("id")
             .isEqualTo(existingCaseDetails.getData().getAppeal().getAppellant().getAppointee());
+
+        assertThat(
+            existingCaseDetails.getData()
+                .getAppeal()
+                .getAppellant()
+                .getIsAppointee(),
+            equalTo("Yes"));
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")

@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -30,13 +30,13 @@ public class UpdateCcdServiceRetryAndRecoverTest {
     private static final String USER_ID = "16";
     private static final String AUTHORIZATION_2 = "authorization2";
     private static final String SERVICE_AUTHORIZATION_2 = "serviceAuthorization2";
-    @MockBean
+    @MockitoBean
     private CoreCaseDataApi coreCaseDataApi;
 
-    @MockBean
+    @MockitoBean
     private SftpChannelAdapter channelAdapter;
 
-    @MockBean
+    @MockitoBean
     private IdamService idamService;
 
     @Autowired

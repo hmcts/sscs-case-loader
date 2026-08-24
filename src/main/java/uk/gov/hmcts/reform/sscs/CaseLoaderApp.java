@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.sscs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.retry.annotation.EnableRetry;
 import uk.gov.hmcts.reform.sscs.ccd.config.CcdRequestDetails;
 
-@EnableBatchProcessing
 @SpringBootApplication
 @SuppressWarnings("HideUtilityClassConstructor")
 @EnableFeignClients(basePackages = {

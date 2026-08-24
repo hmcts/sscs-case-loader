@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 
@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.sscs.services.sftp.SftpChannelAdapter;
 @ComponentScan(basePackages = {"uk.gov.hmcts.reform.sscs.services", "uk.gov.hmcts.reform.sscs.config"})
 public class IdamPropertiesTest {
 
-    @MockBean
+    @MockitoBean
     SftpChannelAdapter channelAdapter;
 
     @Autowired
