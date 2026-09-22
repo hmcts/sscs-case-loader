@@ -224,7 +224,7 @@ dependencyManagement {
 }
 
 def versions = [
-  jackson : '2.22.1',
+  jackson : '2.22.3',
   commons_io : '2.22.0'
 ]
 
