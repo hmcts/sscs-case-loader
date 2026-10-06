@@ -242,7 +242,7 @@ dependencies {
   implementation  group: 'org.springframework', name: 'spring-context-support'
   implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
-  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.20.0'
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.21.0'
 
   implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.13'
 
