@@ -33,6 +33,9 @@ idam:
     jwkUrl: ${IDAM_API_JWK_URL:http://localhost:5062/jwks}
   api:
     url: ${IDAM_URL:http://localhost:5062}
+  oidc:
+    use_oidc_api: ${IDAM_USE_OIDC_API:true}
+    url: ${IDAM_OIDC_URL:http://localhost:5062}
   client:
     id: ${IDAM_OAUTH2_CLIENT_ID:sscs}
     secret: ${IDAM_OAUTH2_CLIENT_SECRET:QM5RQQ53LZFOSIXJ}

@@ -8,6 +8,8 @@ job:
       secrets:
       - name: idam-api
         alias: IDAM_URL
+      - name: idam-web-public
+        alias: IDAM_OIDC_URL
       - name: idam-sscs-systemupdate-user
         alias: IDAM_SSCS_SYSTEMUPDATE_USER
       - name: idam-sscs-systemupdate-password
