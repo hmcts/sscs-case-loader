@@ -277,6 +277,7 @@ services:
         - CORE_CASE_DATA_JURISDICTION_ID=SSCS
         - CORE_CASE_DATA_CASE_TYPE_ID=Benefit
         - IDAM_URL=http://idam-api:8080
+        - IDAM_OIDC_URL=http://idam-api:8080
         - IDAM_S2S_AUTH_TOTP_SECRET=AAAAAAAAAAAAAAAC
         - IDAM_S2S_AUTH_MICROSERVICE=sscs
         - IDAM_S2S_AUTH=http://service-auth-provider-api:8080
