@@ -24,7 +24,6 @@ def secrets = [
     secret('ccd-jid', 'CORE_CASE_DATA_JURISDICTION_ID'),
     secret('ccd-tid', 'CORE_CASE_DATA_CASE_TYPE_ID'),
     secret('idam-api', 'IDAM_URL'),
-    secret('idam-web-public', 'IDAM_OIDC_URL'),
     secret('idam-s2s-api', 'IDAM_S2S_AUTH'),
     secret('sscs-s2s-secret', 'IDAM_S2S_AUTH_TOTP_SECRET'),
     secret('s2s-micro', 'IDAM_S2S_AUTH_MICROSERVICE'),
