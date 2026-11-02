@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.APPEAL_RECEIVED;
 import static uk.gov.hmcts.reform.sscs.ccd.domain.EventType.CASE_UPDATED;
@@ -147,33 +146,35 @@ public class CcdCasesSender {
     }
 
     private void addMissingExistingHearings(SscsCaseData caseData, SscsCaseData existingCcdCaseData) {
-        List<Hearing> gaps2Hearings = caseData.getHearings();
-        List<Hearing> ccdCaseDataHearings = existingCcdCaseData.getHearings();
-        ArrayList<Hearing> hearingArrayList = new ArrayList<>();
+        List<Hearing> incomingHearings = caseData.getHearings();
+        List<Hearing> existingHearings = existingCcdCaseData.getHearings();
 
-        if (null != ccdCaseDataHearings) {
-            if (null != gaps2Hearings) {
-                Set<String> gaps2HearingDateTime = gaps2Hearings
-                    .stream()
-                    .map(hearing -> getMissingHearingDateTime(hearing.getValue()))
-                    .collect(toSet());
-
-                List<Hearing> missingHearings = ccdCaseDataHearings
-                    .stream()
-                    .filter(hearing ->
-                        !gaps2HearingDateTime.contains(getMissingHearingDateTime(hearing.getValue())))
-                    .collect(toList());
-
-                hearingArrayList.addAll(gaps2Hearings);
-                hearingArrayList.addAll(missingHearings);
-            } else {
-                hearingArrayList.addAll(ccdCaseDataHearings);
-            }
-
-            existingCcdCaseData.setHearings(hearingArrayList);
-        } else {
-            existingCcdCaseData.setHearings(gaps2Hearings);
+        // No existing hearings: use the incoming hearings.
+        if (existingHearings == null || existingHearings.isEmpty()) {
+            existingCcdCaseData.setHearings(incomingHearings);
+            return;
         }
+
+        // Keep all existing CCD hearings unchanged.
+        List<Hearing> mergedHearings = new ArrayList<>(existingHearings);
+
+        if (incomingHearings != null) {
+            Set<String> existingHearingDateTimes = existingHearings.stream()
+                .map(hearing -> getMissingHearingDateTime(hearing.getValue()))
+                .collect(toSet());
+
+            for (Hearing incomingHearing : incomingHearings) {
+                String incomingDateTime =
+                    getMissingHearingDateTime(incomingHearing.getValue());
+
+                // Only add hearings that do not already exist in CCD.
+                if (existingHearingDateTimes.add(incomingDateTime)) {
+                    mergedHearings.add(incomingHearing);
+                }
+            }
+        }
+
+        existingCcdCaseData.setHearings(mergedHearings);
     }
 
     private String getMissingHearingDateTime(HearingDetails details) {

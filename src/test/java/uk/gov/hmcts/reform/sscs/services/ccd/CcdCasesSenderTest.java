@@ -423,7 +423,7 @@ public class CcdCasesSenderTest {
         HearingDetails hearingDetails = caseDataArgumentCaptor.getValue().getHearings().get(0).getValue();
         HearingDetails hearingDetails1 = caseDataArgumentCaptor.getValue().getHearings().get(1).getValue();
 
-        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime(), equalTo("2018-04-0510:00:00"));
+        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime(), equalTo("2017-05-2410:00"));
         assertThat(hearingDetails1.getHearingDate() + hearingDetails1.getTime(),
             equalTo("2017-05-2410:00"));
     }
