@@ -232,7 +232,7 @@ dependencies {
   implementation  group: 'org.springframework.boot', name: 'spring-boot-starter-batch'
   testImplementation  group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'org.springframework.batch', name: 'spring-batch-test'
-  implementation group: 'com.h2database', name: 'h2', version: '2.4.240'
+  implementation group: 'com.h2database', name: 'h2', version: '2.5.252'
 
   implementation  group: 'org.unix4j', name: 'unix4j-command', version: '0.6'
 
