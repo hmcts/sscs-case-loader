@@ -224,7 +224,7 @@ dependencyManagement {
 }
 
 def versions = [
-  jackson : '2.22.4',
+  jackson : '2.23.0',
   commons_io : '2.22.0'
 ]
 
@@ -264,7 +264,7 @@ dependencies {
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.15.0'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.22'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.23'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-csv', version: versions.jackson
