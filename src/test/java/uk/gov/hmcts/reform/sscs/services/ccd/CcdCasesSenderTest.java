@@ -1,14 +1,12 @@
 package uk.gov.hmcts.reform.sscs.services.ccd;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -25,17 +23,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import junitparams.JUnitParamsRunner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.sscs.ccd.client.CcdClient;
@@ -63,7 +61,7 @@ import uk.gov.hmcts.reform.sscs.job.DataMigrationJob;
 import uk.gov.hmcts.reform.sscs.models.GapsEvent;
 import uk.gov.hmcts.reform.sscs.models.UpdateType;
 
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CcdCasesSenderTest {
 
     static final String CASE_DETAILS_JSON = "CaseDetailsWithOneEventAndNoEvidence.json";
@@ -96,7 +94,6 @@ public class CcdCasesSenderTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         ccdCasesSender = new CcdCasesSender(updateCcdCaseService, updateCcdCaseData, ccdClient, sscsCcdConvertService);
         idamTokens = IdamTokens.builder()
             .idamOauth2Token(OAUTH2)
@@ -104,8 +101,8 @@ public class CcdCasesSenderTest {
             .userId(USER_ID)
             .build();
 
-        given(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
-            .willReturn(UpdateType.EVENT_UPDATE);
+        lenient().when(updateCcdCaseData.updateCcdRecordForChangesAndReturnUpdateType(any(), any()))
+            .thenReturn(UpdateType.EVENT_UPDATE);
     }
 
     @Test
@@ -118,14 +115,14 @@ public class CcdCasesSenderTest {
 
         ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
 
-        assertEquals(appellant, caseData.getAppeal().getAppellant());
-        assertEquals(benefitType, caseData.getAppeal().getBenefitType());
+        assertThat(caseData.getAppeal().getAppellant()).isEqualTo(appellant);
+        assertThat(caseData.getAppeal().getBenefitType()).isEqualTo(benefitType);
 
-        assertNull(caseData.getAppeal().getMrnDetails());
-        assertNull(caseData.getAppeal().getAppealReasons());
-        assertNull(caseData.getAppeal().getHearingOptions());
-        assertNull(caseData.getAppeal().getRep());
-        assertNull(caseData.getAppeal().getSigner());
+        assertThat(caseData.getAppeal().getMrnDetails()).isNull();
+        assertThat(caseData.getAppeal().getAppealReasons()).isNull();
+        assertThat(caseData.getAppeal().getHearingOptions()).isNull();
+        assertThat(caseData.getAppeal().getRep()).isNull();
+        assertThat(caseData.getAppeal().getSigner()).isNull();
     }
 
     @Test
@@ -418,14 +415,42 @@ public class CcdCasesSenderTest {
             eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
             eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
 
-        assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(3));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().size()).isEqualTo(3);
 
         HearingDetails hearingDetails = caseDataArgumentCaptor.getValue().getHearings().get(0).getValue();
         HearingDetails hearingDetails1 = caseDataArgumentCaptor.getValue().getHearings().get(1).getValue();
+        HearingDetails hearingDetails2 = caseDataArgumentCaptor.getValue().getHearings().get(2).getValue();
 
-        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime(), equalTo("2018-04-0510:00:00"));
-        assertThat(hearingDetails1.getHearingDate() + hearingDetails1.getTime(),
-            equalTo("2017-05-2410:00"));
+        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime()).isEqualTo("2017-05-2410:00");
+        assertThat(hearingDetails1.getHearingDate() + hearingDetails1.getTime())
+            .isEqualTo("2017-05-2410:00");
+        assertThat(hearingDetails2.getHearingDate() + hearingDetails2.getTime())
+            .isEqualTo("2018-04-0510:00:00");
+    }
+
+    @Test
+    public void shouldNotReaddHearingToCaseWhenDuplicateAlreadyExistsInCcd() throws Exception {
+
+        SscsCaseData caseData = buildCaseData(RESPONSE_RECEIVED);
+        caseData.setHearings(buildDuplicateHearing());
+        ArgumentCaptor<SscsCaseData> caseDataArgumentCaptor = ArgumentCaptor.forClass(SscsCaseData.class);
+
+        SscsCaseDetails existingCaseDetails = getSscsCaseDetails(CASE_DETAILS_WITH_HEARINGS_JSON);
+
+        ccdCasesSender.sendUpdateCcdCases(caseData, existingCaseDetails, idamTokens);
+
+        verify(updateCcdCaseService).updateCase(caseDataArgumentCaptor.capture(),
+            eq(existingCaseDetails.getId()), eq(caseData.getLatestEventType()),
+            eq(SSCS_APPEAL_UPDATED_EVENT), eq(UPDATED_SSCS), eq(idamTokens));
+
+        List<Hearing> mergedHearings = caseDataArgumentCaptor.getValue().getHearings();
+        List<String> hearingIds = mergedHearings.stream()
+            .map(hearing -> hearing.getValue().getHearingId())
+            .collect(Collectors.toList());
+
+        assertThat(mergedHearings.size()).isEqualTo(2);
+        assertThat(hearingIds).containsExactlyInAnyOrder("6", "7");
+        assertThat(hearingIds.contains("100")).isFalse();
     }
 
     @Test
@@ -445,9 +470,9 @@ public class CcdCasesSenderTest {
 
         HearingDetails hearingDetails = caseDataArgumentCaptor.getValue().getHearings().get(0).getValue();
 
-        assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(1));
-        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime(),
-            equalTo("2018-04-0510:00:00"));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().size()).isEqualTo(1);
+        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime())
+            .isEqualTo("2018-04-0510:00:00");
     }
 
     @Test
@@ -466,15 +491,23 @@ public class CcdCasesSenderTest {
 
         HearingDetails hearingDetails = caseDataArgumentCaptor.getValue().getHearings().get(0).getValue();
 
-        assertThat(caseDataArgumentCaptor.getValue().getHearings().size(), equalTo(2));
-        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime(),
-            equalTo("2017-05-2410:00"));
+        assertThat(caseDataArgumentCaptor.getValue().getHearings().size()).isEqualTo(2);
+        assertThat(hearingDetails.getHearingDate() + hearingDetails.getTime())
+            .isEqualTo("2017-05-2410:00");
     }
 
     private List<Hearing> buildHearings() {
         return Collections.singletonList(
             Hearing.builder().value(
                 HearingDetails.builder().hearingDate("2018-04-05").time("10:00:00").build())
+                .build());
+    }
+
+    private List<Hearing> buildDuplicateHearing() {
+        return Collections.singletonList(
+            Hearing.builder().value(
+                HearingDetails.builder().hearingDate("2017-05-24").time("10:00")
+                    .hearingId("100").build())
                 .build());
     }
 
